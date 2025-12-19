@@ -1,0 +1,106 @@
+{
+    // Configurações gerais do workspace
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    },
+
+    // Configurações para Python
+    // Linguagem: Python
+    "python.languageServer": "Pylance",  // Servidor de linguagem para IntelliSense avançado
+    "python.analysis.typeCheckingMode": "basic",  // Verificação de tipos básica
+    "python.analysis.autoImportCompletions": true,  // Completar automaticamente imports
+    "python.analysis.completeFunctionParens": true,  // Completar parênteses em funções
+    "python.analysis.diagnosticMode": "workspace",  // Modo de diagnóstico para o workspace
+    "python.analysis.indexing": true,  // Indexação para melhor IntelliSense
+    "python.analysis.inlayHints.callArgumentNames": "off",  // Dicas inline para argumentos
+    "python.analysis.inlayHints.functionReturnTypes": false,  // Dicas inline para tipos de retorno
+    "python.analysis.inlayHints.variableTypes": false,  // Dicas inline para tipos de variáveis
+    "python.linting.enabled": true,  // Habilitar linting
+    "python.linting.pylintEnabled": true,  // Usar Pylint para linting
+    "python.linting.flake8Enabled": true,  // Usar Flake8 para linting
+    "python.formatting.provider": "black",  // Formatação com Black
+    "python.formatting.blackArgs": ["--line-length", "88"],  // Argumentos para Black
+    "python.testing.pytestEnabled": true,  // Habilitar testes com Pytest
+
+    // Configurações para Django
+    // Linguagem: Python (Django é um framework Python)
+    "python.analysis.extraPaths": ["./service_orders"],  // Caminhos extras para análise (apps Django)
+    "emmet.includeLanguages": {
+        "django-html": "html"  // Suporte Emmet para templates Django
+    },
+    "files.associations": {
+        "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html
+        "**/static/**/*.css": "css",
+        "**/static/**/*.js": "javascript"
+    },
+
+    // Configurações para HTML
+    // Linguagem: HTML
+    "html.format.enable": true,  // Habilitar formatação HTML
+    "html.format.wrapLineLength": 120,  // Comprimento de linha para quebra
+    "html.format.unformatted": "wbr",  // Tags não formatadas
+    "html.format.contentUnformatted": "pre,code,textarea",  // Conteúdo não formatado
+    "html.format.indentInnerHtml": false,  // Indentação interna
+    "html.format.preserveNewLines": true,  // Preservar novas linhas
+    "html.format.maxPreserveNewLines": 2,  // Máximo de novas linhas preservadas
+    "html.format.endWithNewline": false,  // Terminar com nova linha
+    "html.format.extraLiners": "head, body, /html",  // Liners extras
+    "html.suggest.html5": true,  // Sugestões HTML5
+    "html.suggest.ionic": false,  // Sugestões Ionic
+    "html.suggest.angular1": false,  // Sugestões Angular1
+    "html.validate.scripts": true,  // Validar scripts
+    "html.validate.styles": true,  // Validar estilos
+    "emmet.triggerExpansionOnTab": true,  // Expansão Emmet com Tab
+    
+    // Configurações para CSS (usado em templates HTML)
+    // Linguagem: CSS
+    "css.format.enable": true,  // Habilitar formatação CSS
+    "css.validate": true,  // Validar CSS
+    "css.lint.compatibleVendorPrefixes": "warning",  // Prefixos de fornecedor compatíveis
+    "css.lint.vendorPrefix": "warning",  // Prefixo de fornecedor
+    "css.lint.duplicateProperties": "error",  // Propriedades duplicadas
+    "css.lint.emptyRules": "warning",  // Regras vazias
+    "css.lint.float": "error",  // Float
+    "css.lint.fontFaceProperties": "warning",  // Propriedades font-face
+    "css.lint.hexColorLength": "error",  // Comprimento da cor hex
+    "css.lint.idSelector": "ignore",  // Seletor ID
+    "css.lint.ieHack": "error",  // Hack IE
+    "css.lint.important": "warning",  // !important
+    "css.lint.propertyIgnoredDueToDisplay": "warning",  // Propriedade ignorada devido a display
+    "css.lint.universalSelector": "warning",  // Seletor universal
+    "css.lint.unknownAtRules": "warning",  // Regras @ desconhecidas
+    "css.lint.unknownProperties": "warning",  // Propriedades desconhecidas
+    "css.lint.validProperties": [],  // Propriedades válidas
+    "css.lint.zeroUnits": "warning",  // Unidades zero
+
+    // Configurações para JavaScript (se usado em static files)
+    // Linguagem: JavaScript
+    "javascript.format.enable": true,  // Habilitar formatação JS
+    "javascript.validate.enable": true,  // Validar JS
+    "javascript.suggest.autoImports": true,  // Auto imports
+    "javascript.suggest.names": true,  // Sugestões de nomes
+    "javascript.suggest.paths": true,  // Sugestões de caminhos
+    "javascript.suggest.completeFunctionCalls": true,  // Completar chamadas de função
+    "javascript.suggest.includeCompletionsForImportStatements": true,  // Completar imports
+    "javascript.inlayHints.parameterNames.enabled": "all",  // Dicas inline para parâmetros
+    "javascript.inlayHints.variableTypes.enabled": true,  // Dicas inline para tipos de variáveis
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": true,  // Dicas inline para retornos de função
+    "javascript.preferences.includePackageJsonAutoImports": "auto",  // Auto imports de package.json
+
+    // Configurações gerais para IntelliSense
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": true
+    },
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.acceptSuggestionOnEnter": "on",
+    "editor.snippetSuggestions": "top",
+    "editor.tabCompletion": "on",
+    "editor.wordBasedSuggestions": "currentDocument",
+    "editor.parameterHints.enabled": true,
+    "editor.hover.enabled": true,
+    "editor.hover.delay": 300,
+    "editor.hover.sticky": true
+}
