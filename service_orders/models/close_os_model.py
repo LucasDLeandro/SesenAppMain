@@ -43,6 +43,6 @@ class CloseOs(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Fechamento da OS: {self.protocolo.protocolo}"
+        return self.protocolo
     
     

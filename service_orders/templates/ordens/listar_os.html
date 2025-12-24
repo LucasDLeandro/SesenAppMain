@@ -1,0 +1,15 @@
+{% extends "index.html" %} 
+
+{% block title %} Otis - Lista OS's {% endblock %} 
+
+
+{% block content %} 
+    <h1>Lista</h1>
+    <br>
+
+    {% for os in oss %}
+        {{os}}
+        <hr>
+    {% endfor %}
+    
+{% endblock %}

@@ -30,7 +30,7 @@
         "django-html": "html"  // Suporte Emmet para templates Django
     },
     "files.associations": {
-        "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html
+       // "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html
         "**/static/**/*.css": "css",
         "**/static/**/*.js": "javascript"
     },
@@ -100,7 +100,7 @@
     "editor.tabCompletion": "on",
     "editor.wordBasedSuggestions": "currentDocument",
     "editor.parameterHints.enabled": true,
-    "editor.hover.enabled": true,
+    "editor.hover.enabled": "on",
     "editor.hover.delay": 300,
     "editor.hover.sticky": true
 }
