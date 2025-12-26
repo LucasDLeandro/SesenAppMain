@@ -1,15 +1,16 @@
 {
     // Configurações gerais do workspace
-    "editor.formatOnSave": true,
+    "editor.formatOnSave": true,  // Formatar o código automaticamente ao salvar
     "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"
+        "source.fixAll": "explicit"  // Aplicar correções automáticas de código ao salvar
     },
 
     // Configurações para Python
     // Linguagem: Python
+    // --- Configurações de Autocomplete e IntelliSense para Python ---
     "python.languageServer": "Pylance",  // Servidor de linguagem para IntelliSense avançado
     "python.analysis.typeCheckingMode": "basic",  // Verificação de tipos básica
-    "python.analysis.autoImportCompletions": true,  // Completar automaticamente imports
+    "python.analysis.autoImportCompletions": false,  // Completar automaticamente imports (desabilitado para reduzir sugestões)
     "python.analysis.completeFunctionParens": true,  // Completar parênteses em funções
     "python.analysis.diagnosticMode": "workspace",  // Modo de diagnóstico para o workspace
     "python.analysis.indexing": true,  // Indexação para melhor IntelliSense
@@ -31,8 +32,8 @@
     },
     "files.associations": {
        // "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html
-        "**/static/**/*.css": "css",
-        "**/static/**/*.js": "javascript"
+        "**/static/**/*.css": "css",  // Associar arquivos CSS em static
+        "**/static/**/*.js": "javascript"  // Associar arquivos JS em static
     },
 
     // Configurações para HTML
@@ -90,17 +91,17 @@
 
     // Configurações gerais para IntelliSense
     "editor.quickSuggestions": {
-        "other": true,
-        "comments": false,
-        "strings": true
+        "other": true,  // Sugestões rápidas para outros contextos
+        "comments": false,  // Sugestões em comentários
+        "strings": true  // Sugestões em strings
     },
-    "editor.suggestOnTriggerCharacters": true,
-    "editor.acceptSuggestionOnEnter": "on",
-    "editor.snippetSuggestions": "top",
-    "editor.tabCompletion": "on",
-    "editor.wordBasedSuggestions": "currentDocument",
-    "editor.parameterHints.enabled": true,
-    "editor.hover.enabled": "on",
-    "editor.hover.delay": 300,
-    "editor.hover.sticky": true
+    "editor.suggestOnTriggerCharacters": true,  // Sugerir ao digitar caracteres de gatilho
+    "editor.acceptSuggestionOnEnter": "on",  // Aceitar sugestão com Enter
+    "editor.snippetSuggestions": "top",  // Sugestões de snippets no topo
+    "editor.tabCompletion": "on",  // Completar com Tab
+    "editor.wordBasedSuggestions": "currentDocument",  // Sugestões baseadas em palavras do documento atual
+    "editor.parameterHints.enabled": true,  // Dicas de parâmetros habilitadas
+    "editor.hover.enabled": "on",  // Hover habilitado
+    "editor.hover.delay": 300,  // Atraso do hover em ms
+    "editor.hover.sticky": true  // Hover persistente
 }

@@ -4,6 +4,23 @@
 
 
 {% block content %} 
-    
+    <form action="" method="post">
+        {% csrf_token %}
+        {% load crispy_forms_tags %}
+        {{ form | crispy }}
+
+        {{ form.data_hora.label_tag }}
+        {{ form.data_hora }}
+
+        {{ form.protocolo.label_tag }}
+        {{ form.protocolo }}
+
+        {{ form.elevador.label_tag }}
+        {{ form.elevador }}
+
+        {{ form.aprisionamento.label_tag }}
+        {{ form.aprisionamento }}
+
+    </form>
     
 {% endblock %}
