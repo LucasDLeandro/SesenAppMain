@@ -1,26 +1,102 @@
-{% extends "index.html" %} 
+{% extends "ordens/base_ordens.html" %} 
 
 {% block title %} Otis - Registrar Ordem de Serviço {% endblock %} 
 
 
-{% block content %} 
-    <form action="" method="post">
-        {% csrf_token %}
-        {% load crispy_forms_tags %}
-        {{ form | crispy }}
+{% block app_content %} 
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-10 col-lg-8">
+                <h2 class="text-center mb-4 text-primary"><i class="bi bi-clipboard-plus"></i>Ordem de Serviço - Elevadores</h2>
 
-        {{ form.data_hora.label_tag }}
-        {{ form.data_hora }}
+                <form action="" method="post">
+                    {% csrf_token %}
 
-        {{ form.protocolo.label_tag }}
-        {{ form.protocolo }}
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
 
-        {{ form.elevador.label_tag }}
-        {{ form.elevador }}
+                    <!-- Informações Básicas -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="bi bi-info-circle"></i> Informações Básicas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.data_hora.id_for_label }}" class="form-label">{{ form.data_hora.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar"></i></span>
+                                        {{ form.data_hora }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.protocolo.id_for_label }}" class="form-label">{{ form.protocolo.label }}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-hash"></i></span>
+                                        {{ form.protocolo }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.aprisionamento.id_for_label }}" class="form-label">{{ form.aprisionamento.label }}</label>
+                                    {{ form.aprisionamento }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.atendente.id_for_label }}" class="form-label">{{ form.atendente.label }}</label>
+                                    {{ form.atendente }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.solicitante.id_for_label }}" class="form-label">{{ form.solicitante.label }}</label>
+                                    {{ form.solicitante }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        {{ form.aprisionamento.label_tag }}
-        {{ form.aprisionamento }}
+                    <!-- Detalhes do Elevador -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-secondary text-white">
+                            <h5 class="mb-0"><i class="bi bi-elevator"></i> Detalhes do Elevador</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="{{ form.elevador.id_for_label }}" class="form-label">{{ form.elevador.label }}</label>
+                                    {{ form.elevador }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="{{ form.elevador_parado.id_for_label }}" class="form-label">{{ form.elevador_parado.label }}</label>
+                                    {{ form.elevador_parado }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    </form>
-    
+                    <!-- Descrição da Ocorrência -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="bi bi-chat-text"></i> Descrição da Ocorrência</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="{{ form.ocorrencia.id_for_label }}" class="form-label">{{ form.ocorrencia.label }}</label>
+                                    {{ form.ocorrencia }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botão de Envio -->
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-send"></i> Enviar Ordem de Serviço
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

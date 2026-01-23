@@ -1,0 +1,135 @@
+{% extends "ordens/base_ordens.html" %}
+{% load static %} {% load widget_tweaks %}
+{% block extra_css %} <link rel="stylesheet" href="{% static 'service_orders/css/cat_serv_reg.css' %}"> {% endblock %}
+{% block app_content %}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">DEDICIR TÍTULO</h2>
+        <a class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-plus-lg me-2"></i>Categoria/Serviços
+        </a>
+    </div>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>Categoria</th>
+            <th>Descricao - Categoria</th>
+            <th>Serviços</th>
+            <th>Descricao - Serviços</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cat in cat_list %}
+            {% for serv in serv_list %}
+                <tr>
+                    <td>{{ cat.nome_categoria }}</td>
+                    <td>{{ cat.descricao_categoria }}</td>
+                    <td>{{ serv.nome_servico }}</td>
+                    <td>{{ serv.descricao_servico }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% empty %}
+            <tr>
+                <td colspan="8" class="text-center py-4">Nenhuma categoria ou serviço encontrada.</td>
+            </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastro de Categoria/Serviços</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body bg-light">
+        <form method="post" id="form-categoria-servico">
+            {% csrf_token %}
+            {{ service_form.management_form }}
+
+            {% if category_form.errors or service_form.errors %}
+                <div class="alert alert-danger shadow-sm">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Verifique os campos abaixo antes de salvar.
+                </div>
+            {% endif %}
+
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-primary text-white py-3">
+                    <h6 class="mb-0"><i class="bi bi-tag-fill me-2"></i>Categoria</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-secondary small">{{ category_form.nome.label }}</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-folder-plus text-primary"></i></span>
+                            {% render_field category_form.nome class="form-control border-start-0 ps-0" placeholder="Ex: Elétrica" %}
+                        </div>
+                        {% if category_form.nome.errors %}<div class="text-danger small">{{ category_form.nome.errors }}</div>{% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <h6 class="fw-bold mb-3 d-flex align-items-center">
+                <i class="bi bi-list-check me-2 text-primary"></i>Serviços Vinculados
+            </h6>
+
+            <div id="service-list">
+                {% for form in service_form %}
+                    <div class="mb-3 service-item position-relative">
+                        {{ form.id }}
+                        <div class="row g-2">
+                            <div class="col-md-5">
+                                {% render_field form.nome class="form-control" placeholder="Serviço" %}
+                            </div>
+
+                            <div class="col-md-7">
+                                <div class="input-group input-group-sm">
+                                    {% render_field form.descricao_padrao class="form-control border-end-0" placeholder="Descrição opcional" %}
+                                    
+                                    {% if service_form.can_delete %}
+                                        <div class="d-none">{{ form.DELETE }}</div>
+                                        <button class="btn btn btn-danger text-white border-0" 
+                                                type="button" 
+                                                onclick="toggleDelete(this)" 
+                                                title="Remover serviço">
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% if form.errors %}
+                            <div class="text-danger x-small mt-1">{{ form.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer bg-light border-top-0">
+        <button type="button" class="btn btn-link text-decoration-none text-muted" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" form="form-categoria-servico" class="btn btn-primary px-4 shadow-sm">
+            <i class="bi bi-check2-all me-2"></i>Salvar Tudo
+        </button>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

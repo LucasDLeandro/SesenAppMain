@@ -1,0 +1,140 @@
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);
+}
+
+/* Table styling */
+.table {
+  background-color: transparent;
+  margin-bottom: 0;
+}
+
+.table thead {
+  background-color: #f0f4f8;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.table thead th {
+  font-weight: 600;
+  color: #1e293b;
+  padding: 1rem;
+  border-bottom: 2px solid #e2e8f0;
+  font-size: 0.95rem;
+}
+
+.table tbody tr {
+  border-bottom: 1px solid #e2e8f0;
+  transition: background-color 0.2s ease;
+}
+
+.table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.table tbody td {
+  padding: 1rem;
+  vertical-align: middle;
+  color: #1e293b;
+}
+
+/* Modal enhancements */
+.modal-content {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.modal-header {
+  border-bottom: none;
+  padding: 1.5rem 2rem;
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.modal-footer {
+  border-top: none;
+  padding: 1.5rem 2rem;
+}
+
+/* Card styling */
+.card {
+  border-radius: 0.75rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card-header {
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+/* Service items */
+.service-item {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.service-item:hover {
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Form controls */
+.form-control {
+  border-radius: 0.5rem;
+  border: 1px solid #dee2e6;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group-text {
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 50rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Badge */
+.badge {
+  font-size: 0.75rem;
+}
+
+/* Alert */
+.alert {
+  border-radius: 0.75rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .modal-body {
+    padding: 1rem;
+  }
+  
+  .modal-header,
+  .modal-footer {
+    padding: 1rem;
+  }
+  
+  .col-md-5,
+  .col-md-6,
+  .col-md-1 {
+    margin-bottom: 0.5rem;
+  }
+}

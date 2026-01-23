@@ -1,0 +1,180 @@
+Água e Esgoto
+    Bombas de descarte: Manutenção.
+    Bombas de Recalque Água Potável: Manutenção.
+    Bombas de Recalque Esgoto: Manutenção.
+    Bombas de vácuo: Manutenção.
+    Bombeiro hidráulico: Plantão em eventos.
+    Caixas de Gordura: Manutenção.
+    Central de Vácuo: Higienização.
+    Central de Vácuo: Manutenção Elétrica/Eletrônica.
+    Chuveiro: Manutenção.
+    Infiltrações.
+    Irrigação: Manutenção.
+    Irrigação: Serviço de Apoio.
+    Outros defeitos/serviços (detalhar).
+    Pia ou Cuba: Manutenção.
+    Ponto de Água/Torneira: Instalação/Remanejamento.
+    Ralos e grelhas: Manutenção.
+    Reservatórios/Rede de Água Pluvial:
+    Manutenção.
+    Reservatórios/Rede de Água Potável:
+    Manutenção.
+    Reservatórios/Rede de Esgoto:
+    Manutenção.
+    Torneira: Manutenção.
+
+Ar Condicionado
+    Controle remoto: desmembrar / reposicionar.
+    Controle remoto: não funciona.
+    Controle WEB: não funciona / reprogramar.
+    Funcionamento irregular. Não liga. 
+    Limpeza.
+    Outros defeitos ou serviços (detalhar).
+    Plantão Sessão Plenária
+    Programar horário de funcionamento.
+    Regular saída de ar: Abrir ou Fechar.
+
+
+Arquitetura e Projetos
+    "As built": Elaboração.
+    Desenhos Técnicos: Elaboração e Ajuste.
+    Especificações Técnicas: Elaboração.
+    Estudo de Viabilidade: Elaboração.
+    Eventos Institucionais
+    Leiaute
+    Maquete Eletrônica: Elaboração.
+    Placas de Identificação de salas:
+    Desenho
+    Reformas Prediais
+
+Áudio & Vídeo
+    Caixa de Som para evento: Solicitação.
+    Eventos: Auditórios ou Plenário.
+    Eventos: Transmissão (Intranet, Internet
+    e Canal interno).
+    Microfones: Solicitação.
+    Outros defeitos/serviços.
+    Passador de Slide: Solicitação.
+    Projetor para evento: Solicitação.
+    Som Ambiente: Divulgação de Mensagem.
+    Tela de projeção para evento:
+    Solicitação.
+    TV: Remanejamento.
+    TV: Sinal irregular.
+    TV: Solicitação de Aparelho.
+    TV: Solicitação de Instalação
+
+Eletrodomésticos e Equip. Eletrônicos
+    Bebedouro de Garrafão: Manutenção.
+    Cancelas Eletrônicas: Manutenção.
+    Filtro de Água: Manutenção.
+    Geladeira: Manutenção.
+    Máquina de Café das Copas do TSE.
+    Micro-ondas: Manutenção.
+    Outros equipamentos eletrônicos:
+    Manutenção (detalhar).
+    Relógio Digital: Manutenção.
+    Restaurante: Manutenção/Avaliação de
+    Equipamentos.
+    Triturador de papel: Manutenção.
+
+Elevadores
+    Botão de cabina danificado.
+    Botão de pavimento danificado.
+    Funcionamento irregular.
+    Iluminação irregular.
+    Interfone
+    Manutenção Preventiva de Elevadores
+    Objeto caído no poço.
+    Outros defeitos/serviços (detalhar).
+    Passageiro preso.
+    Programação de Funcionamento.
+
+Energia Elétrica
+    Blocos Autônomos: Manutenção.
+    Eletricista: Avaliação Técnica /
+    Acompanhamento de serviços.
+    Eletricista: Outros serviços.
+    Eletricista: Plantão em eventos.
+    Iluminação: Inadequada / Insuficiente.
+    Iluminação: Lâmpada queimada.
+    Iluminação: Programar horário de
+    funcionamento.
+    Instalar equipamentos elétricos (sujeito
+    a verificação de viabilidade pela equipe
+    de engenharia).
+    Interruptor: Manutenção.
+    Quadros de Bombas: Manutenção.
+    Quadros de luz: Manutenção.
+    Queda de energia.
+    Tomada: Instalar / Remanejar.
+    Tomada: Manutenção.
+
+Manutenção Geradores - Corretivas
+    Banco de Capacitores
+    Geração de Emergência
+    Quadros Gerais de Baixa Tensão
+    Sistema de UPSs
+
+Marcenaria
+    Divisórias de mesa: Fixar ou remanejar.
+    Mobiliário de apoio: Fabricação.
+    Móveis: Desmontagem para devolução ao
+    patrimônio.
+    Móveis: Manutenção.
+    Outros defeitos/serviços (detalhar).
+    Pequenos objetos e adereços: Fixar ou
+    remanejar.
+    Portas e maçanetas: Manutenção.
+    Quadros: Fixar ou remanejar.
+
+Obras
+    Alvenaria: Construção/Demolição.
+    Ar Condicionado: Ajustes e
+    Remanejamentos.
+    Forro de Gesso: Ajustes diversos.
+    Iluminação: Ajuste/Inclusão de
+    Luminárias.
+    Iluminação: Reposicionamento de
+    interruptores.
+    Marcenaria: Remanejamento de mobiliário.
+    Marcenaria: Remanejamento de portas e
+    divisórias.
+    Tomadas: Inclusão/Adequação de
+    Pontos/Circuitos.
+
+Outros Serviços de Manutenção Predial   
+    Arquivos Deslizantes: Manutenção.
+    Carpete: Manutenção.
+    Janelas e Portas de Vidro: Manutenção.
+    Manutenção Predial: outros serviços.
+    Persianas: Manutenção.
+    Pilhas e Baterias
+    Pintura: Manutenção.
+    Piso elevado: Manutenção.
+    Placas de Identificação de salas:
+    Instalação / Manutenção
+
+
+Serralheria
+    Gradis: Instalação.
+    Gradis: Manutenção.
+    Mobiliário e Peças de Metal: Confecção.
+    Peças de Metal: Manutenção.
+
+Telefonia
+    Aparelho de telefone: Instalação.
+    Aparelho telefônico: Dúvidas sobre o
+    funcionamento.
+    Aparelho Telefônico: Remanejamento.
+    Aparelho Telefônico: Troca de Cabo.
+    Outros defeitos/serviços.
+    Ramal: Alteração de Nome ou Criação.
+    Ramal: Atualização na intranet.
+    Ramal: Configuração.
+    Ramal: Fora de serviço.
+    Ramal: Solicitação de Senha para
+    ligações particulares.
+    Validação de ligações (Relatório SUMUS).
+
+

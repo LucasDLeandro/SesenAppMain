@@ -1,8 +1,8 @@
 from service_orders.models import *
 
-class CloseOs(models.Model):
+class ElevOrderClose(models.Model):
     protocolo = models.OneToOneField(
-        ServiceOrder, 
+        ElevOrderReg, 
         on_delete=models.CASCADE,
         limit_choices_to={'status': 'ABERTA'},
         verbose_name="Protocolo",)
@@ -43,6 +43,6 @@ class CloseOs(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.protocolo
+        return f"{self.protocolo}"
     
     

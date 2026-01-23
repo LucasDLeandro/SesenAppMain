@@ -1,0 +1,87 @@
+{% extends "ordens/base_ordens.html" %}
+
+{% load widget_tweaks %}
+
+{% block app_content %}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">DEDICIR TÍTULO</h2>
+        <a class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-plus-lg me-2"></i>Categoria/Serviços
+        </a>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastro de Categoria/Serviços</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form method="post">
+                {% csrf_token %}
+                {% if category_form.errors and service_form.errors %}
+                    <div class="alert alert-danger">
+                        {{ category_form.errors }}
+                        {{ service_form.errors }}
+                    </div>
+                    </div>
+                {% endif %}
+
+                <div class="col-md-12">
+                    <label for="{{ category_form.nome.id_form_label }}" class="form-label">{{ category_form.nome.label }}</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        {{ category_form.nome}}
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="{{ category_form.descricao_padrao.id_form_label }}" class="form-label">{{ category_form.descricao_padrao.label }}</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        {{ category_form.descricao_padrao}}
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="{{ service_form.nome.id_form_label }}" class="form-label">{{ service_form.nome.label }}</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        {{ service_form.form.nome }}
+                    </div>
+                </div>
+
+                <h3>Serviços</h3>
+                {{ service_form.management_form }}
+
+                {% for form in service_form %}
+                    <div class="servico-row">
+                        {{ form.nome.label }}: {{ form.nome }}
+                        {{ form.descricao_padrao.label }}: {{ form.descricao_padrao }}
+                        
+                        {% if service_form.can_delete %}
+                            Excluir: {{ form.DELETE }}
+                        {% endif %}
+                    </div>
+                    <hr>
+                {% endfor %}
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+
+const totalForms = document.getElementById('id_servicos-TOTAL_FORMS').value;
+        const emptyForm = document.getElementById('item-formset-vazio')
+        const cloneForm = emptyForm.cloneNode(true);

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row g-0" style="height: 100%;">
+    <aside class="col-md-3 col-lg-2 sidebar-lateral p-0" style="height: 100%; overflow-y: auto;">
+        
+        <div class="sidebar-heading">Aplicações Auxiliares</div>
+        <nav class="nav flex-column mb-3">
+            <a class="nav-sidebar-link active" href="{% url 'ordens:list_os' %}">
+                <i class="bi bi-clipboard-check"></i> Ordens de Serviço
+            </a>
+
+            <div class="dropdown" style="width: 100%;">
+                <a class="nav-sidebar-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                    <i class="bi bi-plus-circle"></i> Cadastrar
+                </a>
+                <ul class="dropdown-menu" style="width: 100%;">
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-briefcase"></i> Empresas</a></li>
+                    <li><a class="dropdown-item" href="{% url 'ordens:cat_serv_list' %}"><i class="bi bi-building"></i> Grandes Áreas</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-tools"></i> Serviços</a></li>
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a></li>
+                </ul>
+            </div>
+            
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
+        </nav>
+
+        <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
+        <nav class="nav flex-column">
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
+        </nav>
+    </aside>
+
+    <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
+        {% block app_content %}{% endblock %}
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_app_content %}
+{% endblock %}

@@ -13,7 +13,7 @@
     "python.analysis.autoImportCompletions": false,  // Completar automaticamente imports (desabilitado para reduzir sugestões)
     "python.analysis.completeFunctionParens": true,  // Completar parênteses em funções
     "python.analysis.diagnosticMode": "workspace",  // Modo de diagnóstico para o workspace
-    "python.analysis.indexing": true,  // Indexação para melhor IntelliSense
+    "python.analysis.indexing": false,  // Indexação para melhor IntelliSense
     "python.analysis.inlayHints.callArgumentNames": "off",  // Dicas inline para argumentos
     "python.analysis.inlayHints.functionReturnTypes": false,  // Dicas inline para tipos de retorno
     "python.analysis.inlayHints.variableTypes": false,  // Dicas inline para tipos de variáveis
@@ -23,15 +23,14 @@
     "python.formatting.provider": "black",  // Formatação com Black
     "python.formatting.blackArgs": ["--line-length", "88"],  // Argumentos para Black
     "python.testing.pytestEnabled": true,  // Habilitar testes com Pytest
+    "python.inlineSuggest.enabled": false,
 
     // Configurações para Django
     // Linguagem: Python (Django é um framework Python)
     "python.analysis.extraPaths": ["./service_orders"],  // Caminhos extras para análise (apps Django)
-    "emmet.includeLanguages": {
-        "django-html": "html"  // Suporte Emmet para templates Django
-    },
+    
     "files.associations": {
-       // "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html
+        // "**/templates/**/*.html": "django-html",  // Associar templates HTML como django-html (desabilitado)
         "**/static/**/*.css": "css",  // Associar arquivos CSS em static
         "**/static/**/*.js": "javascript"  // Associar arquivos JS em static
     },
@@ -52,7 +51,10 @@
     "html.suggest.angular1": false,  // Sugestões Angular1
     "html.validate.scripts": true,  // Validar scripts
     "html.validate.styles": true,  // Validar estilos
+    "html.autoClosingTags": true,  // Fechar tags automaticamente
     "emmet.triggerExpansionOnTab": true,  // Expansão Emmet com Tab
+    "emmet.showSuggestionsAsSnippets": true,  // Mostrar sugestões Emmet como snippets
+    
     
     // Configurações para CSS (usado em templates HTML)
     // Linguagem: CSS
@@ -91,7 +93,7 @@
 
     // Configurações gerais para IntelliSense
     "editor.quickSuggestions": {
-        "other": true,  // Sugestões rápidas para outros contextos
+        "other": false,  // Sugestões rápidas para outros contextos
         "comments": false,  // Sugestões em comentários
         "strings": true  // Sugestões em strings
     },
@@ -103,5 +105,26 @@
     "editor.parameterHints.enabled": true,  // Dicas de parâmetros habilitadas
     "editor.hover.enabled": "on",  // Hover habilitado
     "editor.hover.delay": 300,  // Atraso do hover em ms
-    "editor.hover.sticky": true  // Hover persistente
+    "editor.hover.sticky": true,  // Hover persistente
+    
+    // Configurações específicas por linguagem
+    "[python]": {
+        "editor.inlineSuggest.enabled": false
+    },
+    "[html]": {
+        "editor.quickSuggestions": {
+            "other": true,
+            "comments": false,
+            "strings": true
+        },
+        "editor.autoClosingTags": true,
+        "editor.inlineSuggest.enabled": false
+    },
+    "django.snippets.exclude": [
+        "django-html",
+        "cms",
+        "wagtail"
+    ]
 }
+    
+    

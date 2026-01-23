@@ -1,9 +1,7 @@
 from service_orders.models import *
 
-class ServiceOrder(models.Model):
+class ElevOrderReg(models.Model):
     data_hora = models.DateTimeField(
-        null=False, 
-        blank=False, 
         verbose_name="Data e Horário do Registro",
         help_text="Insira a data e horário do registro da OS.",
         editable=True,
@@ -25,7 +23,8 @@ class ServiceOrder(models.Model):
         }
     )
 
-    elevador = models.IntegerField(
+    elevador = models.CharField(
+        max_length=50,
         null=False,
         blank=False,
         choices=ELEVATOR_CHOICE,
@@ -35,7 +34,7 @@ class ServiceOrder(models.Model):
 
     aprisionamento = models.BooleanField(
         null=True, 
-        blank=False, 
+        blank=True, 
         default=None, 
         verbose_name="Aprisionamento",
     )
@@ -63,19 +62,53 @@ class ServiceOrder(models.Model):
         verbose_name="Solicitante",
         )
     
-    elevador_parado = models.IntegerField(
-        null=False, 
+    elevador_parado = models.CharField(
+        max_length=10,
+        null=True, 
         blank=False, 
         choices=STATUS_ELEVADOR_CHOICES, 
-        default=1,
+        default='Ativo',
         verbose_name="Status do Elevador"
     )
 
-    status = models.CharField(
+    data_hora_chegada = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Data e Horário de Chegada",
+        help_text="Insira a data e horário de chegada ao local.",
+    )
+
+    data_hora_saida = models.DateTimeField(
+        blank=True,
+        null=True,
+        verbose_name="Data e Horário de Saída",
+        help_text="Insira a data e horário de saída do local.",
+    )
+
+    tecnico = models.CharField(
+        max_length=200,
         null=False,
         blank=False,
+        default="",
+        verbose_name="Técnico Responsável",
+        help_text="Insira o nome do técnico responsável pelo atendimento.",
+    )
+
+    servico = models.CharField(
+        max_length=600,
+        null=False,
+        blank=True,
+        default="",
+        verbose_name="Serviço Executado",
+        help_text="Descreva a solução aplicada na OS.",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        null=True,
+        blank=False,
         verbose_name="Status",
-        default='ABERTA'
+        default='ABERTA',
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

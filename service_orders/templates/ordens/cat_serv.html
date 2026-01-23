@@ -1,0 +1,222 @@
+{% extends "ordens/base_ordens.html" %}
+{% load static %} {% load widget_tweaks %}
+{% block extra_css %} <link rel="stylesheet" href="{% static 'service_orders/css/cat_serv_reg.css' %}"> {% endblock %}
+
+{% block app_content %}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0">DEDICIR TÍTULO</h2>
+        <a class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="bi bi-plus-lg me-2"></i>Categoria/Serviços
+        </a>
+    </div>
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Categoria</th>
+            <th scope="col">Descricao - Categoria</th>
+            <th scope="col">Serviços</th>
+            <th scope="col">Descricao - Serviços</th>
+            <th scope="col">Ações</th> {# Nova coluna para ações #}
+        </tr>
+    </thead>
+    <tbody>
+        {% for cat in cat_list %}
+            {% for serv in cat.servicos.all %}
+                <tr>
+                    <td>{{ cat.nome_categoria }}</td>
+                    <td>{{ cat.descricao_categoria }}</td>
+                    <td>{{ serv.nome_servico }}</td>
+                    <td>{{ serv.descricao_servico }}</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-primary">
+                            <i class="bi bi-pencil-square"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                {# Caso a categoria não tenha serviços vinculados #}
+                <tr>
+                    <td>{{ cat.nome_categoria }}</td>
+                    <td>{{ cat.descricao_categoria }}</td>
+                    <td colspan="3" class="text-center text-muted">Nenhum serviço vinculado</td>
+                </tr>
+            {% endfor %}
+            
+        {% empty %}
+        <tr>
+            <td colspan="8" class="text-center py-4">Nenhuma categoria encontrada.</td>
+        </tr>
+        
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+
+<hr>
+
+<!-- Modal -->
+<div id="exampleModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastro de Categoria/Serviços</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <form method="post" id="cat_serv_form">
+                {% csrf_token %}
+                {{ category_form.management_form }}
+                {{ service_form.management_form }}
+                {% if category_form.errors and service_form.errors %}
+                    <div class="alert alert-danger">
+                        {{ category_form.errors }}
+                        {{ service_form.errors }}
+                    </div>
+                    </div>
+                {% endif %}
+
+                <label for="{{ category_form.nome_categoria.id_for_label }}" class="form-label">{{ category_form.nome_categoria.label }}</label>
+                {{ category_form.nome_categoria }}
+                <label for="{{ category_form.descricao_categoria.id_for_label }}" class="form-label">{{ category_form.descricao_categoria.label }}</label>
+                {{  category_form.descricao_categoria}}
+                <hr>
+
+                <ul id="serviceList" class="list-unstyled">
+                    {% for service in service_form %}
+                    <li class="item-formset">
+                        <label for="{{ service.nome_servico.id_for_label }}" class="form-label">{{ service.nome_servico.label }}</label>
+                        {{ service.nome_servico }}
+                        <label for="{{ service.descricao_servico.id_for_label }}" class="form-label">{{ service.descricao_servico.label }}</label>
+                        {{ service.descricao_servico }}
+            
+                        {% if service_form.can_delete %}
+                            <div class="d-none">{{ service.DELETE }}</div> 
+                            <button class="btn btn-danger" type="button" onclick="removerItem(this)">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        {% endif %}
+                    </li> 
+                    {% endfor %}
+
+                    <li id="item-formset-vazio" class="item-formset" style="display: none">
+                        <label for="{{ service_form.empty_form.nome_servico.id_for_label }}" class="form-label">{{ service_form.empty_form.nome_servico.label }}</label>
+                        {{ service_form.empty_form.nome_servico }}
+                        <label for="{{ service_form.empty_form.descricao_servico.id_for_label }}" class="form-label">{{ service_form.empty_form.descricao_servico.label }}</label>
+                        {{ service_form.empty_form.descricao_servico }}
+                        
+                        <button class="btn btn-danger" type="button" onclick="removerItem(this)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        
+                    </li>
+                </ul>
+                <button type="button" class="btn btn-primary" onclick="adicionarItem()">Adicionar</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" form="cat_serv_form" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+
+    function adicionarItem() {
+
+        const lista = document.getElementById('serviceList');
+        const totalForms = document.getElementById('id_servicos-TOTAL_FORMS');
+        const emptyForm = document.getElementById('item-formset-vazio')
+        emptyForm.children[2].style.display = "none"
+        const cloneForm = emptyForm.cloneNode(true);
+
+        const inputs = cloneForm.querySelectorAll("input, textarea");
+        const labels = cloneForm.querySelectorAll("label");
+
+        labels.forEach((label) => {
+            const forAtributo = label.getAttribute('for');
+            novoFor = forAtributo.replace(/__prefix__/g, totalForms.value);
+            label.setAttribute('for', novoFor);
+        });
+
+        inputs.forEach((input) => {
+            const nomeAtual = input.name;
+            const idAtual = input.id;
+
+            novoNome = nomeAtual.replace(/__prefix__/g, totalForms.value);
+            novoId = idAtual.replace(/__prefix__/g, totalForms.value);
+            
+            input.name = novoNome;
+            input.id = novoId;
+            input.value = "";
+            
+        });
+
+        cloneForm.removeAttribute('id');
+        cloneForm.removeAttribute('style');
+        lista.appendChild(cloneForm);
+        totalForms.value = parseInt(totalForms.value) + 1;
+        
+    }
+
+    function removerItem(btn) {
+        // PEGA A LISTA
+        const lista = document.getElementById('serviceList');
+
+        //PEGA O VALOR DO TOTALFORMS
+        const totalForms = document.getElementById('id_servicos-TOTAL_FORMS');
+        let total = totalForms.value;
+        
+        // AGE NO CONTAINER PAI DO BOTAO
+        const container = btn.closest('.item-formset');
+        const deleteCheckbox = container.querySelector('input[name$="-DELETE"]');
+        if (deleteCheckbox) {
+            deleteCheckbox.checked = true;
+            container.style.display = "none";
+            
+        } else {
+            container.remove()
+            
+        }
+
+        // SELECIONA OS ITENS RESTANTES E SUBSTITUI OS INDICES
+
+        const itensRestantes = document.querySelectorAll('#serviceList .item-formset:not(#item-formset-vazio)')
+        itensRestantes.forEach((li, index) => {
+            const labels = li.querySelectorAll("label")
+            const inputs = li.querySelectorAll("input, textarea")
+        
+            labels.forEach(label => {
+                const forAtributo = label.getAttribute('for');
+                novoFor = forAtributo.replace(/\d+/g, index);
+                console.log(novoFor);
+                label.setAttribute('for', novoFor);
+            })
+            
+            inputs.forEach(input => {
+                input.name = input.name.replace(/\d+/g, index)
+                input.id = input.id.replace(/\d+/g, index)
+                })
+        })
+        console.log(`Qnt itens depois: ${itensRestantes.length}`)
+        totalForms.value = itensRestantes.length
+    }
+
+</script>
+
+{% endblock %}
+
+
+
+
+
+
+
