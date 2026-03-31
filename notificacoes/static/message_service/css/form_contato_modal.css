@@ -1,0 +1,243 @@
+/* ========================================
+   Estilos para Modal de Formulário de Contato
+   ======================================== */
+
+/* Modal Geral */
+.modal-contato-wrapper .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+/* Header do Modal com Avatar */
+.modal-contato-header {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    padding: 40px 20px 20px 20px;
+    text-align: center;
+}
+
+.modal-contato-avatar {
+    width: 64px;
+    height: 64px;
+    font-size: 32px;
+    margin: 0 auto;
+}
+
+/* Body do Modal */
+.modal-contato-body {
+    padding: 32px 28px;
+}
+
+/* Form Contato */
+#contatoForm {
+    width: 100%;
+}
+
+#contatoForm .form-label {
+    color: #1e293b;
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+#contatoForm .form-control,
+#contatoForm .form-select {
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    height: auto;
+    min-height: 44px;
+    transition: all 0.3s ease;
+    color: #1e293b;
+    background-color: #ffffff;
+}
+
+#contatoForm .form-control:hover,
+#contatoForm .form-select:hover {
+    border-color: #cbd5e1;
+}
+
+#contatoForm .form-control:focus,
+#contatoForm .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+#contatoForm .form-control::placeholder {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+#contatoForm .form-control:-webkit-autofill,
+#contatoForm .form-control:-webkit-autofill:hover,
+#contatoForm .form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+    border-color: #3b82f6 !important;
+}
+
+/* Form Check (Toggle) */
+#contatoForm .form-check-input {
+    width: 56px;
+    height: 32px;
+    cursor: pointer;
+    border: 2px solid #cbd5e1;
+    transition: all 0.3s ease;
+    margin-top: 4px;
+    background-color: #e2e8f0;
+}
+
+#contatoForm .form-check-input:hover {
+    border-color: #94a3b8;
+}
+
+#contatoForm .form-check-input:checked {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
+
+#contatoForm .form-check-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+#contatoForm .form-check-label {
+    color: #1e293b;
+    cursor: pointer;
+    font-size: 0.98rem;
+    font-weight: 600;
+    user-select: none;
+    margin-left: 12px;
+}
+
+/* Form Help Text */
+#contatoForm small.text-muted {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin-top: 6px;
+    display: block;
+}
+
+/* Alert de Erros */
+#contatoForm .alert-danger {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+#contatoForm .alert-danger strong {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* Footer do Modal */
+.modal-contato-footer {
+    padding: 20px 28px;
+    gap: 12px;
+    border-top: 1px solid #e2e8f0;
+    background-color: #ffffff;
+}
+
+/* Botões do Modal */
+.modal-contato-footer .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px;
+    flex: 1;
+    transition: all 0.3s ease;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.modal-contato-footer .btn i {
+    margin-right: 8px;
+}
+
+/* Botão Cancelar */
+.modal-contato-footer .btn-cancel {
+    border: 2px solid #cbd5e1;
+    color: #475569;
+    background-color: #ffffff;
+}
+
+.modal-contato-footer .btn-cancel:hover {
+    border-color: #94a3b8;
+    background-color: #f1f5f9;
+}
+
+.modal-contato-footer .btn-cancel:active {
+    background-color: #e2e8f0;
+}
+
+/* Botão Salvar */
+.modal-contato-footer .btn-save {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.modal-contato-footer .btn-save:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+.modal-contato-footer .btn-save:active {
+    transform: translateY(0);
+}
+
+/* Responsividade */
+@media (max-width: 576px) {
+    .modal-contato-body {
+        padding: 24px 20px;
+    }
+
+    .modal-contato-footer {
+        padding: 16px 20px;
+    }
+
+    #contatoForm .form-control,
+    #contatoForm .form-select {
+        font-size: 16px;
+        min-height: 48px;
+    }
+
+    .modal-contato-header {
+        padding: 32px 16px 16px 16px;
+    }
+
+    .modal-contato-avatar {
+        width: 56px;
+        height: 56px;
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 370px) {
+    .modal-contato-footer .btn {
+        padding: 8px 12px;
+        min-height: 40px;
+        font-size: 0.85rem;
+    }
+
+    #contatoForm .form-label {
+        font-size: 0.9rem;
+    }
+}

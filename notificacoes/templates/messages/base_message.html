@@ -1,0 +1,214 @@
+{% extends "index.html" %}
+
+{% block title %}SESEN - Mensagens{% endblock %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="row g-0" style="height: 100%;">
+        {% block app_content %}
+            <!-- Cabeçalho da Página -->
+            <div class="mb-4">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-megaphone-fill" style="font-size: 32px; color: #3b82f6;"></i>
+                    <h2 class="ms-3 fw-bold m-0" style="color: #1e293b;">Gestão de Notificações via WhatsApp</h2>
+                </div>
+                <p class="text-muted" style="margin-left: 44px;">Gerencie Templates de Mensagens e Diretório de Contatos</p>
+            </div>
+
+            <!-- Navegação em Abas -->
+            <ul class="nav nav-tabs msg-nav-tabs mb-4" id="notificationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active msg-tab-btn" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates-content" type="button" role="tab" aria-controls="templates-content" aria-selected="true">
+                        <i class="bi bi-chat-square-text"></i> Templates de Mensagens
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link msg-tab-btn" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-content" type="button" role="tab" aria-controls="contacts-content" aria-selected="false">
+                        <i class="bi bi-person-lines-fill"></i> Diretório de Contatos
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Conteúdo das Abas -->
+            <div class="tab-content" id="notificationTabsContent">
+                
+                <!-- Aba 1: Templates de Mensagens -->
+                <div class="tab-pane fade show active" id="templates-content" role="tabpanel" aria-labelledby="templates-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0" style="color: #1e293b;">Templates Disponíveis</h4>
+                        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newTemplateModal">
+                            <i class="bi bi-plus-lg me-2"></i>Novo Template
+                        </button>
+                    </div>
+
+                    <!-- Grid de Cards de Templates -->
+                    <div class="row g-4">
+                        <!-- Card Template 1 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-template shadow-sm">
+                                <div class="msg-card-header">
+                                    <h6 class="m-0">Confirmação de OS</h6>
+                                    <span class="badge bg-success">Ativa</span>
+                                </div>
+                                <div class="msg-card-body">
+                                    <p class="text-muted small mb-3">Mensagem de confirmação para novas ordens de serviço</p>
+                                    <div class="msg-preview">
+                                        <small><strong>Prévia:</strong> "Sua OS #{protocolo} foi criada com sucesso!"</small>
+                                    </div>
+                                </div>
+                                <div class="msg-card-footer">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Template 2 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-template shadow-sm">
+                                <div class="msg-card-header">
+                                    <h6 class="m-0">Lembrete de Atendimento</h6>
+                                    <span class="badge bg-warning">Inativa</span>
+                                </div>
+                                <div class="msg-card-body">
+                                    <p class="text-muted small mb-3">Lembrança para técnicos sobre atendimentos agendados</p>
+                                    <div class="msg-preview">
+                                        <small><strong>Prévia:</strong> "Lembrete: Atendimento agendado para hoje às {hora}"</small>
+                                    </div>
+                                </div>
+                                <div class="msg-card-footer">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Template 3 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-template shadow-sm">
+                                <div class="msg-card-header">
+                                    <h6 class="m-0">Encerramento de OS</h6>
+                                    <span class="badge bg-success">Ativa</span>
+                                </div>
+                                <div class="msg-card-body">
+                                    <p class="text-muted small mb-3">Notificação de conclusão da ordem de serviço</p>
+                                    <div class="msg-preview">
+                                        <small><strong>Prévia:</strong> "Sua OS foi concluída! Obrigado pelo contato."</small>
+                                    </div>
+                                </div>
+                                <div class="msg-card-footer">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aba 2: Diretório de Contatos -->
+                <div class="tab-pane fade" id="contacts-content" role="tabpanel" aria-labelledby="contacts-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0" style="color: #1e293b;">Contatos Cadastrados</h4>
+                        <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newContactModal">
+                            <i class="bi bi-plus-lg me-2"></i>Novo Contato
+                        </button>
+                    </div>
+
+                    <!-- Grid de Cards de Contatos -->
+                    <div class="row g-4">
+                        <!-- Card Contato 1 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-contact shadow-sm">
+                                <div class="msg-contact-avatar">
+                                    <div class="avatar-icon">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="msg-card-body pt-3">
+                                    <h6 class="fw-bold m-0" style="color: #1e293b;">Samuel Silva</h6>
+                                    <p class="text-muted small mb-2">(61) 98175-2513</p>
+                                    <small class="badge bg-info">Técnico</small>
+                                </div>
+                                <div class="msg-card-footer mt-3">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Contato 2 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-contact shadow-sm">
+                                <div class="msg-contact-avatar">
+                                    <div class="avatar-icon">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="msg-card-body pt-3">
+                                    <h6 class="fw-bold m-0" style="color: #1e293b;">André Costa</h6>
+                                    <p class="text-muted small mb-2">(61) 98540-7680</p>
+                                    <small class="badge bg-info">Técnico</small>
+                                </div>
+                                <div class="msg-card-footer mt-3">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Contato 3 -->
+                        <div class="col-md-6 col-lg-4">
+                            <div class="msg-card-contact shadow-sm">
+                                <div class="msg-contact-avatar">
+                                    <div class="avatar-icon">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="msg-card-body pt-3">
+                                    <h6 class="fw-bold m-0" style="color: #1e293b;">Lucas Maia</h6>
+                                    <p class="text-muted small mb-2">(61) 99295-0402</p>
+                                    <small class="badge bg-warning">Administrativo</small>
+                                </div>
+                                <div class="msg-card-footer mt-3">
+                                    <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                        <i class="bi bi-pencil"></i> Editar
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                        <i class="bi bi-trash"></i> Deletar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        
+        {% endblock %}
+    </section>
+</div>
+{% endblock %}

@@ -41,13 +41,18 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link d-flex align-items-center" href="#">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'contratos:inicio_contratos' %}">
                         <i class="bi bi-file-earmark-text me-2"></i>Contratos
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center" href="#">
                         <i class="bi bi-people me-2"></i>Equipe
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{% url 'adm_setup:sys_config' %}">
+                        <i class="bi bi-people me-2"></i>Gerenciar Sistema
                     </a>
                 </li>
             </ul>

@@ -6,7 +6,7 @@
 
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold m-0">DEDICIR TÍTULO</h2>
+        <h2 class="fw-bold m-0">Categorias e Serviços Vinculados</h2>
         <a class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
             <i class="bi bi-plus-lg me-2"></i>Categoria/Serviços
         </a>
@@ -59,68 +59,107 @@
 
 <!-- Modal -->
 <div id="exampleModal" class="modal" tabindex="-1">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Cadastro de Categoria/Serviços</h5>
+      <div class="modal-header bg-light border-bottom">
+        <h5 class="modal-title fw-bold w-100 text-center">Cadastro de Categoria/Serviços</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-            <form method="post" id="cat_serv_form">
-                {% csrf_token %}
-                {{ category_form.management_form }}
-                {{ service_form.management_form }}
-                {% if category_form.errors and service_form.errors %}
-                    <div class="alert alert-danger">
-                        {{ category_form.errors }}
-                        {{ service_form.errors }}
-                    </div>
-                    </div>
-                {% endif %}
+        <form method="post" id="cat_serv_form">
+          {% csrf_token %}
+          {{ category_form.management_form }}
+          {{ service_form.management_form }}
+          
+          {% if category_form.errors and service_form.errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Erros encontrados:</strong>
+              {{ category_form.errors }}
+              {{ service_form.errors }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endif %}
 
-                <label for="{{ category_form.nome_categoria.id_for_label }}" class="form-label">{{ category_form.nome_categoria.label }}</label>
-                {{ category_form.nome_categoria }}
-                <label for="{{ category_form.descricao_categoria.id_for_label }}" class="form-label">{{ category_form.descricao_categoria.label }}</label>
-                {{  category_form.descricao_categoria}}
-                <hr>
+          <!-- Seção de Categoria -->
+          <div class="mb-4">
+            <h6 class="text-muted fw-bold text-uppercase mb-3">
+              <i class="bi bi-bookmark me-2"></i>Dados da Categoria
+            </h6>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="{{ category_form.nome_categoria.id_for_label }}" class="form-label fw-semibold">{{ category_form.nome_categoria.label }}</label>
+                {{ category_form.nome_categoria|add_class:"form-control" }}
+              </div>
+              <div class="col-md-6">
+                <label for="{{ category_form.descricao_categoria.id_for_label }}" class="form-label fw-semibold">{{ category_form.descricao_categoria.label }}</label>
+                {{ category_form.descricao_categoria|add_class:"form-control" }}
+              </div>
+            </div>
+          </div>
 
-                <ul id="serviceList" class="list-unstyled">
-                    {% for service in service_form %}
-                    <li class="item-formset">
-                        <label for="{{ service.nome_servico.id_for_label }}" class="form-label">{{ service.nome_servico.label }}</label>
-                        {{ service.nome_servico }}
-                        <label for="{{ service.descricao_servico.id_for_label }}" class="form-label">{{ service.descricao_servico.label }}</label>
-                        {{ service.descricao_servico }}
-            
+          <hr class="my-4">
+
+          <!-- Seção de Serviços -->
+          <div class="mb-4">
+            <h6 class="text-muted fw-bold text-uppercase mb-3">
+              <i class="bi bi-tools me-2"></i>Serviços
+            </h6>
+            <ul id="serviceList" class="list-unstyled">
+              {% for service in service_form %}
+                <li class="item-formset card border mb-3 p-3">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label for="{{ service.nome_servico.id_for_label }}" class="form-label fw-semibold">{{ service.nome_servico.label }}</label>
+                      {{ service.nome_servico|add_class:"form-control" }}
+                    </div>
+                    <div class="col-md-6 d-flex flex-column">
+                      <label for="{{ service.descricao_servico.id_for_label }}" class="form-label fw-semibold">{{ service.descricao_servico.label }}</label>
+                      <div class="d-flex gap-2">
+                        {{ service.descricao_servico|add_class:"form-control flex-grow-1" }}
                         {% if service_form.can_delete %}
-                            <div class="d-none">{{ service.DELETE }}</div> 
-                            <button class="btn btn-danger" type="button" onclick="removerItem(this)">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        {% endif %}
-                    </li> 
-                    {% endfor %}
-
-                    <li id="item-formset-vazio" class="item-formset" style="display: none">
-                        <label for="{{ service_form.empty_form.nome_servico.id_for_label }}" class="form-label">{{ service_form.empty_form.nome_servico.label }}</label>
-                        {{ service_form.empty_form.nome_servico }}
-                        <label for="{{ service_form.empty_form.descricao_servico.id_for_label }}" class="form-label">{{ service_form.empty_form.descricao_servico.label }}</label>
-                        {{ service_form.empty_form.descricao_servico }}
-                        
-                        <button class="btn btn-danger" type="button" onclick="removerItem(this)">
+                          <div class="d-none">{{ service.DELETE }}</div>
+                          <button class="btn btn-icon btn-outline-danger" type="button" onclick="removerItem(this)" title="Remover">
                             <i class="bi bi-trash"></i>
-                        </button>
-                        
-                    </li>
-                </ul>
-                <button type="button" class="btn btn-primary" onclick="adicionarItem()">Adicionar</button>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" form="cat_serv_form" class="btn btn-primary">Save changes</button>
+                          </button>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endfor %}
+
+              <li id="item-formset-vazio" class="item-formset card border mb-3 p-3" style="display: none">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="{{ service_form.empty_form.nome_servico.id_for_label }}" class="form-label fw-semibold">{{ service_form.empty_form.nome_servico.label }}</label>
+                    {{ service_form.empty_form.nome_servico|add_class:"form-control" }}
+                  </div>
+                  <div class="col-md-6 d-flex flex-column">
+                    <label for="{{ service_form.empty_form.descricao_servico.id_for_label }}" class="form-label fw-semibold">{{ service_form.empty_form.descricao_servico.label }}</label>
+                    <div class="d-flex gap-2">
+                      {{ service_form.empty_form.descricao_servico|add_class:"form-control flex-grow-1" }}
+                      <button class="btn btn-icon btn-outline-danger" type="button" onclick="removerItem(this)" title="Remover">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-            </form>
-        </div>
-      
+              </li>
+            </ul>
+            <button type="button" class="btn btn-sm btn-outline-primary" onclick="adicionarItem()">
+              <i class="bi bi-plus-lg me-1"></i>Adicionar Serviço
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer bg-light border-top">
+        <button type="button" class="btn btn-secondary btn-no-radius" data-bs-dismiss="modal">Fechar</button>
+        <button type="submit" form="cat_serv_form" class="btn btn-primary btn-no-radius">
+          <i class="bi bi-check-lg me-1"></i>Salvar
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -129,13 +168,12 @@
 
 {% block extra_js %}
 <script>
-
     function adicionarItem() {
 
         const lista = document.getElementById('serviceList');
         const totalForms = document.getElementById('id_servicos-TOTAL_FORMS');
-        const emptyForm = document.getElementById('item-formset-vazio')
-        emptyForm.children[2].style.display = "none"
+        const emptyForm = document.getElementById('item-formset-vazio');
+        //emptyForm.children[2].style.display = "none"
         const cloneForm = emptyForm.cloneNode(true);
 
         const inputs = cloneForm.querySelectorAll("input, textarea");

@@ -1,9 +1,7 @@
 {
     // Configurações gerais do workspace
-    "editor.formatOnSave": true,  // Formatar o código automaticamente ao salvar
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"  // Aplicar correções automáticas de código ao salvar
-    },
+    "editor.formatOnSave": false,  // Desabilitar formatação automática ao salvar (Black pode causar problemas)
+    "editor.codeActionsOnSave": {},  // Desabilitar correções automáticas que podem remover código
 
     // Configurações para Python
     // Linguagem: Python
@@ -20,8 +18,8 @@
     "python.linting.enabled": true,  // Habilitar linting
     "python.linting.pylintEnabled": true,  // Usar Pylint para linting
     "python.linting.flake8Enabled": true,  // Usar Flake8 para linting
-    "python.formatting.provider": "black",  // Formatação com Black
-    "python.formatting.blackArgs": ["--line-length", "88"],  // Argumentos para Black
+    // "python.formatting.provider": "black",  // Formatação desabilitada para evitar conflitos
+    // "python.formatting.blackArgs": ["--line-length", "88"],  // Argumentos para Black desabilitados
     "python.testing.pytestEnabled": true,  // Habilitar testes com Pytest
     "python.inlineSuggest.enabled": false,
 
@@ -81,15 +79,15 @@
     // Linguagem: JavaScript
     "javascript.format.enable": true,  // Habilitar formatação JS
     "javascript.validate.enable": true,  // Validar JS
-    "javascript.suggest.autoImports": true,  // Auto imports
-    "javascript.suggest.names": true,  // Sugestões de nomes
-    "javascript.suggest.paths": true,  // Sugestões de caminhos
-    "javascript.suggest.completeFunctionCalls": true,  // Completar chamadas de função
-    "javascript.suggest.includeCompletionsForImportStatements": true,  // Completar imports
-    "javascript.inlayHints.parameterNames.enabled": "all",  // Dicas inline para parâmetros
-    "javascript.inlayHints.variableTypes.enabled": true,  // Dicas inline para tipos de variáveis
-    "javascript.inlayHints.functionLikeReturnTypes.enabled": true,  // Dicas inline para retornos de função
-    "javascript.preferences.includePackageJsonAutoImports": "auto",  // Auto imports de package.json
+    "javascript.suggest.autoImports": false,  // Auto imports DESABILITADO
+    "javascript.suggest.names": false,  // Sugestões de nomes DESABILITADO
+    "javascript.suggest.paths": false,  // Sugestões de caminhos DESABILITADO
+    "javascript.suggest.completeFunctionCalls": false,  // Completar chamadas de função
+    "javascript.suggest.includeCompletionsForImportStatements": false,  // Completar imports DESABILITADO
+    "javascript.inlayHints.parameterNames.enabled": "none",  // Dicas inline para parâmetros DESABILITADO
+    "javascript.inlayHints.variableTypes.enabled": false,  // Dicas inline para tipos de variáveis DESABILITADO
+    "javascript.inlayHints.functionLikeReturnTypes.enabled": false,  // Dicas inline para retornos de função DESABILITADO
+    "javascript.preferences.includePackageJsonAutoImports": "off",  // Auto imports de package.json DESABILITADO
 
     // Configurações gerais para IntelliSense
     "editor.quickSuggestions": {
@@ -119,6 +117,24 @@
         },
         "editor.autoClosingTags": true,
         "editor.inlineSuggest.enabled": false
+    },
+    "[javascript]": {
+        "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+        },
+        "editor.inlineSuggest.enabled": false,
+        "editor.acceptSuggestionOnEnter": "off"
+    },
+    "[javascriptreact]": {
+        "editor.quickSuggestions": {
+            "other": false,
+            "comments": false,
+            "strings": false
+        },
+        "editor.inlineSuggest.enabled": false,
+        "editor.acceptSuggestionOnEnter": "off"
     },
     "django.snippets.exclude": [
         "django-html",

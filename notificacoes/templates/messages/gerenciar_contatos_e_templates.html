@@ -1,0 +1,157 @@
+{% extends "setups/base_setup.html" %}
+{% block app_content %}
+{% load static %}
+{% block title %}Notificações OTIS{% endblock %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'adm_setup/css/whats_message.css' %}">
+    <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
+    <link rel="stylesheet" href="{% static 'notificacoes/css/form_contato_modal.css' %}">
+{% endblock %}
+
+
+    <!-- Cabeçalho da Página -->
+    <div class="mb-4">
+        <div class="d-flex align-items-center mb-2">
+            <i class="bi bi-megaphone-fill" style="font-size: 32px; color: #3b82f6;"></i>
+            <h2 class="ms-3 fw-bold m-0" style="color: #1e293b;">Gestão de Notificações via WhatsApp</h2>
+        </div>
+        <p class="text-muted" style="margin-left: 44px;">Gerencie Templates de Mensagens e Diretório de Contatos</p>
+    </div>
+
+    <!-- Navegação em Abas -->
+    <ul class="nav nav-tabs msg-nav-tabs mb-4" id="notificationTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active msg-tab-btn" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates-content" type="button" role="tab" aria-controls="templates-content" aria-selected="true">
+                <i class="bi bi-chat-square-text"></i> Templates de Mensagens
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link msg-tab-btn" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-content" type="button" role="tab" aria-controls="contacts-content" aria-selected="false">
+                <i class="bi bi-person-lines-fill"></i> Diretório de Contatos
+            </button>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content" id="notificationTabsContent">
+        
+        <!-- Aba 1: Templates de Mensagens -->
+        <div class="tab-pane fade show active" id="templates-content" role="tabpanel" aria-labelledby="templates-tab">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0" style="color: #1e293b;">Templates Disponíveis</h4>
+                <button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#newTemplateModal">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Template
+                </button>
+            </div>
+
+            <!-- Grid de Cards de Templates -->
+            <div class="row g-4">
+                <!-- Card Template 1 -->
+                {% for mensagem in list_template %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="msg-card-template shadow-sm">
+                            <div class="msg-card-header">
+                                <h6 class="m-0">{{ mensagem.id_message }}</h6>
+                                {% if mensagem.is_ativo %}
+                                    <span class="badge bg-success">Ativa</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Inativa</span>
+                                {% endif %}
+                            </div>
+                            <div class="msg-card-body">
+                                <p class="text-muted small mb-3">Texto da Notificação</p>
+                                <div class="msg-preview">
+                                    <small><strong>Prévia:</strong> "{{ mensagem.base_text|linebreaksbr }}"</small>
+                                </div>
+                            </div>
+                            <div class="msg-card-footer">
+                                <button class="btn btn-sm btn-outline-primary" title="Editar">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" title="Deletar">
+                                    <i class="bi bi-trash"></i> Deletar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+        <!-- Aba 2: Diretório de Contatos -->
+        <div class="tab-pane fade" id="contacts-content" role="tabpanel" aria-labelledby="contacts-tab">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold m-0" style="color: #1e293b;">Contatos Cadastrados</h4>
+                <button class="btn btn-primary shadow-sm" id="btn-novo-contato">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Contato
+                </button>
+            </div>
+
+            <!-- Grid de Cards de Contatos -->
+            <div class="row g-4">
+                <!-- Card Contato 1 -->
+                {% for contato in list_contato %}
+                    <div class="col-md-6 col-lg-4">
+                        <div class="msg-card-contact shadow-sm">
+                            <!-- Badge Status (Canto Superior Direito) -->
+                            <div class="badge-status-card">
+                                {% if contato.is_ativo %}
+                                    <span class="badge bg-success" id="id-card-status">Ativo</span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">Inativo</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Avatar Section -->
+                            <div class="msg-contact-avatar">
+                                <div class="avatar-icon">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            </div>
+
+                            <!-- Card Body com info do contato -->
+                            <div class="msg-card-body pt-3">
+                                <p class="text-muted small mb-3" id="id-card-id" style="display: none;">{{ contato.id }}</p>
+                                <h6 class="fw-bold m-0" id="id-card-nome" style="color: #1e293b;">{{ contato.nome }}</h6>
+                                <p class="text-muted small mb-3" id="id-card-telefone">{{ contato.telefone }}</p>
+                                
+                                <!-- Badge: Role -->
+                                <div class="d-flex justify-content-center mb-3">
+                                    <small class="badge bg-info" id="id-card-role">{{ contato.role }}</small>
+                                </div>
+                            </div>
+
+                            <!-- Footer com botões -->
+                            <div class="msg-card-footer">
+                                <button class="btn btn-sm btn-outline-primary" id="btn-editar-contato" onclick="abrirModalUpdate('{{ contato.id }}', '{{ contato.nome }}', '{{ contato.telefone }}', '{{ contato.role }}', '{{ contato.is_ativo }}')" title="Editar">
+                                    <i class="bi bi-pencil"></i> Editar
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" id="btn-deletar-contato" title="Deletar">
+                                    <i class="bi bi-trash"></i> Deletar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-triangle"></i> Nenhum contato encontrado no banco de dados.
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+     
+    {% include 'messages/includes/form_contato_modal.html' %}
+
+
+
+   
+{% endblock %}
+{% block extra_js %}
+    <script src="{% static 'message_service/js/modal_whats_message.js' %}"></script>
+
+{% endblock %}

@@ -32,7 +32,6 @@ def cat_serv_view(request):
     
 
     if request.method == 'POST':
-        print(request.method)
         category_form = CategoryForm(request.POST)
         service_form = ServiceFormSet(request.POST)
         if category_form.is_valid() and service_form.is_valid():

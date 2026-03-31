@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ymomdcs)son4q_-8o2$0lz8kdtx(3$ui$em$pemdl6dk5ikckh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['10.30.24.124', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django_filters',
     'widget_tweaks',
     'service_orders',
+    'contratos',
+    'notificacoes',
+    'adm_setup',
+    'usuarios'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -127,6 +131,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_THOUSAND_SEPARATOR = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
@@ -138,3 +144,8 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]

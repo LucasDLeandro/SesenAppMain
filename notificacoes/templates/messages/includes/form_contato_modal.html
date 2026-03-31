@@ -1,0 +1,83 @@
+<div class="modal fade modal-contato-wrapper" id="contatoModal" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg">
+      
+      <!-- Header com avatar e fundo azul claro (como no card) -->
+      <div class="modal-contato-header">
+        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto modal-avatar" style="width: 64px; height: 64px; font-size: 32px;">
+          <i class="bi bi-person-fill"></i>
+        </div>
+      </div>
+
+      <!-- Body do Modal com Form -->
+      <div class="modal-body modal-contato-body">
+        
+        <form id="contato-form" 
+              data-url-criar="{% url 'notificacoes:api_criar_contato' %}" 
+              data-url-editar="{% url 'notificacoes:api_editar_contato' 0 %}"
+              method="post">
+            {% csrf_token %}
+
+            {% if criarContato.errors %}
+                <div class="alert alert-danger mb-3" role="alert">
+                    <strong>Erro ao submeter o formulário:</strong>
+                    {{ criarContato.errors }}
+                </div>
+            {% endif %}
+
+            <input type="hidden" id="id_oculto" name="id">
+
+            <!-- Campo: Nome -->
+            <div class="mb-4">
+                <label for="{{ criarContato.nome.id_for_label }}" class="form-label fw-bold">
+                    Nome do Contato
+                </label>
+                {{ criarContato.nome }}
+                <small class="text-muted d-block mt-2">Máximo 100 caracteres</small>
+            </div>
+
+            <!-- Campo: Telefone -->
+            <div class="mb-4">
+                <label for="{{ criarContato.telefone.id_for_label }}" class="form-label fw-bold">
+                    Telefone com WhatsApp
+                </label>
+                {{ criarContato.telefone }}
+                <small class="text-muted d-block mt-2">Formato: (XX) 9XXXX-XXXX</small>
+            </div>
+
+            <!-- Campo: Categoria -->
+            <div class="mb-4">
+                <label for="{{ criarContato.role.id_for_label }}" class="form-label fw-bold">
+                    Tipo de Contato
+                </label>
+                {{ criarContato.role }}
+                <small class="text-muted d-block mt-2">Geral, Gestor, Supervisor, Técnico...</small>
+            </div>
+
+            <!-- Campo: Status Ativo -->
+            <div class="mb-4">
+                <div class="form-check form-switch">
+                    {{ criarContato.is_ativo }}
+                    <label class="form-check-label fw-bold" for="{{ criarContato.is_ativo.id_for_label }}">
+                        Contato Ativo
+                    </label>
+                </div>
+                <small class="text-muted d-block mt-2">Desative se o contato não deve receber notificações</small>
+            </div>
+
+      </div>
+
+      <!-- Footer com botões -->
+      <div class="modal-footer border-top modal-contato-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-2"></i>Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-check-lg me-2"></i>Salvar
+        </button>
+      </div>
+
+        </form>
+    </div>
+  </div>
+</div>

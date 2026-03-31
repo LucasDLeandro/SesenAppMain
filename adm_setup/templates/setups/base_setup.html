@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="row g-0" style="height: 100%;">
+    <aside class="col-md-3 col-lg-2 sidebar-lateral p-0" style="height: 100%; overflow-y: auto;">
+        
+        <div class="sidebar-heading">Opeções do Sistema</div>
+        <nav class="nav flex-column mb-3">
+            <a class="nav-sidebar-link active" href="{% url 'adm_setup:config_notificacao_whats' %}">
+                <i class="bi bi-clipboard-check"></i> Gerenciar Notificações
+            </a>
+            <a class="nav-sidebar-link active" href="#">
+                <i class="bi bi-clipboard-check"></i> 
+            </a>
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-briefcase"></i> </a>
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-building"></i> </a>
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-tools"></i> </a>
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-person-workspace"></i> </a>
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> </a>
+        </nav>
+
+        <div class="sidebar-heading border-top border-secondary pt-3 mx-3"></div>
+        <nav class="nav flex-column">
+            <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i></a>
+        </nav>
+    </aside>
+    
+    <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
+        {% block app_content %}
+            
+        {% endblock %}
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

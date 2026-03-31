@@ -1,4 +1,5 @@
 from service_orders.models import *
+from contratos.models.model_contratos import Contratos
 
 class EngServiceReg(models.Model):
     os_id=models.AutoField(
@@ -53,6 +54,25 @@ class EngServiceReg(models.Model):
         editable=True,
     )
 
+    contrato = models.ForeignKey(
+        'contratos.Contratos',
+        on_delete=models.CASCADE,
+        related_name='ordens_servico',
+        null=True,
+        blank=True,
+    )
+    
+    empresa = models.ForeignKey(
+        'contratos.Contratos',
+        on_delete=models.CASCADE,
+        related_name='empresa_os',
+        null=True,
+        blank=True,
+    )
+
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.os_id}"
 

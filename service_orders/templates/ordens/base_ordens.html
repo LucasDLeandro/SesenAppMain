@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "index.html" %}
 
 {% block content %}
 <div class="row g-0" style="height: 100%;">
@@ -30,9 +30,17 @@
             <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
         </nav>
     </aside>
-
+    
     <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
-        {% block app_content %}{% endblock %}
+        {% block app_content %}
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="fw-bold m-0">Ordens de Serviço</h2>
+                <a href="{% url 'ordens:create_os' %}" class="btn btn-success shadow-sm">
+                    <i class="bi bi-plus-lg me-2"></i>Solicitar Serviço
+                </a>
+            </div>
+        
+        {% endblock %}
     </section>
 </div>
 {% endblock %}

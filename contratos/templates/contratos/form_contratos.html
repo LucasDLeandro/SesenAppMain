@@ -1,0 +1,200 @@
+{% extends "contratos/base_contratos.html" %}
+
+{% block title %} Novo Contrato {% endblock %}
+
+{% load static %}
+
+{% block app_content %}
+
+<link rel="stylesheet" href="{% static 'contratos/css/form_contratos.css' %}">
+
+<div class="container-fluid p-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>
+                        <i class="bi bi-clipboard-plus"></i>
+                        Formulário de Registro de Contratos
+                    </h2>
+                </div>
+
+                <form action="" method="post" novalidate>
+                    {% csrf_token %}
+
+                    {{ form_contratos.management_form }}
+
+                    {% if form_contratos.errors %}
+                        <div class="alert-custom">
+                            <strong>Erro ao submeter o formulário:</strong>
+                            {{ form_contratos.errors }}
+                        </div>
+                    {% endif %}
+
+                    <!-- Seção: Dados da Empresa -->
+                    <div class="form-section">
+                        <div class="form-section-title">Dados da Empresa</div>
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                {{ form_contratos.empresa.label_tag }}
+                                {{ form_contratos.empresa }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.cnpj.label_tag }}
+                                {{ form_contratos.cnpj }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Informações do Contrato -->
+                    <div class="form-section">
+                        <div class="form-section-title">Informações do Contrato</div>
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                {{ form_contratos.num_contrato.label_tag }}
+                                {{ form_contratos.num_contrato }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.valor.label_tag }}
+                                {{ form_contratos.valor }}
+                            </div>
+                            
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                {{ form_contratos.objeto.label_tag }}
+                                {{ form_contratos.objeto }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Datas de Vigência -->
+                    <div class="form-section">
+                        <div class="form-section-title">Período de Vigência</div>
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                {{ form_contratos.inicio_vigencia.label_tag }}
+                                {{ form_contratos.inicio_vigencia }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.termino_vigencia.label_tag }}
+                                {{ form_contratos.termino_vigencia }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção: Processos SEI -->
+                    <div class="form-section">
+                        <div class="form-section-title">Referências de Processos SEI</div>
+                        <div class="form-row">
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_processo.label_tag }}
+                                {{ form_contratos.sei_processo }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_dod.label_tag }}
+                                {{ form_contratos.sei_dod }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_etp.label_tag }}
+                                {{ form_contratos.sei_etp }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_tr.label_tag }}
+                                {{ form_contratos.sei_tr }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_edital.label_tag }}
+                                {{ form_contratos.sei_edital }}
+                            </div>
+                            <div class="form-group-custom">
+                                {{ form_contratos.sei_fiscais.label_tag }}
+                                {{ form_contratos.sei_fiscais }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botões de Ação -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn-custom btn-submit">
+                            <i class="bi bi-check-circle"></i> Salvar Contrato
+                        </button>
+                        <button type="reset" class="btn-custom btn-cancel">
+                            <i class="bi bi-arrow-counterclockwise"></i> Limpar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/imask"></script>
+<script>
+    const ids = ['id_sei_dod', 'id_sei_etp', 'id_sei_tr', 'id_sei_edital', 'id_sei_fiscais']
+
+    ids.forEach(el => {
+        IMask(
+            document.getElementById(el),
+            {
+                mask: 'SEI nº: 0000000',
+                lazy: false
+            }
+        )
+    })
+    IMask(
+        document.getElementById('id_valor'),
+        {
+            mask: 'R$ num',
+            blocks: {
+                num: {
+                    mask: Number,
+                    scale: 2,
+                    signed: false,
+                    thousandsSeparator: '.',
+                    padFractionalZeros: true,
+                    normalizeZeros: true,
+                    radix: ',',
+                    mapToRadix: ['.'],
+                    min: 0
+                }
+            },
+            lazy: false
+        }
+    )
+    IMask(
+        document.getElementById('id_cnpj'),
+        {
+            mask: '00.000.000/0000-00',
+            lazy: false
+        }
+    )
+    IMask(
+        document.getElementById('id_num_contrato'),
+        {
+            mask: 'TSE nº 00/0000',
+            lazy: false
+        }
+    )
+
+    IMask(
+        document.getElementById('id_sei_processo'),
+        {
+            mask: '0000.00.000000000-0',
+            lazy: false
+        }
+    )
+
+    
+    IMask(
+        
+        {
+            
+        }
+    )
+</script>
+
+{% endblock %}
