@@ -29,13 +29,13 @@
 }
 
 .msg-tab-btn:hover {
-    color: #3b82f6;
+    color: #106EBE;
     border-bottom-color: #bfdbfe;
 }
 
 .msg-tab-btn.active {
-    color: #3b82f6;
-    border-bottom-color: #3b82f6;
+    color: #106EBE;
+    border-bottom-color: #106EBE;
     background-color: transparent;
 }
 
@@ -54,7 +54,7 @@
 .msg-card-template:hover {
     box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15) !important;
     transform: translateY(-4px);
-    border-color: #3b82f6;
+    border-color: #106EBE;
 }
 
 .msg-card-header {
@@ -94,7 +94,7 @@
 
 .msg-preview {
     background-color: #f1f5f9;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #106EBE;
     padding: 12px;
     border-radius: 6px;
     margin-top: 12px;
@@ -124,13 +124,13 @@
 }
 
 .msg-card-footer .btn-outline-primary {
-    color: #3b82f6;
+    color: #106EBE;
     border-color: #bfdbfe;
 }
 
 .msg-card-footer .btn-outline-primary:hover {
-    background-color: #3b82f6;
-    border-color: #3b82f6;
+    background-color: #106EBE;
+    border-color: #106EBE;
     color: white;
 }
 
@@ -161,7 +161,7 @@
 .msg-card-contact:hover {
     box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15) !important;
     transform: translateY(-4px);
-    border-color: #3b82f6;
+    border-color: #106EBE;
 }
 
 .msg-contact-avatar {
@@ -172,7 +172,7 @@
 .avatar-icon {
     width: 64px;
     height: 64px;
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -226,7 +226,7 @@
 
 /* Botões Primários */
 .btn-primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
     border: none;
     font-weight: 600;
     padding: 10px 20px;

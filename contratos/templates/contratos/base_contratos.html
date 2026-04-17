@@ -1,28 +1,43 @@
 {% extends "index.html" %}
 
+{% block sidebar_toggle %}
+    <button class="btn btn-sm btn-outline-secondary d-md-none me-2 border-0 dropdown-toggle-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+        <i class="bi bi-list fs-4" style="color: var(--nav-text);"></i>
+    </button>
+{% endblock %}
+
 {% block content %}
 <div class="row g-0" style="height: 100%;">
-    <aside class="col-md-3 col-lg-2 sidebar-lateral p-0" style="height: 100%; overflow-y: auto;">
-        
-        <div class="sidebar-heading">Gerenciar Contratos</div>
-        <nav class="nav flex-column mb-3">
-            <a class="nav-sidebar-link active" href="#">
-                <i class="bi bi-clipboard-check"></i> Dashboard | Contratos
-            </a>
-            <a class="nav-sidebar-link active" href="#">
-                <i class="bi bi-clipboard-check"></i> Dashboard | Processos
-            </a>
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-briefcase"></i> Gestão de Contratos</a>
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-building"></i> Contratos | Encerrados</a>
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-tools"></i> Acompanhamento de Processos</a>
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a>
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
-        </nav>
+    <aside class="col-md-3 col-lg-2 p-0" style="height: 100%;">
+        <div class="offcanvas-md offcanvas-start sidebar-lateral w-100 h-100" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel" style="overflow-y: auto;">
+            
+            <div class="offcanvas-header d-md-none border-bottom border-secondary">
+                <h5 class="offcanvas-title" id="sidebarOffcanvasLabel" style="color: var(--text-main);">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Close"></button>
+            </div>
 
-        <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
-        <nav class="nav flex-column">
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
-        </nav>
+            <div class="offcanvas-body d-flex flex-column p-0">
+                <div class="sidebar-heading">Gerenciar Contratos</div>
+                <nav class="nav flex-column mb-3">
+                    <a class="nav-sidebar-link active" href="#">
+                        <i class="bi bi-clipboard-check"></i> Dashboard | Contratos
+                    </a>
+                    <a class="nav-sidebar-link active" href="#">
+                        <i class="bi bi-clipboard-check"></i> Dashboard | Processos
+                    </a>
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-briefcase"></i> Gestão de Contratos</a>
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-building"></i> Contratos | Encerrados</a>
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-tools"></i> Acompanhamento de Processos</a>
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a>
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
+                </nav>
+
+                <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
+                <nav class="nav flex-column mb-4">
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
+                </nav>
+            </div>
+        </div>
     </aside>
     
     <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">

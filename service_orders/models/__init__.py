@@ -10,24 +10,26 @@ ELEVATOR_CHOICE = [
     ('Social 4 - M2677', 'Social 4 - M2677'),
     ('Social 5 - M2678', 'Social 5 - M2678'),
     ('Serviço 6 - M2679', 'Serviço 6 - M2679'),
-    ('Social 7 - M2680', 'Social 7 - M2680'),
+    ('Privativo 7 - M2680', 'Privativo 7 - M2680'),
     ('Social 8 - M2681', 'Social 8 - M2681'),
     ('Social 9 - M2682', 'Social 9 - M2682'),
-    ('Social 10 - M2683', 'Social 10 - M2683'),
+    ('Privativo 10 - M2683', 'Privativo 10 - M2683'),
     ('Social 11 - M2684', 'Social 11 - M2684'),
     ('Social 12 - M2685', 'Social 12 - M2685'),
     ('Social 13 - M2686', 'Social 13 - M2686'),
     ('Serviço 14 - M2687', 'Serviço 14 - M2687'),
 ]
 
+
+
 STATUS_ELEVADOR_CHOICES = [
-    ('1', 'Ativo'),
-    ('2', 'Parado'),
+    ('ATIVO', 'Ativo'),
+    ('PARADO', 'Parado'),
 ]
 
 STATUS_OS = [
-    (1, 'ABERTA'),
-    (2, 'CONCLUIDA'),
+    ('ABERTA', 'ABERTA'),
+    ('CONCLUIDA', 'CONCLUIDA'),
 ]
 
 SERVICES_LIST = [
@@ -55,7 +57,7 @@ SERVICES_LIST = [
 from .mapa_servicos import Categoria, Servico
 
 from .eng_reg_os_model import EngServiceReg
-from .elevadores_reg_os_model import ElevOrderReg
+from .elev_so_model import ElevOrderReg
 
 
 

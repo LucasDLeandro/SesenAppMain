@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 
-from ..models.elevadores_reg_os_model import ElevOrderReg
+from ..models.elev_so_model import ElevOrderReg
 
 class OsFilter(django_filters.FilterSet):
     data_inicio = django_filters.DateTimeFilter(

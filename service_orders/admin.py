@@ -2,7 +2,7 @@ from django.contrib import admin
 
 
 # Register your models here.
-from .models.elevadores_reg_os_model import ElevOrderReg
+from .models.elev_so_model import ElevOrderReg
 from .models.eng_reg_os_model import EngServiceReg
 from .models.mapa_servicos import Categoria, Servico
 

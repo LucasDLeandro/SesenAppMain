@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST
 from notificacoes.models.contato_notificacao import Contato
 from notificacoes.forms.contato_form import CriarContatoForm
-from notificacoes.models.template_notificacao import TemplateMessage
+
 
 
 @require_POST
@@ -42,3 +42,17 @@ def api_editar_contato(request, id_contato):
         'sucesso': False,
         'mensagem': f'Erros encontrados: {form.errors}'
     }, status=400)
+
+@require_POST
+def api_deletar_contato(request, id_contato):
+    contato_existente = get_object_or_404(Contato, pk=id_contato)
+
+    contato_existente.delete()
+
+    
+    return JsonResponse({
+        'sucesso': True,
+        'mensagem': f"O contato foi excluido com sucesso!"
+    })
+   
+    

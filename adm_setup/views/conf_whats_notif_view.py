@@ -4,18 +4,21 @@ import json
 from notificacoes.models.contato_notificacao import Contato
 from notificacoes.models.template_notificacao import TemplateMessage
 from notificacoes.forms.contato_form import CriarContatoForm
+from notificacoes.forms.template_message_form import CriarTemplateForm
 
 def gerenciar_notificacao(request):
     list_contato = Contato.objects.all()
     list_message = TemplateMessage.objects.all()
     criar_contato = CriarContatoForm()
+    criar_template = CriarTemplateForm()
 
     template = 'messages/gerenciar_contatos_e_templates.html'
 
     context = {
             'list_contato': list_contato,
             'list_template': list_message,
-            'criarContato': criar_contato
+            'criarContato': criar_contato,
+            'criarTemplate': criar_template
         }
     
     return render(request, template, context)

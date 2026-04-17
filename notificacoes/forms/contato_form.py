@@ -18,7 +18,7 @@ class CriarContatoForm(forms.ModelForm):
             'nome': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '100'}),
             'telefone': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '13'}),
             'role': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '100'}),
-            'is_ativo': forms.CheckboxInput(attrs={'type': 'checkbox'}),
+            'is_ativo': forms.CheckboxInput(attrs={'type': 'checkbox', 'id': 'id_contato_is_ativo'}),
         }
 
         labels = {

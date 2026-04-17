@@ -4,6 +4,7 @@ class Contato(models.Model):
     nome=models.CharField(
         max_length=100,
     )
+    
     telefone=models.CharField(
         max_length=13,
         #null=False,  - Não é necessário definir (COMPORTAMENTO PADRÃO)

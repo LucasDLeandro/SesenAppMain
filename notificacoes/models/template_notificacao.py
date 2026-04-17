@@ -1,7 +1,20 @@
 from notificacoes.models import *
 
 class TemplateMessage(models.Model):
-    id_message=models.CharField(
+    TIPO_EVENTO_CHOICES = [
+        ('false', '---'),
+        ('os_elev_registro', 'Elevadores - Registro de Nova OS'),
+        ('os_elev_conclusao', 'Elevadores - Conclusão de OS Aberta')
+    ]
+
+    tipo_evento = models.CharField(
+        max_length=80,
+        choices=TIPO_EVENTO_CHOICES,
+        unique=True,
+        verbose_name="Gatilho / Situação"
+    )
+
+    id_template=models.CharField(
         max_length=100,
         unique=True,
         verbose_name="Identificador do Template"
@@ -33,4 +46,4 @@ class TemplateMessage(models.Model):
     updated_at=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.id_message}"
+        return f"{self.id_template}"

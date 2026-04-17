@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.css">
+    
+
 
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
@@ -19,10 +23,13 @@
 
 <nav class="navbar navbar-expand-lg custom-navbar sticky-top">
     <div class="container-fluid">
-        <a class="navbar-brand d-flex align-items-center" href="#">
-            <img src="{% static 'images/tse.png' %}" alt="Logo TSE">
-            <span class="navbar-title d-none d-sm-inline"></span>
-        </a>
+        <div class="d-flex align-items-center">
+            {% block sidebar_toggle %}{% endblock %}
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <img src="{% static 'images/tse.png' %}" alt="Logo TSE">
+                <span class="navbar-title d-none d-sm-inline"></span>
+            </a>
+        </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -84,6 +91,8 @@
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
     const html = document.documentElement;

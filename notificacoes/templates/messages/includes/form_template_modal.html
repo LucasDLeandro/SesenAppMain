@@ -1,0 +1,99 @@
+{% load widget_tweaks %}
+{% load static %}
+
+<div class="modal fade modal-template-wrapper" id="templateModal" tabindex="-1" aria-labelledby="modalTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 650px;">
+    <div class="modal-content border-0">
+      
+      <link rel="stylesheet" href="{% static 'notificacoes/css/form_template_modal.css' %}">
+
+      <div class="modal-template-header-bg"></div>
+      
+      <div class="modal-avatar-template">
+        <i class="bi bi-file-earmark-text-fill"></i>
+      </div>
+
+      <!-- Body do Modal com Form -->
+      <div class="modal-body modal-template-body px-4 pt-1 mb-2">
+        
+        <h4 class="text-center fw-bold mb-4" id="modalTituloNome" style="color: #1e293b; position: relative; z-index: 1;">Ficha do Template</h4>
+
+        <form id="template-form" 
+              data-url-criar-template="{% url 'notificacoes:api_criar_template' %}" 
+              data-url-editar-template="{% url 'notificacoes:api_editar_template' 0 %}"
+              method="post">
+            {% csrf_token %}
+
+            {% if criarTemplate.errors %}
+                <div class="alert alert-danger mb-3 rounded-3 shadow-sm border-0" role="alert">
+                    <strong><i class="bi bi-exclamation-triangle-fill me-2"></i> Encontramos erros:</strong>
+                    {{ criarTemplate.errors }}
+                </div>
+            {% endif %}
+
+            <input type="hidden" id="id_oculto_template" name="id_template">
+
+            <!-- Identificação & Mensagem -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <label for="{{ criarTemplate.id_template.id_for_label }}" class="form-label">
+                        <i class="bi bi-card-text text-secondary me-1"></i> Identificação do Template
+                    </label>
+                    {{ criarTemplate.id_template|add_class:"form-control"|attr:"placeholder:Ex: Conclusão de Ordem de Serviço - OTIS" }}
+                    <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Máximo 100 caracteres</small>
+                </div>
+
+                <div class="col-12">
+                    <label for="{{ criarTemplate.base_text.id_for_label }}" class="form-label">
+                        <i class="bi bi-chat-left-text text-primary opacity-75 me-1"></i> Mensagem
+                    </label>
+                    {{ criarTemplate.base_text|add_class:"form-control"|attr:"rows:6"|attr:"placeholder:Prezado(a), {nome}..." }}
+                    <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Texto da mensagem que será enviada. Use as chaves como <code>{variavel}</code> para dados dinâmicos.</small>
+                </div>
+            </div>
+
+            <!-- Seletores Lado a Lado -->
+            <div class="row g-3 align-items-center p-3 rounded-4" style="background-color: #f1f5f9; border: 1px solid #e2e8f0; margin: 0;">
+                
+                <!-- Tipo de Notificação (Select) -->
+                <div class="col-md-6 border-end-md border-light pe-md-3 border-secondary-subtle">
+                    <label class="form-label text-dark fw-bold mb-2" for="{{ criarTemplate.tipo_evento.id_for_label }}">
+                        <i class="bi bi-funnel-fill text-info me-1"></i> Tipo de Notificação
+                    </label>
+                    {{ criarTemplate.tipo_evento|add_class:"form-select shadow-sm" }}
+                    <small class="text-muted d-block mt-2" style="font-size: 0.8rem;">Evento que vai engatilhar o disparo.</small>
+                </div>
+
+                <!-- Status Ativo (Toggle) -->
+                <div class="col-md-6 ps-md-4 mt-4 mt-md-0 d-flex flex-column justify-content-center">
+                    <div class="form-check form-switch custom-switch d-flex align-items-center mb-0 ps-0">
+                        {{ criarTemplate.is_ativo|add_class:"form-check-input flex-shrink-0 ms-0 shadow-sm" }}
+                        <div class="ms-3 w-100">
+                            <label class="form-check-label fw-bold d-block text-dark m-0 pb-0" for="{{ criarTemplate.is_ativo.id_for_label }}" style="cursor: pointer;">
+                                <i class="bi bi-lightning-fill text-warning me-1"></i> Template Ativo?
+                            </label>
+                            <small class="text-muted" style="font-size: 0.8rem; display: block; line-height: 1.2; margin-top: 4px;">
+                                Desmarque para impedir o disparo deste template, sem excluí-lo da base.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+      </div>
+
+      <!-- Footer com botões -->
+      <div class="modal-footer modal-template-footer d-flex justify-content-between mt-3">
+        <button type="button" class="btn btn-light btn-modern text-muted shadow-sm border" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Cancelar
+        </button>
+        <button type="submit" class="btn btn-primary btn-modern shadow-primary">
+          <i class="bi bi-check-circle-fill me-1"></i> Salvar Template
+        </button>
+      </div>
+
+        </form>
+    </div>
+  </div>
+</div>

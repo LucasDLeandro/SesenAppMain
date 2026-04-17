@@ -13,7 +13,7 @@
 .form-header {
     margin-bottom: 35px;
     padding-bottom: 25px;
-    border-bottom: 2px solid #3b82f6;
+    border-bottom: 2px solid #106EBE;
 }
 
 .form-header h2 {
@@ -28,7 +28,7 @@
 }
 
 .form-header i {
-    color: #3b82f6;
+    color: #106EBE;
     font-size: 32px;
 }
 
@@ -70,7 +70,7 @@
 .form-group-custom select:focus,
 .form-group-custom textarea:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: #106EBE;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
     background-color: #ffffff;
 }
@@ -95,7 +95,7 @@
     color: #1e293b;
     margin-bottom: 20px;
     padding-left: 12px;
-    border-left: 4px solid #3b82f6;
+    border-left: 4px solid #106EBE;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -139,7 +139,7 @@
 }
 
 .btn-submit {
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
     color: #ffffff;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }

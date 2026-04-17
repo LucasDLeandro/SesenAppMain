@@ -1,49 +1,77 @@
 {% extends "index.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'service_orders/css/form_ordens_modal.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
+{% endblock %}
+
+{% block sidebar_toggle %}
+    <button class="btn btn-sm btn-outline-secondary d-md-none me-2 border-0 dropdown-toggle-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
+        <i class="bi bi-list fs-4" style="color: var(--nav-text);"></i>
+    </button>
+{% endblock %}
 
 {% block content %}
 <div class="row g-0" style="height: 100%;">
-    <aside class="col-md-3 col-lg-2 sidebar-lateral p-0" style="height: 100%; overflow-y: auto;">
-        
-        <div class="sidebar-heading">Aplicações Auxiliares</div>
-        <nav class="nav flex-column mb-3">
-            <a class="nav-sidebar-link active" href="{% url 'ordens:list_os' %}">
-                <i class="bi bi-clipboard-check"></i> Ordens de Serviço
-            </a>
-
-            <div class="dropdown" style="width: 100%;">
-                <a class="nav-sidebar-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                    <i class="bi bi-plus-circle"></i> Cadastrar
-                </a>
-                <ul class="dropdown-menu" style="width: 100%;">
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-briefcase"></i> Empresas</a></li>
-                    <li><a class="dropdown-item" href="{% url 'ordens:cat_serv_list' %}"><i class="bi bi-building"></i> Grandes Áreas</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-tools"></i> Serviços</a></li>
-                    <li><a class="dropdown-item" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a></li>
-                </ul>
-            </div>
+    <aside class="col-md-3 col-lg-2 p-0" style="height: 100%;">
+        <div class="offcanvas-md offcanvas-start sidebar-lateral w-100 h-100" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel" style="overflow-y: auto;">
             
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
-        </nav>
+            <div class="offcanvas-header d-md-none border-bottom border-secondary">
+                <h5 class="offcanvas-title" id="sidebarOffcanvasLabel" style="color: var(--text-main);">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Close"></button>
+            </div>
 
-        <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
-        <nav class="nav flex-column">
-            <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
-        </nav>
+            <div class="offcanvas-body d-flex flex-column p-0">
+                <div class="sidebar-heading">Aplicações Auxiliares</div>
+                <nav class="nav flex-column mb-3">
+                    <a class="nav-sidebar-link active" href="{% url 'ordens:elev_list_os' %}">
+                        <i class="bi bi-clipboard-check"></i> Elevadores
+                    </a>
+
+                    <div class="dropdown" style="width: 100%;">
+                        <a class="nav-sidebar-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
+                            <i class="bi bi-plus-circle"></i> Cadastrar
+                        </a>
+                        <ul class="dropdown-menu" style="width: 100%;">
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-briefcase"></i> Empresas</a></li>
+                            <li><a class="dropdown-item" href="{% url 'ordens:cat_serv_list' %}"><i class="bi bi-building"></i> Grandes Áreas</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-tools"></i> Serviços</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a></li>
+                        </ul>
+                    </div>
+                    
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
+                </nav>
+
+                <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
+                <nav class="nav flex-column mb-4">
+                    <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
+                </nav>
+            </div>
+        </div>
     </aside>
     
     <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
         {% block app_content %}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold m-0">Ordens de Serviço</h2>
-                <a href="{% url 'ordens:create_os' %}" class="btn btn-success shadow-sm">
-                    <i class="bi bi-plus-lg me-2"></i>Solicitar Serviço
-                </a>
-            </div>
-        
+            
         {% endblock %}
     </section>
 </div>
+
+{% include 'ordens/includes/form_ordens_modal_registrar.html' %}
+{% include 'ordens/includes/form_ordens_modal_concluir.html' %}
+
 {% endblock %}
 
 {% block extra_app_content %}
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+    <script type="module" src="{% static 'service_orders/js/elevadores/list_elevadores.js' %}"></script>
+    <script src="{% static 'service_orders/js/elevadores/os_modal_form.js' %}"></script>
+    <script type="module" src="{% static 'service_orders/js/elevadores/elev_dashboard.js' %}"></script>
 {% endblock %}

@@ -1,14 +1,14 @@
 /* 1. Variáveis de Tema */
 :root {
-    --primary-blue: #1e293b; 
-    --light-blue: #3b82f6; 
+    --primary-blue: #106EBE; 
+    --mint-accent: #0FFCBE; 
     --background-body: #f8fafc;
     --text-main: #1e293b;
     --nav-bg: #1e293b;    
     --nav-text: #ffffff;  
     --card-bg: #ffffff;
     --border-color: #e2e8f0;
-    --sidebar-bg: #1e293b; /* Azul escuro da imagem */
+    --sidebar-bg: #f8f9fa; /* Cinza claro nativo (light) */
 }
 
 html {
@@ -22,19 +22,20 @@ body {
 }
 
 [data-bs-theme="dark"] {
-    --background-body: #0f172a;
+    --background-body: #000000;
     --text-main: #f1f5f9;
-    --nav-bg: #0f172a !important;   
+    --nav-bg: #000000 !important;   
     --nav-text: #f8fafc !important; 
-    --card-bg: #1e293b;
-    --border-color: #334155;
-    --sidebar-bg: #0f172a; 
+    --card-bg: #1a1a1a;
+    --border-color: #333333;
+    --sidebar-bg: #0d0d0d; 
 }
 
 [data-bs-theme="light"] {
     --nav-bg: #ffffff !important;   
     --nav-text: #1e293b !important; 
     --border-color: #cbd5e1;
+    --sidebar-bg: #f8f9fa !important;
 }
 
 /* 2. Estilos de Base */
@@ -66,18 +67,18 @@ body {
     height: calc(100vh - 62px); /* Altura da viewport menos a altura do navbar */
 }
 
-/* Forçamos a sidebar a ser sempre escura, independente do tema global */
+/* Sidebar Responsiva a Temas */
 .sidebar-lateral {
-    background-color: #1e293b !important; /* Cor fixa da sua imagem */
+    background-color: var(--sidebar-bg) !important;
     padding: 0 !important;
     margin: 0 !important;
     left: 0;
-    /* min-height: 100vh !important; */ /* Removido para permitir o layout de altura fixa */
-    border-right: 1px solid rgba(255,255,255,0.1);
+    border-right: 1px solid var(--border-color);
 }
 
 .sidebar-heading {
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: var(--text-main) !important;
+    opacity: 0.7;
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -85,7 +86,8 @@ body {
 }
 
 .nav-sidebar-link {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: var(--text-main) !important;
+    opacity: 0.85;
     text-decoration: none;
     padding: 0.8rem 1.5rem;
     display: flex;
@@ -96,30 +98,30 @@ body {
 .nav-sidebar-link i { margin-right: 12px; width: 20px; text-align: center; }
 
 .nav-sidebar-link:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #fff !important;
+    background-color: var(--border-color);
+    opacity: 1;
 }
 
 .nav-sidebar-link.active {
-    background-color: rgba(59, 130, 246, 0.2);
-    color: var(--light-blue) !important;
-    border-left: 4px solid var(--light-blue);
+    background-color: rgba(16, 110, 190, 0.15);
+    color: var(--primary-blue) !important;
+    border-left: 4px solid var(--primary-blue);
+    opacity: 1;
 }
 
 /* Estilos para dropdown na sidebar */
 .sidebar-lateral .dropdown-menu {
-    background-color: #1e293b !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
     border-radius: 0.375rem;
 }
 
 .sidebar-lateral .dropdown-item {
-    color: rgba(255, 255, 255, 0.7) !important;
+    color: var(--text-main) !important;
 }
 
 .sidebar-lateral .dropdown-item:hover {
-    background-color: rgba(255, 255, 255, 0.05) !important;
-    color: #fff !important;
+    background-color: var(--background-body) !important;
 }
 
 /* 5. Componentes */

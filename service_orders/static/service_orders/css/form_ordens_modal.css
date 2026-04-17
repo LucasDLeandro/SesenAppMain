@@ -1,0 +1,279 @@
+/* ========================================
+   Estilos para Modal de Formulário de Ordens de Serviço
+   Elevadores - Temática Técnica
+   ======================================== */
+
+/* ========== MODAL GERAL ========== */
+.modal-ordens-wrapper .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+/* ========== BODY DO MODAL ========== */
+.modal-ordens-body {
+    padding: 24px 22px;
+    background-color: transparent;
+    border-radius: 16px;
+    max-height: 82vh;
+    overflow-y: auto;
+}
+
+/* ========== LABELS E INPUTS ========== */
+.modal-ordens-body form .form-label {
+    color: var(--text-main);
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+}
+
+.modal-ordens-body form .form-control,
+.modal-ordens-body form .form-select {
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    height: auto;
+    min-height: 40px;
+    transition: all 0.3s ease;
+    color: var(--text-main);
+    background-color: transparent;
+}
+
+.modal-ordens-body form .form-control:hover,
+.modal-ordens-body form .form-select:hover {
+    border-color: #cbd5e1;
+}
+
+.modal-ordens-body form .form-control:focus,
+.modal-ordens-body form .form-select:focus {
+    border-color: #106EBE;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.modal-ordens-body form .form-control::placeholder {
+    color: #94a3b8;
+    font-size: 0.95rem;
+}
+
+.modal-ordens-body form .form-control:-webkit-autofill,
+.modal-ordens-body form .form-control:-webkit-autofill:hover,
+.modal-ordens-body form .form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+    border-color: #106EBE !important;
+}
+
+/* Textarea */
+.modal-ordens-body form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Form Help Text */
+.modal-ordens-body form small.text-muted {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Alert de Erros */
+#elev-create-os-form .alert-danger {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+#elev-create-os-form .alert-danger strong {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* ========== SEÇÕES DO FORMULÁRIO - TEMÁTICA TÉCNICA ========== */
+/*.form-section-modal {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f50d0d;
+}*/
+
+.form-section-modal:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.form-section-title-modal {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-section-title-modal i {
+    color: var(--primary-blue);
+    font-size: 1rem;
+}
+
+/* ========== GRID DO FORMULÁRIO ========== */
+.form-row-modal {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.form-group-modal {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-modal.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ========== FOOTER E BUTTONS ========== */
+.modal-ordens-footer {
+    padding: 1px 22px;
+    gap: 10px;
+    /*border-top: 1px solid #e2e8f0;*/
+    background-color: transparent;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-ordens-footer .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 8px 16px;
+    transition: all 0.3s ease;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.modal-ordens-footer .btn i {
+    margin-right: 6px;
+}
+
+/* Botão Cancelar */
+.modal-ordens-footer .btn-outline-secondary {
+    border: 2px solid var(--border-color);
+    color: var(--text-main);
+    background-color: transparent;
+}
+
+.modal-ordens-footer .btn-outline-secondary:hover {
+    border-color: #94a3b8;
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.modal-ordens-footer .btn-outline-secondary:active {
+    background-color: #e2e8f0;
+}
+
+/* Botão Salvar */
+.modal-ordens-footer .btn-primary {
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.modal-ordens-footer .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+.modal-ordens-footer .btn-primary:active {
+    transform: translateY(0);
+}
+
+/* ========== RESPONSIVIDADE - TABLETS ========== */
+@media (max-width: 768px) {
+    .modal-ordens-body {
+        padding: 20px 18px;
+    }
+
+    .modal-ordens-footer {
+        padding: 14px 18px;
+        gap: 8px;
+    }
+
+    #elev-create-os-form .form-control,
+    #elev-create-os-form .form-select {
+        font-size: 16px;
+        min-height: 44px;
+    }
+}
+
+/* ========== RESPONSIVIDADE - MOBILE ========== */
+@media (max-width: 576px) {
+    .form-row-modal {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .form-group-modal.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .modal-ordens-body {
+        padding: 18px 16px;
+        max-height: 85vh;
+    }
+
+    .modal-ordens-footer {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        gap: 8px;
+    }
+
+    .modal-ordens-footer .btn {
+        padding: 8px 12px;
+        min-height: 38px;
+        font-size: 0.8rem;
+        width: auto;
+    }
+
+    .form-section-title-modal {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+
+    #elev-create-os-form .form-label {
+        font-size: 0.85rem;
+    }
+
+    #elev-create-os-form .form-control,
+    #elev-create-os-form .form-select {
+        font-size: 16px;
+        min-height: 40px;
+    }
+
+    #elev-create-os-form textarea {
+        min-height: 80px;
+        font-size: 16px;
+    }
+}

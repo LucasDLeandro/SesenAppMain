@@ -55,7 +55,7 @@
             <h1 class="modal-title fs-5" id="exampleModalLabel">Cadastro de Categoria/Serviços</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
-        <div class="modal-body bg-light">
+        <div class="modal-body">
         <form method="post" id="form-categoria-servico">
             {% csrf_token %}
             {{ service_form.management_form }}
@@ -75,7 +75,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-bold text-secondary small">{{ category_form.nome.label }}</label>
                         <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-folder-plus text-primary"></i></span>
+                            <span class="input-group-text bg-body border-end-0"><i class="bi bi-folder-plus text-primary"></i></span>
                             {% render_field category_form.nome class="form-control border-start-0 ps-0" placeholder="Ex: Elétrica" %}
                         </div>
                         {% if category_form.nome.errors %}<div class="text-danger small">{{ category_form.nome.errors }}</div>{% endif %}
@@ -121,7 +121,7 @@
         </form>
     </div>
 
-    <div class="modal-footer bg-light border-top-0">
+    <div class="modal-footer border-top-0">
         <button type="button" class="btn btn-link text-decoration-none text-muted" data-bs-dismiss="modal">Cancelar</button>
         <button type="submit" form="form-categoria-servico" class="btn btn-primary px-4 shadow-sm">
             <i class="bi bi-check2-all me-2"></i>Salvar Tudo

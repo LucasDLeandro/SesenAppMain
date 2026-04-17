@@ -2,13 +2,13 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 
-from ..models.elevadores_reg_os_model import ElevOrderReg
-from ..forms.elev_create_os import CreateOsForm
-from ..services import auto_message
+from ..models.elev_so_model import ElevOrderReg
+from ..forms.elev_os_form import ElevCreateOsForm
+from notificacoes.services import auto_message
 
 def create_os(request):
     if request.method == 'POST':
-        form = CreateOsForm(request.POST)
+        form = ElevCreateOsForm(request.POST)
         if form.is_valid():
             ordem_servico = form.save()
             data_hora = form.cleaned_data['data_hora']
@@ -23,5 +23,5 @@ def create_os(request):
         return redirect('ordens:create_os')
             
     else:
-        form = CreateOsForm()
+        form = ElevCreateOsForm()
     return render(request, 'ordens/create_os.html', {'form': form})
