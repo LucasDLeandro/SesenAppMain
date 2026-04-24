@@ -72,7 +72,7 @@ class ElevCreateOsForm(forms.ModelForm):
             return None
 
 class ElevConcluirOsForm(forms.ModelForm):
-    data_agora = datetime.now().strftime('%Y-%m-%dT%H:%M')
+    data_agora = datetime.now().strftime('%Y-%m-%d %H:%M')
 
     data_hora_chegada = forms.DateTimeField(
         label='Data/Hora - Chegada',

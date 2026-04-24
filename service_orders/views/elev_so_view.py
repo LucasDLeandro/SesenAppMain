@@ -2,14 +2,16 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.db.models import F, ExpressionWrapper, DurationField, Count
-from django.db.models.functions import TruncMonth, TruncYear
+from django.db.models.functions import TruncMonth, TruncYear, TruncDate
 from django.utils.formats import date_format
-
-from zoneinfo import ZoneInfo
-
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
+
+from collections import defaultdict
+
+from zoneinfo import ZoneInfo
+
 
 from ..forms.elev_os_form import ElevCreateOsForm, ElevConcluirOsForm
 from notificacoes.services import auto_message
@@ -61,21 +63,22 @@ def api_elev_concluir_os(request, id_elev_os):
 
     if form.is_valid():
         os = form.save()
-        #evento = form.cleaned_data['tipo_evento']
-        template = get_object_or_404(TemplateMessage, tipo_evento='os_elev_conclusao', is_ativo=True)
-        texto = template.base_text
+        
 
         for contato in contato_queryset:
             tel = contato.telefone
-            text = texto.format(
-                nome=contato.nome,
-                protocolo=os.protocolo,
-                tecnico=os.tecnico,
-                data_hora_saida=os.data_hora_saida.strftime("%d/%m/%Y às %H:%M"),
-                servico=os.servico,
-                funcionando=os.elevador_parado
-            )
+            
             try:
+                template = get_object_or_404(TemplateMessage, tipo_evento='os_elev_conclusao', is_ativo=True)
+                texto = template.base_text
+                text = texto.format(
+                    nome=contato.nome,
+                    protocolo=os.protocolo,
+                    tecnico=os.tecnico,
+                    data_hora_saida=os.data_hora_saida.strftime("%d/%m/%Y às %H:%M"),
+                    servico=os.servico,
+                    funcionando=os.elevador_parado
+                )
                 auto_message(tel, text)   
             except Exception as e:
                 print(f"Erro na Evolution API: {e}")
@@ -161,21 +164,66 @@ def api_dados_indicador_um(request):
 ##############----------------INDICADOR 3----------------##############
 @require_GET
 def api_dados_indicador_tres (request):
-    indicador_tres = ElevOrderReg.objects.annotate(mes_abertura=TruncMonth('data_hora')).values('elevador', 'mes_abertura').annotate(total_elev_mes=Count(id)).order_by('mes_abertura')
-    indicador_tres_icr = []
+    param_inicio = request.GET.get('inicio')
+    param_fim = request.GET.get('fim')
+    param_elev = request.GET.get('elev')
 
-    for os in indicador_tres:
-        os_dict = {
-            'ano': os['mes_abertura'].year,
-            'mes': os['mes_abertura'].month,
-            'elevador': os['elevador'],
-            'qnt_mes': os['total_elev_mes']
-        }
-        
-        indicador_tres_icr.append(os_dict)
+
+    indicador = ElevOrderReg.objects.filter(data_hora__range=(param_inicio, param_fim)).annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count(id)).order_by('data_truncada')
+
+    listaElevadores = [
+        "Social 1 - M2674",
+        "Social 2 - M2675",
+        "Social 3 - M2676",
+        "Social 4 - M2677",
+        "Social 5 - M2678",
+        "Serviço 6 - M2679",
+        "Privativo 7 - M2680",
+        "Social 8 - M2681",
+        "Social 9 - M2682",
+        "Privativo 10 - M2683",
+        "Social 11 - M2684",
+        "Social 12 - M2685",
+        "Social 13 - M2686",
+        "Serviço 14 - M2687",
+    ]
+
+    df = pd.DataFrame(list(indicador))
+   
+
+    if df.empty:
+        # Montamos a estrutura vazia para não quebrar o front-end
+        dados_vazios = [{'name': elev, 'x': [], 'y': [], 'z': [], 'protocolo': []} for elev in listaElevadores]
+        return JsonResponse({'ind_tres': dados_vazios})
+
+
+    df['data_truncada'] = df['data_truncada'].astype(str)
+    df['tamanho_z'] = df['ocorrencias'] * 20
+    df['elevador'] = pd.Categorical(df['elevador'], categories=listaElevadores)
+
+    df_agrupado = df.groupby('elevador', observed=False).agg({
+        'data_truncada': list,
+        'ocorrencias': list,
+        'tamanho_z': list,
+        'protocolo': list
+    }).reset_index()
+
+    df_agrupado.rename(columns={
+        'elevador': 'name',
+        'data_truncada': 'x',
+        'ocorrencias': 'y',
+        'tamanho_z': 'z',
+    }, inplace=True)
+
+    print(df_agrupado)
+
+    dados_finais = df_agrupado.to_dict('records')
+
+    for linha in dados_finais:
+        print(linha)
 
     return JsonResponse({
-        'indicador_tres': indicador_tres_icr
+        'ind_tres': dados_finais
     })
 
 

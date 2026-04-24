@@ -6,6 +6,7 @@ new DataTable(ordensAbertas, {
     language: {
         url: 'https://cdn.datatables.net/plug-ins/2.0.3/i18n/pt-BR.json'
     },
+    order: [],
     layout: {
         topStart: 'pageLength',
         topEnd: 'search'
@@ -75,6 +76,7 @@ ordens_concluidas.addEventListener('click', async function() {
                 topStart: 'pageLength',
                 topEnd: 'search'
             },
+            order: [],
             responsive: true,
             columnDefs: [
                 {

@@ -28,7 +28,7 @@ function abrirModalElevSolicitar() {
 function abrirModalElevConcluir(id_os, protocolo) {
     document.getElementById('id_oculto_elev_os_concluir').value = id_os
     document.getElementById('id_protocolo_concluir_os').value = protocolo
-
+    
     const urlElevConcluirOsReal = urlElevConcluirOsBase.replace('/0/', `/${id_os}/`)
     form_os_concluir.action = urlElevConcluirOsReal
 
