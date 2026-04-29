@@ -147,7 +147,7 @@
        <div class="tab-pane fade" id="ordens-concluidas-content" role="tabpanel" aria-labelledby="elevordens-concluidas-tab">
             <div class="custom-card shadow-sm border-0 rounded-3 p-3 bg-body">
                 <div class="table-responsive">
-                    {% include 'ordens/includes/tabela_ordens.html' %}
+                    {% include 'ordens/includes/tabela_ordens_concluidas.html' %}
                 </div>
             </div>
             
@@ -210,7 +210,18 @@
                     <!-- Gráfico 3 -->
                     <div class="col-12 col-lg-6">
                         <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 300px; border-color: var(--bs-border-color-translucent);">
-                            <h6 class="text-start mb-3 fw-bold text-secondary"><i class="bi bi-activity me-2"></i>Indicador 3 - Indice de Chamados Reincidentes (ICR)</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-activity me-2"></i>Indicador 3 - Indice de Chamados Reincidentes (ICR)</h6>
+
+                                <div class="dropdown" id="dropdown-chart-3-filter">
+                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="bi bi-funnel me-1"></i> Período
+                                    </button>
+                                    
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-3" aria-labelledby="btn-dropdown-chart-3">
+                                    </ul>
+                                </div>
+                            </div>
                             <div id="chart-3" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                                
                             </div>

@@ -22,6 +22,8 @@ from ..models.elev_so_model import ElevOrderReg
 import pandas as pd
 import datetime as dt
 
+
+
 @require_POST
 def api_elev_criar_os(request):
     form = ElevCreateOsForm(request.POST)
@@ -96,13 +98,7 @@ def api_elev_concluir_os(request, id_elev_os):
 ##############----------------INDICADOR 1----------------##############
 
 @require_GET
-def api_dados_indicador_um(request):
-
-    param_inicio = request.GET.get('inicio')
-    param_fim = request.GET.get('fim')
-    param_elev = request.GET.get('elev')
-
-
+def api_elev_concluidas(request):
     ##############----------------TABELA OSS ELEVADOR CONCLUIDAS----------------##############
     ordens_concluidas_tabela = ElevOrderReg.objects.filter(status='CONCLUIDA').order_by('-data_hora').annotate(
         tmp_chegada = ExpressionWrapper(F('data_hora_chegada') - F('data_hora'), output_field=DurationField()),
@@ -134,43 +130,35 @@ def api_dados_indicador_um(request):
 
         concluidas_tabela.append(os_dict)
 
+    return JsonResponse({'tabela_concluidas': concluidas_tabela})
+
+
+
+def api_dados_indicador_um(**kwargs):
+
     indicador_um = []
 
-    if param_inicio and param_fim and param_elev:
-        qs_filtrado = ordens_concluidas_tabela.filter(status='CONCLUIDA', data_hora__range=(param_inicio, param_fim), elevador=param_elev)
-    elif param_inicio and param_fim:
-        qs_filtrado = ordens_concluidas_tabela.filter(status='CONCLUIDA', data_hora__range=(param_inicio, param_fim))
-    else:
-        qs_filtrado = ordens_concluidas_tabela.filter(status='CONCLUIDA')
+    qs_filtrado = ElevOrderReg.objects.filter(status='CONCLUIDA', data_hora__range=(kwargs['inicio'], kwargs['fim'])).order_by('-data_hora').annotate(
+        tmp_chegada = ExpressionWrapper(F('data_hora_chegada') - F('data_hora'), output_field=DurationField()),
+        tmp_conclusao = ExpressionWrapper(F('data_hora_saida') - F('data_hora_chegada'), output_field=DurationField())
+    )
         
     for os_i in qs_filtrado:
         min_chegada = int(os_i.tmp_chegada.total_seconds() / 60) if os_i.tmp_chegada else 0 # type: ignore
-
         os_dict = {
+            'data_hora': os_i.data_hora,
             'protocolo': os_i.protocolo,
             'min_chegada': min_chegada,
         }
         indicador_um.append(os_dict)
-    
 
-    
-    
+    return indicador_um
 
-    return JsonResponse({
-        'dados': concluidas_tabela,
-        'indicador_um': indicador_um,
-        })
+    #return JsonResponse({'indicador_um': indicador_um})
 
 ##############----------------INDICADOR 3----------------##############
-@require_GET
-def api_dados_indicador_tres (request):
-    param_inicio = request.GET.get('inicio')
-    param_fim = request.GET.get('fim')
-    param_elev = request.GET.get('elev')
-
-
-    indicador = ElevOrderReg.objects.filter(data_hora__range=(param_inicio, param_fim)).annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count(id)).order_by('data_truncada')
-
+def api_dados_indicador_tres (**kwargs):
+    indicador = ElevOrderReg.objects.annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count(id)).order_by('data_truncada')
     listaElevadores = [
         "Social 1 - M2674",
         "Social 2 - M2675",
@@ -189,13 +177,11 @@ def api_dados_indicador_tres (request):
     ]
 
     df = pd.DataFrame(list(indicador))
-   
 
     if df.empty:
         # Montamos a estrutura vazia para não quebrar o front-end
         dados_vazios = [{'name': elev, 'x': [], 'y': [], 'z': [], 'protocolo': []} for elev in listaElevadores]
         return JsonResponse({'ind_tres': dados_vazios})
-
 
     df['data_truncada'] = df['data_truncada'].astype(str)
     df['tamanho_z'] = df['ocorrencias'] * 20
@@ -215,20 +201,17 @@ def api_dados_indicador_tres (request):
         'tamanho_z': 'z',
     }, inplace=True)
 
-    print(df_agrupado)
-
     dados_finais = df_agrupado.to_dict('records')
 
-    for linha in dados_finais:
-        print(linha)
+    return dados_finais
 
-    return JsonResponse({
-        'ind_tres': dados_finais
-    })
+    # return JsonResponse({
+    #     'ind_tres': dados_finais,
+    # })
 
 
-@require_GET
-def api_grafico_qnt(request):
+
+def api_grafico_qnt(**kwargs):
 ##########---------------------------------- GRÁFICO DE OCORRÊNCIAS E TOTALIZAÇÃO DE OCORRÊNCIAS ----------------------------------##########
     # listas vazias para receber os dados
     meses_labels = []
@@ -236,10 +219,19 @@ def api_grafico_qnt(request):
     tabela_mes_total = []
     
     # Filtro GROUP_BY para contagem das OSs 
-    param_ano = request.GET.get('ano')
     dados_total = ElevOrderReg.objects.annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
-    dados_grafico_anual = ElevOrderReg.objects.filter(data_hora__year=param_ano).annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
+    dados_grafico_anual = ElevOrderReg.objects.annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
 
+    df_grafico = pd.DataFrame(list(dados_grafico_anual))
+
+    if df_grafico.empty:
+        dados_vazios = [{'mes': [], 'quantidade': []}]
+        return JsonResponse({'chart_qnt_anual': dados_vazios})
+    
+    
+    df_grafico['mes_exato'] = df_grafico['mes_exato'].astype(str)
+
+    dados_finais_grafico = df_grafico.to_dict('list')
     # Dicionário que mapeia as colunas do dataframe que representa a Totalização de Ocorrências
     meses_list = {
         'ano': 'Ano',
@@ -301,15 +293,37 @@ def api_grafico_qnt(request):
             'tot_mes': item_mes['total_mes'], #type: ignore
         }
 
+
         tabela_mes_total.append(totais_dict)
         meses_labels.append(mes_formatado)
         totais_series.append(item_mes['total_mes'])
+
+        
 ##########---------------------------------- GRÁFICO DE OCORRÊNCIAS E TOTALIZAÇÃO DE OCORRÊNCIAS ----------------------------------##########
     return JsonResponse({
         'meses': meses_labels,
         'series': totais_series,
         'tabela_mes': tabela_mes_total,
-        'df_html': df_html
+        'df_html': df_html,
+        'dados_grafico': dados_finais_grafico
+    })
+
+@require_GET
+def api_elev_dashboard(request):
+    params_request = ['inicio', 'fim', 'ano', 'mes', 'dia', 'elev',
+    ]
+    filtros = {chave: request.GET.get(chave) for chave in params_request if request.GET.get(chave)}
+
+    ind_um = api_dados_indicador_um(**filtros)
+    #indicador_dois = 
+    ind_tres = api_dados_indicador_tres(**filtros)
+    #indicador_quatro = 
+
+    #totalizacao_elev = 
+
+    return JsonResponse({
+        'ind_um': ind_um,
+        'ind_tres': ind_tres
     })
 
     

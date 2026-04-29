@@ -18,7 +18,7 @@ const ordens_concluidas = document.getElementById('ordens-concluidas-tab')
 
 ordens_concluidas.addEventListener('click', async function() {
 
-    const urlElevDados = '/ordens/api/os/listaOs/api_indicador_um'
+    const urlElevDados = '/ordens/api/os/listaOs/api_elev_concluidas'
 
     try {
         const resposta = await fetch(urlElevDados)
@@ -30,7 +30,7 @@ ordens_concluidas.addEventListener('click', async function() {
 
         let todoOConteudoHTML = ''
 
-        dados_api.dados.forEach(os => {
+        dados_api.tabela_concluidas.forEach(os => {
             const linhaHTML = `
                 <tr>
                     <td><code>${os.protocolo}</code></td>
@@ -128,11 +128,6 @@ async function dadosTabelaQntOsAnual() {
 
     const strParams = params.toString()
     urlFiltrada = urlElevGrafico + '?' + strParams
-    
-
-    console.log(urlFiltrada)
-        
-    
 
     try {
         const resposta = await fetch(urlFiltrada)
@@ -252,7 +247,7 @@ async function dadosTabelaQntOsAnual() {
 const elev_tab_dash = document.getElementById('elev-tab-dash')
 elev_tab_dash.addEventListener('click', () => {
     
-    dadosTabelaQntOsAnual()
+    //dadosTabelaQntOsAnual()
 })
 
 const btn_dash_filtro = document.getElementById('dash-btn-filtrar')

@@ -88,3 +88,48 @@
 .apexcharts-series path {
     cursor: pointer;
 }
+
+/* Botão de filtro menor para se ajustar aos gráficos */
+.btn-chart-filter {
+    background-color: rgba(16, 110, 190, 0.08); /* Fundo azul suave por padrão */
+    color: var(--primary-blue, #106EBE);
+    border: 1px solid rgba(16, 110, 190, 0.2);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    padding: 0.35rem 0.9rem;
+    font-weight: 600; /* Mais destacado */
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-chart-filter:hover, 
+.btn-chart-filter:focus, 
+.btn-chart-filter.show,
+.btn-chart-filter[aria-expanded="true"] {
+    background-color: var(--primary-blue, #106EBE); 
+    color: #fff;
+    border-color: var(--primary-blue, #106EBE);
+    box-shadow: 0 4px 8px rgba(16, 110, 190, 0.25);
+    transform: translateY(-1px);
+}
+
+[data-bs-theme="dark"] .btn-chart-filter {
+    background-color: rgba(30, 136, 229, 0.15);
+    border-color: rgba(30, 136, 229, 0.3);
+    color: #64b5f6;
+}
+
+[data-bs-theme="dark"] .btn-chart-filter:hover, 
+[data-bs-theme="dark"] .btn-chart-filter:focus, 
+[data-bs-theme="dark"] .btn-chart-filter.show,
+[data-bs-theme="dark"] .btn-chart-filter[aria-expanded="true"] {
+    background-color: #1e88e5;
+    color: #fff;
+    border-color: #1e88e5;
+    box-shadow: 0 4px 8px rgba(30, 136, 229, 0.35);
+}
+
+/* Estilo do dropdown list para combinar */
+.dropdown-chart-filter {
+    font-size: 0.85rem;
+    border-radius: 12px;
+}
