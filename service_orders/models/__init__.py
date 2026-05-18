@@ -23,8 +23,8 @@ ELEVATOR_CHOICE = [
 
 
 STATUS_ELEVADOR_CHOICES = [
-    ('ATIVO', 'Ativo'),
-    ('PARADO', 'Parado'),
+    ('ATIVO', 'ATIVO'),
+    ('PARADO', 'PARADO'),
 ]
 
 STATUS_OS = [

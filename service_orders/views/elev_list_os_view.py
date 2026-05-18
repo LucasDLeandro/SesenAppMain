@@ -21,7 +21,7 @@ def elev_list_os(request):
         'servico',
         'tecnico',
         'data_hora_chegada',
-        'data_hora_saida',
+        'data_hora_conclusao',
         'status'
     ).order_by('-data_hora')
 

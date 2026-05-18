@@ -28,12 +28,19 @@ function abrirModalElevSolicitar() {
 function abrirModalElevConcluir(id_os, protocolo) {
     document.getElementById('id_oculto_elev_os_concluir').value = id_os
     document.getElementById('id_protocolo_concluir_os').value = protocolo
-    
+
     const urlElevConcluirOsReal = urlElevConcluirOsBase.replace('/0/', `/${id_os}/`)
     form_os_concluir.action = urlElevConcluirOsReal
 
     modal_os_concluir.show()
 }
+
+const hora_chegada = document.getElementById('id_data_hora_chegada')
+const hora_conclusao = document.getElementById('id_data_hora_conclusao')
+
+hora_chegada.addEventListener('change', function() {
+    hora_conclusao.value = hora_chegada.value
+})
 
 form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
     evento_elev_criar_os.preventDefault();
@@ -57,7 +64,7 @@ form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
             modal_os_criar.hide()
             window.location.reload()
         } else {
-            console.log(`Erros encontrados no formulário: ${dados.erros}`)
+            console.log("Erros encontrados no formulário:", dados.erros)
             modal_os_concluir.hide()
             Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos", "error")
         }

@@ -41,9 +41,10 @@ ordens_concluidas.addEventListener('click', async function() {
                     <td>${os.data_hora_chegada || 'N/A'}</td>
                     <td>${os.tmp_chegada} min</td>
                     <td>${os.data_hora_saida || 'N/A'}</td>
-                    <td>${os.tmp_saida} min</td>
+                    <td>${os.tmp_saida} min</td> 
                     <td>${os.componente}</td>
                     <td>${os.sub_componente}</td>
+                    <td>${os.tempo_parado}h</td>
                     <td>${os.servico}</td>
                     <td>
                         <span class="badge bg-success">${os.status}</span>
@@ -80,7 +81,7 @@ ordens_concluidas.addEventListener('click', async function() {
             responsive: true,
             columnDefs: [
                 {
-                    targets: [3, 11],
+                    targets: [3, 12],
                     render: function (data, type, row) {
                         // Se a ação for 'display' (exibir na tela) e o texto tiver mais de 50 letras
                         if (type === 'display' && data && data.length > 35) {
@@ -247,13 +248,9 @@ async function dadosTabelaQntOsAnual() {
 const elev_tab_dash = document.getElementById('elev-tab-dash')
 elev_tab_dash.addEventListener('click', () => {
     
-    //dadosTabelaQntOsAnual()
-})
-
-const btn_dash_filtro = document.getElementById('dash-btn-filtrar')
-btn_dash_filtro.addEventListener('click', () => {
     dadosTabelaQntOsAnual()
 })
+
 
 
 

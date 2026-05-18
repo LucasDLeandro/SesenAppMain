@@ -1,9 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import F, ExpressionWrapper, DurationField, Count
-from django.db.models.functions import TruncMonth, TruncYear, TruncDate
-from django.utils.formats import date_format
+from django.db.models import F, ExpressionWrapper, DurationField, Count, Sum, Value, IntegerField, DecimalField, F
+from django.db.models.functions import TruncMonth, TruncYear, TruncDate, Round
+from django.utils import timezone
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from django.views.decorators.http import require_POST, require_GET
@@ -12,22 +12,27 @@ from collections import defaultdict
 
 from zoneinfo import ZoneInfo
 
-
+from ..utils import calc_hrs_uteis_parado
 from ..forms.elev_os_form import ElevCreateOsForm, ElevConcluirOsForm
 from notificacoes.services import auto_message
 from notificacoes.models.contato_notificacao import Contato
 from notificacoes.models.template_notificacao import TemplateMessage
 from ..models.elev_so_model import ElevOrderReg
 
+from decimal import Decimal
+
 import pandas as pd
-import datetime as dt
+from datetime import datetime, timedelta
+import holidays
+
 
 
 
 @require_POST
 def api_elev_criar_os(request):
-    form = ElevCreateOsForm(request.POST)
-
+    requisicao = request.POST.copy()
+    requisicao["status"] = "ABERTA"
+    form = ElevCreateOsForm(requisicao)
     if form.is_valid():
         ordem_servico = form.save()
         contato_queryset = Contato.objects.filter(is_ativo=True)
@@ -60,30 +65,38 @@ def api_elev_criar_os(request):
 @require_POST
 def api_elev_concluir_os(request, id_elev_os):
     os_existente = get_object_or_404(ElevOrderReg, pk=id_elev_os)
+    elev_parado = os_existente.elevador_parado
     form = ElevConcluirOsForm(request.POST, instance=os_existente)
     contato_queryset = Contato.objects.filter(is_ativo=True)
 
     if form.is_valid():
-        os = form.save()
-        
-
-        for contato in contato_queryset:
-            tel = contato.telefone
+        if elev_parado == 'PARADO':
+            tmp_parado = calc_hrs_uteis_parado(os_existente.data_hora, form.cleaned_data["data_hora_conclusao"])
+            os_existente.tempo_parado = Decimal(str(tmp_parado))
+        else:
+            os_existente.tempo_parado = Decimal(str(0.0))
             
-            try:
-                template = get_object_or_404(TemplateMessage, tipo_evento='os_elev_conclusao', is_ativo=True)
-                texto = template.base_text
-                text = texto.format(
-                    nome=contato.nome,
-                    protocolo=os.protocolo,
-                    tecnico=os.tecnico,
-                    data_hora_saida=os.data_hora_saida.strftime("%d/%m/%Y às %H:%M"),
-                    servico=os.servico,
-                    funcionando=os.elevador_parado
-                )
-                auto_message(tel, text)   
-            except Exception as e:
-                print(f"Erro na Evolution API: {e}")
+        os = form.save()
+
+        template = get_object_or_404(TemplateMessage, tipo_evento='os_elev_conclusao', is_ativo=True)
+        if template: 
+            texto = template.base_text
+            for contato in contato_queryset:
+                tel = contato.telefone
+                try: 
+                    text = texto.format(
+                        nome=contato.nome,
+                        protocolo=os.protocolo,
+                        tecnico=os.tecnico,
+                        data_hora_saida=os.data_hora_conclusao.strftime("%d/%m/%Y às %H:%M"),
+                        servico=os.servico,
+                        funcionando=os.elevador_parado
+                    )
+                    auto_message(tel, text)   
+                except Exception as e:
+                    print(f"Erro na Evolution API: {e}")
+        else:
+            print("Erro: Template de conclusão, não encontrado. Nenhuma notificação enviada.")
 
         return JsonResponse({
             'sucesso': True,
@@ -95,14 +108,15 @@ def api_elev_concluir_os(request, id_elev_os):
     }, status=400)
 
 
-##############----------------INDICADOR 1----------------##############
+
 
 @require_GET
 def api_elev_concluidas(request):
     ##############----------------TABELA OSS ELEVADOR CONCLUIDAS----------------##############
     ordens_concluidas_tabela = ElevOrderReg.objects.filter(status='CONCLUIDA').order_by('-data_hora').annotate(
         tmp_chegada = ExpressionWrapper(F('data_hora_chegada') - F('data_hora'), output_field=DurationField()),
-        tmp_conclusao = ExpressionWrapper(F('data_hora_saida') - F('data_hora_chegada'), output_field=DurationField())
+        tmp_conclusao = ExpressionWrapper(F('data_hora_conclusao') - F('data_hora_chegada'), output_field=DurationField()),
+        
     )
 
     concluidas_tabela = []
@@ -111,22 +125,28 @@ def api_elev_concluidas(request):
         min_chegada = int(os.tmp_chegada.total_seconds() / 60) if os.tmp_chegada else 0 # type: ignore
         min_saida = int(os.tmp_conclusao.total_seconds() / 60) if os.tmp_conclusao else 0 # type: ignore
 
+        data_hora_local = timezone.localtime(os.data_hora) if os.data_hora else None
+        chegada_local = timezone.localtime(os.data_hora_chegada) if os.data_hora_chegada else None
+        conclusao_local = timezone.localtime(os.data_hora_conclusao) if os.data_hora_conclusao else None
+
         os_dict = {
             'protocolo': os.protocolo,
-            'data_hora': os.data_hora.strftime('%d/%m/%Y %H:%M'),
+            'data_hora': data_hora_local.strftime('%d/%m/%Y %H:%M') if data_hora_local else '',
             'elevador': os.elevador,
             'ocorrencia': os.ocorrencia,
             'solicitante': os.solicitante,
             'tecnico': os.tecnico,
-            'data_hora_chegada': os.data_hora_chegada.strftime('%d/%m/%Y %H:%M') if os.data_hora_chegada else 0,
+            'data_hora_chegada': chegada_local.strftime('%d/%m/%Y %H:%M') if chegada_local else '',
             'tmp_chegada': min_chegada, #type: ignore
-            'data_hora_saida': os.data_hora_saida.strftime('%d/%m/%Y %H:%M') if os.data_hora_saida else 0,
+            'data_hora_saida': conclusao_local.strftime('%d/%m/%Y %H:%M') if conclusao_local else '',
             'tmp_saida': min_saida, #type: ignore
+            'tempo_parado': os.tempo_parado,
             'componente': 0,
             'sub_componente': 0,
             'servico': os.servico,
             'status': os.status,
         }
+        
 
         concluidas_tabela.append(os_dict)
 
@@ -137,18 +157,22 @@ def api_elev_concluidas(request):
 def api_dados_indicador_um(**kwargs):
 
     indicador_um = []
-
+    META_PP = 30.0
+    META_COMUM = 120.0
     qs_filtrado = ElevOrderReg.objects.filter(status='CONCLUIDA', data_hora__range=(kwargs['inicio'], kwargs['fim'])).order_by('-data_hora').annotate(
         tmp_chegada = ExpressionWrapper(F('data_hora_chegada') - F('data_hora'), output_field=DurationField()),
-        tmp_conclusao = ExpressionWrapper(F('data_hora_saida') - F('data_hora_chegada'), output_field=DurationField())
+        tmp_conclusao = ExpressionWrapper(F('data_hora_conclusao') - F('data_hora_chegada'), output_field=DurationField())
     )
         
     for os_i in qs_filtrado:
         min_chegada = int(os_i.tmp_chegada.total_seconds() / 60) if os_i.tmp_chegada else 0 # type: ignore
         os_dict = {
-            'data_hora': os_i.data_hora,
+            'elevador': os_i.elevador,
+            'data_hora': os_i.data_hora.strftime('%d/%m/%Y %H:%M'),
             'protocolo': os_i.protocolo,
             'min_chegada': min_chegada,
+            'meta_pp': META_PP,
+            'meta_comum': META_COMUM 
         }
         indicador_um.append(os_dict)
 
@@ -185,7 +209,7 @@ def api_dados_indicador_tres (**kwargs):
 
     df['data_truncada'] = df['data_truncada'].astype(str)
     df['tamanho_z'] = df['ocorrencias'] * 20
-    df['elevador'] = pd.Categorical(df['elevador'], categories=listaElevadores)
+    #df['elevador'] = pd.Categorical(df['elevador'], categories=listaElevadores)
 
     df_agrupado = df.groupby('elevador', observed=False).agg({
         'data_truncada': list,
@@ -209,6 +233,57 @@ def api_dados_indicador_tres (**kwargs):
     #     'ind_tres': dados_finais,
     # })
 
+def api_dados_indicador_quatro(**kwargs): 
+    feriados_br = holidays.country_holidays('BR', language='pt_BR')
+    HRS_UTEIS_DIA = 12.0
+
+    inicio = kwargs["inicio"]
+    fim = kwargs["fim"]
+
+    qnt_dias_uteis = feriados_br.get_working_days_count(inicio, fim)
+    qnt_horas_uteis_totais = HRS_UTEIS_DIA * qnt_dias_uteis
+
+    qs_ind_quatro = ElevOrderReg.objects.filter(
+        status='CONCLUIDA', data_hora__range=(inicio, fim)
+        ).values(
+            'elevador' 
+        ).annotate(
+            total_hrs_uteis_parado=Sum('tempo_parado'),
+        ).annotate(
+            hrs_uteis_total_mes=Value(qnt_horas_uteis_totais, output_field=DecimalField()),
+            hrs_uteis_disponivel=Value(qnt_horas_uteis_totais, output_field=DecimalField()) - F('total_hrs_uteis_parado'),
+        ).annotate(
+            disponibilidade=ExpressionWrapper((F('hrs_uteis_disponivel') / F('hrs_uteis_total_mes')) * 100.0, output_field=DecimalField())
+        ).order_by('elevador')
+    
+    
+    ind_quatro = []
+    for elev in qs_ind_quatro:
+        disp_bruta = elev["disponibilidade"]
+
+        disp_tratada = round(float(disp_bruta), 2) if disp_bruta is not None else 0.0
+        
+        elev_dict = {
+            "elevador": elev["elevador"],
+            "tempo_parado": elev["total_hrs_uteis_parado"],
+            "total_mes": elev["hrs_uteis_total_mes"],
+            "dias_uteis": qnt_dias_uteis,
+            "horas_disponiveis": elev["hrs_uteis_disponivel"],
+            "disponibilidade": disp_tratada
+        }
+        ind_quatro.append(elev_dict)
+    
+
+    return ind_quatro
+
+        
+        
+
+
+    
+    
+        
+
 
 
 def api_grafico_qnt(**kwargs):
@@ -219,7 +294,9 @@ def api_grafico_qnt(**kwargs):
     tabela_mes_total = []
     
     # Filtro GROUP_BY para contagem das OSs 
-    dados_total = ElevOrderReg.objects.annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
+
+
+    dados_total = ElevOrderReg.objects.all().annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
     dados_grafico_anual = ElevOrderReg.objects.annotate(mes_exato=TruncMonth('data_hora')).values('mes_exato').annotate(total_mes=Count('id')).order_by('mes_exato')
 
     df_grafico = pd.DataFrame(list(dados_grafico_anual))
@@ -299,31 +376,43 @@ def api_grafico_qnt(**kwargs):
         totais_series.append(item_mes['total_mes'])
 
         
+
 ##########---------------------------------- GRÁFICO DE OCORRÊNCIAS E TOTALIZAÇÃO DE OCORRÊNCIAS ----------------------------------##########
-    return JsonResponse({
-        'meses': meses_labels,
-        'series': totais_series,
-        'tabela_mes': tabela_mes_total,
-        'df_html': df_html,
-        'dados_grafico': dados_finais_grafico
-    })
+   
+        return [
+            meses_labels,
+            totais_series,
+            tabela_mes_total,
+            df_html,
+            dados_finais_grafico
+            ]
+    
 
 @require_GET
 def api_elev_dashboard(request):
-    params_request = ['inicio', 'fim', 'ano', 'mes', 'dia', 'elev',
-    ]
+    params_request = ['inicio', 'fim', 'ano', 'mes', 'dia', 'elev']
     filtros = {chave: request.GET.get(chave) for chave in params_request if request.GET.get(chave)}
+
+    if 'inicio' in filtros:
+        inicio_dt = datetime.strptime(filtros['inicio'], '%Y-%m-%d')
+        filtros['inicio'] = timezone.make_aware(inicio_dt)
+    
+    if 'fim' in filtros:
+        fim_dt = datetime.strptime(filtros['fim'], '%Y-%m-%d')
+        filtros['fim'] = timezone.make_aware(fim_dt)
 
     ind_um = api_dados_indicador_um(**filtros)
     #indicador_dois = 
     ind_tres = api_dados_indicador_tres(**filtros)
-    #indicador_quatro = 
+    ind_quatro = api_dados_indicador_quatro(**filtros)
 
-    #totalizacao_elev = 
+    totalizacao_elev = api_grafico_qnt(**filtros)
 
     return JsonResponse({
         'ind_um': ind_um,
-        'ind_tres': ind_tres
+        'ind_tres': ind_tres,
+        'ind_quatro': ind_quatro,
+        'totalizacao': totalizacao_elev
     })
 
     

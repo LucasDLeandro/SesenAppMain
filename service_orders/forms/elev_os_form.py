@@ -29,12 +29,12 @@ class ElevCreateOsForm(forms.ModelForm):
             'atendente',
             'solicitante',
             'elevador_parado',
+            'status'
             ]
         
         widgets = {
             'protocolo': forms.TextInput(attrs={'type': 'text', 'id': 'id_protocolo_criar_os', 'class': 'form-control', 'maxlength': '9'}),
-            'elevador': forms.Select(attrs={'type': 'select', 'class': 'form-select'}),
-            'elevador': forms.Select(attrs={'class': 'form-select'}),
+            'elevador': forms.Select(attrs={'type': 'select', 'class': 'form-select', 'required': True}),
             'aprisionamento': forms.Select(attrs={'class':'form-select'}),
             'ocorrencia': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'atendente': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '150'}),
@@ -79,7 +79,7 @@ class ElevConcluirOsForm(forms.ModelForm):
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local' , 'class': 'form-control'}), 
     )
 
-    data_hora_saida = forms.DateTimeField(
+    data_hora_conclusao = forms.DateTimeField(
         label='Data/Hora - Conclusão',
         widget=forms.DateTimeInput(attrs={'type': 'datetime-local' , 'class': 'form-control'}),  
     )
@@ -90,7 +90,7 @@ class ElevConcluirOsForm(forms.ModelForm):
             'id',
             'protocolo',
             'data_hora_chegada',
-            'data_hora_saida',
+            'data_hora_conclusao',
             'tecnico',
             'servico',
             'elevador_parado',
@@ -103,7 +103,7 @@ class ElevConcluirOsForm(forms.ModelForm):
             'tecnico': forms.TextInput(attrs={'type': 'text', 'class': 'form-control'}),
             'servico': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
             'status': forms.Select(attrs={'type': 'select', 'class': 'form-select'}),
-            'elevador_parado': forms.Select(attrs={'type': 'select', 'class': 'form-select'})
+            'elevador_parado': forms.Select(attrs={'type': 'select', 'class': 'form-select', 'required': True})
         }
 
         labels = {
@@ -120,7 +120,7 @@ class ElevConcluirOsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['data_hora_chegada'].initial = self.data_agora
-        self.fields['data_hora_saida'].initial = self.data_agora
+        self.fields['data_hora_conclusao'].initial = self.data_agora
 
 
         

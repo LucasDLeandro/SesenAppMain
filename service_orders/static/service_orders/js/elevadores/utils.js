@@ -1,3 +1,22 @@
+import {dados_api, loadDataDashboard} from './elev_dashboard.js'
+
+export const listaElevadores = [
+            "Social 1 - M2674", 
+            "Social 2 - M2675", 
+            "Social 3 - M2676",
+            "Social 4 - M2677", 
+            "Social 5 - M2678", 
+            "Serviço 6 - M2679",
+            "Privativo 7 - M2680", 
+            "Social 8 - M2681", 
+            "Social 9 - M2682",
+            "Privativo 10 - M2683", 
+            "Social 11 - M2684", 
+            "Social 12 - M2685",
+            "Social 13 - M2686", 
+            "Serviço 14 - M2687"
+        ];
+
 export function formatDataIso(data) {
     const yyyy = data.getFullYear();
     const mm = String(data.getMonth() + 1).padStart(2, '0');
@@ -5,13 +24,14 @@ export function formatDataIso(data) {
     return `${yyyy}-${mm}-${dd}`;
 }
 
+
 export function mesAnoAtual() {
     const agora = new Date();
     const anoAtual = agora.getFullYear();
     const mes = agora.getMonth();
 
-    const dataDiaInicio = new Date(anoAtual, mes, 1).toISOString().substring(0,10)
-    const dataDiaFim = new Date(anoAtual, mes + 1, 0).toISOString().substring(0,10)
+    const dataDiaInicio = new Date(anoAtual, mes - 1, 1).toISOString().substring(0,10)
+    const dataDiaFim = new Date(anoAtual, mes, 0).toISOString().substring(0,10)
 
     const anoAtualInicio = new Date(anoAtual, 0, 1).toISOString().substring(0,10)
     const anoAtualFim = new Date(anoAtual, 11, 31).toISOString().substring(0,10)
@@ -91,3 +111,75 @@ export function filtroAnosMeses(filtro, anos, meses) {
             filtro.insertAdjacentHTML('beforeend', opcao)
         })
     }
+
+export async function changeFiltro(event, indicador, parametroX, parametroY, filtroDinamico, corpoChart, layoutChart) {
+
+    if (event.target.classList.contains('filtro-mes')) {
+
+        const isMarcado = event.target.checked
+        const anoMesSelecionado = event.target.getAttribute('data-ano')
+        const anoDesteMes = filtroDinamico.querySelector(`.filtro-ano[value="${anoMesSelecionado}"]`)
+        
+
+        const todosCheckboxes = filtroDinamico.querySelectorAll('input[type="checkbox"]')
+
+        let data_inicio = null
+        let data_fim = null
+
+        if (isMarcado) {
+            anoDesteMes.checked = true
+            const ano = anoDesteMes.value
+            const mes = event.target.value.substring(5,7)
+
+            data_inicio = `${ano}-${mes}-01`
+            const ultimoDiaMes = new Date(ano, mes, 0).getDate()
+            data_fim = `${ano}-${mes}-${ultimoDiaMes}`
+
+            const dadosFiltrados = await loadDataDashboard({inicio: data_inicio, fim: data_fim})
+            let novaCatX = null
+            let novaDadosY = null
+            if (indicador == 'ind_quatro') {
+                novaCatX = [...listaElevadores]
+                novaDadosY = listaElevadores.map(nomeElevador => {
+                    const elevadorNoBanco = dados_api.ind_quatro.find(item => item.elevador === nomeElevador)
+
+                    return elevadorNoBanco ? elevadorNoBanco.disponibilidade : 100
+                })
+
+            } else {
+                novaCatX = dadosFiltrados[indicador].map(item => item[parametroX])
+                novaDadosY = dadosFiltrados[indicador].map(item => item[parametroY])
+            }
+
+            
+
+            const novoTraceChart = [{
+                x: novaCatX,
+                y: novaDadosY,
+                type: 'bar',
+                text: novaDadosY
+            }]
+                
+            
+
+            Plotly.react(corpoChart, novoTraceChart, layoutChart)
+
+            todosCheckboxes.forEach(checkbox => {
+                if (checkbox.checked === false) {
+                    checkbox.disabled = true
+                }
+            
+            }) 
+            
+
+        } else {
+            todosCheckboxes.forEach(checkbox => {
+                checkbox.disabled = false
+            })
+
+            anoDesteMes.checked = false
+        }   
+
+    }
+
+}

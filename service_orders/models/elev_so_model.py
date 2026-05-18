@@ -67,7 +67,6 @@ class ElevOrderReg(models.Model):
         null=True, 
         blank=False, 
         choices=STATUS_ELEVADOR_CHOICES, 
-        default='Ativo',
         verbose_name="Status do Elevador"
     )
 
@@ -78,11 +77,18 @@ class ElevOrderReg(models.Model):
         help_text="Insira a data e horário de chegada ao local.",
     )
 
-    data_hora_saida = models.DateTimeField(
+    data_hora_conclusao = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name="Data e Horário de Saída",
-        help_text="Insira a data e horário de saída do local.",
+        verbose_name="Data e Horário de Conclusão",
+        help_text="Insira a data e horário de Conclusão.",
+    )
+    tempo_parado = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Horas Úteis Parado"
     )
 
     tecnico = models.CharField(
@@ -107,8 +113,6 @@ class ElevOrderReg(models.Model):
         max_length=20,
         choices=STATUS_OS,
         verbose_name="Status",
-        default='ABERTA'
-        
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
