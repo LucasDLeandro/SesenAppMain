@@ -1,0 +1,128 @@
+<div class="modal fade modal-ordens-wrapper" id="elev-create-os-modal" tabindex="-1" aria-labelledby="modalOrdensTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);"><i class="bi bi-headset me-2"></i> Abrir Chamado</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Body do Modal com Formulário -->
+      <div class="modal-body modal-ordens-body">
+        <form id="elev-create-os-form" 
+              data-url-elev-criar-os="{% url 'elevadores:api_criar_elev_os' %}"
+              method="post"
+              >
+          {% csrf_token %}
+
+          <input type="hidden" id="id_oculto_elev_os" name="id_oculto_elev_os">
+
+          {% if ordem.errors %}
+            <div class="alert alert-danger mb-4" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Erro ao submeter o formulário:</strong>
+              <div class="mt-2">{{ ordem.errors }}</div>
+            </div>
+          {% endif %}
+
+          <!-- Seção: Informações Básicas -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-info-circle"></i> Informações Básicas
+            </h6>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal">
+                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
+                  {{ ordem.data_hora.label }}
+                </label>
+                {{ ordem.data_hora }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.protocolo.id_for_label }}" class="form-label">
+                  {{ ordem.protocolo.label }}
+                </label>
+                {{ ordem.protocolo }}
+              </div>
+            </div>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal">
+                <label for="{{ ordem.aprisionamento.id_for_label }}" class="form-label">
+                  {{ ordem.aprisionamento.label }}
+                </label>
+                {{ ordem.aprisionamento }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.atendente.id_for_label }}" class="form-label">
+                  {{ ordem.atendente.label }}
+                </label>
+                {{ ordem.atendente }}
+              </div>
+            </div>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal full-width">
+                <label for="{{ ordem.solicitante.id_for_label }}" class="form-label">
+                  {{ ordem.solicitante.label }}
+                </label>
+                {{ ordem.solicitante }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção: Detalhes do Elevador -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-elevator"></i> Detalhes do Elevador
+            </h6>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal">
+                <label for="{{ ordem.elevador.id_for_label }}" class="form-label">
+                  {{ ordem.elevador.label }}
+                </label>
+                {{ ordem.elevador }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
+                  {{ ordem.elevador_parado.label }}
+                </label>
+                {{ ordem.elevador_parado }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção: Descrição da Ocorrência -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-chat-text"></i> Descrição da Ocorrência
+            </h6>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal full-width">
+                <label for="{{ ordem.ocorrencia.id_for_label }}" class="form-label">
+                  {{ ordem.ocorrencia.label }}
+                </label>
+                {{ ordem.ocorrencia }}
+                <small class="text-muted d-block mt-2">
+                  <i class="bi bi-lightbulb"></i> Descreva detalhadamente o problema encontrado
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer com botões -->
+          <div class="modal-ordens-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-lg me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-2"></i>Salvar Ordem
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

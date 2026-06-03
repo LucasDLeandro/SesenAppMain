@@ -38,15 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'crispy_forms',
     'django_bootstrap5',
     'django_filters',
     'widget_tweaks',
-    'service_orders',
+    'elevadores',
     'contratos',
     'notificacoes',
     'adm_setup',
-    'usuarios'
+    'usuarios',
+    'telefonia'
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -81,6 +83,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sesen_app.wsgi.application'
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    ]
+}
 
 
 # Database

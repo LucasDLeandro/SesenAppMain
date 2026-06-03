@@ -22,8 +22,9 @@ from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("api-auth/", include("rest_framework.urls")),
     path('', TemplateView.as_view(template_name='index.html'), name='inicio'),
-    path('ordens/', include('service_orders.urls', namespace='ordens')),
+    path('elevadores/', include('elevadores.urls', namespace='elevadores')),
     path('contratos/', include('contratos.urls', namespace='contratos')),
     path('notificacoes/', include('notificacoes.urls', namespace='notificacoes')),
     path('adm_setup/', include('adm_setup.urls', namespace='sys_config'))

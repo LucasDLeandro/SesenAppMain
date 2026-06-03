@@ -1,0 +1,406 @@
+{% extends "ordens/base_ordens.html" %}
+
+{% load widget_tweaks %}
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'elevadores/css/elev_list_os.css' %}">
+    <link rel="stylesheet" href="{% static 'elevadores/css/elev_status_cards.css' %}">
+{% endblock %}
+
+{% block title %} Otis - Lista OS's {% endblock %}
+
+{% block app_content %}
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <h3 class="fw-bold m-0" style="color: var(--text-main);">Gestão Elevadores</h3>
+            <p class="text-muted small mb-0">Controle de manutenções e ocorrências dos elevadores</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <button class="btn btn-danger shadow-sm px-4 rounded-pill" id="elev-btn-solicitar-os">
+                <i class="bi bi-headset me-2"></i>Abrir Chamado
+            </button>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs custom-tabs mb-4 px-2" id="elevordenstab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="ordens-abertas-tab" data-bs-toggle="tab" data-bs-target="#ordens-abertas-content" type="button" role="tab" aria-controls="ordens-abertas-content" aria-selected="true">
+                <i class="bi bi-chat-square-text me-1"></i> Abertas
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="ordens-concluidas-tab" data-bs-toggle="tab" data-bs-target="#ordens-concluidas-content" type="button" role="tab" aria-controls="ordens-concluidas-content" aria-selected="false">
+                <i class="bi bi-check-circle me-1"></i> Concluídas
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="elev-tab-dash" data-bs-toggle="tab" data-bs-target="#tab3-content" type="button" role="tab" aria-controls="tab3-content" aria-selected="false">
+                <i class="bi bi-bar-chart-steps me-1"></i> Dashboard
+            </button>
+        </li>
+    </ul>
+<div class="tab-content" id="ordensTabsContent">
+    
+
+        <div class="tab-pane fade show active" id="ordens-abertas-content" role="tabpanel" aria-labelledby="elevordens-abertas-tab">
+
+            <div class="custom-card shadow-sm border-0 rounded-3 p-3 bg-body">
+                <div class="table-responsive">
+                    <table class="table table-hover custom-modern-table table-compacta w-100" id="tabela-elev-ordens-abertas">
+                        <thead class="custom-thead">
+                            <tr>
+                                <th scope="col">Data/Hora</th>
+                                <th scope="col">Elevador</th>
+                                <th scope="col">Ocorrência</th>
+                                <th scope="col">Aprisionamento?</th>
+                                <th scope="col">Protocolo</th>
+                                <th scope="col">Atendente</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ações</th> {# Nova coluna para ações #}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for os in service_orders %}
+                                {% if os.status == 'ABERTA' %}
+                                    <tr>
+                                        
+                                        <td class="text-nowrap">{{ os.data_hora|date:"d/m/Y H:i" }}</td>
+                                        <td><span class="bg-light-subtle text-dark-emphasis">{{ os.elevador }}</span></td>
+                                        <td>{{ os.ocorrencia|truncatechars:40 }}</td>
+                                        <td>
+                                            {% if os.aprisionamento %}
+                                                <span class="badge bg-danger">Sim</span>
+                                            {% else %}
+                                                <span class="bg-light-subtle text-dark-emphasis">Não</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><code>{{ os.protocolo }}</code></td>
+                                        <td>{{ os.atendente }}</td>
+                                        <td>
+                                            {% if os.status == 'CONCLUIDA' %}
+                                                <span class="badge bg-success">CONCLUÍDA</span>
+                                            {% elif os.status == 'ABERTA' %}
+                                                <span class="badge bg-warning">ABERTA</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ os.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="abrirModalElevConcluir('{{ os.id }}', '{{ os.protocolo }}')" title="ConcluirOs">
+                                                <i class="bi bi-pencil-square"></i> Concluir OS
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-4">Nenhuma ordem de serviço encontrada.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    
+
+       <div class="tab-pane fade" id="ordens-concluidas-content" role="tabpanel" aria-labelledby="elevordens-concluidas-tab">
+            <div class="custom-card shadow-sm border-0 rounded-3 p-3 bg-body">
+                <div class="table-responsive">
+                    {% include 'ordens/includes/tabela_ordens_concluidas.html' %}
+                </div>
+            </div>
+            
+        </div> 
+        
+        <div class="tab-pane fade" id="tab3-content" role="tabpanel" aria-labelledby="tab3-tab">
+            <div class="custom-card shadow-sm border-0 rounded-3 p-4 bg-body">
+                <!-- Área de Filtros para o Dashboard 
+                <div class="row g-3 mb-4 align-items-end text-start" id="dash-filters-container">
+                    <div class="col-md-3 col-sm-6">
+                        <label for="dash-data-inicio" class="form-label small text-muted mb-1">Data Início</label>
+                        <input type="date" class="form-control form-control-sm custom-input" id="dash-data-inicio" name="data_inicio">
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <label for="dash-data-fim" class="form-label small text-muted mb-1">Data Fim</label>
+                        <input type="date" class="form-control form-control-sm custom-input" id="dash-data-fim" name="data_fim">
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                        <label for="dash-elevador" class="form-label small text-muted mb-1">Elevador</label>
+                        <select class="form-select form-select-sm custom-input" id="dash-elevador" name="elevador">
+                            <option value="" selected>Todos os elevadores</option>
+                             Options serão preenchidas via script 
+                        </select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 d-flex gap-2">
+                        <button type="button" class="btn btn-primary btn-sm flex-grow-1 shadow-sm" id="dash-btn-filtrar" title="Aplicar filtros">
+                            <i class="bi bi-funnel me-1"></i> Filtrar
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm flex-grow-1 shadow-sm" id="dash-btn-limpar" title="Limpar filtros">
+                            <i class="bi bi-eraser me-1"></i> Limpar
+                        </button>
+                    </div>
+                </div>-->
+                
+                
+
+                <!-- Status dos Elevadores -->
+                <div class="elev-status-container-light" id="dash-elev-status-container">
+                    <div class="elev-status-wrapper">
+                        <!-- Card 1 -->
+                        <div class="elev-monitor-card state-error" id="elev-monitor-1">
+                            <div class="elev-monitor-title" id="elev-title-1">Social 1 M2674</div>
+                            <div class="elev-monitor-icon" id="elev-icon-1">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <div class="elev-monitor-badge" id="elev-badge-1">
+                                PARADO
+                            </div>
+                            <div class="elev-monitor-timebox" id="elev-timebox-1">
+                            </div>
+                        </div>
+                        
+                        <!-- Card 2 -->
+                        <div class="elev-monitor-card state-error" id="elev-monitor-2">
+                            <div class="elev-monitor-title" id="elev-title-2">Social 2 M2675</div>
+                            <div class="elev-monitor-icon" id="elev-icon-2">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <div class="elev-monitor-badge" id="elev-badge-2">
+                                PARADO
+                            </div>
+                            <div class="elev-monitor-timebox timebox-border-green" id="elev-timebox-2">
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-3">
+                            <div class="elev-monitor-title" id="elev-title-3">Social 3 M2676</div>
+                            <div class="elev-monitor-icon" id="elev-icon-3">
+                                <i class="bi bi-check-circle"></i>
+                            </div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-3">
+                                &nbsp;
+                            </div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-3" style="border-color: transparent;">
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="elev-monitor-card state-error" id="elev-monitor-4">
+                            <div class="elev-monitor-title" id="elev-title-4">Social 4 M2677</div>
+                            <div class="elev-monitor-icon" id="elev-icon-4">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <div class="elev-monitor-badge" id="elev-badge-4">
+                                PARADO
+                            </div>
+                            <div class="elev-monitor-timebox" id="elev-timebox-4">
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="elev-monitor-card state-error" id="elev-monitor-5">
+                            <div class="elev-monitor-title" id="elev-title-5">Social 5 M2678</div>
+                            <div class="elev-monitor-icon" id="elev-icon-5">
+                                <i class="bi bi-exclamation-diamond"></i>
+                            </div>
+                            <div class="elev-monitor-badge" id="elev-badge-5">
+                                PARADO
+                            </div>
+                            <div class="elev-monitor-timebox timebox-filled" id="elev-timebox-5">
+                                <span class="time-value" id="elev-time-val-5">15:43</span>
+                                <span class="time-label">TEMPO PARADO</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Cards Restantes -->
+                        <!-- Card 6 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-6">
+                            <div class="elev-monitor-title" id="elev-title-6">Serviço 6 M2679</div>
+                            <div class="elev-monitor-icon" id="elev-icon-6"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-6">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-6" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 7 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-7">
+                            <div class="elev-monitor-title" id="elev-title-7">Privativo 7 M2680</div>
+                            <div class="elev-monitor-icon" id="elev-icon-7"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-7">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-7" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 8 -->
+                        <div class="elev-monitor-card state-warning" id="elev-monitor-8">
+                            <div class="elev-monitor-title" id="elev-title-8">Social 8 M2681</div>
+                            <div class="elev-monitor-icon" id="elev-icon-8"><i class="bi bi-wrench-adjustable"></i></div>
+                            <div class="elev-monitor-badge" id="elev-badge-8" style="color: black;">MANUT.</div>
+                            <div class="elev-monitor-timebox" id="elev-timebox-8"></div>
+                        </div>
+                        <!-- Card 9 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-9">
+                            <div class="elev-monitor-title" id="elev-title-9">Social 9 M2682</div>
+                            <div class="elev-monitor-icon" id="elev-icon-9"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-9">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-9" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 10 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-10">
+                            <div class="elev-monitor-title" id="elev-title-10">Privativo 10 M2683</div>
+                            <div class="elev-monitor-icon" id="elev-icon-10"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-10">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-10" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 11 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-11">
+                            <div class="elev-monitor-title" id="elev-title-11">Social 11 M2684</div>
+                            <div class="elev-monitor-icon" id="elev-icon-11"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-11">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-11" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 12 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-12">
+                            <div class="elev-monitor-title" id="elev-title-12">Social 12 M2685</div>
+                            <div class="elev-monitor-icon" id="elev-icon-12"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-12">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-12" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 13 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-13">
+                            <div class="elev-monitor-title" id="elev-title-13">Social 13 M2686</div>
+                            <div class="elev-monitor-icon" id="elev-icon-13"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-13">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-13" style="border-color: transparent;"></div>
+                        </div>
+                        <!-- Card 14 -->
+                        <div class="elev-monitor-card state-normal" id="elev-monitor-14">
+                            <div class="elev-monitor-title" id="elev-title-14">Serviço 14 M2687</div>
+                            <div class="elev-monitor-icon" id="elev-icon-14"><i class="bi bi-check-circle"></i></div>
+                            <div class="elev-monitor-badge empty" id="elev-badge-14">&nbsp;</div>
+                            <div class="elev-monitor-timebox empty" id="elev-timebox-14" style="border-color: transparent;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="text-secondary opacity-25">
+
+                <!-- Área de Gráficos (Grid) -->
+                <div class="row g-4 mt-2" id="dash-charts-container">
+                    <!-- Gráfico 1 -->
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 300px; border-color: var(--bs-border-color-translucent);">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-pie-chart me-2"></i>Indicador 1 - ACE</h6>
+                                <div class="dropdown" id="dropdown-chart-1-filter">
+                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-1" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="bi bi-funnel me-1"></i> Período
+                                    </button>
+                
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-1" aria-labelledby="btn-dropdown-chart-1">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="chart-1" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráfico 2 -->
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 300px; border-color: var(--bs-border-color-translucent);">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-bar-chart me-2"></i>Indicador 2 - MPM</h6>
+                                <div class="dropdown" id="dropdown-chart-2-filter">
+                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-2" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="bi bi-funnel me-1"></i> Período
+                                    </button>
+                
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-2" aria-labelledby="btn-dropdown-chart-2">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="chart-2" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                                <i class="bi bi-bar-chart-line fs-1 mb-2 opacity-50"></i>
+                                <p class="mb-0 small opacity-75">O gráfico será renderizado aqui</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráfico 3 -->
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 300px; border-color: var(--bs-border-color-translucent);">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-activity me-2"></i>Indicador 3 - Indice de Chamados Reincidentes (ICR)</h6>
+
+                                <div class="dropdown" id="dropdown-chart-3-filter">
+                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="bi bi-funnel me-1"></i> Período
+                                    </button>
+                
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-3" aria-labelledby="btn-dropdown-chart-3">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="chart-3" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráfico 4 -->
+                    <div class="col-12 col-lg-6">
+                        <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 300px; border-color: var(--bs-border-color-translucent);">
+                            <div class="d-flex justify-content-between align-items-center mb-0">
+                                <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-graph-up me-2"></i>Indicador 4 - Disponibilidade Média Mensal (DMM)</h6>
+                                <div class="dropdown" id="dropdown-chart-4-filter">
+                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-4" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                        <i class="bi bi-funnel me-1"></i> Período
+                                    </button>
+                
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-4" aria-labelledby="btn-dropdown-chart-4">
+                                    </ul>
+                                </div>
+                            </div>
+                            <div id="chart-4" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
+                                
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gráfico 5 (Visão Geral - Dividido em dois espaços) -->
+                    <div class="col-12">
+                        <div class="border rounded-3 p-3 h-100 d-flex flex-column" style="min-height: 350px; border-color: var(--bs-border-color-translucent);">
+                            <h6 class="text-start mb-3 fw-bold text-secondary"><i class="bi bi-bar-chart-steps me-2"></i>Visão Geral</h6>
+                            <div class="row flex-grow-1 m-0 w-100 h-100">
+                                <div class="col-12 col-md-6 d-flex flex-column p-0 pe-md-3 border-end border-light text-center text-muted">
+                                    <div class="d-flex justify-content-between align-items-center mb-0">
+                                        <h6 class="text-start mb-0 fw-bold text-secondary flex-shrink-0"><i class="bi bi-pie-chart-fill me-2"></i>Gráfico de Ocorrências</h6>
+                                        <div class="dropdown" id="dropdown-chart-5-filter">
+                                            <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-5" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                                <i class="bi bi-funnel me-1"></i> Período
+                                            </button>
+                        
+                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-5" aria-labelledby="btn-dropdown-chart-5">
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div id="chart-5" class="flex-grow-1 w-100 h-100 d-flex align-items-center justify-content-center">
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 d-flex flex-column p-0 ps-md-3 text-muted" style="min-width: 0;">
+                                    <h6 class="text-start mb-3 fw-bold text-secondary flex-shrink-0"><i class="bi bi-table me-2"></i>Totalização de Ocorrências</h6>
+                                    <div class="table-responsive flex-grow-1 w-100 h-100">
+                                        {% include 'ordens/includes/tabela_cont_os.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+{% endblock %}

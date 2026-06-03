@@ -1,0 +1,122 @@
+<div class="modal fade modal-ordens-wrapper" id="elev-concluir-os-modal" tabindex="-1" aria-labelledby="modalOrdensTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold text-success"><i class="bi bi-clipboard-check me-2"></i> Concluir Ordem</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Body do Modal com Formulário -->
+      <div class="modal-body modal-ordens-body">
+        <form id="elev-concluir-os-form">
+          {% csrf_token %}
+
+          <input type="hidden" id="id_oculto_elev_os_concluir" name="id_oculto_elev_os_concluir">
+
+          {% if ordem_concluir.errors %}
+            <div class="alert alert-danger mb-4" role="alert">
+              <i class="bi bi-exclamation-triangle me-2"></i>
+              <strong>Erro ao submeter o formulário:</strong>
+              <div class="mt-2">{{ ordem_concluir.errors }}</div>
+            </div>
+          {% endif %}
+
+          <!-- Seção: Informações Básicas -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-info-circle"></i> Informações de Conclusão da OS
+            </h6>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal">
+                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.data_hora_chegada.label }}
+                </label>
+                {{ ordem_concluir.data_hora_chegada }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.data_hora_conclusao.label }}
+                </label>
+                {{ ordem_concluir.data_hora_conclusao }}
+              </div>
+              
+            </div>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal">
+                <label for="{{ ordem.protocolo.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.protocolo.label }}
+                </label>
+                {{ ordem_concluir.protocolo }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.atendente.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.tecnico.label }}
+                </label>
+                {{ ordem_concluir.tecnico }}
+              </div>
+            </div>
+
+            <div class="form-row-modal">
+              
+            </div>
+          </div>
+
+          <!-- Seção: Detalhes do Elevador -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-elevator"></i> Detalhes do Elevador
+            </h6>
+
+            <div class="form-row-modal">
+              
+              <div class="form-group-modal">
+                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.elevador_parado.label }}
+                </label>
+                {{ ordem_concluir.elevador_parado }}
+              </div>
+              <div class="form-group-modal">
+                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.status.label }}
+                </label>
+                {{ ordem_concluir.status }}
+              </div>
+            </div>
+          </div>
+
+          <!-- Seção: Descrição da Ocorrência -->
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-chat-text"></i> Descrição da Serviço
+            </h6>
+
+            <div class="form-row-modal">
+              <div class="form-group-modal full-width">
+                <label for="{{ ordem.ocorrencia.id_for_label }}" class="form-label">
+                  {{ ordem_concluir.servico.label }}
+                </label>
+                {{ ordem_concluir.servico }}
+                <small class="text-muted d-block mt-2">
+                  <i class="bi bi-lightbulb"></i> Descreva detalhadamente o serviço executado
+                </small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer com botões -->
+          <div class="modal-ordens-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-lg me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-2"></i>Concluir Ordem
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
