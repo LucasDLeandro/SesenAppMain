@@ -18,7 +18,8 @@ const ordens_concluidas = document.getElementById('ordens-concluidas-tab')
 
 ordens_concluidas.addEventListener('click', async function() {
 
-    const urlElevDados = '/elevadores/api/os/listaOs/api_elev_concluidas'
+    //const urlElevDados = '/elevadores/api/os/listaOs/api_elev_concluidas'
+    const urlElevDados = '/elevadores/api/elevadoress/elev_oss_concluidas/'
 
     try {
         const resposta = await fetch(urlElevDados)
@@ -104,7 +105,7 @@ ordens_concluidas.addEventListener('click', async function() {
     }
 })
 
-let chartTotalAnual = null
+/*let chartTotalAnual = null
 
 async function dadosTabelaQntOsAnual() {
     const data_inicio = document.getElementById('dash-data-inicio') 
@@ -248,8 +249,8 @@ async function dadosTabelaQntOsAnual() {
 const elev_tab_dash = document.getElementById('elev-tab-dash')
 elev_tab_dash.addEventListener('click', () => {
     
-    dadosTabelaQntOsAnual()
-})
+    //dadosTabelaQntOsAnual()
+})*/
 
 
 

@@ -20,6 +20,11 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
@@ -27,5 +32,8 @@ urlpatterns = [
     path('elevadores/', include('elevadores.urls', namespace='elevadores')),
     path('contratos/', include('contratos.urls', namespace='contratos')),
     path('notificacoes/', include('notificacoes.urls', namespace='notificacoes')),
-    path('adm_setup/', include('adm_setup.urls', namespace='sys_config'))
+    path('adm_setup/', include('adm_setup.urls', namespace='sys_config')),
+
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Essa é a rota de Login!
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh') # Rota para renovar o token
 ]

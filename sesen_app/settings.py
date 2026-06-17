@@ -85,10 +85,16 @@ TEMPLATES = [
 WSGI_APPLICATION = 'sesen_app.wsgi.application'
 
 REST_FRAMEWORK = {
+
+    # Define como o sistema descobre quem é o usuário
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+        #'rest_framework.permissions.IsAuthenticated',
     ]
 }
 
@@ -170,3 +176,17 @@ EMAIL_PORT = config('EMAIL_PORT', default=465, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    # Tempo de vida do Token de Acesso (o que vai no cabeçalho das requisições)
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
+    
+    # Tempo de vida do Token de Atualização (usado para pegar um novo acesso quando o anterior vence)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    
+    # Adiciona a palavra 'Bearer' na frente do token no cabeçalho HTTP
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}

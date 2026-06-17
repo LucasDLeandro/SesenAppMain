@@ -5,8 +5,8 @@ const modal_os_concluir= new bootstrap.Modal(document.getElementById('elev-concl
 const form_os_concluir = document.getElementById('elev-concluir-os-form');
 
 
-const urlElevCriarOs = form_os_criar.getAttribute('data-url-elev-criar-os');
-const urlElevConcluirOsBase = form_os_concluir.getAttribute('data-url-elev-concluir-os');
+//const urlElevCriarOs = form_os_criar.getAttribute('data-url-elev-criar-os');
+//const urlElevConcluirOsBase = form_os_concluir.getAttribute('data-url-elev-concluir-os');
 
 const btn_solicitar_elev_os = document.getElementById('elev-btn-solicitar-os')
 btn_solicitar_elev_os.addEventListener("click", abrirModalElevSolicitar)
@@ -17,10 +17,8 @@ function abrirModalElevSolicitar() {
     id_oculto_elev_os_criar = document.getElementById('id_oculto_elev_os');
     id_oculto_elev_os_criar = "";
 
-    form_os_criar.action = urlElevCriarOs
-
-    console.log(`ID_OS(Protocolo): ${id_oculto_elev_os_criar}`)
-    console.log(`urlElevCriarOs: ${form_os_criar.action}`)
+    const urlElevRegistrarOsReal = `/elevadores/api/elevadoress/`
+    form_os_criar.action = urlElevRegistrarOsReal
 
     modal_os_criar.show();
 }
@@ -49,10 +47,15 @@ form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
     const urlElevCriarDestino = form_os_criar.action;
     const formDataElevCriar = new FormData(form_os_criar);
 
+    console.log(`urlElevCriarDestino: ${urlElevCriarDestino}`)
+
     try {
         const resposta = await fetch(urlElevCriarDestino, {
             method:'POST',
-            body: formDataElevCriar
+            body: formDataElevCriar,
+            headers: {
+                'X-CSRFToken': formDataElevCriar.get('csrfmiddlewaretoken')
+            }
         });
 
         const dados = await resposta.json();
@@ -65,7 +68,7 @@ form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
             modal_os_criar.hide()
             window.location.reload()
         } else {
-            console.log("Erros encontrados no formulário:", dados.erros)
+            console.log("Erros encontrados no formulário:", dados)
             modal_os_concluir.hide()
             Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos", "error")
         }

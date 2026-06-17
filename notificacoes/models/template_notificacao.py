@@ -4,7 +4,13 @@ class TemplateMessage(models.Model):
     TIPO_EVENTO_CHOICES = [
         ('false', '---'),
         ('os_elev_registro', 'Elevadores - Registro de Nova OS'),
-        ('os_elev_conclusao', 'Elevadores - Conclusão de OS Aberta')
+        ('os_elev_conclusao', 'Elevadores - Conclusão de OS Aberta'),
+        ('VAGO_1', 'Elevadores - TEMPLATE VAGO - 1', ),
+        ('VAGO_2', 'Elevadores - TEMPLATE VAGO - 2', ),
+        ('VAGO_3', 'Elevadores - TEMPLATE VAGO - 3', ),
+        ('VAGO_4', 'Elevadores - TEMPLATE VAGO - 4', ),
+        ('VAGO_5', 'Elevadores - TEMPLATE VAGO - 5', ),
+        ('VAGO_6', 'Elevadores - TEMPLATE VAGO - 6', )
     ]
 
     tipo_evento = models.CharField(

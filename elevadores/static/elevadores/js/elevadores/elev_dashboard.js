@@ -5,7 +5,7 @@ const elev_selecionado = document.getElementById('dash-elevador')
 const {inicioMesAtual, fimMesAtual, rangeDeAnos, rangeDeMeses, inicioAnoAtual, fimAnoAtual} = mesAnoAtual()
 
 
-const urlBase = "/elevadores/api/elev/dadosDashboard/"
+const urlBase = "/elevadores/api/elevadoress/dashboard/"
 
 
 export let dados_api = {}
