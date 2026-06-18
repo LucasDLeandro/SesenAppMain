@@ -34,6 +34,8 @@ urlpatterns = [
     path('notificacoes/', include('notificacoes.urls', namespace='notificacoes')),
     path('adm_setup/', include('adm_setup.urls', namespace='sys_config')),
 
+    path('hub_servicos/', TemplateView.as_view(template_name='base_hub_servicos.html'), name='hub_servicos'),
+
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Essa é a rota de Login!
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh') # Rota para renovar o token
 ]

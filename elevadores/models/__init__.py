@@ -56,7 +56,7 @@ SERVICES_LIST = [
 
 from .mapa_servicos import Categoria, Servico
 
-from .eng_reg_os_model import EngServiceReg
+#from .eng_reg_os_model import EngServiceReg
 from .elev_so_model import ElevOrderReg
 
 

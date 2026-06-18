@@ -1,9 +1,9 @@
-{% extends "index.html" %}
+{% extends "base_hub_servicos.html" %}
 {% load static %}
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'elevadores/css/form_ordens_modal.css' %}">
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.dataTables.css" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block sidebar_toggle %}
@@ -12,55 +12,15 @@
     </button>
 {% endblock %}
 
-{% block content %}
-<div class="row g-0" style="height: 100%;">
-    <aside class="col-md-3 col-lg-2 p-0" style="height: 100%;">
-        <div class="offcanvas-md offcanvas-start sidebar-lateral w-100 h-100" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel" style="overflow-y: auto;">
-            
-            <div class="offcanvas-header d-md-none border-bottom border-secondary">
-                <h5 class="offcanvas-title" id="sidebarOffcanvasLabel" style="color: var(--text-main);">Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas" aria-label="Close"></button>
-            </div>
-
-            <div class="offcanvas-body d-flex flex-column p-0">
-                <div class="sidebar-heading">Aplicações Auxiliares</div>
-                <nav class="nav flex-column mb-3">
-                    <a class="nav-sidebar-link active" href="{% url 'elevadores:elev_list_os' %}">
-                        <i class="bi bi-clipboard-check"></i> Elevadores
-                    </a>
-
-                    <div class="dropdown" style="width: 100%;">
-                        <a class="nav-sidebar-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false" style="width: 100%;">
-                            <i class="bi bi-plus-circle"></i> Cadastrar
-                        </a>
-                        <ul class="dropdown-menu" style="width: 100%;">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-briefcase"></i> Empresas</a></li>
-                            <li><a class="dropdown-item" href="{% url 'elevadores:cat_serv_list' %}"><i class="bi bi-building"></i> Grandes Áreas</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-tools"></i> Serviços</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a></li>
-                        </ul>
-                    </div>
-                    
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
-                </nav>
-
-                <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
-                <nav class="nav flex-column mb-4">
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
-                </nav>
-            </div>
-        </div>
-    </aside>
-    
-    <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
+{% block painel_servicos %}
+    <div class="h-100">
         {% block app_content %}
             
         {% endblock %}
-    </section>
-</div>
+    </div>
 
-{% include 'ordens/includes/form_ordens_modal_registrar.html' %}
-{% include 'ordens/includes/form_ordens_modal_concluir.html' %}
+    {% include 'ordens/includes/form_ordens_modal_registrar.html' %}
+    {% include 'ordens/includes/form_ordens_modal_concluir.html' %}
 
 {% endblock %}
 
@@ -72,7 +32,7 @@
     <script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
     <script type="module" src="{% static 'elevadores/js/elevadores/list_elevadores.js' %}"></script>
     <script src="{% static 'elevadores/js/elevadores/os_modal_form.js' %}"></script>
     <script type="module" src="{% static 'elevadores/js/elevadores/elev_dashboard.js' %}"></script>

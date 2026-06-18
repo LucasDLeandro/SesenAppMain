@@ -70,11 +70,12 @@
 
 .custom-modern-table tbody tr td {
     transition: all 0.2s;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--bs-border-color-translucent, rgba(0,0,0,0.05));
     border-top: none;
     border-left: none;
     border-right: none;
     color: var(--text-main);
+    padding: 0.8rem 0.5rem;
 }
 
 .custom-modern-table tbody tr:hover td {
