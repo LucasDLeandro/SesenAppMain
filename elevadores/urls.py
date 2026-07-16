@@ -12,6 +12,8 @@ app_name = 'elevadores'
 router = DefaultRouter()
 
 router.register(r'elevadoress', elev_drf_viewset.ElevadorViewSet, basename='elevadoress')
+router.register(r'manutencao_preventiva', elev_drf_viewset.ManutencaoPreventivaViewSet, basename='manutencao_preventiva')
+router.register(r'peca_manutencao', elev_drf_viewset.PecaManutencaoViewSet, basename='peca_manutencao')
 
 urlpatterns = [
     #path('', views.index, name='index'),

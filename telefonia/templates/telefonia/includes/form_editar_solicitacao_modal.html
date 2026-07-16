@@ -1,0 +1,144 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-editar-solicitacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
+          <i class="bi bi-pencil-square me-2"></i> Editar Solicitação
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-ordens-body px-4">
+        
+        <form id="form-editar-solicitacao-modal">
+          <input type="hidden" id="edit-solicitacao-id">
+          
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-info-circle"></i> Informações Gerais
+            </h6>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Protocolo SEI</label>
+                <input type="text" class="form-control bg-light" id="edit-protocolo" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Data da Solicitação</label>
+                <input type="text" class="form-control bg-light" id="edit-data" readonly>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label class="form-label text-muted fw-bold mb-1">Unidade</label>
+                <input type="text" class="form-control" id="edit-unidade" required>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label text-muted fw-bold mb-1">Sigla</label>
+                <input type="text" class="form-control" id="edit-sigla">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Local / Setor</label>
+                <input type="text" class="form-control" id="edit-local">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Termo de Transferência</label>
+                <input type="text" class="form-control" id="edit-termo">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Status</label>
+                <select class="form-select" id="edit-status">
+                  <option value="recebida">Recebida</option>
+                  <option value="em_analise">Em Análise</option>
+                  <option value="pendente">Pendente</option>
+                  <option value="concluida">Concluída</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Quantidade Solicitada</label>
+                <input type="number" class="form-control" id="edit-quantidade" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-modal mt-3">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-person-badge"></i> Dados do Solicitante e Avaliação
+            </h6>
+            
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Solicitante</label>
+                <input type="text" class="form-control" id="edit-solicitante">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Ramal / Contato</label>
+                <input type="text" class="form-control" id="edit-ramal">
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Técnico Responsável</label>
+                <select class="form-select" id="edit-tecnico_responsavel">
+                    <option value="" disabled selected>Selecione um técnico...</option>
+                    {% for tecnico in tecnicos %}
+                        <option value="{{ tecnico.get_full_name|default:tecnico.username }}">{{ tecnico.get_full_name|default:tecnico.username }}</option>
+                    {% empty %}
+                        <option value="" disabled>Nenhum técnico de telefonia encontrado</option>
+                    {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label text-muted fw-bold mb-1">Data/Hora da Instalação</label>
+                <input type="datetime-local" class="form-control" id="edit-data_instalacao">
+              </div>
+            </div>
+            
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="form-label text-muted fw-bold mb-1">Relatório / Observações</label>
+                <textarea class="form-control" id="edit-relatorio" rows="3"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-modal mt-3">
+            <h6 class="form-section-title-modal text-success">
+              <i class="bi bi-check-circle"></i> Equipamentos Instalados (Somente Visualização)
+            </h6>
+            <div class="table-responsive mt-2">
+              <table class="table table-sm table-bordered align-middle text-center mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>Patrimônio</th>
+                    <th>Ramal Associado</th>
+                  </tr>
+                </thead>
+                <tbody id="edit-tbody-aparelhos">
+                </tbody>
+              </table>
+              <div id="edit-secao-aparelhos-empty" class="text-muted small mt-2" style="display: none;">
+                Nenhum aparelho instalado ainda.
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-ordens-footer mt-2 mb-4 d-flex justify-content-end px-4 align-items-center">
+        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary shadow-sm" onclick="salvarEdicaoSolicitacao()">
+          <i class="bi bi-save me-2"></i>Salvar Alterações
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

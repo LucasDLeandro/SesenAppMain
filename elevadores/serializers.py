@@ -14,6 +14,7 @@ class ElevRegistrarOsSerializer(serializers.ModelSerializer):
             'data_hora',
             'protocolo',
             'elevador',
+            'tipo_chamado',
             'aprisionamento',
             'ocorrencia',
             'atendente',
@@ -39,6 +40,7 @@ class ElevConcluirOsSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'protocolo',
+            'tipo_chamado',
             'data_hora_chegada',
             'data_hora_conclusao',
             'tecnico',
@@ -48,7 +50,7 @@ class ElevConcluirOsSerializer(serializers.ModelSerializer):
             'status',
         ]
 
-        read_only_fields = ['id', 'protocolo', 'elevador']
+        read_only_fields = ['id', 'protocolo', 'elevador', 'tipo_chamado']
     
     def update(self, instance, validated_data):
         elev_parado = instance.elevador_parado
@@ -75,3 +77,20 @@ class DashboardFiltroSerializer(serializers.Serializer):
     mes = serializers.IntegerField(required=False)
     dia = serializers.IntegerField(required=False)
     elev = serializers.CharField(required=False)
+
+class ElevadorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ElevOrderReg
+        fields = "__all__"
+
+from .models import ManutencaoPreventiva, PecaManutencao
+
+class ManutencaoPreventivaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ManutencaoPreventiva
+        fields = '__all__'
+
+class PecaManutencaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PecaManutencao
+        fields = '__all__'

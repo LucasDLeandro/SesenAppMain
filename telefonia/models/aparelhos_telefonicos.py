@@ -25,8 +25,19 @@ class AparelhoVoip(models.Model):
         max_length=30,
         null=True,
         choices=IntegridadeAparelho.choices,
-        default=IntegridadeAparelho.PERFEITO
+        default=IntegridadeAparelho.FUNCIONA
     )
+
+    fcn = models.CharField(max_length=30, null=True, blank=True)
+    sala = models.CharField(max_length=50, null=True, blank=True)
+
+    STATUS_CHOICES = [
+        ('estoque', 'Em Estoque'),
+        ('instalado', 'Instalado'),
+        ('manutencao', 'Em Manutenção'),
+        ('defeituoso', 'Defeituoso'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='estoque')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

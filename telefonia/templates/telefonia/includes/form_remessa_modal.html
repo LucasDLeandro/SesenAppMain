@@ -1,0 +1,69 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-remessa-manutencao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg bg-body">
+            
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
+                    <i class="bi bi-file-earmark-text me-2"></i> Nova Remessa para Manutenção
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body modal-ordens-body px-4">
+                <form id="form-remessa-manutencao" class="row g-3">
+                    
+                    <div class="form-section-modal">
+                        <h6 class="form-section-title-modal">
+                            <i class="bi bi-info-circle"></i> Dados da Remessa
+                        </h6>
+                        <div class="col-12 mb-3">
+                            <label class="form-label form-label-sm fw-bold text-muted">Nº do Memorando</label>
+                            <input type="text" class="form-control form-control-sm form-control-modern" id="remessa_memorando" name="memorando" placeholder="ex: Memorando SESEN/COSEN/SAD nº 142/2026" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form-label-sm fw-bold text-muted">Empresa Contratada</label>
+                            <input type="text" class="form-control form-control-sm form-control-modern" id="remessa_empresa" name="empresa_contratada" value="3CORP TECHNOLOGY LTDA." required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label form-label-sm fw-bold text-muted">Contrato</label>
+                            <input type="text" class="form-control form-control-sm form-control-modern" id="remessa_contrato" name="contrato_tse" value="Contrato TSE nº 40/2021" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section-modal mt-3">
+                        <h6 class="form-section-title-modal">
+                            <i class="bi bi-phone"></i> Aparelhos com Defeito
+                        </h6>
+                        <div class="col-12 mb-2">
+                            <label class="form-label form-label-sm fw-bold text-muted">Aparelhos que serão recolhidos</label>
+                            
+                            <!-- Container de Aparelhos Dinâmicos -->
+                            <div id="remessa-aparelhos-container" class="mb-3">
+                                <!-- Linhas inseridas via JS -->
+                            </div>
+                            
+                            <div class="mb-3">
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="btn-add-aparelho-remessa">
+                                    <i class="bi bi-plus-circle me-1"></i> Adicionar Aparelho
+                                </button>
+                            </div>
+                            
+                            <div class="form-text mt-1">Apenas aparelhos com status 'Defeituoso' ou integridade 'Defeito' aparecerão nas opções.</div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            
+            <div class="modal-ordens-footer mt-2 mb-4 d-flex justify-content-end px-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="salvarRemessaManutencao()">
+                    <i class="bi bi-check2-circle me-2"></i>Salvar Remessa
+                </button>
+            </div>
+            
+        </div>
+    </div>
+</div>

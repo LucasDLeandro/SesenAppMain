@@ -1,0 +1,69 @@
+{% extends "base_hub_servicos.html" %}
+{% load static %}
+
+{% block painel_servicos %}
+<link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
+<style>
+    .dashboard-header { background: linear-gradient(135deg, #1A2980 0%, #26D0CE 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+    .status-badge { padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
+    .custom-modern-table { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+</style>
+
+<div class="dashboard-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2 class="fw-bold mb-0">Gestão de Patrimônio & Transferências</h2>
+        <p class="mb-0 opacity-75">Controle centralizado de movimentações de equipamentos</p>
+    </div>
+    <div class="dropdown">
+        <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+            <i class="bi bi-arrow-left-right me-2"></i>Transferências
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalTransferencia"><i class="bi bi-arrow-left-right me-2 text-warning"></i>Nova Transferência</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="custom-modern-table p-4">
+    <table id="tbTransferencias" class="table table-hover w-100">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th><th>Equipamento</th><th>Trajeto</th><th>Data</th><th>Responsável</th><th>Requisição</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<!-- Modal Transferencia -->
+<div class="modal fade" id="modalTransferencia" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Registrar Transferência</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formTransferencia">
+            <div class="mb-3">
+                <label>Equipamento</label>
+                <select name="equipamento" id="selEquipamento" class="form-select" required></select>
+            </div>
+            <div class="mb-3"><label>Origem</label><input type="text" name="origem" class="form-control" required></div>
+            <div class="mb-3"><label>Destino</label><input type="text" name="destino" class="form-control" required></div>
+            <div class="mb-3"><label>Responsável</label><input type="text" name="responsavel" class="form-control" required></div>
+            <div class="mb-3"><label>Nº Requisição</label><input type="text" name="numero_requisicao" class="form-control"></div>
+            <div class="mb-3"><label>Motivo</label><textarea name="motivo" class="form-control"></textarea></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="salvarTransferencia()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+<script src="{% static 'js/transferencias_dashboard.js' %}"></script>
+{% endblock %}

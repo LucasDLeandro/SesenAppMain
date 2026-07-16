@@ -1,0 +1,66 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-lista-abertas-elev" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
+          <i class="bi bi-tools me-2"></i> O.S Abertas / Manutenções
+        </h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-4">
+        <p class="text-muted mb-4">Abaixo estão as ordens de serviço (O.S) que aguardam manutenção ou conclusão pelo técnico.</p>
+        
+        <style>
+          /* Permite quebra de texto para evitar rolagem horizontal em modais */
+          #tabela-elev-abertas-modal td {
+              white-space: normal !important;
+              word-wrap: break-word;
+          }
+        </style>
+
+        <div class="table-responsive" style="overflow-x: hidden;">
+            <table class="table table-hover table-borderless align-middle custom-modern-table table-compacta w-100" id="tabela-elev-abertas-modal">
+                <thead class="custom-thead">
+                    <tr>
+                        <th class="text-nowrap">Data/Hora</th>
+                        <th class="text-nowrap">Protocolo</th>
+                        <th>Elevador</th>
+                        <th style="width: 40% !important; min-width: 200px;">Ocorrência</th>
+                        <th class="text-nowrap text-center">Preso?</th>
+                        <th class="text-nowrap text-center">Status</th>
+                        <th style="width: 15% !important;" class="text-nowrap text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for os in service_orders %}
+                        {% if os.status == 'ABERTA' %}
+                            <tr>
+                                <td class="text-nowrap align-middle">{{ os.data_hora|date:"d/m/Y H:i" }}</td>
+                                <td class="text-nowrap align-middle"><code>{{ os.protocolo }}</code></td>
+                                <td class="align-middle"><span class="bg-light-subtle text-dark-emphasis text-nowrap">{{ os.elevador }}</span></td>
+                                <td class="align-middle">{{ os.ocorrencia|truncatechars:60 }}</td>
+                                <td class="text-nowrap align-middle text-center">
+                                    {% if os.aprisionamento %}
+                                        <span class="badge bg-danger">Sim</span>
+                                    {% else %}
+                                        <span class="bg-light-subtle text-dark-emphasis">Não</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-nowrap align-middle text-center">
+                                    <span class="badge bg-warning">ABERTA</span>
+                                </td>
+                                <td class="text-nowrap align-middle text-end">
+                                    <button class="btn btn-sm btn-primary text-nowrap" style="white-space: nowrap;" onclick="abrirModalElevConcluir('{{ os.id }}', '{{ os.protocolo }}')" title="Concluir O.S">
+                                        <i class="bi bi-pencil-square me-1"></i> Concluir
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

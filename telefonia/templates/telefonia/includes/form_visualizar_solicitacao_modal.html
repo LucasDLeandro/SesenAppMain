@@ -1,0 +1,121 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-visualizar-solicitacao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
+          <i class="bi bi-eye-fill me-2"></i> Detalhes da Solicitação
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body modal-ordens-body px-4">
+        
+        <div class="form-section-modal">
+          <h6 class="form-section-title-modal">
+            <i class="bi bi-info-circle"></i> Informações Gerais
+          </h6>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <strong>Protocolo:</strong> <span id="vis-protocolo"></span>
+            </div>
+            <div class="col-md-6">
+              <strong>Data:</strong> <span id="vis-data"></span>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-12">
+              <strong>Unidade:</strong> <span id="vis-unidade"></span> (<span id="vis-sigla"></span>)
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <strong>Local / Setor:</strong> <span id="vis-local"></span>
+            </div>
+            <div class="col-md-6">
+              <strong>Termo de Transferência:</strong> <span id="vis-termo"></span>
+            </div>
+          </div>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <strong>Status:</strong> <span id="vis-status"></span>
+            </div>
+            <div class="col-md-6">
+              <strong>Quantidade Solicitada:</strong> <span id="vis-quantidade"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-modal mt-3">
+          <h6 class="form-section-title-modal">
+            <i class="bi bi-person-badge"></i> Dados do Solicitante e Avaliação
+          </h6>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <strong>Solicitante:</strong> <span id="vis-solicitante"></span>
+            </div>
+            <div class="col-md-6">
+              <strong>Contato:</strong> <span id="vis-contato"></span>
+            </div>
+          </div>
+          <!-- Técnico e Avaliação -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label text-muted fw-bold mb-1">Técnico Responsável</label>
+              <div class="form-control-plaintext border rounded px-3 py-2 bg-light" id="vis_tecnico_responsavel">-</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-muted fw-bold mb-1">Data/Hora da Instalação</label>
+              <div class="form-control-plaintext border rounded px-3 py-2 bg-light" id="vis_data_instalacao">-</div>
+            </div>
+          </div>
+          
+          <div class="row mb-3">
+            <div class="col-12">
+              <label class="form-label text-muted fw-bold mb-1">Relatório</label>
+              <div class="form-control-plaintext border rounded px-3 py-2 bg-light" id="vis_relatorio" style="min-height: 60px;">-</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-modal mt-3">
+          <h6 class="form-section-title-modal">
+            <i class="bi bi-telephone"></i> Aparelhos Vinculados
+          </h6>
+          <div class="row mb-2">
+            <div class="col-md-6">
+              <strong>Ramal:</strong> <span id="vis-ramal"></span>
+            </div>
+            <div class="col-md-6">
+              <strong>Local(is) de Instalação:</strong> <span id="vis-local-instalacao"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section-modal mt-3" id="vis-secao-aparelhos-instalados" style="display: none;">
+          <h6 class="form-section-title-modal text-success">
+            <i class="bi bi-check-circle"></i> Equipamentos Instalados
+          </h6>
+          <div class="table-responsive mt-2">
+            <table class="table table-sm table-bordered align-middle text-center mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Patrimônio</th>
+                  <th>Ramal Associado</th>
+                </tr>
+              </thead>
+              <tbody id="vis-tbody-aparelhos">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-ordens-footer mt-2 mb-4 d-flex justify-content-between px-4 align-items-center">
+        <div class="text-muted" style="font-size: 0.85rem;" id="vis-ultima-atualizacao">
+        </div>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-2"></i>Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

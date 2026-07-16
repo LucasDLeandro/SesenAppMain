@@ -1,0 +1,526 @@
+{% extends "setups/base_setup.html" %}
+
+{% block app_content %}
+<div class="mb-4">
+    <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-people-fill" style="font-size: 32px; color: #106EBE;"></i>
+        <h2 class="ms-3 fw-bold m-0 text-body">Gestão de Usuários</h2>
+    </div>
+    <p class="text-muted" style="margin-left: 44px;">Criação e edição dos usuários do sistema SESEN.</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-4" id="usuariosTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-bold" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios-tab-pane" type="button" role="tab" aria-controls="usuarios-tab-pane" aria-selected="true">
+            <i class="bi bi-person-lines-fill me-2"></i> Lista de Usuários
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold" id="config-tab" data-bs-toggle="tab" data-bs-target="#config-tab-pane" type="button" role="tab" aria-controls="config-tab-pane" aria-selected="false">
+            <i class="bi bi-gear me-2"></i> Configurações e Templates
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="usuariosTabsContent">
+    <!-- ABA LISTA DE USUÁRIOS -->
+    <div class="tab-pane fade show active" id="usuarios-tab-pane" role="tabpanel" aria-labelledby="usuarios-tab" tabindex="0">
+        <!-- Barra de Ações -->
+        <div class="d-flex justify-content-end mb-4">
+            <button class="btn btn-primary shadow-sm" onclick="abrirModalCriar()">
+                <i class="bi bi-person-plus-fill me-2"></i>NOVO USUÁRIO
+            </button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <table id="tabela-usuarios" class="table table-hover align-middle w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Usuário</th>
+                            <th>Nome</th>
+                            <th>Sobrenome</th>
+                            <th>E-mail</th>
+                            <th>Telefone</th>
+                            <th>Status E-mail</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Via AJAX -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA CONFIGURAÇÕES -->
+    <div class="tab-pane fade" id="config-tab-pane" role="tabpanel" aria-labelledby="config-tab" tabindex="0">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_global">
+            
+            <div class="mb-4 bg-light p-3 rounded">
+                <div class="form-check form-switch fs-5">
+                    <input class="form-check-input" type="checkbox" role="switch" id="notificar_novos_usuarios" name="notificar_novos_usuarios" {% if config.notificar_novos_usuarios %}checked{% endif %}>
+                    <label class="form-check-label ms-2 fw-bold" for="notificar_novos_usuarios">
+                        Notificar novos usuários via E-mail
+                    </label>
+                </div>
+                <div class="form-text mt-2 text-muted">
+                    Se ativado, ao cadastrar um novo usuário no sistema, será enviado um WhatsApp para o telefone configurado contendo as boas-vindas e os dados de acesso.
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mb-4 border-bottom pb-4">
+                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                    <i class="bi bi-save me-2"></i> Salvar Preferências
+                </button>
+            </div>
+        </form>
+
+        <h5 class="fw-bold mb-3 mt-4 text-secondary"><i class="bi bi-file-earmark-text me-2"></i>Template de Boas-Vindas</h5>
+        <div class="row g-4 mt-1">
+            <div class="col-md-8 col-lg-6">
+                <div class="msg-card-template shadow-sm h-100 d-flex flex-column border rounded">
+                    <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom p-3 bg-light">
+                        <h6 class="m-0 fw-bold">Mensagem de Boas-Vindas</h6>
+                        <span class="badge bg-success">ATIVA</span>
+                    </div>
+                    <div class="msg-card-body flex-grow-1 p-3">
+                        <p class="text-muted small mb-3">WhatsApp - Notificação para Novos Usuários</p>
+                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555; white-space: pre-wrap; word-break: break-word;">{{ config.mensagem_boas_vindas|truncatechars:100 }}</div>
+                    </div>
+                    
+                    <div class="msg-card-footer mt-auto pt-3 border-top p-3 d-flex">
+                        <button type="button" class="btn btn-outline-primary w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#modalBoasVindas">
+                            <i class="bi bi-pencil me-1"></i> EDITAR TEMPLATE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição de Template: Mensagem de Boas-Vindas -->
+<div class="modal fade" id="modalBoasVindas" tabindex="-1" aria-labelledby="modalBoasVindasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalBoasVindasLabel"><i class="bi bi-pencil-square me-2"></i>Editar Template: Boas-Vindas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_template">
+                    
+                    <div class="mb-3">
+                        <label for="mensagem_boas_vindas" class="form-label fw-bold">Texto da Mensagem</label>
+                        <textarea class="form-control font-monospace" id="mensagem_boas_vindas" name="mensagem_boas_vindas" rows="8" required>{{ config.mensagem_boas_vindas }}</textarea>
+                        <div class="form-text mt-2 text-muted">
+                            <strong>Variáveis disponíveis:</strong><br>
+                            <code>{nome}</code> - Nome do usuário<br>
+                            <code>{usuario}</code> - Login do usuário<br>
+                            <code>{senha}</code> - Senha gerada (apenas se for criação de usuário)<br>
+                            <code>{link}</code> - Link de acesso ao sistema
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary fw-bold"><i class="bi bi-save me-2"></i>Salvar Template</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Erro E-mail -->
+<div class="modal fade" id="modalErroEmail" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Erro no Envio de E-mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p>O servidor retornou a seguinte mensagem de erro ao tentar enviar o e-mail de boas-vindas para este usuário:</p>
+                <div class="bg-light p-3 rounded font-monospace" style="font-size: 0.85rem; color: #d9534f; word-break: break-all;" id="erro-email-conteudo">
+                    <!-- error text here -->
+                </div>
+            </div>
+            <div class="modal-footer border-top-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Criar Usuário (Formulário Básico) -->
+<div class="modal fade" id="modal-criar-usuario" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-person-plus me-2"></i>Novo Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-criar-usuario" onsubmit="salvarNovoUsuario(event)">
+                    <p class="text-muted mb-4 text-center">Insira o login desejado. A senha e o telefone inicial já vêm preenchidos para facilitar a criação.</p>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3" id="create_username" name="username" placeholder="Login" required>
+                        <label for="create_username"><i class="bi bi-person me-2 text-primary"></i>Nome de Usuário (Login)</label>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control rounded-3 format-text" id="create_first_name" name="first_name" placeholder="Nome" required>
+                                <label for="create_first_name"><i class="bi bi-person-badge me-2 text-primary"></i>Nome</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-floating">
+                                <input type="text" class="form-control rounded-3 format-text" id="create_last_name" name="last_name" placeholder="Sobrenome" required>
+                                <label for="create_last_name"><i class="bi bi-person-badge me-2 text-primary"></i>Sobrenome</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control rounded-3" id="create_email" name="email" placeholder="E-mail" required>
+                        <label for="create_email"><i class="bi bi-envelope me-2 text-primary"></i>E-mail</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control rounded-3 bg-light text-muted" id="create_password" name="password" value="Sesenapp123" required>
+                        <label for="create_password"><i class="bi bi-key me-2 text-primary"></i>Senha Inicial Padrão</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control rounded-3 mask-telefone" id="create_telefone" name="telefone" value="61" required>
+                        <label for="create_telefone"><i class="bi bi-whatsapp me-2 text-success"></i>Telefone (WhatsApp)</label>
+                        <div class="form-text ms-1 mt-2 text-muted" style="font-size: 0.85rem;">
+                            <i class="bi bi-info-circle me-1"></i>A senha inicial será enviada para este número.
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <button type="button" class="btn btn-light fw-bold" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary fw-bold shadow-sm px-4">
+                            <i class="bi bi-check-lg me-2"></i>Criar Usuário
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Editar Usuário (Formulário Completo) -->
+<div class="modal fade" id="modal-editar-usuario" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-pencil-square me-2"></i>Editar Usuário</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-editar-usuario" onsubmit="salvarEdicaoUsuario(event)">
+                    <input type="hidden" id="edit_user_id">
+                    
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nome de Usuário (Login)</label>
+                            <input type="text" class="form-control bg-light" id="edit_username" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Redefinir Senha</label>
+                            <input type="text" class="form-control" id="edit_password" placeholder="(Opcional)">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nome</label>
+                            <input type="text" class="form-control" id="edit_first_name">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Sobrenome</label>
+                            <input type="text" class="form-control" id="edit_last_name">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">E-mail</label>
+                            <input type="email" class="form-control" id="edit_email">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Telefone (WhatsApp)</label>
+                            <input type="text" class="form-control mask-telefone" id="edit_telefone">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 border-top pt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Salvar Alterações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.bootstrap5.js"></script>
+<script>
+    let dtUsuarios;
+
+    $(document).ready(function() {
+        dtUsuarios = $('#tabela-usuarios').DataTable({
+            ajax: {
+                url: '/usuarios/api/usuarios/',
+                dataSrc: '',
+                error: function(xhr, error, code) {
+                    console.error("Erro DataTables:", xhr);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erro de Comunicação',
+                        text: `Status: ${xhr.status}. Resposta: ${xhr.responseText ? xhr.responseText.substring(0, 100) : 'Sem resposta'}`,
+                    });
+                }
+            },
+            columns: [
+                { data: 'username' },
+                { data: 'first_name', defaultContent: '-' },
+                { data: 'last_name', defaultContent: '-' },
+                { data: 'email', defaultContent: '-' },
+                { data: 'perfil_telefone', defaultContent: '-', className: 'format-telefone' },
+                { 
+                    data: 'email_boas_vindas_enviado',
+                    render: function(data, type, row) {
+                        if (data === true) {
+                            return '<span class="badge bg-success shadow-sm"><i class="bi bi-check-circle me-1"></i>Enviado</span>';
+                        } else {
+                            if (row.email_boas_vindas_erro) {
+                                // Escapa as aspas e formata para o onClick seguro
+                                const erroStr = row.email_boas_vindas_erro.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                                return `<span class="badge bg-danger shadow-sm" style="cursor:pointer;" onclick="verErroEmail('${erroStr}')" title="Clique para ver o erro"><i class="bi bi-x-circle me-1"></i>Erro no Envio</span>`;
+                            } else {
+                                return '<span class="badge bg-warning text-dark shadow-sm"><i class="bi bi-clock-history me-1"></i>Pendente</span>';
+                            }
+                        }
+                    }
+                },
+                {
+                    data: 'id',
+                    orderable: false,
+                    className: 'text-end',
+                    render: function(data, type, row) {
+                        const safeRow = JSON.stringify(row).replace(/'/g, "&#39;");
+                        return `
+                            <button class="btn btn-sm btn-outline-secondary me-1" onclick="reenviarEmailBoasVindas(${data})" title="Reenviar E-mail (Reseta Senha)">
+                                <i class="bi bi-envelope-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick='abrirModalEditar(${safeRow})' title="Editar Informações">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        `;
+                    }
+                }
+            ],
+            language: {
+                "sEmptyTable": "Nenhum usuário encontrado",
+                "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ usuários",
+                "sInfoEmpty": "Mostrando 0 até 0 de 0 usuários",
+                "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                "sLengthMenu": "Mostrar _MENU_ resultados por página",
+                "sLoadingRecords": "Carregando...",
+                "sProcessing": "Processando...",
+                "sZeroRecords": "Nenhum usuário encontrado",
+                "sSearch": "Pesquisar:",
+                "oPaginate": {
+                    "sNext": "Próximo",
+                    "sPrevious": "Anterior",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                }
+            }
+        });
+    });
+
+    function abrirModalCriar() {
+        document.getElementById('form-criar-usuario').reset();
+        // Reset defaults
+        document.querySelector('#form-criar-usuario [name="password"]').value = 'Sesenapp123';
+        document.querySelector('#form-criar-usuario [name="telefone"]').value = '61';
+        new bootstrap.Modal(document.getElementById('modal-criar-usuario')).show();
+    }
+
+    async function salvarNovoUsuario(e) {
+        e.preventDefault();
+        const form = e.target;
+        const payload = {
+            username: form.username.value,
+            password: form.password.value,
+            first_name: form.first_name.value,
+            last_name: form.last_name.value,
+            email: form.email.value,
+            telefone: form.telefone.value
+        };
+
+        try {
+            const res = await fetch('/usuarios/api/usuarios/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                bootstrap.Modal.getInstance(document.getElementById('modal-criar-usuario')).hide();
+                dtUsuarios.ajax.reload();
+                
+                if (data.email_boas_vindas_enviado) {
+                    Swal.fire('Criado!', 'Usuário criado e e-mail de boas-vindas enviado com sucesso.', 'success');
+                } else if (data.email_boas_vindas_erro) {
+                    Swal.fire('Criado com Alerta!', 'Usuário criado, mas houve erro ao enviar o e-mail:<br><br><span class="text-danger" style="font-size: 0.85rem;">' + data.email_boas_vindas_erro + '</span>', 'warning');
+                } else {
+                    Swal.fire('Criado!', 'Usuário criado com sucesso (envio de e-mail desativado).', 'success');
+                }
+            } else {
+                const error = await res.json();
+                Swal.fire('Erro!', JSON.stringify(error), 'error');
+            }
+        } catch(err) {
+            Swal.fire('Erro!', 'Erro de conexão.', 'error');
+        }
+    }
+
+    function abrirModalEditar(row) {
+        document.getElementById('edit_user_id').value = row.id;
+        document.getElementById('edit_username').value = row.username;
+        document.getElementById('edit_password').value = '';
+        document.getElementById('edit_first_name').value = row.first_name || '';
+        document.getElementById('edit_last_name').value = row.last_name || '';
+        document.getElementById('edit_email').value = row.email || '';
+        document.getElementById('edit_telefone').value = row.perfil_telefone || '';
+
+        new bootstrap.Modal(document.getElementById('modal-editar-usuario')).show();
+    }
+
+    async function salvarEdicaoUsuario(e) {
+        e.preventDefault();
+        const id = document.getElementById('edit_user_id').value;
+        const payload = {
+            first_name: document.getElementById('edit_first_name').value,
+            last_name: document.getElementById('edit_last_name').value,
+            email: document.getElementById('edit_email').value,
+            telefone: document.getElementById('edit_telefone').value
+        };
+
+        const pwd = document.getElementById('edit_password').value;
+        if(pwd) payload.password = pwd;
+
+        try {
+            const res = await fetch(`/usuarios/api/usuarios/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                bootstrap.Modal.getInstance(document.getElementById('modal-editar-usuario')).hide();
+                dtUsuarios.ajax.reload();
+                Swal.fire('Atualizado!', 'Usuário atualizado com sucesso.', 'success');
+            } else {
+                const error = await res.json();
+                Swal.fire('Erro!', JSON.stringify(error), 'error');
+            }
+        } catch(err) {
+            Swal.fire('Erro!', 'Erro de conexão.', 'error');
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function verErroEmail(erro) {
+        document.getElementById('erro-email-conteudo').innerText = erro;
+        new bootstrap.Modal(document.getElementById('modalErroEmail')).show();
+    }
+
+    async function reenviarEmailBoasVindas(userId) {
+        if (!confirm('Deseja reenviar o e-mail de boas-vindas? Isso irá redefinir a senha do usuário para "Sesenapp123" e tentará disparar o e-mail novamente.')) return;
+
+        Swal.fire({
+            title: 'Enviando...',
+            text: 'Aguarde enquanto tentamos comunicar com o servidor de e-mail.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        try {
+            const res = await fetch(`/usuarios/api/usuarios/${userId}/reenviar_email_boas_vindas/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                Swal.fire('Sucesso!', 'E-mail reenviado com sucesso.', 'success');
+                dtUsuarios.ajax.reload(null, false);
+            } else {
+                const erroMsg = data.error ? `Detalhe do Servidor: ${data.error}` : (data.detail || 'Falha ao reenviar e-mail.');
+                Swal.fire('Erro no Envio!', erroMsg, 'error');
+                dtUsuarios.ajax.reload(null, false);
+            }
+        } catch (e) {
+            Swal.fire('Erro!', 'Erro de conexão com a API.', 'error');
+            console.error(e);
+        }
+    }
+</script>
+{% endblock %}

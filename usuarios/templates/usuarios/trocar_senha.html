@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SesenApp - Trocar Senha</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-hover: #3a56d4;
+            --background: #f8f9fa;
+            --surface: #ffffff;
+            --text-primary: #2b2d42;
+            --text-secondary: #6c757d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
+        .login-card {
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container h1 {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-container p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 5px;
+        }
+
+        .form-floating > label {
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.15);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: scale(1.02);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+        
+        .loading-spinner {
+            display: none;
+            width: 1.2rem;
+            height: 1.2rem;
+            border: 2px solid #fff;
+            border-right-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="logo-container">
+            <h1>Troca Obrigatória</h1>
+            <p>Por segurança, você precisa alterar a sua senha no primeiro acesso.</p>
+        </div>
+
+        <form id="trocar-senha-form">
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="senha_atual" placeholder="Senha Atual" required>
+                <label for="senha_atual">Senha Atual (Padrão)</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="nova_senha" placeholder="Nova Senha" required minlength="6">
+                <label for="nova_senha">Nova Senha (mín. 6 caracteres)</label>
+            </div>
+            <div class="form-floating mb-4">
+                <input type="password" class="form-control" id="confirma_senha" placeholder="Confirmar Nova Senha" required minlength="6">
+                <label for="confirma_senha">Confirmar Nova Senha</label>
+            </div>
+            
+            <button type="submit" class="btn btn-primary d-flex justify-content-center align-items-center" id="btn-submit">
+                <span class="loading-spinner" id="spinner"></span>
+                <span id="btn-text">Salvar Nova Senha</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('trocar-senha-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const senha_atual = document.getElementById('senha_atual').value;
+            const nova_senha = document.getElementById('nova_senha').value;
+            const confirma_senha = document.getElementById('confirma_senha').value;
+            const btn = document.getElementById('btn-submit');
+            const spinner = document.getElementById('spinner');
+            const btnText = document.getElementById('btn-text');
+
+            if (nova_senha !== confirma_senha) {
+                Swal.fire('Atenção', 'A nova senha e a confirmação não conferem.', 'warning');
+                return;
+            }
+
+            // Loading state
+            btn.disabled = true;
+            spinner.style.display = 'inline-block';
+            btnText.textContent = 'Processando...';
+
+            try {
+                const response = await fetch('/trocar-senha/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ senha_atual, nova_senha, confirma_senha })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Senha alterada!',
+                        text: 'Sua nova senha foi salva com sucesso.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // Após trocar a senha, o JWT já está no cookie e será válido.
+                        // Só recarregar para o backend que fará a troca.
+                        // Ou idealmente o JWT antigo continua válido, o backend não o invalidou 
+                        // a menos que tivéssemos feito logout de todas as sessões.
+                        window.location.href = data.redirect_url || '/';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Falha ao trocar senha',
+                        text: data.error || 'Verifique seus dados e tente novamente.'
+                    });
+                    btn.disabled = false;
+                    spinner.style.display = 'none';
+                    btnText.textContent = 'Salvar Nova Senha';
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erro de conexão',
+                    text: 'Não foi possível conectar ao servidor.'
+                });
+                btn.disabled = false;
+                spinner.style.display = 'none';
+                btnText.textContent = 'Salvar Nova Senha';
+            }
+        });
+    </script>
+</body>
+</html>

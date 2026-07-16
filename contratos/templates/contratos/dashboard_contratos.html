@@ -1,0 +1,500 @@
+{% extends "contratos/base_contratos.html" %}
+{% load static %}
+
+{% block title %}Contratos | SESEN{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+<style>
+    /* Styling similar to other SESEN dashboards */
+    .dashboard-header {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+        color: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    
+    .card-dashboard {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        background: var(--bg-main);
+        color: var(--text-main);
+    }
+
+    /* Styles transferidos da Home Contratos */
+    :root {
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --warning-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        --danger-gradient: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+        --info-gradient: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+    }
+
+    .metric-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        background: white;
+        overflow: hidden;
+        position: relative;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .icon-primary { background: linear-gradient(135deg, #2c3e50, #3498db); }
+    .icon-success { background: var(--success-gradient); }
+    .icon-warning { background: var(--warning-gradient); }
+    .icon-danger { background: var(--danger-gradient); }
+    .icon-info { background: var(--info-gradient); }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+        letter-spacing: -0.5px;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .chart-card {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        background: white;
+    }
+    .chart-card .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .chart-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .table-vencimentos th {
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    .table-vencimentos td {
+        vertical-align: middle;
+        font-weight: 500;
+        border-bottom: 1px solid #f8f9fa;
+    }
+
+    .form-group-modal { margin-bottom: 1rem; }
+    .form-row-modal { margin-bottom: 0.5rem; }
+</style>
+{% endblock %}
+
+{% block painel_contratos %}
+<div class="container-fluid py-4">
+    <div class="dashboard-header d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="mb-1"><i class="bi bi-file-earmark-ruled me-2"></i>Gestão de Contratos</h2>
+            <p class="mb-0 opacity-75">Controle de contratos vinculados às empresas cadastradas.</p>
+        </div>
+        <div>
+            <!-- Unified dropdown for new actions -->
+            <div class="dropdown">
+                <button class="btn btn-warning dropdown-toggle fw-bold shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-plus-circle me-1"></i> Ações de Contrato
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end shadow">
+                    <li><a class="dropdown-item" href="#" onclick="abrirModalNovoContrato()"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Contrato</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Metrics (Transferido de home_contratos) -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Contratos Ativos</div>
+                        <div class="metric-value" id="val-ativos">-</div>
+                    </div>
+                    <div class="metric-icon icon-primary shadow-sm"><i class="bi bi-file-earmark-check"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Val. Mensal Estimado</div>
+                        <div class="metric-value text-success" id="val-estimado">-</div>
+                    </div>
+                    <div class="metric-icon icon-success shadow-sm"><i class="bi bi-currency-dollar"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Glosas Aplicadas</div>
+                        <div class="metric-value text-danger" id="val-glosas">-</div>
+                    </div>
+                    <div class="metric-icon icon-danger shadow-sm"><i class="bi bi-graph-down-arrow"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Licitações Pendentes</div>
+                        <div class="metric-value text-info" id="val-processos">-</div>
+                    </div>
+                    <div class="metric-icon icon-info shadow-sm"><i class="bi bi-hammer"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts and Table Row (Transferido de home_contratos) -->
+    <div class="row g-4 mb-4">
+        <!-- Overview Chart -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">Métricas de Execução (Ano Vigente)</h5>
+                </div>
+                <div class="card-body">
+                    <div id="chart-execucao" style="min-height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Expirations -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card chart-card h-100">
+                <div class="card-header">
+                    <h5 class="card-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-vencimentos mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4">Contrato</th>
+                                    <th>Vencimento</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-vencimentos">
+                                <tr><td colspan="2" class="text-center py-4 text-muted spinner-border-wrapper"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Carregando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav Tabs para a Tabela de Gestão -->
+    <ul class="nav nav-tabs mb-4" id="contratosTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-dark" id="vigentes-tab" data-bs-toggle="tab" data-bs-target="#vigentes" type="button" role="tab"><i class="bi bi-file-earmark-check me-2"></i>Contratos Vigentes</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="contratosTabsContent">
+        
+        <!-- Aba 1: Contratos Vigentes -->
+        <div class="tab-pane fade show active" id="vigentes" role="tabpanel">
+            <div class="card card-dashboard">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tabela-contratos" class="table table-hover align-middle w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Contrato Nº</th>
+                                    <th>Empresa / CNPJ</th>
+                                    <th>Vigência</th>
+                                    <th>Valor (R$)</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- DataTable Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal Novo/Editar Contrato -->
+<div class="modal fade" id="modal-contrato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalContratoTitle"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Contrato</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-contrato">
+                    {% csrf_token %}
+                    <input type="hidden" id="contrato_id" name="id">
+                    
+                    <h6 class="text-primary mb-3"><i class="bi bi-building me-2"></i>Dados da Empresa</h6>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-6">
+                            <label class="form-label fw-bold">Empresa <span class="text-danger">*</span></label>
+                            <select class="form-select select2-empresas" id="contrato_empresa" name="empresa" required>
+                                <option value="">Selecione uma empresa...</option>
+                                {% for emp in empresas %}
+                                <option value="{{ emp.id }}">{{ emp.nome_empresa }} (CNPJ: {{ emp.cnpj }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group-modal col-md-6">
+                            <label class="form-label fw-bold">Processo Licitatório</label>
+                            <select class="form-select" id="processo_licitatorio" name="processo_licitatorio">
+                                <option value="">Sem vínculo (Legado)</option>
+                                {% for proc in processos %}
+                                <option value="{{ proc.id }}">{{ proc.numero_processo }} - {{ proc.get_fase_display }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mb-3 mt-4"><i class="bi bi-file-text me-2"></i>Detalhes do Contrato</h6>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Número do Contrato <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control uppercase-text" id="num_contrato" name="num_contrato" required>
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Início Vigência <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="inicio_vigencia" name="inicio_vigencia" required>
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Término Vigência <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="termino_vigencia" name="termino_vigencia" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-6">
+                            <label class="form-label fw-bold">Objeto do Contrato <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control format-text" id="objeto" name="objeto" required>
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Valor Global (R$) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="valor" name="valor" required>
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Valor Mensal (R$)</label>
+                            <input type="number" step="0.01" class="form-control" id="valor_mensal_estimado" name="valor_mensal_estimado" required>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mb-3 mt-4"><i class="bi bi-people me-2"></i>Fiscais e Gestores (Lei 14.133)</h6>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Gestor Titular</label>
+                            <input type="text" class="form-control" id="gestor_titular" name="gestor_titular">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Gestor Substituto</label>
+                            <input type="text" class="form-control" id="gestor_substituto" name="gestor_substituto">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Fiscal Titular</label>
+                            <input type="text" class="form-control" id="fiscal_titular" name="fiscal_titular">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Fiscal Substituto</label>
+                            <input type="text" class="form-control" id="fiscal_substituto" name="fiscal_substituto">
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary mb-3 mt-4"><i class="bi bi-folder me-2"></i>Integração SEI</h6>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Processo SEI</label>
+                            <input type="text" class="form-control uppercase-text" id="sei_processo" name="sei_processo">
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">DOD</label>
+                            <input type="text" class="form-control uppercase-text" id="sei_dod" name="sei_dod">
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">ETP</label>
+                            <input type="text" class="form-control uppercase-text" id="sei_etp" name="sei_etp">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">TR</label>
+                            <input type="text" class="form-control uppercase-text" id="sei_tr" name="sei_tr">
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Edital</label>
+                            <input type="text" class="form-control uppercase-text" id="sei_edital" name="sei_edital">
+                        </div>
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Fiscais</label>
+                            <input type="text" class="form-control format-text" id="sei_fiscais" name="sei_fiscais">
+                        </div>
+                    </div>
+
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-4">
+                            <label class="form-label fw-bold">Status</label>
+                            <select class="form-select" id="status" name="status">
+                                <option value="VIGENTE" selected>VIGENTE</option>
+                                <option value="ENCERRADO">ENCERRADO</option>
+                                <option value="SUSPENSO">SUSPENSO</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarContrato()" id="btnSalvarContrato">
+                    <i class="bi bi-save me-1"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://unpkg.com/imask"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script src="{% static 'contratos/js/dashboard_contratos.js' %}"></script>
+<script>
+    const formatBRL = (value) => {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    };
+
+    const formatDateBR = (isoDate) => {
+        if (!isoDate) return '-';
+        const parts = isoDate.split('-');
+        return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch('/contratos/api/dashboard-metrics/');
+            const data = await response.json();
+
+            // Populate Top Metrics
+            document.getElementById('val-ativos').innerText = data.total_ativos;
+            document.getElementById('val-estimado').innerText = formatBRL(data.valor_estimado);
+            document.getElementById('val-glosas').innerText = formatBRL(data.total_glosas);
+            
+            const processosTot = (data.processos_planejamento || 0) + (data.processos_selecao || 0);
+            document.getElementById('val-processos').innerText = processosTot;
+
+            // Populate Upcoming Expirations
+            const tbody = document.getElementById('lista-vencimentos');
+            tbody.innerHTML = '';
+            if (data.proximos_vencer && data.proximos_vencer.length > 0) {
+                data.proximos_vencer.forEach(c => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td class="ps-4">
+                                <div class="fw-bold text-dark">${c.num_contrato}</div>
+                                <div class="small text-muted text-truncate" style="max-width: 150px;">${c.empresa}</div>
+                            </td>
+                            <td><span class="badge bg-warning text-dark px-2 py-1 rounded-pill">${formatDateBR(c.termino_vigencia)}</span></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum contrato próximo ao vencimento.</td></tr>';
+            }
+
+            // Render ApexChart
+            const options = {
+                series: [{
+                    name: 'Valor Estimado',
+                    data: [data.valor_estimado, data.valor_estimado, data.valor_estimado, data.valor_estimado, data.valor_estimado, data.valor_estimado]
+                }, {
+                    name: 'Valor Medido',
+                    data: [0, 0, 0, 0, 0, data.total_medido]
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 320,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit'
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 4
+                    },
+                },
+                dataLabels: { enabled: false },
+                stroke: { show: true, width: 2, colors: ['transparent'] },
+                xaxis: {
+                    categories: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                },
+                yaxis: {
+                    labels: {
+                        formatter: function (val) {
+                            return "R$ " + (val/1000).toFixed(0) + "k";
+                        }
+                    }
+                },
+                fill: { opacity: 1 },
+                colors: ['#3498db', '#2ecc71'],
+                tooltip: {
+                    y: { formatter: function (val) { return formatBRL(val); } }
+                }
+            };
+            const chart = new ApexCharts(document.querySelector("#chart-execucao"), options);
+            chart.render();
+
+        } catch (error) {
+            console.error("Erro ao buscar métricas:", error);
+        }
+    });
+</script>
+{% endblock %}

@@ -146,26 +146,6 @@
         )
     })
     IMask(
-        document.getElementById('id_valor'),
-        {
-            mask: 'R$ num',
-            blocks: {
-                num: {
-                    mask: Number,
-                    scale: 2,
-                    signed: false,
-                    thousandsSeparator: '.',
-                    padFractionalZeros: true,
-                    normalizeZeros: true,
-                    radix: ',',
-                    mapToRadix: ['.'],
-                    min: 0
-                }
-            },
-            lazy: false
-        }
-    )
-    IMask(
         document.getElementById('id_cnpj'),
         {
             mask: '00.000.000/0000-00',

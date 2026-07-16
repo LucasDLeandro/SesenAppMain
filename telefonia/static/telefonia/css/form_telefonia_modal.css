@@ -1,0 +1,302 @@
+/* ========================================
+   Estilos para Modal de Formulário de Telefonia
+   Telefonia - Temática Técnica
+   ======================================== */
+
+/* ========== MODAL GERAL ========== */
+.modal-ordens-wrapper .modal-content {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: none;
+}
+
+/* ========== BODY DO MODAL ========== */
+.modal-ordens-body {
+    padding: 24px 22px;
+    background-color: transparent;
+    border-radius: 16px;
+    max-height: 82vh;
+    overflow-y: auto;
+}
+
+/* ========== LABELS E INPUTS ========== */
+.modal-ordens-body form .form-label {
+    color: #1e293b; /* Cor mais suave e elegante */
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+}
+
+.modal-ordens-body form .form-control,
+.modal-ordens-body form .form-select {
+    border: 1px solid #cbd5e1; /* Borda um pouco mais fina para não ficar 'pesado' */
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    height: auto;
+    min-height: 42px;
+    transition: all 0.3s ease;
+    color: #334155;
+    background-color: #f8fafc; /* Fundo levemente cinza */
+}
+
+.modal-ordens-body form .form-control:hover,
+.modal-ordens-body form .form-select:hover {
+    border-color: #94a3b8;
+    background-color: #ffffff;
+}
+
+.modal-ordens-body form .form-control:focus,
+.modal-ordens-body form .form-select:focus {
+    border-color: #106EBE;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(16, 110, 190, 0.1);
+    outline: none;
+}
+
+.modal-ordens-body form .form-control::placeholder {
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.modal-ordens-body form .form-control:-webkit-autofill,
+.modal-ordens-body form .form-control:-webkit-autofill:hover,
+.modal-ordens-body form .form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #1e293b !important;
+    border-color: #106EBE !important;
+}
+
+/* Textarea */
+.modal-ordens-body form textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Form Help Text */
+.modal-ordens-body form small.text-muted {
+    color: #64748b;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Alert de Erros */
+.modal-ordens-body form .alert-danger {
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+}
+
+.modal-ordens-body form .alert-danger strong {
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* ========== SEÇÕES DO FORMULÁRIO - TEMÁTICA TÉCNICA ========== */
+.form-section-modal {
+    margin-bottom: 24px;
+}
+
+.form-section-modal:last-of-type {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.form-section-title-modal {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e2e8f0; /* Linha sutil para separar seções */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-section-title-modal i {
+    color: var(--primary-blue, #106EBE);
+    font-size: 1.1rem;
+}
+
+/* ========== GRID DO FORMULÁRIO ========== */
+.form-row-modal {
+    margin-bottom: 20px;
+    /* Deixando o Bootstrap .row lidar com o Flexbox e a responsividade (.col-md-6, etc) */
+}
+
+.form-group-modal {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group-modal.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ========== FOOTER E BUTTONS ========== */
+.modal-ordens-footer {
+    padding: 24px 0 8px 0; /* Mais padding no topo para afastar dos inputs, padding bottom para evitar corte */
+    margin-top: 32px;
+    border-top: 1px solid #e2e8f0;
+    gap: 12px;
+    background-color: transparent;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-ordens-footer .btn {
+    border-radius: 8px;
+    font-weight: 600;
+    padding: 10px 20px; /* Botões um pouco maiores e mais confortáveis */
+    transition: all 0.2s ease-in-out;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.modal-ordens-footer .btn i {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+/* Botão Cancelar */
+.modal-ordens-footer .btn-outline-secondary {
+    border: 2px solid var(--border-color);
+    color: var(--text-main);
+    background-color: transparent;
+}
+
+.modal-ordens-footer .btn-outline-secondary:hover {
+    border-color: #94a3b8;
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+.modal-ordens-footer .btn-outline-secondary:active {
+    background-color: #e2e8f0;
+}
+
+/* Botões de Ação (Azul, Verde, Amarelo) */
+.modal-ordens-footer .btn-primary {
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.modal-ordens-footer .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.modal-ordens-footer .btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.modal-ordens-footer .btn-success:hover {
+    background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+}
+
+.modal-ordens-footer .btn-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #b45309 100%);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.modal-ordens-footer .btn-warning:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* ========== RESPONSIVIDADE - TABLETS ========== */
+@media (max-width: 768px) {
+    .modal-ordens-body {
+        padding: 20px 18px;
+    }
+
+    .modal-ordens-footer {
+        padding: 14px 18px;
+        gap: 8px;
+    }
+
+    .modal-ordens-body form .form-control,
+    .modal-ordens-body form .form-select {
+        font-size: 16px;
+        min-height: 44px;
+    }
+}
+
+/* ========== RESPONSIVIDADE - MOBILE ========== */
+@media (max-width: 576px) {
+    .form-row-modal {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 12px;
+    }
+
+    .form-group-modal.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .modal-ordens-body {
+        padding: 18px 16px;
+        max-height: 85vh;
+    }
+
+    .modal-ordens-footer {
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        gap: 8px;
+    }
+
+    .modal-ordens-footer .btn {
+        padding: 8px 12px;
+        min-height: 38px;
+        font-size: 0.8rem;
+        width: auto;
+    }
+
+    .form-section-title-modal {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+    }
+
+    .modal-ordens-body form .form-label {
+        font-size: 0.85rem;
+    }
+
+    .modal-ordens-body form .form-control,
+    .modal-ordens-body form .form-select {
+        font-size: 16px;
+        min-height: 40px;
+    }
+
+    .modal-ordens-body form textarea {
+        min-height: 80px;
+        font-size: 16px;
+    }
+}

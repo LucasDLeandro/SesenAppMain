@@ -8,7 +8,7 @@ from notificacoes.forms.template_message_form import CriarTemplateForm
 
 def gerenciar_notificacao(request):
     list_contato = Contato.objects.all()
-    list_message = TemplateMessage.objects.all()
+    list_message = TemplateMessage.objects.exclude(tipo_evento__startswith='tel_')
     criar_contato = CriarContatoForm()
     criar_template = CriarTemplateForm()
 

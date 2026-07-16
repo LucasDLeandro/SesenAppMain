@@ -1,0 +1,324 @@
+{% extends "index.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.4);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.05);
+        --card-hover-translate: translateY(-8px);
+    }
+    
+    [data-bs-theme="dark"] {
+        --glass-bg: rgba(30, 41, 59, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.08);
+        --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    }
+
+    body {
+        /* Subtle background pattern/gradient */
+        background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    }
+
+    [data-bs-theme="dark"] body {
+        background: radial-gradient(circle at 10% 20%, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 90%);
+    }
+
+    /* Hero Section */
+    .hero-section {
+        position: relative;
+        padding: 4rem 3rem;
+        border-radius: 1.5rem;
+        background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+        color: white;
+        overflow: hidden;
+        box-shadow: 0 20px 40px -10px rgba(30, 64, 175, 0.3);
+        margin-top: 1.5rem;
+        margin-bottom: 3.5rem;
+        z-index: 1;
+    }
+    
+    .hero-pattern {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.5;
+        z-index: -1;
+    }
+
+    .hero-glow {
+        position: absolute;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(59,130,246,0.8) 0%, rgba(59,130,246,0) 70%);
+        top: -100px;
+        right: -50px;
+        filter: blur(40px);
+        z-index: -1;
+        opacity: 0.6;
+    }
+
+    .hero-title {
+        font-weight: 800;
+        letter-spacing: -1px;
+        font-size: 3.2rem;
+        background: linear-gradient(to right, #ffffff, #93c5fd);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+        animation: fadeUp 0.8s ease-out;
+    }
+
+    .hero-subtitle {
+        font-size: 1.15rem;
+        font-weight: 300;
+        color: #cbd5e1;
+        max-width: 600px;
+        line-height: 1.6;
+        animation: fadeUp 1s ease-out;
+    }
+
+    .hero-logo-wrapper {
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    /* Glassmorphic Service Cards */
+    .service-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        padding-bottom: 4rem;
+    }
+
+    .service-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--glass-shadow);
+        border-radius: 1.25rem;
+        padding: 2.2rem;
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        position: relative;
+        overflow: hidden;
+        animation: fadeUp 1.2s ease-out forwards;
+        opacity: 0;
+    }
+
+    .service-card:nth-child(1) { animation-delay: 0.1s; }
+    .service-card:nth-child(2) { animation-delay: 0.2s; }
+    .service-card:nth-child(3) { animation-delay: 0.3s; }
+    .service-card:nth-child(4) { animation-delay: 0.4s; }
+    .service-card:nth-child(5) { animation-delay: 0.5s; }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+    }
+
+    .service-card:hover {
+        transform: var(--card-hover-translate);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        border-color: rgba(59, 130, 246, 0.4);
+    }
+    
+    .service-card:hover::before {
+        opacity: 1;
+    }
+
+    .service-icon-wrapper {
+        width: 64px;
+        height: 64px;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+        transition: transform 0.4s ease;
+    }
+
+    .service-card:hover .service-icon-wrapper {
+        transform: scale(1.1) rotate(5deg);
+    }
+    
+    .service-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .service-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--text-main);
+        transition: color 0.3s ease;
+    }
+
+    .service-card:hover .service-title {
+        color: #2563eb;
+    }
+
+    [data-bs-theme="dark"] .service-card:hover .service-title {
+        color: #60a5fa;
+    }
+
+    .service-desc {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* Gradients and Colors for Icons */
+    .icon-elevadores { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #d97706; box-shadow: 0 4px 14px rgba(217,119,6,0.2); }
+    .icon-telefonia { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #2563eb; box-shadow: 0 4px 14px rgba(37,99,235,0.2); }
+    .icon-reembolsos { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #059669; box-shadow: 0 4px 14px rgba(5,150,105,0.2); }
+    .icon-audiovideo { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color: #7c3aed; box-shadow: 0 4px 14px rgba(124,58,237,0.2); }
+    .icon-config { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); color: #475569; box-shadow: 0 4px 14px rgba(71,85,105,0.2); }
+
+    [data-bs-theme="dark"] .icon-elevadores { background: linear-gradient(135deg, rgba(217,119,6,0.2) 0%, rgba(217,119,6,0.1) 100%); }
+    [data-bs-theme="dark"] .icon-telefonia { background: linear-gradient(135deg, rgba(37,99,235,0.2) 0%, rgba(37,99,235,0.1) 100%); }
+    [data-bs-theme="dark"] .icon-reembolsos { background: linear-gradient(135deg, rgba(5,150,105,0.2) 0%, rgba(5,150,105,0.1) 100%); }
+    [data-bs-theme="dark"] .icon-audiovideo { background: linear-gradient(135deg, rgba(124,58,237,0.2) 0%, rgba(124,58,237,0.1) 100%); }
+    [data-bs-theme="dark"] .icon-config { background: linear-gradient(135deg, rgba(71,85,105,0.2) 0%, rgba(71,85,105,0.1) 100%); color: #94a3b8; }
+
+    /* Animations */
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); filter: drop-shadow(0 15px 15px rgba(0,0,0,0.2)); }
+        100% { transform: translateY(0px); }
+    }
+    
+    .arrow-icon {
+        position: absolute;
+        bottom: 2rem;
+        right: 2rem;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.3s ease;
+        color: #2563eb;
+        font-size: 1.2rem;
+    }
+    
+    [data-bs-theme="dark"] .arrow-icon { color: #60a5fa; }
+    
+    .service-card:hover .arrow-icon {
+        opacity: 1;
+        transform: translateX(0);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-xl-5 py-3">
+    
+    <div class="hero-section">
+        <div class="hero-pattern"></div>
+        <div class="hero-glow"></div>
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-8 mb-4 mb-lg-0">
+                <div class="d-inline-flex align-items-center mb-3 py-1 px-3 rounded-pill bg-white bg-opacity-10 text-white" style="backdrop-filter: blur(4px); font-size: 0.85rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.1);">
+                    <i class="bi bi-stars me-2 text-warning"></i> Portal de Serviços Integrados
+                </div>
+                <h1 class="hero-title">Bem-vindo(a) ao SESEN</h1>
+                <p class="hero-subtitle">Plataforma central da Seção de Equipamentos e Sistemas de Engenharia. Acesse e gerencie todos os módulos operacionais com rapidez, fluidez e total controle.</p>
+            </div>
+            <div class="col-lg-4 d-flex justify-content-lg-end justify-content-center">
+                <div class="hero-logo-wrapper">
+                    <!-- A logo da SESEN reestilizada e com maior destaque -->
+                    <img src="{% static 'images/logo_sesen.png' %}" alt="Logo SESEN" class="img-fluid" style="max-height: 180px; filter: drop-shadow(0 8px 12px rgba(0,0,0,0.25));">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center mb-4 ms-2">
+        <h4 class="fw-bold m-0" style="color: var(--text-main);">Módulos Disponíveis</h4>
+        <div class="ms-3 flex-grow-1" style="height: 1px; background: linear-gradient(to right, var(--glass-border), transparent);"></div>
+    </div>
+
+    <div class="service-grid">
+        
+        <!-- Elevadores -->
+        <a href="{% url 'elevadores:inicio_elevadores' %}" class="service-card">
+            <div class="service-icon-wrapper icon-elevadores">
+                <i class="bi bi-building-up"></i>
+            </div>
+            <div class="service-content">
+                <h5 class="service-title">Gestão de Elevadores</h5>
+                <p class="service-desc">Acompanhe as manutenções corretivas, chamados técnicos, manutenções preventivas e o status operacional atual dos elevadores.</p>
+            </div>
+            <i class="bi bi-arrow-right arrow-icon"></i>
+        </a>
+
+        <!-- Telefonia -->
+        <a href="{% url 'telefonia:inicio_telefonia' %}" class="service-card">
+            <div class="service-icon-wrapper icon-telefonia">
+                <i class="bi bi-telephone"></i>
+            </div>
+            <div class="service-content">
+                <h5 class="service-title">Gestão de Telefonia</h5>
+                <p class="service-desc">Controle de solicitações de aparelhos VoIP, ramais corporativos, geração de senhas e tutoriais de usabilidade da rede.</p>
+            </div>
+            <i class="bi bi-arrow-right arrow-icon"></i>
+        </a>
+
+        <!-- Reembolsos Telefonia -->
+        <a href="{% url 'reembolsos:inicio_reembolsos' %}" class="service-card">
+            <div class="service-icon-wrapper icon-reembolsos">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <div class="service-content">
+                <h5 class="service-title">Reembolsos de Telefonia</h5>
+                <p class="service-desc">Central de emissão de relatórios mensais e gestão do controle dos pagamentos de GRU referentes a ligações particulares.</p>
+            </div>
+            <i class="bi bi-arrow-right arrow-icon"></i>
+        </a>
+
+        <!-- Áudio e Vídeo -->
+        <a href="{% url 'audiovideo:dashboard' %}" class="service-card">
+            <div class="service-icon-wrapper icon-audiovideo">
+                <i class="bi bi-camera-video"></i>
+            </div>
+            <div class="service-content">
+                <h5 class="service-title">Áudio e Vídeo</h5>
+                <p class="service-desc">Agendamento, reservas e rastreabilidade de gestão de equipamentos audiovisuais para eventos, plenários e salas de reunião.</p>
+            </div>
+            <i class="bi bi-arrow-right arrow-icon"></i>
+        </a>
+
+        <!-- Gerenciamento do Sistema -->
+        <a href="{% url 'adm_setup:sys_config' %}" class="service-card" style="border: 1px dashed rgba(100,116,139,0.3);">
+            <div class="service-icon-wrapper icon-config">
+                <i class="bi bi-gear-fill"></i>
+            </div>
+            <div class="service-content">
+                <h5 class="service-title">Configurações Gerais</h5>
+                <p class="service-desc">Central administrativa de configurações globais, permissões, auditoria de logs e customização dos templates gerados.</p>
+            </div>
+            <i class="bi bi-arrow-right arrow-icon"></i>
+        </a>
+
+    </div>
+</div>
+{% endblock %}

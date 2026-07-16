@@ -1,0 +1,87 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-concluir-solicitacao" tabindex="-1" aria-labelledby="modalConcluirTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--bs-success);">
+          <i class="bi bi-check-circle me-2"></i> Concluir Solicitação de Telefone
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Body do Modal com Formulário -->
+      <div class="modal-body modal-ordens-body">
+        <form id="form-concluir-solicitacao">
+          {% csrf_token %}
+          <input type="hidden" id="id_conclusao_solicitacao" name="id">
+          <!-- Status sempre será enviado como concluída -->
+          <input type="hidden" name="status" value="concluida">
+          <input type="hidden" id="local_base_solicitacao">
+
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-clipboard-check"></i> Avaliação e Autorização
+            </h6>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-12 full-width">
+                <label for="relatorio_conclusao" class="form-label">Observações</label>
+                <textarea class="form-control" id="relatorio_conclusao" name="relatorio" rows="3" maxlength="500"></textarea>
+              </div>
+            </div>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-12 full-width">
+                <label for="termo_transferencia_conclusao" class="form-label">Termo de Transferência Interna</label>
+                <input type="text" class="form-control" id="termo_transferencia_conclusao" name="termo_transferencia_interna" placeholder="Ex: 2026/002199" maxlength="50">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section-modal mt-3">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-tools"></i> Detalhes da Instalação
+            </h6>
+
+            <!-- Container de Instalações Dinâmicas -->
+            <div id="instalacoes-container" class="mb-3">
+              <!-- As linhas serão inseridas aqui via Javascript -->
+            </div>
+            
+            <div class="mb-4">
+              <button type="button" class="btn btn-sm btn-outline-primary" id="btn-add-instalacao">
+                <i class="bi bi-plus-circle me-1"></i> Adicionar Aparelho
+              </button>
+            </div>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-6 full-width">
+                <label for="tecnico_responsavel_conclusao" class="form-label">Técnico Responsável</label>
+                <select class="form-select" id="tecnico_responsavel_conclusao" name="tecnico_responsavel" required>
+                    <option value="" disabled selected>Selecione um técnico...</option>
+                    {% for tecnico in tecnicos %}
+                        <option value="{{ tecnico.get_full_name|default:tecnico.username }}">{{ tecnico.get_full_name|default:tecnico.username }}</option>
+                    {% empty %}
+                        <option value="" disabled>Nenhum técnico de telefonia encontrado</option>
+                    {% endfor %}
+                </select>
+              </div>
+              <div class="form-group-modal col-md-6 full-width">
+                <label for="data_instalacao_conclusao" class="form-label">Data e Horário da Instalação</label>
+                <input type="datetime-local" class="form-control" id="data_instalacao_conclusao" name="data_instalacao" required>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer com botões -->
+          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-lg me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-success">
+              <i class="bi bi-check-lg me-2"></i>Concluir Solicitação
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

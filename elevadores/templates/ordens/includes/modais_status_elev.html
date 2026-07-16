@@ -1,0 +1,65 @@
+<!-- Modal Atualização de Status Elevador -->
+<div class="modal fade" id="modal-status-elevador" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-broadcast me-2"></i>Atualizar Status do Elevador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-status-elevador">
+                    <input type="hidden" id="status-elevador-nome">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Elevador Selecionado</label>
+                        <input type="text" class="form-control bg-light" id="display-elevador-nome" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Status</label>
+                        <select class="form-select" id="status-elevador-select" required>
+                            <option value="ATIVO">ATIVO</option>
+                            <option value="PARADO">PARADO</option>
+                            <option value="PROGRAMADO">PROGRAMADO</option>
+                        </select>
+                    </div>
+
+                    <div id="div-parada" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted">Data e Hora da Parada</label>
+                            <input type="datetime-local" class="form-control" id="status-elevador-data-parada">
+                            <div class="form-text">Informe a data e hora exata em que o elevador parou.</div>
+                        </div>
+                    </div>
+
+                    <div id="div-programacao" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted">Programação Especial</label>
+                            <input type="text" class="form-control" id="status-elevador-programacao" placeholder="Ex: Subsolo - Térreo">
+                            <div class="form-text">Descreva a operação especial programada para o evento.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted">Motivo da Programação</label>
+                            <input type="text" class="form-control" id="status-elevador-motivo" placeholder="Ex: Manutenção na casa de máquinas">
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-muted">Início</label>
+                                <input type="datetime-local" class="form-control" id="status-elevador-prog-inicio">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label fw-bold text-muted">Fim</label>
+                                <input type="datetime-local" class="form-control" id="status-elevador-prog-fim">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary fw-bold py-2 rounded-pill">
+                            <i class="bi bi-save me-2"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

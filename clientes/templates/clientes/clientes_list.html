@@ -1,0 +1,43 @@
+{% extends 'clientes/base_clientes.html' %}
+
+{% block clientes_content %}
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white border-0 pt-4 pb-0">
+        <h4 class="mb-0 text-primary">Lista de Clientes</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nome</th>
+                        <th>Tipo</th>
+                        <th>Cadastrado em</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes %}
+                    <tr>
+                        <td class="fw-bold">{{ cliente.nome }}</td>
+                        <td>
+                            <span class="badge rounded-pill bg-info text-dark">
+                                {{ cliente.get_tipo_display }}
+                            </span>
+                        </td>
+                        <td>{{ cliente.criado_em|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i> Detalhes</button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-4">Nenhum cliente cadastrado ainda.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

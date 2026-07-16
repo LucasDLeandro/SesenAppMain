@@ -1,4 +1,9 @@
 {% extends "index.html" %}
+{% load static %}
+
+{% block extra_css %}
+    
+{% endblock %}
 
 {% block sidebar_toggle %}
     <button class="btn btn-sm btn-outline-secondary d-md-none me-2 border-0 dropdown-toggle-icon" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas" aria-controls="sidebarOffcanvas">
@@ -17,42 +22,31 @@
             </div>
 
             <div class="offcanvas-body d-flex flex-column p-0">
-                <div class="sidebar-heading">Gerenciar Contratos</div>
+                <div class="sidebar-heading">Contratos e Empresas</div>
                 <nav class="nav flex-column mb-3">
-                    <a class="nav-sidebar-link active" href="#">
-                        <i class="bi bi-clipboard-check"></i> Dashboard | Contratos
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratacoes' %}active{% endif %}" href="{% url 'contratos:dashboard_contratacoes' %}">
+                        <i class="bi bi-diagram-3"></i> Dashboard de Contratações
                     </a>
-                    <a class="nav-sidebar-link active" href="#">
-                        <i class="bi bi-clipboard-check"></i> Dashboard | Processos
+                    
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratos' or request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'contratos:dashboard_contratos' %}">
+                        <i class="bi bi-file-earmark-ruled"></i> Dashboard de Contratos
                     </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-briefcase"></i> Gestão de Contratos</a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-building"></i> Contratos | Encerrados</a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-tools"></i> Acompanhamento de Processos</a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-person-workspace"></i> Postos de Trabalho</a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> Contratos</a>
-                </nav>
-
-                <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Gerencial</div>
-                <nav class="nav flex-column mb-4">
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i> Solicitações</a>
+                    
+                    <a class="nav-sidebar-link {% if 'empresas' in request.path %}active{% endif %}" href="{% url 'empresas:dashboard_empresas' %}">
+                        <i class="bi bi-building"></i> Gestão de Empresas
+                    </a>
                 </nav>
             </div>
         </div>
     </aside>
-    
-    <section class="col-md-9 col-lg-10 p-4" style="height: 100%; overflow-y: auto;">
-        {% block app_content %}
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold m-0">DECIDIR O QUE COLOCAR AQUI</h2>
-                <a href="{% url 'contratos:novo_contrato' %}" class="btn btn-success shadow-sm">
-                    <i class="bi bi-plus-lg me-2"></i>Novo Contrato
-                </a>
-            </div>
-        
-        {% endblock %}
-    </section>
+
+    <main class="col-md-9 col-lg-10 p-4">
+        {% block painel_contratos %}{% endblock %}
+    </main>
+
 </div>
+
 {% endblock %}
 
-{% block extra_js %}
+{% block extra_app_content %}
 {% endblock %}

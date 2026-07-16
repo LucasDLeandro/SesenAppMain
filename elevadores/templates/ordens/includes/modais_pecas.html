@@ -1,0 +1,90 @@
+
+<!-- Modal Cadastro Peça -->
+<div class="modal fade" id="modalCadastroPeca" tabindex="-1" aria-labelledby="modalCadastroPecaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formCadastroPeca">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fw-bold" id="modalCadastroPecaLabel"><i class="bi bi-tools me-2"></i>Registrar Nova Peça para Troca</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label class="form-label">Elevador</label>
+                <select class="form-select" id="pecaElevador" required>
+                    <option value="" selected disabled>Selecione...</option>
+                    <option value="Social 1 - M2674">Social 1 - M2674</option>
+                    <option value="Social 2 - M2675">Social 2 - M2675</option>
+                    <option value="Social 3 - M2676">Social 3 - M2676</option>
+                    <option value="Social 4 - M2677">Social 4 - M2677</option>
+                    <option value="Social 5 - M2678">Social 5 - M2678</option>
+                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
+                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
+                    <option value="Social 8 - M2681">Social 8 - M2681</option>
+                    <option value="Social 9 - M2682">Social 9 - M2682</option>
+                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
+                    <option value="Social 11 - M2684">Social 11 - M2684</option>
+                    <option value="Social 12 - M2685">Social 12 - M2685</option>
+                    <option value="Social 13 - M2686">Social 13 - M2686</option>
+                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Andar/Pavimento</label>
+                <input type="text" class="form-control" id="pecaAndar" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Peça/Componente</label>
+                <input type="text" class="form-control" id="pecaTipo" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Ordem de Serviço (Opcional)</label>
+                <input type="text" class="form-control" id="pecaOS" placeholder="Ex: OS-12345">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Técnico que Identificou (Opcional)</label>
+                <input type="text" class="form-control" id="pecaTecnicoIdentificador">
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Previsão de Troca</label>
+                <input type="date" class="form-control" id="pecaPrevisao" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Peça</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Concluir Troca -->
+<div class="modal fade" id="modalConcluirTroca" tabindex="-1" aria-labelledby="modalConcluirTrocaLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formConcluirTroca">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fw-bold" id="modalConcluirTrocaLabel"><i class="bi bi-check-circle me-2"></i>Concluir Troca de Peça</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="concluirPecaId">
+            <div class="mb-3">
+                <label class="form-label">Técnico Responsável</label>
+                <input type="text" class="form-control" id="concluirTecnico" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Data Efetiva da Troca</label>
+                <input type="date" class="form-control" id="concluirData" required>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Confirmar Conclusão</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

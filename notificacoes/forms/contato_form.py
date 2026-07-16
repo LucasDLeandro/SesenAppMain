@@ -28,3 +28,12 @@ class CriarContatoForm(forms.ModelForm):
             'role': 'Tipo de Contato',
             'is_ativo': 'Ativo?'
         }
+
+    def clean_telefone(self):
+        telefone = self.cleaned_data.get('telefone')
+        if telefone:
+            import re
+            telefone = re.sub(r'\D', '', telefone)
+            if len(telefone) in (10, 11) and not telefone.startswith('55'):
+                telefone = f"55{telefone}"
+        return telefone

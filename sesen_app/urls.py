@@ -24,17 +24,31 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
+from usuarios.views import login_view, logout_view, trocar_senha_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api-auth/", include("rest_framework.urls")),
-    path('', TemplateView.as_view(template_name='index.html'), name='inicio'),
+    path('', TemplateView.as_view(template_name='inicio.html'), name='inicio'),
     path('elevadores/', include('elevadores.urls', namespace='elevadores')),
+    path('telefonia/', include('telefonia.urls', namespace='telefonia')),
+    path('reembolsos/', include('reembolsos.urls', namespace='reembolsos')),
+    path('audiovideo/', include('audiovideo.urls', namespace='audiovideo')),
+    path('logs/', include('logs.urls')),
     path('contratos/', include('contratos.urls', namespace='contratos')),
     path('notificacoes/', include('notificacoes.urls', namespace='notificacoes')),
     path('adm_setup/', include('adm_setup.urls', namespace='sys_config')),
+    path('clientes/', include('clientes.urls', namespace='clientes')),
+    path('usuarios/', include('usuarios.urls', namespace='usuarios')),
+    path('gestao_patrimonio/', include('gestao_patrimonio.urls', namespace='gestao_patrimonio')),
+    path('empresas/', include('empresas.urls', namespace='empresas')),
+    path('equipe_tecnica/', include('equipe_tecnica.urls', namespace='equipe_tecnica')),
 
-    path('hub_servicos/', TemplateView.as_view(template_name='base_hub_servicos.html'), name='hub_servicos'),
+    path('hub_servicos/', TemplateView.as_view(template_name='hub_servicos.html'), name='hub_servicos'),
+
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
+    path('trocar-senha/', trocar_senha_view, name='trocar_senha'),
 
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'), # Essa é a rota de Login!
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh') # Rota para renovar o token

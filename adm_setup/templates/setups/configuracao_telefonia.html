@@ -1,0 +1,837 @@
+{% extends "setups/base_setup.html" %}
+
+{% block extra_css %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
+
+<!-- Modal de Edição de Template EMAIL -->
+<div class="modal fade" id="modalTemplateEmail" tabindex="-1" aria-labelledby="modalTemplateEmailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalTemplateEmailLabel"><i class="bi bi-pencil-square me-2"></i>Novo Template de E-mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" id="form-template-email">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_email_template">
+                    <input type="hidden" name="template_id" id="email_template_id" value="">
+                    
+                    <div class="mb-4 bg-light p-3 rounded">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="email_ativo" name="ativo">
+                            <label class="form-check-label ms-2" for="email_ativo">
+                                Definir como Template Ativo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email_nome" class="form-label fw-bold">Nome do Template</label>
+                        <input type="text" class="form-control" id="email_nome" name="nome" required placeholder="Ex: E-mail Padrão 2026">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email_assunto" class="form-label fw-bold">Assunto do E-mail</label>
+                        <input type="text" class="form-control" id="email_assunto" name="assunto" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email_copia" class="form-label fw-bold">E-mail em Cópia Oculta (Opcional)</label>
+                        <input type="email" class="form-control" id="email_copia" name="email_copia" placeholder="Ex: sua-secao@tse.jus.br">
+                        <div class="form-text">Se preenchido, enviará uma cópia (BCC) da senha para este endereço.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email_corpo" class="form-label fw-bold">Corpo da Mensagem</label>
+                        <div class="form-text mb-2 text-info">
+                            Variáveis disponíveis: <br>
+                            <code>{primeiro_nome}</code> = Será substituído pelo primeiro nome do usuário.<br>
+                            <code>{senha}</code> = Será substituído pela senha gerada.<br>
+                            <em>(Os anexos com a Senha e o Tutorial serão inseridos automaticamente).</em>
+                        </div>
+                        <textarea class="form-control" id="email_corpo" name="corpo" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email_assinatura" class="form-label fw-bold">Assinatura da Seção</label>
+                        <textarea class="form-control" id="email_assinatura" name="assinatura" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <button type="button" class="btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Salvar Configurações</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block app_content %}
+<!-- Cabeçalho da Página -->
+<div class="mb-4">
+    <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-telephone-fill" style="font-size: 32px; color: #106EBE;"></i>
+        <h2 class="ms-3 fw-bold m-0 text-body">Gestão de Telefonia</h2>
+    </div>
+    <p class="text-muted" style="margin-left: 44px;">Templates Disponíveis para Documentos da Telefonia</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-4" id="telefoniaTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active fw-bold" id="senha-tab" data-bs-toggle="tab" data-bs-target="#senha-tab-pane" type="button" role="tab" aria-controls="senha-tab-pane" aria-selected="true">
+        <i class="bi bi-key me-2"></i> Documento de Senha
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold" id="tutorial-tab" data-bs-toggle="tab" data-bs-target="#tutorial-tab-pane" type="button" role="tab" aria-controls="tutorial-tab-pane" aria-selected="false">
+        <i class="bi bi-book me-2"></i> Tutorial e GRU (PDF)
+    </button>
+  </li>
+
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold" id="email-tab" data-bs-toggle="tab" data-bs-target="#email-tab-pane" type="button" role="tab" aria-controls="email-tab-pane" aria-selected="false">
+        <i class="bi bi-envelope me-2"></i> E-mail de Senha
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold" id="whatsapp-tab" data-bs-toggle="tab" data-bs-target="#whatsapp-tab-pane" type="button" role="tab" aria-controls="whatsapp-tab-pane" aria-selected="false">
+        <i class="bi bi-whatsapp me-2"></i> WhatsApp (Notificações)
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link fw-bold" id="reembolsos-tab" data-bs-toggle="tab" data-bs-target="#reembolsos-tab-pane" type="button" role="tab" aria-controls="reembolsos-tab-pane" aria-selected="false">
+        <i class="bi bi-file-pdf me-2"></i> PDF Reembolsos
+    </button>
+  </li>
+</ul>
+
+<div class="tab-content" id="telefoniaTabsContent">
+    <!-- ABA SENHA -->
+    <div class="tab-pane fade show active" id="senha-tab-pane" role="tabpanel" aria-labelledby="senha-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Templates de Documento de Senha</h5>
+            <button class="btn btn-primary shadow-sm" onclick="novoTemplate()">
+                <i class="bi bi-plus-lg me-2"></i>NOVO TEMPLATE DE SENHA
+            </button>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            {% for temp in templates_senha %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                        <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <h6 class="m-0 fw-bold">{{ temp.nome|default:"Template Padrão" }}</h6>
+                            {% if temp.ativo %}
+                                <span class="badge bg-success">ATIVA</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">INATIVA</span>
+                            {% endif %}
+                        </div>
+                        <div class="msg-card-body flex-grow-1">
+                            <p class="text-muted small mb-3">Telefonia - Template de Documento de Senha</p>
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
+                                <strong>Prévia:</strong><br><br>
+                                "Instruções para Celular: {{ temp.instrucoes_celular }}<br><br>
+                                {{ temp.termo_obrigatorio|truncatewords:20 }}"
+                            </div>
+                        </div>
+                        
+                        <div class="msg-card-footer mt-auto pt-3 border-top mt-3 d-flex">
+                            <a href="{% url 'telefonia:preview_pdf_senha_template' template_id=temp.id %}" target="_blank" class="btn btn-outline-secondary flex-fill me-2" title="Visualizar PDF">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                            <button class="btn btn-outline-primary flex-fill me-2" onclick="editarTemplate({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.cabecalho_logo|escapejs }}', '{{ temp.cabecalho_sublogo|escapejs }}', '{{ temp.cabecalho_subtitulo|escapejs }}', '{{ temp.instrucoes_celular|escapejs }}', '{{ temp.instrucoes_interurbanas|escapejs }}', '{{ temp.instrucoes_internacionais|escapejs }}', '{{ temp.termo_obrigatorio|escapejs }}', '{{ temp.termo_ligacoes_longa_distancia|escapejs }}', '{{ temp.termo_ressarcimento|escapejs }}', {{ temp.ativo|yesno:'true,false' }})" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            {% if not temp.ativo %}
+                            <form method="POST" class="flex-fill d-flex m-0" onsubmit="return confirm('Tem certeza que deseja excluir este template?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_senha_template">
+                                <input type="hidden" name="template_id" value="{{ temp.id }}">
+                                <button type="submit" class="btn btn-outline-danger w-100" title="Deletar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                                <button class="btn btn-outline-danger flex-fill disabled" title="Não é possível deletar o template ativo" aria-disabled="true">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Nenhum template cadastrado.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- ABA TUTORIAL -->
+    <div class="tab-pane fade" id="tutorial-tab-pane" role="tabpanel" aria-labelledby="tutorial-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Templates de Tutorial (PDF)</h5>
+            <button class="btn btn-primary shadow-sm" onclick="novoTemplateTutorial()">
+                <i class="bi bi-plus-lg me-2"></i>NOVO TEMPLATE DE TUTORIAL
+            </button>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            {% for temp in templates_tutorial %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                        <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <h6 class="m-0 fw-bold">{{ temp.nome|default:"Tutorial Padrão" }}</h6>
+                            {% if temp.ativo %}
+                                <span class="badge bg-success">ATIVA</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">INATIVA</span>
+                            {% endif %}
+                        </div>
+                        <div class="msg-card-body flex-grow-1">
+                            <p class="text-muted small mb-3">Telefonia - Tutorial de Utilização e GRU</p>
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
+                                <strong>Prévia (Introdução):</strong><br><br>
+                                "{{ temp.introducao|striptags|truncatewords:20 }}"
+                            </div>
+                        </div>
+                        
+                        <div class="msg-card-footer mt-auto pt-3 border-top mt-3 d-flex">
+                            <a href="{% url 'telefonia:preview_pdf_tutorial_template' template_id=temp.id %}" target="_blank" class="btn btn-outline-secondary flex-fill me-2" title="Visualizar PDF">
+                                <i class="bi bi-file-pdf"></i>
+                            </a>
+                            <button class="btn btn-outline-primary flex-fill me-2" 
+                                onclick="editarTemplateTutorial(
+                                    {{ temp.id }}, 
+                                    '{{ temp.nome|escapejs }}', 
+                                    '{{ temp.cabecalho_logo|escapejs }}', 
+                                    '{{ temp.cabecalho_sublogo|escapejs }}', 
+                                    '{{ temp.cabecalho_subtitulo|escapejs }}', 
+                                    '{{ temp.introducao|escapejs }}', 
+                                    '{{ temp.exemplo_email|escapejs }}', 
+                                    '{{ temp.secao_validacao|escapejs }}', 
+                                    '{{ temp.secao_pagamento|escapejs }}', 
+                                    '{{ temp.secao_consequencias|escapejs }}', 
+                                    '{{ temp.secao_duvidas|escapejs }}', 
+                                    {{ temp.ativo|yesno:'true,false' }}
+                                )" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            
+                            {% if not temp.ativo %}
+                            <form method="POST" class="flex-fill d-flex m-0" onsubmit="return confirm('Tem certeza que deseja excluir este template de tutorial?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_tutorial_template">
+                                <input type="hidden" name="template_id" value="{{ temp.id }}">
+                                <button type="submit" class="btn btn-outline-danger w-100" title="Deletar">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                                <button class="btn btn-outline-danger flex-fill disabled" title="Não é possível deletar o template ativo" aria-disabled="true">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Nenhum template de tutorial cadastrado.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ABA EMAIL -->
+    <div class="tab-pane fade" id="email-tab-pane" role="tabpanel" aria-labelledby="email-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Templates de E-mail para Envio de Senha</h5>
+            <button class="btn btn-primary shadow-sm" onclick="novoTemplateEmail()">
+                <i class="bi bi-plus-lg me-2"></i>NOVO TEMPLATE DE E-MAIL
+            </button>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            {% for temp in templates_email %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                        <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <h6 class="m-0 fw-bold">{{ temp.nome|default:"Template Padrão" }}</h6>
+                            {% if temp.ativo %}
+                                <span class="badge bg-success">ATIVA</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">INATIVA</span>
+                            {% endif %}
+                        </div>
+                        <div class="msg-card-body flex-grow-1">
+                            <p class="mb-1"><strong>Assunto:</strong> {{ temp.assunto }}</p>
+                        </div>
+                        <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-between">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </button>
+                            <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este template de e-mail?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_email_template">
+                                <input type="hidden" name="template_id" value="{{ temp.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
+                                    <i class="bi bi-trash"></i> Excluir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Nenhum template de e-mail cadastrado.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ABA WHATSAPP -->
+    <div class="tab-pane fade" id="whatsapp-tab-pane" role="tabpanel" aria-labelledby="whatsapp-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Notificações por WhatsApp aos Técnicos</h5>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            {% for temp in templates_whatsapp %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                        <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <h6 class="m-0 fw-bold">
+                                {% if temp.tipo_evento == 'tel_solicitacao_aparelho' %}
+                                    <i class="bi bi-phone me-2"></i> Solicitação de Aparelho
+                                {% else %}
+                                    <i class="bi bi-key me-2"></i> Solicitação de Senha
+                                {% endif %}
+                            </h6>
+                            <span class="badge bg-success">ATIVA</span>
+                        </div>
+                        <div class="msg-card-body flex-grow-1">
+                            <p class="text-muted small mb-3">Esta mensagem será disparada para a equipe técnica no fechamento desta demanda.</p>
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555; white-space: pre-wrap;">{{ temp.base_text }}</div>
+                        </div>
+                        <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-end">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateWhatsapp({{ temp.id }}, `{{ temp.base_text|escapejs }}`)">
+                                <i class="bi bi-pencil-square me-2"></i> Editar Texto
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Nenhum template de WhatsApp cadastrado.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ABA REEMBOLSOS PDF -->
+    <div class="tab-pane fade" id="reembolsos-tab-pane" role="tabpanel" aria-labelledby="reembolsos-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Textos do Relatório de Reembolsos</h5>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            <div class="col-md-6 col-lg-6">
+                <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                    <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                        <h6 class="m-0 fw-bold">Configuração Global</h6>
+                        <span class="badge bg-success">ATIVA</span>
+                    </div>
+                    <div class="msg-card-body flex-grow-1">
+                        <p class="text-muted small mb-3">Estes textos serão utilizados na emissão dos Relatórios Anuais e de Solicitação de Reembolso na Gestão de Reembolsos.</p>
+                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
+                            <strong>Cabeçalho:</strong><br>
+                            {{ config_reembolsos.cabecalho_linha1 }}<br>
+                            {{ config_reembolsos.cabecalho_linha2 }}<br>
+                            {{ config_reembolsos.cabecalho_linha3 }}<br><br>
+                            <strong>Título Anual:</strong> {{ config_reembolsos.titulo_tabela_anual }}<br><br>
+                            <strong>Rodapé 1:</strong><br>
+                            "{{ config_reembolsos.nota_rodape_1|striptags|truncatewords:20 }}"<br><br>
+                            <strong>Prefixo Rodapé 2:</strong> {{ config_reembolsos.nota_rodape_2_prefix }}
+                        </div>
+                    </div>
+                    
+                    <div class="msg-card-footer mt-auto pt-3 border-top mt-3 d-flex">
+                        <button class="btn btn-outline-primary flex-fill me-2" onclick="abrirModalConfig()" title="Editar Textos">
+                            <i class="bi bi-pencil me-2"></i>EDITAR TEXTOS
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Modal de Configuração de Reembolsos -->
+<div class="modal fade" id="modalConfig" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white border-0">
+                <h5 class="modal-title"><i class="bi bi-gear-fill me-2"></i>Configurações de Textos dos Relatórios de Reembolso</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-light">
+                <form id="formConfig">
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Cabeçalho</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Linha 1</label>
+                            <input type="text" class="form-control" id="config-cabecalho_linha1" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Linha 2</label>
+                            <input type="text" class="form-control" id="config-cabecalho_linha2" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Linha 3</label>
+                            <input type="text" class="form-control" id="config-cabecalho_linha3" required>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Tabelas e Rodapé</h6>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Título do Controle Anual</label>
+                            <input type="text" class="form-control" id="config-titulo_tabela_anual" required>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Nota de Rodapé (Observação 1)</label>
+                            <textarea class="form-control" id="config-nota_rodape_1" rows="3" required></textarea>
+                            <small class="text-muted">Você pode usar tags HTML básicas como &lt;b&gt;, &lt;br/&gt;</small>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold text-muted small">Prefixo da Nota de Designação</label>
+                            <input type="text" class="form-control" id="config-nota_rodape_2_prefix" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="salvarConfig()"><i class="bi bi-save me-2"></i>Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição de Template SENHA -->
+<div class="modal fade" id="modalTemplate" tabindex="-1" aria-labelledby="modalTemplateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalTemplateLabel"><i class="bi bi-pencil-square me-2"></i>Novo Template</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" id="form-template">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_senha_template">
+                    <input type="hidden" name="template_id" id="template_id" value="">
+                    
+                    <div class="mb-4 bg-light p-3 rounded">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="ativo" name="ativo">
+                            <label class="form-check-label ms-2" for="ativo">
+                                Definir como Template Ativo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nome" class="form-label fw-bold">Nome do Template</label>
+                        <input type="text" class="form-control" id="nome" name="nome" required placeholder="Ex: Modelo Claro S.A.">
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Informações do Topo (Cabeçalho)</h6>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="cabecalho_logo" class="form-label fw-bold">Logo (Texto Grande)</label>
+                                <input type="text" class="form-control" id="cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE">
+                            </div>
+                            <div class="col-md-8">
+                                <label for="cabecalho_sublogo" class="form-label fw-bold">Sub-logo (Texto Menor)</label>
+                                <input type="text" class="form-control" id="cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="cabecalho_subtitulo" class="form-label fw-bold">Subtítulo (Lado Direito)</label>
+                            <input type="text" class="form-control" id="cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Instruções de Discagem</h6>
+                        
+                        <div class="mb-3">
+                            <label for="instrucoes_celular" class="form-label fw-bold">Celular</label>
+                            <input type="text" class="form-control" id="instrucoes_celular" name="instrucoes_celular" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="instrucoes_interurbanas" class="form-label fw-bold">Interurbanas</label>
+                            <input type="text" class="form-control" id="instrucoes_interurbanas" name="instrucoes_interurbanas" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="instrucoes_internacionais" class="form-label fw-bold">Internacionais</label>
+                            <input type="text" class="form-control" id="instrucoes_internacionais" name="instrucoes_internacionais" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Cláusulas e Termos</h6>
+                        
+                        <div class="mb-3">
+                            <label for="termo_obrigatorio" class="form-label fw-bold">Obrigatório</label>
+                            <textarea class="form-control" id="termo_obrigatorio" name="termo_obrigatorio" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="termo_ligacoes_longa_distancia" class="form-label fw-bold">Ligações de Longa Distância</label>
+                            <textarea class="form-control" id="termo_ligacoes_longa_distancia" name="termo_ligacoes_longa_distancia" rows="4" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="termo_ressarcimento" class="form-label fw-bold">Ressarcimento</label>
+                            <textarea class="form-control" id="termo_ressarcimento" name="termo_ressarcimento" rows="4" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end border-top pt-4">
+                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                            <i class="bi bi-save me-2"></i> Salvar Template
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ABA EMAIL -->
+    <div class="tab-pane fade" id="email-tab-pane" role="tabpanel" aria-labelledby="email-tab" tabindex="0">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold m-0 text-secondary">Templates de E-mail para Envio de Senha</h5>
+            <button class="btn btn-primary shadow-sm" onclick="novoTemplateEmail()">
+                <i class="bi bi-plus-lg me-2"></i>NOVO TEMPLATE DE E-MAIL
+            </button>
+        </div>
+        
+        <div class="row g-4 mt-2">
+            {% for temp in templates_email %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="msg-card-template shadow-sm h-100 d-flex flex-column">
+                        <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom pb-2 mb-2">
+                            <h6 class="m-0 fw-bold">{{ temp.nome|default:"Template Padrão" }}</h6>
+                            {% if temp.ativo %}
+                                <span class="badge bg-success">ATIVA</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">INATIVA</span>
+                            {% endif %}
+                        </div>
+                        <div class="msg-card-body flex-grow-1">
+                            <p class="mb-1"><strong>Assunto:</strong> {{ temp.assunto }}</p>
+                        </div>
+                        <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-between">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
+                                <i class="bi bi-pencil-square"></i> Editar
+                            </button>
+                            <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este template de e-mail?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_email_template">
+                                <input type="hidden" name="template_id" value="{{ temp.id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
+                                    <i class="bi bi-trash"></i> Excluir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle"></i> Nenhum template de e-mail cadastrado.
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição de Template TUTORIAL -->
+<div class="modal fade" id="modalTemplateTutorial" tabindex="-1" aria-labelledby="modalTemplateTutorialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalTemplateTutorialLabel"><i class="bi bi-pencil-square me-2"></i>Novo Template de Tutorial</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" id="form-template-tutorial">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_tutorial_template">
+                    <input type="hidden" name="template_id" id="tutorial_template_id" value="">
+                    
+                    <div class="mb-4 bg-light p-3 rounded">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="tutorial_ativo" name="ativo">
+                            <label class="form-check-label ms-2" for="tutorial_ativo">
+                                Definir como Template Ativo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tutorial_nome" class="form-label fw-bold">Nome do Template</label>
+                        <input type="text" class="form-control" id="tutorial_nome" name="nome" required placeholder="Ex: Tutorial Padrão">
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Informações do Topo (Cabeçalho)</h6>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-4">
+                                <label for="tutorial_cabecalho_logo" class="form-label fw-bold">Logo (Texto Grande)</label>
+                                <input type="text" class="form-control" id="tutorial_cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE">
+                            </div>
+                            <div class="col-md-8">
+                                <label for="tutorial_cabecalho_sublogo" class="form-label fw-bold">Sub-logo (Texto Menor)</label>
+                                <input type="text" class="form-control" id="tutorial_cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_cabecalho_subtitulo" class="form-label fw-bold">Subtítulo (Lado Direito)</label>
+                            <input type="text" class="form-control" id="tutorial_cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN">
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Página 1: Introdução e Passo a Passo</h6>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_introducao" class="form-label fw-bold">Introdução</label>
+                            <textarea class="form-control" id="tutorial_introducao" name="introducao" rows="4" required></textarea>
+                            <div class="form-text text-muted">Permite o uso de tags HTML, ex: &lt;b&gt; para negrito ou &lt;p&gt; para parágrafo.</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_exemplo_email" class="form-label fw-bold">Exemplo do E-mail (Passo a passo)</label>
+                            <textarea class="form-control" id="tutorial_exemplo_email" name="exemplo_email" rows="8" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Páginas Seguintes: FAQs e Instruções Detalhadas</h6>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_secao_validacao" class="form-label fw-bold">Seção: Validação das ligações</label>
+                            <textarea class="form-control" id="tutorial_secao_validacao" name="secao_validacao" rows="6" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_secao_pagamento" class="form-label fw-bold">Seção: Pagamento das ligações</label>
+                            <textarea class="form-control" id="tutorial_secao_pagamento" name="secao_pagamento" rows="6" required></textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="tutorial_secao_consequencias" class="form-label fw-bold">Seção: Consequências do Não Pagamento</label>
+                            <textarea class="form-control" id="tutorial_secao_consequencias" name="secao_consequencias" rows="6" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tutorial_secao_duvidas" class="form-label fw-bold">Seção: Outras Dúvidas Frequentes</label>
+                            <textarea class="form-control" id="tutorial_secao_duvidas" name="secao_duvidas" rows="6" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end border-top pt-4">
+                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                            <i class="bi bi-save me-2"></i> Salvar Template
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Edição de Template WHATSAPP -->
+<div class="modal fade" id="modalTemplateWhatsapp" tabindex="-1" aria-labelledby="modalTemplateWhatsappLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom bg-light">
+                <h5 class="modal-title text-success fw-bold" id="modalTemplateWhatsappLabel">
+                    <i class="bi bi-whatsapp me-2"></i>Editar Notificação WhatsApp
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" id="form-template-whatsapp">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_whatsapp_template">
+                    <input type="hidden" name="template_id" id="whatsapp_template_id" value="">
+                    
+                    <div class="mb-3">
+                        <label for="whatsapp_mensagem" class="form-label fw-bold">Texto da Mensagem</label>
+                        <div class="form-text mb-2 text-info">
+                            Variáveis disponíveis para os templates de Telefonia:<br>
+                            <code>{tecnico}</code> = Nome do técnico recebendo a mensagem.<br>
+                            <code>{solicitante}</code> = Nome de quem solicitou.<br>
+                            <code>{protocolo}</code> = Número do protocolo.<br>
+                            <code>{unidade}</code> = A unidade por extenso (ex: Diretoria Geral).<br>
+                            <code>{sigla_unidade}</code> = A sigla (ex: DG).<br>
+                            <code>{ramal}</code> = Número do ramal associado (se houver).<br>
+                            <hr class="my-2 text-secondary">
+                            <strong>Apenas Aparelhos:</strong><br>
+                            <code>{local}</code> = O local (sala/setor).<br>
+                            <code>{qnt_solicitada}</code> = A quantidade de aparelhos.<br>
+                            <strong>Apenas Senhas:</strong><br>
+                            <code>{usuario}</code> = Nome do usuário da senha.<br>
+                        </div>
+                        <textarea class="form-control" id="whatsapp_mensagem" name="mensagem" rows="10" required></textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end border-top pt-4 mt-3">
+                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold">
+                            <i class="bi bi-save me-2"></i> Salvar Mensagem
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/config_telefonia.js' %}"></script>
+<script>
+function abrirModalConfig() {
+    fetch('/reembolsos/api/configuracao-pdf/')
+        .then(response => {
+            if(!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('config-cabecalho_linha1').value = data.cabecalho_linha1;
+            document.getElementById('config-cabecalho_linha2').value = data.cabecalho_linha2;
+            document.getElementById('config-cabecalho_linha3').value = data.cabecalho_linha3;
+            document.getElementById('config-titulo_tabela_anual').value = data.titulo_tabela_anual;
+            document.getElementById('config-nota_rodape_1').value = data.nota_rodape_1;
+            document.getElementById('config-nota_rodape_2_prefix').value = data.nota_rodape_2_prefix;
+            
+            var modal = new bootstrap.Modal(document.getElementById('modalConfig'));
+            modal.show();
+        })
+        .catch(err => {
+            Swal.fire('Erro', 'Não foi possível carregar as configurações', 'error');
+        });
+}
+
+function salvarConfig() {
+    // Pegar o CSRF token do template ou do cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const data = {
+        cabecalho_linha1: document.getElementById('config-cabecalho_linha1').value,
+        cabecalho_linha2: document.getElementById('config-cabecalho_linha2').value,
+        cabecalho_linha3: document.getElementById('config-cabecalho_linha3').value,
+        titulo_tabela_anual: document.getElementById('config-titulo_tabela_anual').value,
+        nota_rodape_1: document.getElementById('config-nota_rodape_1').value,
+        nota_rodape_2_prefix: document.getElementById('config-nota_rodape_2_prefix').value
+    };
+
+    fetch('/reembolsos/api/configuracao-pdf/', {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if(!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        var modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalConfig'));
+        if (modalInstance) modalInstance.hide();
+        Swal.fire({
+            icon: 'success',
+            title: 'Salvo!',
+            text: 'Configurações de PDF atualizadas com sucesso.',
+            timer: 2000,
+            showConfirmButton: false
+        }).then(() => {
+            window.location.reload();
+        });
+    })
+    .catch(err => {
+        Swal.fire('Erro', 'Não foi possível salvar as configurações', 'error');
+    });
+}
+
+function editarTemplateWhatsapp(id, mensagem) {
+    document.getElementById('whatsapp_template_id').value = id;
+    document.getElementById('whatsapp_mensagem').value = mensagem;
+    
+    var modal = new bootstrap.Modal(document.getElementById('modalTemplateWhatsapp'));
+    modal.show();
+}
+</script>
+{% endblock %}

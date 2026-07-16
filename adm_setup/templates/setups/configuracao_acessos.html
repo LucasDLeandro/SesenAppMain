@@ -1,0 +1,228 @@
+{% extends "setups/base_setup.html" %}
+{% load static %}
+
+{% block title %}Configuração de Acessos{% endblock %}
+
+{% block extra_css %}
+<style>
+    .template-card {
+        border-left: 5px solid #106EBE;
+        transition: all 0.3s ease;
+    }
+    .template-card:hover {
+        box-shadow: 0 4px 12px rgba(16, 110, 190, 0.15);
+        transform: translateY(-2px);
+    }
+    .template-card.active-template {
+        background-color: #f0f7ff;
+        border-left-color: #28a745;
+    }
+    .badge-ativo {
+        background-color: #28a745;
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.7; }
+    }
+</style>
+{% endblock %}
+
+{% block app_content %}
+<!-- Modal de Edição de Template EMAIL -->
+<div class="modal fade" id="modalTemplateAcesso" tabindex="-1" aria-labelledby="modalTemplateAcessoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalTemplateAcessoLabel"><i class="bi bi-pencil-square me-2"></i>Configurar Template de Liberação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST" id="form-template-acesso" action="{% url 'adm_setup:configuracao_acessos' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_email_template">
+                    <input type="hidden" name="template_id" id="template_id" value="">
+                    
+                    <div class="mb-4 bg-light p-3 rounded">
+                        <div class="form-check form-switch fs-5">
+                            <input class="form-check-input" type="checkbox" role="switch" id="template_ativo" name="ativo">
+                            <label class="form-check-label ms-2" for="template_ativo">
+                                Definir como Template Ativo
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="template_nome" class="form-label fw-bold">Nome do Template</label>
+                        <input type="text" class="form-control" id="template_nome" name="nome" required placeholder="Ex: Template Padrão Liberação">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="template_assunto" class="form-label fw-bold">Assunto do E-mail</label>
+                        <input type="text" class="form-control" id="template_assunto" name="assunto" required placeholder="Ex: [SEGURANÇA] Liberação de Acesso de Terceiros">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="template_destinatario" class="form-label fw-bold">E-mail Destinatário <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" id="template_destinatario" name="email_destinatario" required placeholder="Ex: seguranca@empresa.com.br">
+                        <div class="form-text">E-mail principal da Segurança/Portaria que receberá as liberações de acesso.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="template_copia" class="form-label fw-bold">E-mail em Cópia Oculta (BCC) <span class="text-muted fw-normal">- Opcional</span></label>
+                        <input type="email" class="form-control" id="template_copia" name="email_copia" placeholder="Ex: auditoria@empresa.com.br">
+                        <div class="form-text">Se preenchido, enviará uma cópia (BCC) para este endereço.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="template_corpo" class="form-label fw-bold">Corpo da Mensagem</label>
+                        <div class="form-text mb-2 text-info">
+                            <strong>Variáveis disponíveis:</strong><br>
+                            <code>{empresa}</code> = Será substituído pelo nome da empresa<br>
+                            <code>{solicitante}</code> = Nome de quem solicitou<br>
+                            <code>{periodo}</code> = Período (Manhã/Tarde/Integral/Noturno)<br>
+                            <code>{datas}</code> = Datas autorizadas<br>
+                            <code>{tecnicos}</code> = Lista de técnicos
+                        </div>
+                        <textarea class="form-control" id="template_corpo" name="corpo" rows="8" required></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="template_assinatura" class="form-label fw-bold">Assinatura da Comunicação</label>
+                        <textarea class="form-control" id="template_assinatura" name="assinatura" rows="3" required></textarea>
+                    </div>
+                    
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-2"></i>Salvar Template</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mb-4">
+    <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-person-badge" style="font-size: 32px; color: #106EBE;"></i>
+        <h2 class="ms-3 fw-bold m-0 text-body">Configuração de Liberação de Acesso</h2>
+    </div>
+    <p class="text-muted" style="margin-left: 44px;">Templates de E-mail para Comunicação com Segurança/Portaria</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'success' }} alert-dismissible fade show" role="alert">
+            <i class="bi bi-{% if message.tags == 'error' %}exclamation-triangle{% else %}check-circle{% endif %}-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="fw-bold text-secondary mb-0">Templates Disponíveis</h5>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTemplateAcesso" onclick="abrirModalNovoTemplate()">
+                <i class="bi bi-plus-circle me-2"></i> Novo Template
+            </button>
+        </div>
+
+        {% if templates_email %}
+            <div class="row g-3">
+                {% for template in templates_email %}
+                <div class="col-md-6">
+                    <div class="card template-card {% if template.ativo %}active-template{% endif %} h-100">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-envelope-fill text-primary"></i>
+                                <h6 class="mb-0 fw-bold">{{ template.nome }}</h6>
+                            </div>
+                            {% if template.ativo %}
+                                <span class="badge badge-ativo"><i class="bi bi-check-circle me-1"></i> ATIVO</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inativo</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <small class="text-muted fw-bold">Destinatário:</small>
+                                <p class="mb-2 text-break">
+                                    <code class="text-primary">{{ template.email_destinatario|default:"Não configurado" }}</code>
+                                </p>
+                            </div>
+                            {% if template.email_copia %}
+                            <div class="mb-3">
+                                <small class="text-muted fw-bold">Cópia (BCC):</small>
+                                <p class="mb-2 text-break">
+                                    <code class="text-secondary">{{ template.email_copia }}</code>
+                                </p>
+                            </div>
+                            {% endif %}
+                            <div>
+                                <small class="text-muted fw-bold">Assunto:</small>
+                                <p class="mb-0 text-muted small">{{ template.assunto }}</p>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light d-flex gap-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm flex-grow-1" data-bs-toggle="modal" data-bs-target="#modalTemplateAcesso" onclick="editarTemplate({{ template.id }}, '{{ template.nome|escapejs }}', '{{ template.assunto|escapejs }}', '{{ template.email_destinatario|default:''|escapejs }}', '{{ template.email_copia|default:''|escapejs }}', `{{ template.corpo|escapejs }}`, `{{ template.assinatura|escapejs }}`, {{ template.ativo|yesno:'true,false' }})">
+                                <i class="bi bi-pencil me-1"></i> Editar
+                            </button>
+                            <form method="POST" action="{% url 'adm_setup:configuracao_acessos' %}" style="display: inline;" onsubmit="return confirm('Tem certeza que deseja excluir este template?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete_template">
+                                <input type="hidden" name="template_id" value="{{ template.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash me-1"></i> Excluir
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle me-2"></i> Nenhum template encontrado. O sistema deveria ter gerado um automaticamente.
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const CORPO_PADRAO = `Prezados, favor liberar o acesso para a seguinte equipe:
+
+Empresa: {empresa}
+Solicitante: {solicitante}
+Período do Dia: {periodo}
+Datas Autorizadas: {datas}
+
+Técnicos Presentes:
+{tecnicos}`;
+
+const ASSINATURA_PADRAO = `Atenciosamente,
+SesenApp`;
+
+function abrirModalNovoTemplate() {
+    document.getElementById('form-template-acesso').reset();
+    document.getElementById('template_id').value = '';
+    document.getElementById('modalTemplateAcessoLabel').innerHTML = '<i class="bi bi-pencil-square me-2"></i>Novo Template de Liberação';
+    document.getElementById('template_ativo').checked = false;
+    document.getElementById('template_assunto').value = '[SEGURANÇA] Liberação de Acesso de Terceiros';
+    document.getElementById('template_corpo').value = CORPO_PADRAO;
+    document.getElementById('template_assinatura').value = ASSINATURA_PADRAO;
+}
+
+function editarTemplate(id, nome, assunto, destinatario, copia, corpo, assinatura, ativo) {
+    document.getElementById('template_id').value = id;
+    document.getElementById('template_nome').value = nome;
+    document.getElementById('template_assunto').value = assunto;
+    document.getElementById('template_destinatario').value = destinatario;
+    document.getElementById('template_copia').value = copia;
+    document.getElementById('template_corpo').value = corpo;
+    document.getElementById('template_assinatura').value = assinatura;
+    document.getElementById('template_ativo').checked = ativo;
+    document.getElementById('modalTemplateAcessoLabel').innerHTML = '<i class="bi bi-pencil-square me-2"></i>Editar Template: ' + nome;
+}
+</script>
+
+{% endblock %}

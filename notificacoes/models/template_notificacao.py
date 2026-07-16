@@ -5,6 +5,8 @@ class TemplateMessage(models.Model):
         ('false', '---'),
         ('os_elev_registro', 'Elevadores - Registro de Nova OS'),
         ('os_elev_conclusao', 'Elevadores - Conclusão de OS Aberta'),
+        ('tel_solicitacao_aparelho', 'Telefonia - Solicitação de Aparelho'),
+        ('tel_solicitacao_senha', 'Telefonia - Solicitação de Senha'),
         ('VAGO_1', 'Elevadores - TEMPLATE VAGO - 1', ),
         ('VAGO_2', 'Elevadores - TEMPLATE VAGO - 2', ),
         ('VAGO_3', 'Elevadores - TEMPLATE VAGO - 3', ),

@@ -8,7 +8,6 @@ class TelefoneSolicitacao(models.Model):
 
     protocolo = models.CharField(
         max_length=20,
-        unique=True,
         null=True,
         help_text="Protocolo SEI do Documento",
         editable=True,
@@ -23,9 +22,15 @@ class TelefoneSolicitacao(models.Model):
         max_length=20,
         null=True,
     )
+
+    ramal = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
     
     local = models.CharField(
-        max_length=20,
+        max_length=255,
         null=True,
     )
 
@@ -36,27 +41,38 @@ class TelefoneSolicitacao(models.Model):
         help_text= "Nome de quem assinou o pedido",
     )
 
-    tecnico_avaliou = models.CharField(
+    tecnico_responsavel = models.CharField(
         max_length=200,
         null=True,
     )
 
-    avaliacao = models.CharField(
+    relatorio = models.CharField(
         max_length=500,
         null=True,
     )
 
     autorizacao_sad = models.CharField(
         max_length=20,
-        unique=True,
         null=True,
         help_text="Protocolo SEI do Documento que autoriza a instalação",
         editable=True,
     )
 
-    tecnico_instalou = models.CharField(
-        max_length=100,
-        null=True
+    data_instalacao = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    termo_transferencia_interna = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True
+    )
+
+    aparelhos = models.ManyToManyField(
+        'AparelhoVoip',
+        blank=True,
+        related_name='solicitacoes'
     )
 
     status = models.CharField(

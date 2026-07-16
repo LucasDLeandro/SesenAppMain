@@ -8,7 +8,7 @@ from ..models.model_contratos import Contratos
 class Contrato(forms.ModelForm):
     valor = forms.CharField(
         max_length=17,
-        widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control'})
+        widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control mask-moeda'})
     )
 
     class Meta:

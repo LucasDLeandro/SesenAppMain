@@ -1,0 +1,23 @@
+{% extends 'base_hub_servicos.html' %}
+{% load static %}
+
+{% block content %}
+<div class="clientes-container mt-4">
+    <nav class="nav nav-pills mb-4">
+        <a class="nav-link {% if request.resolver_match.url_name == 'list' %}active{% endif %}" href="{% url 'clientes:list' %}">
+            <i class="bi bi-people-fill"></i> Clientes
+        </a>
+        <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'clientes:dashboard' %}">
+            <i class="bi bi-graph-up"></i> Dashboard
+        </a>
+    </nav>
+    
+    <div class="clientes-content">
+        {% block clientes_content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'clientes/css/style.css' %}">
+{% endblock %}

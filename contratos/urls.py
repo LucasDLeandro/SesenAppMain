@@ -1,12 +1,34 @@
-from django.urls import path
-from django.views.generic import TemplateView
-
-from .views import contratos_view
-
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views.contratos_view import (
+    dashboard_contratos, 
+    home_contratos,
+    dashboard_metrics,
+    dashboard_contratacoes,
+    dashboard_contratacoes_metrics,
+    ContratoViewSet, 
+    ProcessoLicitatorioViewSet,
+    MedicaoMensalViewSet,
+    PagamentoViewSet,
+    TramitacaoSEIViewSet,
+    CronogramaContratacaoViewSet
+)
 
 app_name = 'contratos'
 
+router = DefaultRouter()
+router.register(r'processos', ProcessoLicitatorioViewSet, basename='processo')
+router.register(r'contratos', ContratoViewSet, basename='contrato')
+router.register(r'medicoes', MedicaoMensalViewSet, basename='medicao')
+router.register(r'pagamentos', PagamentoViewSet, basename='pagamento')
+router.register(r'tramitacoes', TramitacaoSEIViewSet, basename='tramitacao')
+router.register(r'cronogramas', CronogramaContratacaoViewSet, basename='cronograma')
+
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='contratos/base_contratos.html'), name='inicio_contratos'),
-    path('registrar_contrato/', contratos_view.contratoView, name='novo_contrato'),  
+    path('', home_contratos, name='home'),
+    path('lista/', dashboard_contratos, name='dashboard_contratos'),
+    path('contratacoes/', dashboard_contratacoes, name='dashboard_contratacoes'),
+    path('api/dashboard-metrics/', dashboard_metrics, name='dashboard_metrics'),
+    path('api/dashboard-contratacoes-metrics/', dashboard_contratacoes_metrics, name='dashboard_contratacoes_metrics'),
+    path('api/', include(router.urls)),
 ]

@@ -2,7 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from ..serializers import ElevConcluirOsSerializer, ElevRegistrarOsSerializer, DashboardFiltroSerializer
+from ..serializers import ElevConcluirOsSerializer, ElevRegistrarOsSerializer, DashboardFiltroSerializer, ElevadorSerializer
 
 
 from django.http import HttpResponse
@@ -36,6 +36,7 @@ import holidays
 class ElevadorViewSet(viewsets.ModelViewSet):
 
     queryset = ElevOrderReg.objects.all()
+    serializer_class = ElevadorSerializer
 
     def create(self, request):
         dados = request.data.copy()
@@ -46,7 +47,17 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         os_salva = serializer.save()
-        #os_salva.refresh_from_db()
+
+        if os_salva.elevador_parado == 'PARADO':
+            from .models.elev_so_model import ElevadorStatus
+            try:
+                elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
+                if elev_status.status != 'PARADO':
+                    elev_status.status = 'PARADO'
+                    elev_status.data_hora_parada = os_salva.data_hora
+                    elev_status.save()
+            except ElevadorStatus.DoesNotExist:
+                pass
 
         self._disparar_notificacao(os_salva, 'os_elev_registro')
 
@@ -65,6 +76,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         os_salva = serializer.save()
+
+        if os_salva.elevador_parado == 'PARADO':
+            from .models.elev_so_model import ElevadorStatus
+            try:
+                elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
+                # Verifica se não há OUTRA OS aberta e parada
+                outras_paradas = ElevOrderReg.objects.filter(elevador=os_salva.elevador, status='ABERTA', elevador_parado='PARADO').exists()
+                if not outras_paradas:
+                    elev_status.status = 'ATIVO'
+                    elev_status.data_hora_parada = None
+                    elev_status.save()
+            except ElevadorStatus.DoesNotExist:
+                pass
 
         self._disparar_notificacao(os_salva, 'os_elev_conclusao')
 
@@ -137,8 +161,46 @@ class ElevadorViewSet(viewsets.ModelViewSet):
 
         return indicador_um
     
+    def api_indicador_dois(self, **kwargs):
+        from ..models import ManutencaoPreventiva
+        from ..models.elev_so_model import ElevadorStatus
+        
+        elevadores_parados = set(ElevadorStatus.objects.filter(status='PARADO').values_list('elevador', flat=True))
+
+        qs_filtrado = ManutencaoPreventiva.objects.filter(
+            mes_referencia__range=(kwargs['inicio'], kwargs['fim'])
+        )
+        
+        indicador_dois = []
+        elevadores_processados = set()
+        
+        for mpm in qs_filtrado:
+            status = 'PARADO' if mpm.elevador in elevadores_parados else mpm.status
+            data_exec = '' if status == 'PARADO' else (mpm.data_execucao.strftime('%d/%m/%Y') if mpm.data_execucao else '')
+            os_dict = {
+                'elevador': mpm.elevador,
+                'data_execucao': data_exec,
+                'ordem_servico': mpm.ordem_servico or '',
+                'tecnico': mpm.tecnico or '',
+                'status': status,
+            }
+            indicador_dois.append(os_dict)
+            elevadores_processados.add(mpm.elevador)
+            
+        for elev in elevadores_parados:
+            if elev not in elevadores_processados:
+                indicador_dois.append({
+                    'elevador': elev,
+                    'data_execucao': '',
+                    'ordem_servico': '',
+                    'tecnico': '',
+                    'status': 'PARADO'
+                })
+                
+        return indicador_dois
+    
     def api_indicador_tres(self, **kwargs):
-        indicador = self.get_queryset().annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count(id)).order_by('data_truncada')
+        indicador = self.get_queryset().filter(tipo_chamado='CORRETIVO', data_hora__range=(kwargs['inicio'], kwargs['fim'])).annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count('id')).order_by('data_truncada')
         listaElevadores = [
             "Social 1 - M2674",
             "Social 2 - M2675",
@@ -186,45 +248,103 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         return dados_finais
     
     def api_indicador_quatro(self, **kwargs):
+        from ..models.elev_so_model import ElevadorStatus, ElevadorParadaHistorico
         feriados_br = holidays.country_holidays('BR', language='pt_BR')
+        from decimal import Decimal
         HRS_UTEIS_DIA = 12.0
 
         inicio = kwargs["inicio"]
         fim = kwargs["fim"]
 
         qnt_dias_uteis = feriados_br.get_working_days_count(inicio, fim)
-        qnt_horas_uteis_totais = HRS_UTEIS_DIA * qnt_dias_uteis
+        qnt_horas_uteis_totais = Decimal(str(HRS_UTEIS_DIA * qnt_dias_uteis))
 
-        qs_ind_quatro = self.get_queryset().filter(
-            status='CONCLUIDA', data_hora__range=(inicio, fim)
-            ).values(
-                'elevador' 
-            ).annotate(
-                total_hrs_uteis_parado=Sum('tempo_parado'),
-            ).annotate(
-                hrs_uteis_total_mes=Value(qnt_horas_uteis_totais, output_field=DecimalField()),
-                hrs_uteis_disponivel=Value(qnt_horas_uteis_totais, output_field=DecimalField()) - F('total_hrs_uteis_parado'),
-            ).annotate(
-                disponibilidade=ExpressionWrapper((F('hrs_uteis_disponivel') / F('hrs_uteis_total_mes')) * 100.0, output_field=DecimalField())
-            ).order_by('elevador')
+        import datetime
+        from django.utils import timezone
         
+        def to_date(val):
+            if isinstance(val, str):
+                return datetime.datetime.strptime(val, '%Y-%m-%d').date()
+            if isinstance(val, datetime.datetime):
+                return val.date()
+            if isinstance(val, datetime.date):
+                return val
+            return None
+
+        def to_aware_datetime(val, end_of_day=False):
+            if isinstance(val, str):
+                val = datetime.datetime.strptime(val, '%Y-%m-%d')
+            if isinstance(val, datetime.date) and not isinstance(val, datetime.datetime):
+                val = datetime.datetime.combine(val, datetime.time.min)
+            if end_of_day:
+                val = val.replace(hour=23, minute=59, second=59)
+            if timezone.is_naive(val):
+                val = timezone.make_aware(val)
+            return val
+
+        inicio_date = to_date(inicio)
+        fim_dt = to_aware_datetime(fim, end_of_day=True)
+
+        # Pega todos os elevadores que estão sendo monitorados e não estão desativados
+        elevadores_ativos = ElevadorStatus.objects.exclude(status__in=['DESATIVADO', 'INATIVO'])
+        
+        dados_parada = {}
+        for elev in elevadores_ativos:
+            parada_date = to_date(elev.data_hora_parada)
+            if elev.status in ['PARADO', 'PROGRAMADO'] and parada_date and parada_date < inicio_date:
+                continue
+                
+            dados_parada[elev.elevador] = Decimal('0.0')
+            
+            if elev.status in ['PARADO', 'PROGRAMADO'] and parada_date and parada_date >= inicio_date:
+                from elevadores.serializers import calc_hrs_uteis_parado
+                end_stop = min(fim_dt, timezone.now())
+                if elev.data_hora_parada < end_stop:
+                    horas_paradas = calc_hrs_uteis_parado(elev.data_hora_parada, end_stop)
+                    dados_parada[elev.elevador] += Decimal(str(horas_paradas))
+
+        qs_os = self.get_queryset().filter(
+            status='CONCLUIDA', data_hora__range=(inicio, fim)
+        ).values('elevador').annotate(
+            total_os=Sum('tempo_parado')
+        )
+        
+        qs_hist = ElevadorParadaHistorico.objects.filter(
+            data_hora_retorno__range=(inicio, fim)
+        ).values('elevador').annotate(
+            total_hist=Sum('tempo_parado')
+        )
+        
+        for item in qs_os:
+            elev_nome = item['elevador']
+            if elev_nome in dados_parada:
+                dados_parada[elev_nome] += item['total_os'] or Decimal('0.0')
+            
+        for item in qs_hist:
+            elev_nome = item['elevador']
+            if elev_nome in dados_parada:
+                dados_parada[elev_nome] += item['total_hist'] or Decimal('0.0')
         
         ind_quatro = []
-        for elev in qs_ind_quatro:
-            disp_bruta = elev["disponibilidade"]
-
-            disp_tratada = round(float(disp_bruta), 2) if disp_bruta is not None else 0.0
+        for elev_nome, total_parado in dados_parada.items():
+            hrs_disponivel = qnt_horas_uteis_totais - total_parado
+            if qnt_horas_uteis_totais > 0:
+                disp_bruta = (hrs_disponivel / qnt_horas_uteis_totais) * Decimal('100.0')
+            else:
+                disp_bruta = Decimal('0.0')
+                
+            disp_tratada = round(float(disp_bruta), 2)
             
-            elev_dict = {
-                "elevador": elev["elevador"],
-                "tempo_parado": elev["total_hrs_uteis_parado"],
-                "total_mes": elev["hrs_uteis_total_mes"],
+            ind_quatro.append({
+                "elevador": elev_nome,
+                "tempo_parado": float(total_parado),
+                "total_mes": float(qnt_horas_uteis_totais),
                 "dias_uteis": qnt_dias_uteis,
-                "horas_disponiveis": elev["hrs_uteis_disponivel"],
+                "horas_disponiveis": float(hrs_disponivel),
                 "disponibilidade": disp_tratada
-            }
-            ind_quatro.append(elev_dict)
-
+            })
+            
+        ind_quatro.sort(key=lambda x: x['elevador'])
         return ind_quatro
     
     def api_totalizacao_elev_grafico_qnt(self, **kwargs):
@@ -385,16 +505,118 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         filtros = serializer.validated_data # type: ignore
 
         ind_um = self.api_indicador_um(**filtros) # type: ignore
+        ind_dois = self.api_indicador_dois(**filtros)
         ind_tres = self.api_indicador_tres(**filtros)
         ind_quatro = self.api_indicador_quatro(**filtros)
         totalizacao_elev = self.api_totalizacao_elev_grafico_qnt(**filtros)
 
         return Response({
             'ind_um': ind_um,
+            'ind_dois': ind_dois,
             'ind_tres': ind_tres,
             'ind_quatro': ind_quatro,
             'totalizacao': totalizacao_elev
         })
+        
+    @action(detail=False, methods=['get', 'post'], url_path='status_elevadores')
+    def status_elevadores(self, request):
+        """Retorna o status em tempo real de cada elevador usando a model ElevadorStatus e permite atualizá-los."""
+        from ..models.elev_so_model import ElevadorStatus, ElevadorParadaHistorico
+        from django.utils import timezone
+        import datetime
+        from django.utils.dateparse import parse_datetime
+        from elevadores.serializers import calc_hrs_uteis_parado
+        from decimal import Decimal
+        
+        if request.method == 'POST':
+            elevador_nome = request.data.get('elevador')
+            novo_status = request.data.get('status')
+            programacao = request.data.get('programacao', '')
+            motivo = request.data.get('motivo', '')
+            data_hora_parada_req = request.data.get('data_hora_parada')
+            prog_inicio_req = request.data.get('programacao_inicio')
+            prog_fim_req = request.data.get('programacao_fim')
+            
+            if elevador_nome and novo_status:
+                try:
+                    elev = ElevadorStatus.objects.get(elevador=elevador_nome)
+                    
+                    if novo_status != 'PARADO' and elev.status == 'PARADO' and elev.data_hora_parada:
+                        data_hora_retorno = timezone.now()
+                        tmp_parado = calc_hrs_uteis_parado(elev.data_hora_parada, data_hora_retorno)
+                        
+                        ElevadorParadaHistorico.objects.create(
+                            elevador=elevador_nome,
+                            data_hora_parada=elev.data_hora_parada,
+                            data_hora_retorno=data_hora_retorno,
+                            tempo_parado=Decimal(str(tmp_parado))
+                        )
+
+                    elev.status = novo_status
+                    if novo_status == 'PROGRAMADO':
+                        elev.programacao = programacao
+                        elev.motivo_programacao = motivo
+                        if prog_inicio_req:
+                            dt_ini = parse_datetime(prog_inicio_req)
+                            if dt_ini and timezone.is_naive(dt_ini):
+                                dt_ini = timezone.make_aware(dt_ini)
+                            elev.programacao_inicio = dt_ini
+                        if prog_fim_req:
+                            dt_fim = parse_datetime(prog_fim_req)
+                            if dt_fim and timezone.is_naive(dt_fim):
+                                dt_fim = timezone.make_aware(dt_fim)
+                            elev.programacao_fim = dt_fim
+                    else:
+                        elev.programacao = ''
+                        elev.motivo_programacao = ''
+                        elev.programacao_inicio = None
+                        elev.programacao_fim = None
+                        
+                    if novo_status == 'PARADO':
+                        if data_hora_parada_req:
+                            dt = parse_datetime(data_hora_parada_req)
+                            if dt:
+                                if timezone.is_naive(dt):
+                                    dt = timezone.make_aware(dt)
+                                elev.data_hora_parada = dt
+                            else:
+                                if not elev.data_hora_parada:
+                                    elev.data_hora_parada = timezone.now()
+                        else:
+                            if not elev.data_hora_parada:
+                                elev.data_hora_parada = timezone.now()
+                    else:
+                        elev.data_hora_parada = None
+                        
+                    elev.save()
+                    return Response({'message': 'Status atualizado com sucesso.'}, status=status.HTTP_200_OK)
+                except ElevadorStatus.DoesNotExist:
+                    return Response({'error': 'Elevador não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        status_lista = []
+        elevadores = ElevadorStatus.objects.all()
+        for elev in elevadores:
+            status_lista.append({
+                'elevador': elev.elevador,
+                'status': elev.status,
+                'programacao': elev.programacao,
+                'motivo': elev.motivo_programacao,
+                'data_hora_abertura': elev.data_hora_parada.isoformat() if elev.data_hora_parada else None
+            })
+            
+        return Response({'status_elevadores': status_lista}, status=status.HTTP_200_OK)
+
+class ManutencaoPreventivaViewSet(viewsets.ModelViewSet):
+    from ..models import ManutencaoPreventiva
+    from ..serializers import ManutencaoPreventivaSerializer
+    queryset = ManutencaoPreventiva.objects.all().order_by('-data_execucao', '-mes_referencia')
+    serializer_class = ManutencaoPreventivaSerializer
+
+class PecaManutencaoViewSet(viewsets.ModelViewSet):
+    from ..models import PecaManutencao
+    from ..serializers import PecaManutencaoSerializer
+    queryset = PecaManutencao.objects.all().order_by('-data_registro')
+    serializer_class = PecaManutencaoSerializer
         
        
         

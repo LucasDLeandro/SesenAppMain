@@ -17,24 +17,39 @@
             </div>
 
             <div class="offcanvas-body d-flex flex-column p-0">
-                <div class="sidebar-heading">Opções do Sistema</div>
+                <div class="sidebar-heading">Global</div>
                 <nav class="nav flex-column mb-3">
-                    <a class="nav-sidebar-link active" href="{% url 'adm_setup:config_notificacao_whats' %}">
-                        <i class="bi bi-clipboard-check"></i> Gerenciar Notificações
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'configuracao_geral' %}active{% endif %}" href="{% url 'adm_setup:configuracao_geral' %}">
+                        <i class="bi bi-gear-fill"></i> Configurações Gerais
                     </a>
-                    <a class="nav-sidebar-link active" href="#">
-                        <i class="bi bi-clipboard-check"></i> 
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'logs_list' %}active{% endif %}" href="{% url 'adm_setup:logs_list' %}">
+                        <i class="bi bi-journal-text"></i> Auditoria e Logs
                     </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-briefcase"></i> </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-building"></i> </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-tools"></i> </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-person-workspace"></i> </a>
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-file-earmark-ruled"></i> </a>
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'gestao_usuarios' %}active{% endif %}" href="{% url 'usuarios:gestao_usuarios' %}">
+                        <i class="bi bi-people-fill"></i> Gestão de Usuários
+                    </a>
                 </nav>
 
-                <div class="sidebar-heading border-top border-secondary pt-3 mx-3"></div>
+                <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Módulos</div>
                 <nav class="nav flex-column mb-4">
-                    <a class="nav-sidebar-link" href="#"><i class="bi bi-chat-left-dots"></i></a>
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'config_notificacao_whats' %}active{% endif %}" href="{% url 'adm_setup:config_notificacao_whats' %}">
+                        <i class="bi bi-building-up"></i> Elevadores
+                    </a>
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'configuracao_telefonia' %}active{% endif %}" href="{% url 'adm_setup:configuracao_telefonia' %}">
+                        <i class="bi bi-telephone"></i> Telefonia
+                    </a>
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'configuracao_acessos' %}active{% endif %}" href="{% url 'adm_setup:configuracao_acessos' %}">
+                        <i class="bi bi-person-badge"></i> Liberação de Acesso
+                    </a>
+                    <a class="nav-sidebar-link" href="#">
+                        <i class="bi bi-file-earmark-ruled"></i> Contratos
+                    </a>
+                    <a class="nav-sidebar-link" href="#">
+                        <i class="bi bi-briefcase"></i> Clientes
+                    </a>
+                    <a class="nav-sidebar-link" href="#">
+                        <i class="bi bi-chat-left-dots"></i> Notificações (Zap)
+                    </a>
                 </nav>
             </div>
         </div>

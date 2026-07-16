@@ -1,0 +1,86 @@
+﻿<!-- Modal Chamados em Aberto -->
+<div class="modal fade" id="modal-chamados-aberto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-exclamation-triangle me-2"></i>Chamados em Aberto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle custom-modern-table w-100">
+                        <thead class="custom-thead">
+                            <tr>
+                                <th>Protocolo</th>
+                                <th>Data/Hora</th>
+                                <th>Elevador</th>
+                                <th>Ocorrência</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for os in ordens_abertas %}
+                            <tr>
+                                <td class="fw-semibold text-secondary">{{ os.protocolo }}</td>
+                                <td>{{ os.data_hora|date:"d/m/Y H:i" }}</td>
+                                <td><span class="badge bg-light text-dark border">{{ os.elevador }}</span></td>
+                                <td>{{ os.ocorrencia }}</td>
+                                <td>
+                                    <!-- Reutiliza a lógica existente de conclusão se houver -->
+                                    <button class="btn btn-sm btn-outline-success rounded-pill btn-concluir-os" data-bs-toggle="modal" data-bs-target="#modal-conclusao-os" data-os-id="{{ os.id }}" data-protocolo="{{ os.protocolo }}">Concluir</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="5" class="text-center text-muted py-4">Nenhum chamado em aberto no momento.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Peças Pendentes -->
+<div class="modal fade" id="modal-pecas-pendentes" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-warning"><i class="bi bi-tools me-2"></i>Peças Pendentes para Substituição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle custom-modern-table w-100">
+                        <thead class="custom-thead">
+                            <tr>
+                                <th>Elevador</th>
+                                <th>Andar</th>
+                                <th>Peça/Componente</th>
+                                <th>Registro</th>
+                                <th>Previsão</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for peca in pecas_pendentes %}
+                            <tr>
+                                <td><span class="badge bg-light text-dark border">{{ peca.elevador }}</span></td>
+                                <td>{{ peca.andar }}</td>
+                                <td class="fw-semibold">{{ peca.tipo_peca }}</td>
+                                <td>{{ peca.data_registro|date:"d/m/Y" }}</td>
+                                <td>{{ peca.data_previsao_troca|date:"d/m/Y" }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary rounded-pill btn-editar-peca" data-id="{{ peca.id }}">Atualizar</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center text-muted py-4">Nenhuma peça pendente de substituição.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

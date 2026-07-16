@@ -1,0 +1,79 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-solicitacao-telefone" tabindex="-1" aria-labelledby="modalSolicitacaoTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
+          <i class="bi bi-headset me-2"></i> Solicitação de Telefone
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <!-- Body do Modal com Formulário -->
+      <div class="modal-body modal-ordens-body">
+        <form id="form-solicitacao-telefone">
+          {% csrf_token %}
+          <input type="hidden" id="id_oculto_solicitacao" name="id">
+
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">
+              <i class="bi bi-info-circle"></i> Dados da Solicitação
+            </h6>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-6">
+                <label for="data" class="form-label">Data e Hora da Solicitação</label>
+                <input type="datetime-local" class="form-control" id="data" name="data" required>
+              </div>
+              <div class="form-group-modal col-md-6">
+                <label for="protocolo" class="form-label">Protocolo SEI</label>
+                <input type="text" class="form-control uppercase-text" id="protocolo" name="protocolo" maxlength="20">
+              </div>
+            </div>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-4">
+                <label for="unidade" class="form-label">Unidade</label>
+                <input type="text" class="form-control format-text" id="unidade" name="unidade" maxlength="200">
+              </div>
+              <div class="form-group-modal col-md-4">
+                <label for="sigla_unidade" class="form-label">Sigla</label>
+                <input type="text" class="form-control uppercase-text" id="sigla_unidade" name="sigla_unidade" maxlength="20">
+              </div>
+              <div class="form-group-modal col-md-4">
+                <label for="local" class="form-label">Local</label>
+                <input type="text" class="form-control uppercase-text" id="local" name="local" maxlength="20">
+              </div>
+            </div>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-6">
+                <label for="solicitante" class="form-label">Solicitante</label>
+                <input type="text" class="form-control format-text" id="solicitante" name="solicitante" maxlength="100" required>
+              </div>
+              <div class="form-group-modal col-md-6">
+                <label for="qnt_solicitada" class="form-label">Qtd. Solicitada</label>
+                <input type="number" class="form-control" id="qnt_solicitada" name="qnt_solicitada" required>
+              </div>
+            </div>
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-12 full-width">
+                <label for="autorizacao_sad" class="form-label">Autorização SAD (Protocolo)</label>
+                <input type="text" class="form-control" id="autorizacao_sad" name="autorizacao_sad" maxlength="20">
+              </div>
+            </div>
+            
+          </div>
+
+          <!-- Footer com botões -->
+          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+              <i class="bi bi-x-lg me-2"></i>Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-2"></i>Salvar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,307 @@
+{% extends "base_hub_servicos.html" %}
+{% load static %}
+
+{% block painel_servicos %}
+<link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
+<style>
+    .dashboard-header { background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%); border-radius: 12px; padding: 25px; color: white; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .metric-card { background: white; border-radius: 12px; padding: 20px; border: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; height: 100%; position: relative; z-index: 1; }
+    .metric-card:hover { transform: translateY(-5px); z-index: 10; }
+    .metric-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 15px; }
+    .metric-icon.blue { background: rgba(75, 108, 183, 0.1); color: #4b6cb7; }
+    .metric-icon.green { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+    .metric-icon.red { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+    .custom-modern-table { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+    .status-disponivel, .status-concluida, .status-concluido { background-color: #d4edda; color: #155724; }
+    .status-manutencao, .status-aberta { background-color: #f8d7da; color: #721c24; }
+    .status-alocado, .status-andamento, .status-agendado { background-color: #fff3cd; color: #856404; }
+</style>
+
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="dashboard-header d-flex justify-content-between align-items-center flex-wrap">
+        <div>
+            <h2 class="mb-1 fw-bold"><i class="bi bi-speaker me-2"></i>Áudio e Vídeo</h2>
+            <p class="mb-0 opacity-75">Gestão de Equipamentos, Eventos, TVs e Ordens de Serviço</p>
+        </div>
+        <div class="dropdown mt-2 mt-md-0">
+            <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+                <i class="bi bi-camera-reels me-2"></i>Serviços A&V
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalEquipamento"><i class="bi bi-plus-circle me-2 text-primary"></i>Novo Equipamento</a></li>
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalEvento"><i class="bi bi-calendar-plus me-2 text-success"></i>Novo Evento</a></li>
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalTV"><i class="bi bi-tv me-2 text-info"></i>Nova TV</a></li>
+                <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modalOS"><i class="bi bi-tools me-2 text-danger"></i>Nova OS</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Cards de Métricas -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon blue"><i class="bi bi-hdd-rack"></i></div>
+                <h6 class="text-muted fw-bold mb-1">Equipamentos em Estoque</h6>
+                <h3 class="fw-bold mb-0" id="metric-equipamentos">-</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon green"><i class="bi bi-calendar-event"></i></div>
+                <h6 class="text-muted fw-bold mb-1">Eventos Ativos/Agendados</h6>
+                <h3 class="fw-bold mb-0" id="metric-eventos">-</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metric-card">
+                <div class="metric-icon red"><i class="bi bi-tools"></i></div>
+                <h6 class="text-muted fw-bold mb-1">Ordens de Serviço em Aberto</h6>
+                <h3 class="fw-bold mb-0" id="metric-os">-</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabelas -->
+    <ul class="nav nav-pills mb-3" id="avTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="eventos-tab" data-bs-toggle="pill" data-bs-target="#eventos" type="button" role="tab">Agenda de Eventos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="equip-tab" data-bs-toggle="pill" data-bs-target="#equip" type="button" role="tab">Equipamentos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="tvs-tab" data-bs-toggle="pill" data-bs-target="#tvs" type="button" role="tab">Gestão de TVs</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="os-tab" data-bs-toggle="pill" data-bs-target="#os" type="button" role="tab">Ordens de Serviço</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="avTabsContent">
+        <!-- Eventos -->
+        <div class="tab-pane fade show active" id="eventos" role="tabpanel">
+            <div class="custom-modern-table p-4">
+                <table id="tbEventos" class="table table-hover w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th><th>Evento</th><th>Local</th><th>Data Início</th><th>Solicitante</th><th>Status & Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Equipamentos -->
+        <div class="tab-pane fade" id="equip" role="tabpanel">
+            <div class="custom-modern-table p-4">
+                <table id="tbEquipamentos" class="table table-hover w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th><th>Nome</th><th>Categoria</th><th>Patrimônio / Série</th><th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TVs -->
+        <div class="tab-pane fade" id="tvs" role="tabpanel">
+            <div class="custom-modern-table p-4">
+                <table id="tbTVs" class="table table-hover w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th><th>TV</th><th>Tamanho</th><th>Patrimônio</th><th>Local Atual</th><th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- OS -->
+        <div class="tab-pane fade" id="os" role="tabpanel">
+            <div class="custom-modern-table p-4">
+                <table id="tbOS" class="table table-hover w-100">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Protocolo</th><th>Equipamento</th><th>Defeito</th><th>Data Abertura</th><th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Equipamento -->
+<div class="modal fade" id="modalEquipamento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Equipamento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEquipamento">
+            <div class="row">
+                <div class="col-md-6 mb-3"><label>Nome</label><input type="text" name="nome" class="form-control format-text" required></div>
+                <div class="col-md-6 mb-3">
+                    <label>Categoria</label>
+                    <select name="categoria" class="form-select">
+                        <option value="microfone">Microfone</option>
+                        <option value="mesa_som">Mesa de Som</option>
+                        <option value="caixa_som">Caixa de Som</option>
+                        <option value="projetor">Projetor</option>
+                        <option value="cabo">Cabo / Conector</option>
+                        <option value="diversos">Diversos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 mb-3"><label>Marca</label><input type="text" name="marca" class="form-control"></div>
+                <div class="col-md-4 mb-3"><label>Modelo</label><input type="text" name="modelo" class="form-control"></div>
+                <div class="col-md-4 mb-3">
+                    <label>Tipo de Instalação</label>
+                    <select name="tipo_instalacao" class="form-select">
+                        <option value="eventos">Uso em Eventos</option>
+                        <option value="fixo">Instalação Fixa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8 mb-3"><label>Sala/Local</label><input type="text" name="sala_local" class="form-control"></div>
+                <div class="col-md-4 mb-3"><label>Valor (R$)</label><input type="text" name="valor" class="form-control mask-moeda" placeholder="0,00"></div>
+            </div>
+            <div class="mb-3">
+                <label>Patrimônio (Para cadastros múltiplos, separe por vírgula)</label>
+                <input type="text" name="patrimonios" class="form-control" placeholder="Ex: 12345, 12346, 12347">
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="salvarEquipamento()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Evento -->
+<div class="modal fade" id="modalEvento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Evento</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formEvento">
+            <div class="mb-3"><label>Nome do Evento</label><input type="text" name="nome" class="form-control format-text" required></div>
+            <div class="mb-3"><label>Local</label><input type="text" name="local" class="form-control" required></div>
+            <div class="mb-3"><label>Solicitante</label><input type="text" name="solicitante" class="form-control format-text" required></div>
+            <div class="row">
+                <div class="col-6 mb-3"><label>Início</label><input type="datetime-local" name="data_inicio" class="form-control" required></div>
+                <div class="col-6 mb-3"><label>Fim</label><input type="datetime-local" name="data_fim" class="form-control" required></div>
+            </div>
+            <div class="mb-3">
+                <label>Equipamentos</label>
+                <select name="equipamentos_alocados" id="selEquipamentos" class="form-select" multiple></select>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="salvarEvento()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal OS -->
+<div class="modal fade" id="modalOS" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Ordem de Serviço</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formOS">
+            <div class="mb-3"><label>Protocolo</label><input type="text" name="protocolo" class="form-control"></div>
+            <div class="mb-3">
+                <label>Equipamento</label>
+                <select name="equipamento" id="selEquipamentoOS" class="form-select" required></select>
+            </div>
+            <div class="mb-3"><label>Defeito Relatado</label><textarea name="defeito_relatado" class="form-control" required></textarea></div>
+            <div class="mb-3"><label>Técnico</label><input type="text" name="tecnico" class="form-control"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="salvarOS()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal TV -->
+<div class="modal fade" id="modalTV" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova TV</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formTV">
+            <div class="mb-3"><label>Patrimônio</label><input type="text" name="patrimonio" class="form-control" required></div>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label>Marca</label><input type="text" name="marca" class="form-control" required></div>
+                <div class="col-md-6 mb-3"><label>Modelo</label><input type="text" name="modelo" class="form-control" required></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3"><label>Tamanho (Polegadas)</label><input type="number" name="tamanho_polegadas" class="form-control" required></div>
+                <div class="col-md-6 mb-3"><label>Valor (R$)</label><input type="text" name="valor" class="form-control mask-moeda" placeholder="0,00"></div>
+            </div>
+            <div class="mb-3"><label>Local Atual</label><input type="text" name="localizacao_atual" class="form-control"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="salvarTV()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Concluir Evento -->
+<div class="modal fade" id="modalConcluirEvento" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Concluir Evento: <span id="concluirEventoNome"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+          <input type="hidden" id="concluirEventoId">
+          <p class="text-muted">Descreva como foi a conclusão do evento. Todos os equipamentos alocados voltarão para o status "Disponível".</p>
+          <div class="mb-3">
+              <label>Relatório de Conclusão</label>
+              <textarea id="relatorioConclusao" class="form-control" rows="4"></textarea>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-success" onclick="confirmarConclusaoEvento()">Confirmar Conclusão</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+<script src="{% static 'js/audiovideo_dashboard.js' %}"></script>
+{% endblock %}

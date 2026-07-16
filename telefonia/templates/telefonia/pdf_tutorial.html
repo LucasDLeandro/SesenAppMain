@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Tutorial de Validação - Telefonia</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                bottom: 1cm;
+                margin-left: 1cm;
+                margin-right: 1cm;
+                height: 1.5cm;
+            }
+        }
+        
+        body { 
+            font-family: Helvetica, Arial, sans-serif; 
+            font-size: 11pt; 
+            margin: 0; 
+            padding: 0; 
+            color: #333333; 
+            line-height: 1.4;
+        }
+        
+        /* Cores Básicas */
+        .color-primary { color: #1e40af; }
+        .bg-primary { background-color: #1e40af; color: #ffffff; }
+        .border-primary { border: 1px solid #1e40af; }
+        .border-light { border: 1px solid #cbd5e1; }
+        .bg-light { background-color: #f8fafc; }
+
+        /* Cabeçalho */
+        .header-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .tse-logo { font-size: 38pt; font-weight: bold; color: #0f172a; margin: 0; line-height: 0.9; }
+        .tse-sublogo { font-size: 8pt; color: #64748b; }
+        
+        .header-right { text-align: right; vertical-align: middle; }
+        .header-subtitle { font-size: 11pt; color: #1e40af; font-weight: bold; }
+        
+        /* Títulos de Seção */
+        .section-title { font-size: 12pt; font-weight: bold; color: #1e40af; margin-bottom: 8px; margin-top: 15px; border-bottom: 2px solid #cbd5e1; padding-bottom: 4px; }
+
+        /* Blocos de Texto */
+        .text-block { font-size: 10.5pt; text-align: justify; line-height: 1.4; margin-bottom: 15px; }
+        
+        .email-box { border: 1px solid #cbd5e1; padding: 15px; margin-bottom: 15px; background-color: #f8fafc; }
+        
+        .email-box p { margin-top: 0; margin-bottom: 8px; }
+        .email-box ul { margin-top: 5px; padding-left: 20px; }
+        .email-box li { margin-bottom: 5px; }
+        
+        .text-block p { margin-top: 0; margin-bottom: 8px; }
+        
+        /* Rodapé */
+        .footer-date { text-align: right; font-size: 10pt; color: #64748b; margin-top: 15px; }
+        .assinatura-line { border-top: 1px solid #cbd5e1; width: 60%; margin: 0 auto 5px auto; }
+        .assinatura-nome { text-align: center; font-size: 10pt; font-weight: bold; color: #0f172a; }
+        .assinatura-cargo { text-align: center; font-size: 9pt; color: #64748b; }
+        
+        .page-break { page-break-before: always; }
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td width="30%">
+                <div class="tse-logo">{{ padrao.cabecalho_logo|default:"TSE" }}</div>
+                <div class="tse-sublogo">{{ padrao.cabecalho_sublogo|default:"Tribunal Superior Eleitoral" }}</div>
+            </td>
+            <td width="70%" class="header-right">
+                <div class="header-subtitle">{{ padrao.cabecalho_subtitulo|default:"Secretaria de Administração | COSEN - SESEN" }}</div>
+            </td>
+        </tr>
+    </table>
+    
+    <div class="text-block">
+        {{ padrao.introducao|safe }}
+    </div>
+    
+    <div class="email-box text-block">
+        {{ padrao.exemplo_email|safe }}
+    </div>
+
+    <!-- Forçamos uma quebra de página se o conteúdo for longo, ou deixamos o xhtml2pdf cuidar disso automaticamente -->
+    <div class="section-title">Validação das Ligações</div>
+    <div class="text-block">
+        {{ padrao.secao_validacao|safe }}
+    </div>
+
+    <div class="section-title">Pagamento das Ligações</div>
+    <div class="text-block">
+        {{ padrao.secao_pagamento|safe }}
+    </div>
+    
+    <!-- Quebra de página opcional aqui para garantir que fique bem distribuído (opcional) -->
+    <pdf:nextpage />
+    
+    <div class="section-title">Consequências do Não Pagamento ou Não Validação</div>
+    <div class="text-block">
+        {{ padrao.secao_consequencias|safe }}
+    </div>
+
+    <div class="section-title">Outras Dúvidas Frequentes</div>
+    <div class="text-block">
+        {{ padrao.secao_duvidas|safe }}
+    </div>
+
+    <div class="footer-date">
+        Emitido em {{ data_atual }}
+    </div>
+
+    <div id="footerContent">
+        <div class="assinatura-line"></div>
+        <div class="assinatura-nome">Seção de Equipamentos e Sistemas de Engenharia</div>
+        <div class="assinatura-cargo">Coordenadoria de Sistemas de Engenharia - TSE</div>
+    </div>
+
+</body>
+</html>

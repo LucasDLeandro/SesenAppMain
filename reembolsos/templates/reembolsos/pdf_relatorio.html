@@ -1,0 +1,223 @@
+{% load l10n %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Relatório Anual - {{ servidor.nome }}</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 1cm;
+        }
+        body { 
+            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-size: 10px; 
+            margin: 0; 
+            padding: 0; 
+            color: #333; 
+        }
+        
+        .header-table {
+            width: 100%;
+            background-color: #1e3c72;
+            color: #ffffff;
+            margin-bottom: 20px;
+            border-collapse: collapse;
+            border: none;
+        }
+        
+        .header-table td {
+            border: none;
+            padding: 15px;
+            vertical-align: middle;
+        }
+        
+        .header-left h3 { margin: 0 0 4px 0; font-size: 14px; font-weight: bold; }
+        .header-left h4 { margin: 0 0 2px 0; font-size: 11px; font-weight: normal; color: #d0e1ff; }
+        
+        .header-right h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+        .header-right p {
+            margin: 4px 0 0 0;
+            font-size: 10px;
+            color: #d0e1ff;
+        }
+
+        .title-box { 
+            background-color: #e3f2fd; 
+            border: 1px solid #90caf9; 
+            padding: 8px; 
+            text-align: center; 
+            margin-bottom: 15px; 
+            font-weight: bold; 
+            font-size: 11px;
+            color: #1565c0;
+        }
+        
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-bottom: 15px; 
+        }
+        
+        th, td { 
+            border: 1px solid #dee2e6; 
+            padding: 6px 4px; 
+            text-align: left; 
+        }
+        
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: bold; 
+            color: #495057;
+        }
+        
+        .table-main {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-main td {
+            font-size: 9px;
+            border: 0.5px solid #dee2e6;
+            padding: 4px;
+            vertical-align: middle;
+            word-wrap: break-word;
+        }
+        .table-header td {
+            background-color: #1e3c72;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        
+        .highlight td { 
+            background-color: #f5f8ff; 
+            font-weight: bold; 
+            color: #1e3c72;
+        }
+        
+        .footer-note { 
+            font-size: 9px; 
+            border: 1px solid #e2e8f0; 
+            padding: 10px; 
+            background-color: #f8f9fa; 
+            margin-top: 15px; 
+            color: #6c757d;
+        }
+        
+        .row-total td {
+            background-color: #e3f2fd;
+            font-weight: bold;
+            color: #1565c0;
+            border-top: 2px solid #1e3c72;
+        }
+    </style>
+</head>
+<body>
+
+    <table class="header-table">
+        <tr>
+            <td width="60%" class="header-left">
+                <h3>Tribunal Superior Eleitoral</h3>
+                <h4>Secretaria de Administração</h4>
+                <h4>Seção de Equipamentos e Sistemas de Engenharia</h4>
+            </td>
+            <td width="40%" class="header-right text-right">
+                <h2>RELATÓRIO DE REEMBOLSO</h2>
+                <p>Ano Base: {{ ano|unlocalize }}</p>
+                <p>Emissão: {% now "d/m/Y" %}</p>
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th width="15%" style="background-color: #f1f5f9;">NOME:</th>
+            <td width="85%" colspan="3"><strong>{{ servidor.nome|upper }}</strong></td>
+        </tr>
+        <tr>
+            <th style="background-color: #f1f5f9;">CARGO:</th>
+            <td colspan="3">{% if servidor.cargo_limite %}{{ servidor.cargo_limite.cargo }}{% else %}{{ servidor.cargo }}{% endif %}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th colspan="4" class="text-center" style="background-color: #e2e8f0; color: #334155; font-size: 10px;">DADOS BANCÁRIOS</th>
+        </tr>
+        <tr>
+            <th width="25%" class="text-center" style="background-color: #f8fafc; font-size: 9px;">CPF</th>
+            <th width="25%" class="text-center" style="background-color: #f8fafc; font-size: 9px;">Banco</th>
+            <th width="25%" class="text-center" style="background-color: #f8fafc; font-size: 9px;">Agência</th>
+            <th width="25%" class="text-center" style="background-color: #f8fafc; font-size: 9px;">Conta Corrente</th>
+        </tr>
+        <tr>
+            <td class="text-center">{{ servidor.cpf }}</td>
+            <td class="text-center">{{ servidor.banco }}</td>
+            <td class="text-center">{{ servidor.agencia }}</td>
+            <td class="text-center">{{ servidor.conta_corrente }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <th width="15%" style="background-color: #f1f5f9;">Telefone:</th>
+            <td width="35%" class="text-center">{{ servidor.telefone_linha }}</td>
+            <th width="50%" class="text-center" style="background-color: #f1f5f9; color: #1e3c72;">Ressarcimento de Telefonia</th>
+        </tr>
+    </table>
+
+    <div class="title-box">
+        CONTROLE DOS VALORES GASTOS ANUALMENTE COM TELEFONIA MÓVEL - IN Nº 11 DE 2022
+    </div>
+
+    <table class="table-main" cellpadding="4">
+        <tr class="table-header">
+            <td width="12%" style="text-align: center;">Período</td>
+            <td width="14%" style="text-align: center;">Valor Total da Fatura</td>
+            <td width="14%" style="text-align: center;">A Serviço</td>
+            <td width="14%" style="text-align: center;">Limite Mensal</td>
+            <td width="16%" style="text-align: center;">A Ressarcir</td>
+            <td width="30%" style="text-align: center;">Observações</td>
+        </tr>
+        {% for m in meses %}
+        <tr {% if m.tem_dados %}class="highlight"{% endif %}>
+            <td class="text-center">{{ m.periodo_str|default:"-" }}</td>
+            <td class="text-right">R$ {{ m.valor_fatura|default:"0,00" }}</td>
+            <td class="text-right">R$ {{ m.valor_servico|default:"0,00" }}</td>
+            <td class="text-right" style="color: #64748b;">R$ {{ m.valor_maximo|default:"0,00" }}</td>
+            <td class="text-right" style="color: #059669; font-weight: bold;">R$ {{ m.valor_ressarcido|default:"-" }}</td>
+            <td class="text-center" style="font-size: 8px;">{{ m.obs|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+        <tr class="row-total">
+            <td class="text-center">TOTAIS</td>
+            <td class="text-right">R$ {{ total_fatura }}</td>
+            <td class="text-right">R$ {{ total_servico }}</td>
+            <td class="text-right" style="color: #475569;">R$ {{ total_maximo }}</td>
+            <td class="text-right" style="color: #047857;">R$ {{ total_ressarcido }}</td>
+            <td></td>
+        </tr>
+    </table>
+
+    <div class="footer-note">
+        <strong>(*)</strong> Para fins de apuração do período em que se deu os gastos com telefonia móvel, utilizar-se-á o Regime de Competência. Este Regime tem os valores contabilizados dentro do mês onde se iniciou o fato Gerador.<br><br>
+        <strong>(**)</strong> Na Instrução Normativa TSE nº 11/2022 - Anexo I está a tabela referencial de valores máximos a serem custeados pelo Tribunal.
+    </div>
+
+    {% if servidor.portaria_designacao %}
+    <div class="footer-note" style="background-color: #fef3c7; border-color: #fde68a; color: #92400e;">
+        <strong>Nota de Designação:</strong> O(a) Servidor(a) {{ servidor.nome }} foi nomeado(a) para exercer o cargo em comissão de {% if servidor.cargo_limite %}{{ servidor.cargo_limite.cargo }}{% else %}{{ servidor.cargo }}{% endif %}, conforme {{ servidor.portaria_designacao }}.
+    </div>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,125 @@
+{% extends "setups/base_setup.html" %}
+
+{% block app_content %}
+<div class="mb-4">
+    <div class="d-flex align-items-center mb-2">
+        <i class="bi bi-gear-fill" style="font-size: 32px; color: #106EBE;"></i>
+        <h2 class="ms-3 fw-bold m-0 text-body">Configurações Gerais</h2>
+    </div>
+    <p class="text-muted" style="margin-left: 44px;">Ajustes globais do sistema e templates de comunicação.</p>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Tabs -->
+<ul class="nav nav-tabs mb-4" id="geralTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active fw-bold" id="global-tab" data-bs-toggle="tab" data-bs-target="#global-tab-pane" type="button" role="tab" aria-controls="global-tab-pane" aria-selected="true">
+            <i class="bi bi-globe me-2"></i> Opções Globais
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link fw-bold" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates-tab-pane" type="button" role="tab" aria-controls="templates-tab-pane" aria-selected="false">
+            <i class="bi bi-file-earmark-text me-2"></i> Templates de Comunicação
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="geralTabsContent">
+    <!-- ABA GERAL -->
+    <div class="tab-pane fade show active" id="global-tab-pane" role="tabpanel" aria-labelledby="global-tab" tabindex="0">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="save_global">
+            
+            <div class="mb-4 bg-light p-3 rounded">
+                <div class="form-check form-switch fs-5">
+                    <input class="form-check-input" type="checkbox" role="switch" id="notificar_novos_usuarios" name="notificar_novos_usuarios" {% if config.notificar_novos_usuarios %}checked{% endif %}>
+                    <label class="form-check-label ms-2 fw-bold" for="notificar_novos_usuarios">
+                        Notificar novos usuários via E-mail
+                    </label>
+                </div>
+                <div class="form-text mt-2 text-muted">
+                    Se ativado, ao cadastrar um novo usuário no sistema pelo Painel Admin, será enviado um WhatsApp para o telefone configurado no Perfil contendo as boas-vindas e os dados de acesso.
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                    <i class="bi bi-save me-2"></i> Salvar Opções Globais
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ABA TEMPLATES -->
+    <div class="tab-pane fade" id="templates-tab-pane" role="tabpanel" aria-labelledby="templates-tab" tabindex="0">
+        
+        <div class="row g-4 mt-2">
+            <div class="col-md-6 col-lg-4">
+                <div class="msg-card-template shadow-sm h-100 d-flex flex-column border rounded">
+                    <div class="msg-card-header d-flex justify-content-between align-items-center border-bottom p-3 bg-light">
+                        <h6 class="m-0 fw-bold">Mensagem de Boas-Vindas</h6>
+                        <span class="badge bg-success">ATIVA</span>
+                    </div>
+                    <div class="msg-card-body flex-grow-1 p-3">
+                        <p class="text-muted small mb-3">WhatsApp - Boas-Vindas para Novos Usuários</p>
+                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555; white-space: pre-wrap; word-break: break-word;">{{ config.mensagem_boas_vindas|truncatechars:100 }}</div>
+                    </div>
+                    
+                    <div class="msg-card-footer mt-auto pt-3 border-top p-3 d-flex">
+                        <button type="button" class="btn btn-outline-primary w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#modalBoasVindas">
+                            <i class="bi bi-pencil me-1"></i> EDITAR TEMPLATE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Modal de Edição de Template: Mensagem de Boas-Vindas -->
+<div class="modal fade" id="modalBoasVindas" tabindex="-1" aria-labelledby="modalBoasVindasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-bottom">
+                <h5 class="modal-title text-primary fw-bold" id="modalBoasVindasLabel"><i class="bi bi-pencil-square me-2"></i>Editar Template: Boas-Vindas</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="save_template">
+                    
+                    <div class="mb-4">
+                        <label for="mensagem_boas_vindas" class="form-label fw-bold">Texto da Mensagem</label>
+                        <textarea class="form-control" id="mensagem_boas_vindas" name="mensagem_boas_vindas" rows="8" required>{{ config.mensagem_boas_vindas }}</textarea>
+                        <div class="form-text text-muted mt-2">
+                            <i class="bi bi-info-circle me-1"></i>
+                            <strong>Variáveis permitidas:</strong> Use <code>{usuario}</code> para injetar o login e <code>{senha}</code> para injetar a senha recém-criada pelo administrador.
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end border-top pt-4">
+                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
+                            <i class="bi bi-save me-2"></i> Salvar Template
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-ymomdcs)son4q_-8o2$0lz8kdtx(3$ui$em$pemdl6dk5ikckh
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['tsevm203.tse.jus.br', 'tsevm203', '10.30.24.124', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['tsevm203.tse.jus.br', 'tsevm203', '10.30.24.124', '127.0.0.1', 'localhost', 'sesenapp.cosen.tse']
 
 
 # Application definition
@@ -48,12 +48,21 @@ INSTALLED_APPS = [
     'notificacoes',
     'adm_setup',
     'usuarios',
-    'telefonia'
+    'telefonia',
+    'clientes',
+    'reembolsos',
+    'audiovideo',
+    'logs',
+    'rest_framework_simplejwt',
+    'gestao_patrimonio',
+    'empresas',
+    'equipe_tecnica',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+# Force reload
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -63,6 +72,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'usuarios.middleware.JWTCookieMiddleware',
+    'logs.middleware.ThreadLocalUserMiddleware',
 ]
 
 ROOT_URLCONF = 'sesen_app.urls'
@@ -93,7 +104,8 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
+        "rest_framework.permissions.AllowAny",
+        #"rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly",
         #'rest_framework.permissions.IsAuthenticated',
     ]
 }
@@ -172,20 +184,21 @@ STATICFILES_FINDERS = [
 # ---> EMAIL SETTINGS <---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
-EMAIL_PORT = config('EMAIL_PORT', default=465, cast=int)
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
-EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='webmaster@localhost')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    # Tempo de vida do Token de Acesso (o que vai no cabeçalho das requisições)
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60), 
+    # Tempo de vida do Token de Acesso (aumentado para 8 horas para melhor experiência do usuário)
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8), 
     
-    # Tempo de vida do Token de Atualização (usado para pegar um novo acesso quando o anterior vence)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    # Tempo de vida do Token de Atualização (7 dias - renovação automática via middleware)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
     
     # Adiciona a palavra 'Bearer' na frente do token no cabeçalho HTTP
     'AUTH_HEADER_TYPES': ('Bearer',),

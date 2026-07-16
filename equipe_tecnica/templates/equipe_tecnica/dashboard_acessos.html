@@ -1,0 +1,379 @@
+{% extends "base_hub_servicos.html" %}
+{% load static %}
+
+{% block title %}Equipe Técnica - Solicitações{% endblock %}
+
+{% block extra_css %}
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .form-section-title {
+            color: #16a085;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .email-preview-card {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            overflow: hidden;
+            background: #fff;
+        }
+        .email-preview-header {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 16px 20px;
+        }
+        .email-preview-meta {
+            display: grid;
+            gap: 8px;
+        }
+        .email-preview-meta-row {
+            display: flex;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+        .email-preview-meta-label {
+            min-width: 90px;
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .email-preview-body {
+            padding: 20px;
+            white-space: pre-wrap;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #212529;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: #fafafa;
+        }
+        .email-preview-template-badge {
+            font-size: 0.75rem;
+        }
+    </style>
+{% endblock %}
+
+{% block painel_servicos %}
+    <div class="d-flex flex-column" style="min-height: 100%;">
+        <div class="container-fluid mt-3 flex-grow-1 d-flex flex-column">
+            
+            <!-- Cabeçalho -->
+            <div class="dashboard-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold mb-1"><i class="bi bi-person-badge me-3"></i>Liberação de Acessos</h2>
+                        <p class="mb-0 opacity-75">Controle de solicitações de acesso de equipes técnicas terceirizadas.</p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+                            <i class="bi bi-shield-check me-2"></i>Ações de Acesso
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item py-2" href="#" onclick="abrirModalNovaSolicitacao()"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Pedido</a></li>
+                            <li><a class="dropdown-item py-2" href="#" onclick="abrirModalNovaLiberacaoGeral()"><i class="bi bi-person-check me-2 text-success"></i>Nova Liberação Diária</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nav Tabs -->
+            <ul class="nav nav-tabs border-0 mb-3" id="acessosTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active fw-bold text-secondary" id="solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-pane" type="button" role="tab" aria-controls="solicitacoes-pane" aria-selected="true" style="border-radius: 10px 10px 0 0;">
+                        <i class="bi bi-file-earmark-text me-2"></i>Pedidos Registrados
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold text-secondary" id="liberacoes-tab" data-bs-toggle="tab" data-bs-target="#liberacoes-pane" type="button" role="tab" aria-controls="liberacoes-pane" aria-selected="false" style="border-radius: 10px 10px 0 0;">
+                        <i class="bi bi-person-check me-2"></i>Liberações Diárias
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content flex-grow-1" id="acessosTabsContent">
+                <!-- Aba Solicitações -->
+                <div class="tab-pane fade show active h-100" id="solicitacoes-pane" role="tabpanel" aria-labelledby="solicitacoes-tab" tabindex="0">
+                    <div class="card border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="card-title fw-bold text-secondary mb-0">Pedidos de Acesso</h5>
+                            </div>
+                            <div class="table-responsive flex-grow-1">
+                                <table id="tabela-solicitacoes" class="table table-hover align-middle w-100">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Empresa</th>
+                                            <th>Solicitante</th>
+                                            <th>Validade</th>
+                                            <th>Status</th>
+                                            <th>Técnicos</th>
+                                            <th class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aba Liberações Diárias -->
+                <div class="tab-pane fade h-100" id="liberacoes-pane" role="tabpanel" aria-labelledby="liberacoes-tab" tabindex="0">
+                    <div class="card border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
+                        <div class="card-body p-4 d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="card-title fw-bold text-secondary mb-0">Liberações Geradas</h5>
+                            </div>
+                            <div class="table-responsive flex-grow-1">
+                                <table id="tabela-liberacoes" class="table table-hover align-middle w-100">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID Pedido</th>
+                                            <th>Empresa</th>
+                                            <th>Período/Data</th>
+                                            <th>Técnicos Presentes</th>
+                                            <th>Status E-mail</th>
+                                            <th class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova/Editar Solicitação -->
+    <div class="modal fade" id="modal-solicitacao" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content border-0 shadow-lg bg-body">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold" style="color: #16a085" id="modalSolicitacaoTitle">
+                        <i class="bi bi-person-badge me-2"></i> Novo Pedido de Acesso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-solicitacao">
+                        {% csrf_token %}
+                        <input type="hidden" id="solicitacao_id" name="id">
+                        
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <h6 class="form-section-title"><i class="bi bi-info-circle me-2"></i>Dados da Solicitação</h6>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Empresa *</label>
+                                <select class="form-select select2-empresas" id="solicitacao_empresa" name="empresa" required>
+                                    <option value="">Selecione...</option>
+                                    {% for e in empresas %}
+                                        <option value="{{ e.id }}">{{ e.nome_empresa }} ({{ e.cnpj }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nome de quem Solicitou (E-mail) *</label>
+                                <input type="text" class="form-control format-text" id="solicitacao_solicitante" name="nome_solicitante" required>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Data da Solicitação *</label>
+                                <input type="date" class="form-control" id="solicitacao_data" name="data_solicitacao" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Validade (Início) *</label>
+                                <input type="date" class="form-control" id="solicitacao_inicio" name="validade_inicio" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Validade (Fim) *</label>
+                                <input type="date" class="form-control" id="solicitacao_fim" name="validade_fim" required>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <h6 class="form-section-title d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-people me-2"></i>Técnicos Autorizados</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success" id="btnAddTecnico" onclick="adicionarLinhaTecnico()">
+                                        <i class="bi bi-plus"></i> Add Técnico
+                                    </button>
+                                </h6>
+                            </div>
+
+                            <div class="col-12">
+                                <div id="container-tecnicos">
+                                    <!-- Campos dinâmicos de técnicos -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="btnSalvarSolicitacao" onclick="salvarSolicitacao()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Gerar Liberação Diária -->
+    <div class="modal fade" id="modal-liberacao" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 shadow-lg bg-body">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-primary" id="modalLiberacaoTitle">
+                        <i class="bi bi-send-check me-2"></i> Gerar Liberação Diária
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-liberacao">
+                        {% csrf_token %}
+                        <input type="hidden" id="liberacao_solicitacao_id" name="solicitacao_id">
+                        
+                        <div class="row g-3">
+                            <div class="col-12" id="bloco-selecao-pedido" style="display: none;">
+                                <label class="form-label fw-bold">Selecionar Pedido de Acesso Ativo *</label>
+                                <select class="form-select" id="lib_select_pedido_geral" onchange="carregarTecnicosDoPedido(this.value)">
+                                    <option value="">Selecione...</option>
+                                    <!-- Opções dinâmicas -->
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <p class="text-muted mb-1">Selecione os técnicos que estão **presentes no local** para liberar o acesso hoje.</p>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <label class="form-label fw-bold">Técnicos Disponíveis no Pedido</label>
+                                <div id="container-tecnicos-liberacao" class="border rounded p-3 bg-light">
+                                    <p class="text-muted mb-0">Selecione um pedido primeiro.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Data Inicial *</label>
+                                <input type="date" class="form-control" id="lib_data_inicio" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Data Final *</label>
+                                <input type="date" class="form-control" id="lib_data_fim" required>
+                                <small class="text-muted">Se for apenas para um dia, repita a data inicial.</small>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Período *</label>
+                                <select class="form-select" id="lib_periodo" required>
+                                    <option value="Integral">Integral</option>
+                                    <option value="Manhã">Manhã</option>
+                                    <option value="Tarde">Tarde</option>
+                                    <option value="Noturno">Noturno</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Programar Envio do E-mail (Opcional)</label>
+                                <input type="datetime-local" class="form-control" id="lib_agendamento">
+                                <small class="text-muted">Deixe em branco para programar apenas e não enviar ainda.</small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarLiberacao()">Registrar Liberação</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Pré-visualização de E-mail -->
+    <div class="modal fade" id="modal-preview-email" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg bg-body">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-primary">
+                        <i class="bi bi-envelope-open me-2"></i> Pré-visualização do E-mail
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="preview-email-alerta" class="alert alert-warning d-none mb-3" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <span id="preview-email-alerta-texto"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-light text-dark border email-preview-template-badge">
+                            Template: <span id="preview-template-nome">-</span>
+                        </span>
+                        <span id="preview-status-badge"></span>
+                    </div>
+
+                    <div class="email-preview-card shadow-sm">
+                        <div class="email-preview-header">
+                            <div class="email-preview-meta">
+                                <div class="email-preview-meta-row">
+                                    <span class="email-preview-meta-label">De:</span>
+                                    <span id="preview-remetente" class="text-break">-</span>
+                                </div>
+                                <div class="email-preview-meta-row">
+                                    <span class="email-preview-meta-label">Para:</span>
+                                    <span id="preview-destinatario" class="text-break fw-semibold text-primary">-</span>
+                                </div>
+                                <div class="email-preview-meta-row d-none" id="preview-bcc-row">
+                                    <span class="email-preview-meta-label">Cópia (BCC):</span>
+                                    <span id="preview-copia" class="text-break text-muted">-</span>
+                                </div>
+                                <div class="email-preview-meta-row">
+                                    <span class="email-preview-meta-label">Assunto:</span>
+                                    <span id="preview-assunto" class="fw-bold text-break">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="email-preview-body" id="preview-corpo"></div>
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0" id="preview-info-confirmacao">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Revise o conteúdo acima antes de confirmar o envio para a Segurança/Portaria.
+                    </p>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success d-none" id="btn-confirmar-envio-email" onclick="confirmarEnvioEmail()">
+                        <i class="bi bi-send-check me-2"></i>Confirmar Envio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const IS_ADMIN_OR_SUPERVISOR = {{ is_admin_or_supervisor|yesno:"true,false" }};
+    </script>
+    <script src="{% static 'equipe_tecnica/js/dashboard_acessos.js' %}?v=1.1"></script>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "setups/base_setup.html" %}
+
+{% block app_content %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="fw-bold" style="color: var(--primary-blue);">
+                <i class="bi bi-people-fill me-2"></i> Painel de Gerenciamento do Sistema
+            </h2>
+            <p class="text-muted fs-5">Bem-vindo(a) à central de configurações do SESEN. Selecione uma opção no menu lateral ou através dos atalhos abaixo.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        
+        <div class="col-12 mb-2">
+            <h5 class="fw-bold text-secondary border-bottom pb-2">Global</h5>
+        </div>
+
+
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'adm_setup:logs_list' %}" class="card h-100 shadow-sm text-decoration-none text-dark" style="transition: transform 0.2s;">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-secondary bg-opacity-10 rounded p-3 me-3">
+                        <i class="bi bi-journal-text fs-3 text-secondary"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">Auditoria e Logs</h5>
+                        <small class="text-muted">Verifique os registros de atividades e auditorias.</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-12 mt-5 mb-2">
+            <h5 class="fw-bold text-secondary border-bottom pb-2">Módulos</h5>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'adm_setup:config_notificacao_whats' %}" class="card h-100 shadow-sm text-decoration-none text-dark" style="transition: transform 0.2s;">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-warning bg-opacity-10 rounded p-3 me-3">
+                        <i class="bi bi-building-up fs-3 text-warning"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">Elevadores</h5>
+                        <small class="text-muted">Gestão de configurações e templates dos elevadores.</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'adm_setup:configuracao_telefonia' %}" class="card h-100 shadow-sm text-decoration-none text-dark" style="transition: transform 0.2s;">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-info bg-opacity-10 rounded p-3 me-3">
+                        <i class="bi bi-telephone fs-3 text-info"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">Telefonia</h5>
+                        <small class="text-muted">Edição de templates para emissão de senha e tutorial.</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'adm_setup:configuracao_acessos' %}" class="card h-100 shadow-sm text-decoration-none text-dark" style="transition: transform 0.2s;">
+                <div class="card-body d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+                        <i class="bi bi-person-badge fs-3 text-primary"></i>
+                    </div>
+                    <div>
+                        <h5 class="card-title fw-bold mb-1">Liberação de Acesso</h5>
+                        <small class="text-muted">Edição de templates de e-mail para a Segurança.</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

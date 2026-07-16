@@ -1,0 +1,115 @@
+{% extends "base_hub_servicos.html" %}
+
+{% block app_content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white py-3 d-flex align-items-center">
+                    <i class="bi bi-person-badge-fill fs-3 me-3"></i>
+                    <h4 class="mb-0 fw-bold">Meu Perfil</h4>
+                </div>
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <p class="text-muted mb-4">Mantenha suas informações de contato atualizadas para que o sistema consiga enviar notificações importantes.</p>
+                    
+                    <form id="form-meu-perfil" onsubmit="salvarMeuPerfil(event)">
+                        <input type="hidden" id="perfil_user_id" value="{{ request.user.id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">Nome de Usuário (Login)</label>
+                            <input type="text" class="form-control bg-light" value="{{ request.user.username }}" readonly>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary">Nome</label>
+                                <input type="text" class="form-control" id="perfil_first_name" value="{{ request.user.first_name }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold text-secondary">Sobrenome</label>
+                                <input type="text" class="form-control" id="perfil_last_name" value="{{ request.user.last_name }}">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary">E-mail</label>
+                            <input type="email" class="form-control" id="perfil_email" value="{{ request.user.email }}">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary">Telefone (WhatsApp)</label>
+                            <input type="text" class="form-control mask-telefone" id="perfil_telefone" value="{{ request.user.perfil.telefone }}">
+                            <div class="form-text">Inclua o DDD. Ex: (61) 9 9999-9999</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg fw-bold rounded-3">
+                                <i class="bi bi-save me-2"></i>Salvar Alterações
+                            </button>
+                            <a href="{% url 'trocar_senha' %}" class="btn btn-outline-secondary btn-lg fw-bold rounded-3 mt-2">
+                                <i class="bi bi-key me-2"></i>Alterar Senha
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    async function salvarMeuPerfil(e) {
+        e.preventDefault();
+        const id = document.getElementById('perfil_user_id').value;
+        const payload = {
+            first_name: document.getElementById('perfil_first_name').value,
+            last_name: document.getElementById('perfil_last_name').value,
+            email: document.getElementById('perfil_email').value,
+            telefone: document.getElementById('perfil_telefone').value
+        };
+
+        try {
+            Swal.fire({
+                title: 'Salvando...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            const res = await fetch(`/usuarios/api/usuarios/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok) {
+                Swal.fire('Atualizado!', 'Seu perfil foi atualizado com sucesso.', 'success');
+            } else {
+                const error = await res.json();
+                Swal.fire('Erro!', JSON.stringify(error), 'error');
+            }
+        } catch(err) {
+            Swal.fire('Erro!', 'Erro de conexão.', 'error');
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

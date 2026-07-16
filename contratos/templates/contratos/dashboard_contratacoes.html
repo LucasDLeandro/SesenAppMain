@@ -1,0 +1,818 @@
+{% extends "contratos/base_contratos.html" %}
+{% load static %}
+
+{% block title %}Contratações | Dashboard Licitatório{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --warning-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        --danger-gradient: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+        --info-gradient: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+        --purple-gradient: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    }
+
+    .dashboard-header {
+        background: var(--purple-gradient);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .metric-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        background: white;
+        overflow: hidden;
+        position: relative;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .icon-primary { background: var(--primary-gradient); }
+    .icon-success { background: var(--success-gradient); }
+    .icon-warning { background: var(--warning-gradient); }
+    .icon-danger { background: var(--danger-gradient); }
+    .icon-info { background: var(--info-gradient); }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+        letter-spacing: -0.5px;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .chart-card {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        background: white;
+    }
+    .chart-card .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .chart-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    /* Premium Process Card Styles */
+    .process-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+    .process-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+    .process-card-header {
+        padding: 1.5rem 1.5rem 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .process-number {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #1e3c72;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+    .process-unit {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .process-card-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+    .process-object {
+        font-size: 1rem;
+        color: #2c3e50;
+        font-weight: 500;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    .process-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .process-card-footer {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-top: 1px solid rgba(0,0,0,0.03);
+    }
+    
+    /* Timeline Styles adapted for Cards */
+    .stepper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+    }
+    .stepper::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 5%;
+        right: 5%;
+        height: 2px;
+        background: #e9ecef;
+        z-index: 1;
+    }
+    .stepper-item {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+    .stepper-circle {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        border: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: #adb5bd;
+        transition: all 0.3s ease;
+        margin-bottom: 4px;
+    }
+    .stepper-item.completed .stepper-circle {
+        border-color: #20c997;
+        background: #20c997;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(32, 201, 151, 0.2);
+    }
+    .stepper-item.delayed .stepper-circle {
+        border-color: #ff4757;
+        background: #ff4757;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+    }
+    .stepper-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: #495057;
+        text-align: center;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+    .stepper-date {
+        font-size: 0.55rem;
+        color: #868e96;
+        text-align: center;
+        margin-top: 0;
+        white-space: nowrap;
+    }
+    
+    .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+    }
+    
+    .status-badge {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 0.4em 0.8em;
+        border-radius: 6px;
+    }
+</style>
+{% endblock %}
+
+{% block painel_contratos %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="dashboard-header d-flex justify-content-between align-items-center" style="position: relative; z-index: 1050;">
+        <div>
+            <h2 class="mb-2 fw-bold"><i class="bi bi-diagram-3 me-3"></i>Dashboard de Contratações</h2>
+            <p class="mb-0 fs-5 opacity-75">Visão consolidada da fase preparatória e licitatória (Tramitação SEI)</p>
+        </div>
+        <div class="d-flex gap-2 flex-wrap justify-content-end">
+            <button class="btn btn-info fw-bold shadow-sm text-white" onclick="abrirModalNovaContratacao()">
+                <i class="bi bi-diagram-3 me-2"></i>Nova Contratação
+            </button>
+            <button class="btn btn-warning fw-bold shadow-sm" onclick="abrirModalNovaTramitacao()">
+                <i class="bi bi-clock-history me-2"></i>Lançar Tramitação
+            </button>
+            <a href="{% url 'contratos:dashboard_contratos' %}" class="btn btn-light rounded-pill px-4 fw-bold shadow-sm text-primary">
+                <i class="bi bi-arrow-left-circle me-2"></i>Voltar aos Contratos
+            </a>
+        </div>
+    </div>
+    
+    <!-- Top Metrics -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Processos Ativos</div>
+                        <div class="metric-value text-primary" id="val-processos">-</div>
+                    </div>
+                    <div class="metric-icon icon-primary shadow-sm"><i class="bi bi-folder2-open"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Valor Global Previsto</div>
+                        <div class="metric-value text-success" id="val-estimado">-</div>
+                    </div>
+                    <div class="metric-icon icon-success shadow-sm"><i class="bi bi-cash-coin"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Inseridos no PAC</div>
+                        <div class="metric-value text-info" id="val-pac">-</div>
+                    </div>
+                    <div class="metric-icon icon-info shadow-sm"><i class="bi bi-journal-check"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Atrasados no Cronograma</div>
+                        <div class="metric-value text-danger" id="val-atrasados">-</div>
+                    </div>
+                    <div class="metric-icon icon-danger shadow-sm"><i class="bi bi-exclamation-octagon"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row g-4">
+        <!-- Linha do Tempo Resumida (Substitui Gráfico de Fases) -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">Acompanhamento de Cronogramas</h5>
+                </div>
+                <div class="card-body p-4" id="timeline-list" style="max-height: 500px; overflow-y: auto;">
+                    <div class="text-center py-5 text-muted">
+                        <div class="spinner-border text-primary mb-2" role="status"></div>
+                        <p>Carregando cronogramas...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de Valores -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card chart-card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2 text-success"></i>Valores das Contratações</h5>
+                </div>
+                <div class="card-body d-flex flex-column" style="min-height: 400px;">
+                    <div id="chart-valores" class="flex-grow-1" style="width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nav Tabs -->
+    <ul class="nav nav-tabs mt-4 mb-4" id="contratacoesTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold text-dark" id="fases-tab" data-bs-toggle="tab" data-bs-target="#fases" type="button" role="tab"><i class="bi bi-diagram-3 me-2"></i>Fases de Contratação</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold text-dark" id="tramitacao-tab" data-bs-toggle="tab" data-bs-target="#tramitacao" type="button" role="tab"><i class="bi bi-clock-history me-2"></i>Tramitação SEI</button>
+        </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="contratacoesTabsContent">
+        <!-- Aba 1: Fases de Contratação (Visão em Cards) -->
+        <div class="tab-pane fade show active" id="fases" role="tabpanel">
+            <div id="contratacoes-grid" class="row g-4 pb-4">
+                <!-- Cards renderizados via JS -->
+                <div class="col-12 text-center py-5" id="contratacoes-loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="mt-2 text-muted fw-bold">Carregando processos...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aba 2: Tramitação SEI -->
+        <div class="tab-pane fade" id="tramitacao" role="tabpanel">
+            <div class="card chart-card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tabela-tramitacoes" class="table table-hover align-middle w-100">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Processo</th>
+                                    <th>Unidade Atual</th>
+                                    <th>Data Entrada</th>
+                                    <th>Tempo (Dias)</th>
+                                    <th>No Cronograma?</th>
+                                    <th>Atualizado Por</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- DataTable Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal Detalhes do Processo -->
+<div class="modal fade" id="modalDetalhesProcesso" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                <h4 class="modal-title fw-bold text-primary d-flex align-items-center gap-2" id="detalheNumero"></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 pt-3">
+                <div class="d-flex flex-wrap gap-2 mb-4" id="detalheBadges"></div>
+                
+                <div class="row g-4">
+                    <!-- Coluna Principal (Info do Processo) -->
+                    <div class="col-lg-7">
+                        <div class="bg-light p-4 rounded-4 h-100 border">
+                            <h5 class="fw-bold mb-3 border-bottom pb-2"><i class="bi bi-info-circle me-2 text-info"></i>Dados Básicos</h5>
+                            
+                            <p class="mb-2"><strong class="text-muted">Objeto:</strong> <span id="detalheObjeto" class="fw-semibold"></span></p>
+                            <p class="mb-2"><strong class="text-muted">Descrição Detalhada:</strong> <span id="detalheDescricao" class="text-break"></span></p>
+                            <p class="mb-2"><strong class="text-muted">Justificativa:</strong> <span id="detalheJustificativa" class="text-break"></span></p>
+                            <p class="mb-2"><strong class="text-muted">Observações:</strong> <span id="detalheObservacoes" class="text-break"></span></p>
+                            
+                            <div class="row mt-4">
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Unidade Responsável</strong>
+                                    <span id="detalheUnidade"><i class="bi bi-building me-1"></i> </span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Servidor Responsável</strong>
+                                    <span id="detalheServidor"><i class="bi bi-person me-1"></i> </span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Fase Atual</strong>
+                                    <span id="detalheFase" class="text-primary fw-bold"></span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Prioridade</strong>
+                                    <span id="detalhePrioridade"></span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Valor Estimado</strong>
+                                    <span id="detalheValor" class="fw-bold text-success fs-5"></span>
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <strong class="text-muted d-block mb-1">Data Prevista Conclusão</strong>
+                                    <span id="detalheConclusao"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Coluna Secundária (Cronograma e Histórico) -->
+                    <div class="col-lg-5">
+                        <div class="bg-white p-4 rounded-4 shadow-sm border mb-4">
+                            <h6 class="fw-bold mb-3"><i class="bi bi-calendar-check me-2 text-primary"></i>Cronograma de Etapas</h6>
+                            <div id="detalheCronograma" class="px-2"></div>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-4 shadow-sm border">
+                            <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-warning"></i>Histórico de Tramitações SEI</h6>
+                            <div id="detalheTramitacoes" style="max-height: 300px; overflow-y: auto;" class="pe-2">
+                                <!-- Tramitações injetadas aqui -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top-0 bg-light rounded-bottom-4">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nova/Editar Contratação -->
+<div class="modal fade" id="modal-contratacao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalContratacaoTitle"><i class="bi bi-diagram-3 me-2 text-info"></i>Nova Contratação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-contratacao">
+                    {% csrf_token %}
+                    <input type="hidden" id="contratacao_id" name="id">
+                    
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Processo Nº <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="numero_processo" name="numero_processo" required>
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Unidade Resp.</label>
+                            <input type="text" class="form-control" id="unidade_responsavel" name="unidade_responsavel">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Servidor Resp.</label>
+                            <input type="text" class="form-control" id="servidor_responsavel" name="servidor_responsavel">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Fase <span class="text-danger">*</span></label>
+                            <select class="form-select" id="fase" name="fase" required>
+                                <option value="PREVISTA" selected>Prevista</option>
+                                <option value="EM_ANDAMENTO">Em Andamento</option>
+                                <option value="FINALIZADA">Finalizada</option>
+                                <option value="SUSPENSA">Suspensa</option>
+                                <option value="PLANEJAMENTO">Planejamento</option>
+                                <option value="SELECAO">Seleção de Fornecedor</option>
+                                <option value="CONCLUIDO">Concluído</option>
+                                <option value="CANCELADO">Cancelado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-12">
+                            <label class="form-label fw-bold">Objeto / Título <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="objeto_lic" name="objeto_lic" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-12">
+                            <label class="form-label fw-bold">Descrição Detalhada do Objeto</label>
+                            <textarea class="form-control" id="descricao_objeto" name="descricao_objeto" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-12">
+                            <label class="form-label fw-bold">Justificativa para a Contratação</label>
+                            <textarea class="form-control" id="justificativa" name="justificativa" rows="3"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Valor Previsto (R$)</label>
+                            <input type="text" class="form-control" id="valor_previsto" name="valor_previsto" value="0,00">
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Prioridade</label>
+                            <select class="form-select" id="prioridade" name="prioridade">
+                                <option value="BAIXA">Baixa</option>
+                                <option value="MEDIA" selected>Média</option>
+                                <option value="ALTA">Alta</option>
+                                <option value="URGENTE">Urgente</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal col-md-3">
+                            <label class="form-label fw-bold">Previsão Conclusão</label>
+                            <input type="date" class="form-control" id="data_prevista_conclusao" name="data_prevista_conclusao">
+                        </div>
+                        <div class="form-group-modal col-md-3 d-flex flex-column justify-content-end">
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input" type="checkbox" id="esta_no_pac" name="esta_no_pac">
+                                <label class="form-check-label fw-bold" for="esta_no_pac">Está no PAC?</label>
+                            </div>
+                            <div class="form-check form-switch mb-1">
+                                <input class="form-check-input" type="checkbox" id="eleicoes_ano_corrente" name="eleicoes_ano_corrente">
+                                <label class="form-check-label fw-bold" for="eleicoes_ano_corrente">Para Eleições?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-12">
+                            <label class="form-label fw-bold">Observações Adicionais</label>
+                            <textarea class="form-control" id="observacoes" name="observacoes" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarContratacao()">
+                    <i class="bi bi-save me-1"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Lançar Tramitação SEI -->
+<div class="modal fade" id="modal-tramitacao" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalTramitacaoTitle"><i class="bi bi-clock-history me-2 text-warning"></i>Lançar Tramitação SEI</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="form-tramitacao">
+                    {% csrf_token %}
+                    <input type="hidden" id="tramitacao_id" name="id">
+                    
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-12">
+                            <label class="form-label fw-bold">Contratação (Processo) <span class="text-danger">*</span></label>
+                            <select class="form-select" id="tramitacao_contratacao" name="tramitacao_contratacao" required>
+                                <option value="">Selecione...</option>
+                                {% for proc in processos %}
+                                <option value="{{ proc.id }}">{{ proc.numero_processo }} - {{ proc.objeto|truncatechars:50 }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Bloco 1: Situação Atual -->
+                    <div class="card bg-light border-0 mb-4 p-3 rounded-3 shadow-sm">
+                        <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Situação Atual (Chegada)</h6>
+                        <div class="row">
+                            <div class="form-group-modal col-md-8 mb-3">
+                                <label class="form-label fw-bold">Unidade Atual <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="unidade_atual" name="unidade_atual" required placeholder="Onde o processo está agora?">
+                            </div>
+                            <div class="form-group-modal col-md-4 mb-3">
+                                <label class="form-label fw-bold">Data de Chegada <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="data_entrada" name="data_entrada" required>
+                            </div>
+                            <div class="form-group-modal col-md-12">
+                                <label class="form-label fw-bold">Atribuído A (Responsável)</label>
+                                <input type="text" class="form-control" id="atribuido_a" name="atribuido_a" placeholder="Nome do servidor nesta unidade">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bloco 2: Histórico (De Onde Veio) -->
+                    <div class="card border mb-3 p-3 rounded-3 shadow-sm">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-pen me-2"></i>Informações da Última Assinatura</h6>
+                        <div class="row">
+                            <div class="form-group-modal col-md-8 mb-3">
+                                <label class="form-label fw-bold">Unidade da Última Assinatura</label>
+                                <input type="text" class="form-control" id="unidade_ultima_assinatura" name="unidade_ultima_assinatura" placeholder="Setor que enviou/assinou por último">
+                            </div>
+                            <div class="form-group-modal col-md-4 mb-3">
+                                <label class="form-label fw-bold">Data da Assinatura</label>
+                                <input type="date" class="form-control" id="data_ultima_movimentacao" name="data_ultima_movimentacao">
+                            </div>
+                            <div class="form-group-modal col-md-12 mb-3">
+                                <label class="form-label fw-bold">Motivo / Despacho</label>
+                                <textarea class="form-control" id="motivo" name="motivo" rows="3" placeholder="Resumo do que foi solicitado no despacho..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <hr class="text-muted opacity-25">
+                        
+                        <div class="row">
+                            <div class="form-group-modal col-md-6 d-flex align-items-center">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="depende_de_nos" name="depende_de_nos">
+                                    <label class="form-check-label fw-bold text-danger" for="depende_de_nos">Depende de Ação Nossa?</label>
+                                </div>
+                            </div>
+                            <div class="form-group-modal col-md-6">
+                                <label class="form-label fw-bold">Prazo de Retorno (Opcional)</label>
+                                <input type="date" class="form-control" id="prazo_retorno" name="prazo_retorno">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarTramitacao()">
+                    <i class="bi bi-save me-1"></i> Salvar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Gerenciar Cronograma -->
+<div class="modal fade" id="modal-cronograma" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title" id="modalCronogramaTitle"><i class="bi bi-calendar-check me-2 text-primary"></i>Cronograma da Contratação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <input type="hidden" id="crono_contratacao_id">
+                
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="fw-bold mb-0">Definição de Prazos (Lei 14.133)</h6>
+                        <small class="text-muted">Acompanhe as fases preparatórias e licitatórias.</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary fw-bold" onclick="gerarCronogramaAutomatico()">
+                        <i class="bi bi-magic me-1"></i> Gerar Prazos Padrão
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center" id="tabela-fases-crono">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-start">Fase / Artefato</th>
+                                <th>Prazo de Entrega (Previsto)</th>
+                                <th>Data de Conclusão Real</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- ETP -->
+                            <tr data-fase="ETP">
+                                <td class="text-start fw-bold">Estudo Técnico Preliminar (ETP)</td>
+                                <td><input type="date" class="form-control form-control-sm prazo-crono"></td>
+                                <td><input type="date" class="form-control form-control-sm real-crono"></td>
+                                <td class="status-crono">-</td>
+                            </tr>
+                            <!-- TR -->
+                            <tr data-fase="TR">
+                                <td class="text-start fw-bold">Termo de Referência (TR)</td>
+                                <td><input type="date" class="form-control form-control-sm prazo-crono"></td>
+                                <td><input type="date" class="form-control form-control-sm real-crono"></td>
+                                <td class="status-crono">-</td>
+                            </tr>
+                            <!-- Pesquisa -->
+                            <tr data-fase="PESQUISA">
+                                <td class="text-start fw-bold">Pesquisa de Preços</td>
+                                <td><input type="date" class="form-control form-control-sm prazo-crono"></td>
+                                <td><input type="date" class="form-control form-control-sm real-crono"></td>
+                                <td class="status-crono">-</td>
+                            </tr>
+                            <!-- Jurídico -->
+                            <tr data-fase="JURIDICO">
+                                <td class="text-start fw-bold">Parecer Jurídico</td>
+                                <td><input type="date" class="form-control form-control-sm prazo-crono"></td>
+                                <td><input type="date" class="form-control form-control-sm real-crono"></td>
+                                <td class="status-crono">-</td>
+                            </tr>
+                            <!-- Edital -->
+                            <tr data-fase="EDITAL">
+                                <td class="text-start fw-bold">Edital</td>
+                                <td><input type="date" class="form-control form-control-sm prazo-crono"></td>
+                                <td><input type="date" class="form-control form-control-sm real-crono"></td>
+                                <td class="status-crono">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarCronograma()">
+                    <i class="bi bi-save me-1"></i> Salvar Cronograma
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    const formatBRL = (value) => {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(value);
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            // Fetch Contratações metrics
+            const response = await fetch('/contratos/api/dashboard-contratacoes-metrics/');
+            const data = await response.json();
+
+            document.getElementById('val-processos').innerText = data.total_processos;
+            document.getElementById('val-estimado').innerText = formatBRL(data.valor_estimado_total);
+            document.getElementById('val-pac').innerText = data.no_pac;
+            document.getElementById('val-atrasados').innerText = data.atrasados;
+
+            // Fetch overall metrics for the phases chart
+            const responseGeral = await fetch('/contratos/api/dashboard-metrics/');
+            const dataGeral = await responseGeral.json();
+
+            // Render ApexChart (Donut)
+            const options = {
+                series: [dataGeral.processos_planejamento || 0, dataGeral.processos_selecao || 0],
+                labels: ['Planejamento', 'Seleção Fornecedor'],
+                chart: {
+                    type: 'donut',
+                    height: 320,
+                    fontFamily: 'inherit'
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%',
+                            labels: {
+                                show: true,
+                                name: { show: true },
+                                value: { show: true }
+                            }
+                        }
+                    }
+                },
+                dataLabels: { enabled: false },
+                colors: ['#3498db', '#9b59b6'],
+                legend: { position: 'bottom' }
+            };
+            const chart = new ApexCharts(document.querySelector("#chart-fases"), options);
+            chart.render();
+
+        } catch (error) {
+            console.error("Erro ao buscar métricas:", error);
+        }
+    });
+</script>
+<!-- Include necessary scripts for DataTables and Modals -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.7/js/dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://unpkg.com/imask"></script>
+<!-- SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{% static 'contratos/js/dashboard_contratos.js' %}"></script>
+{% endblock %}

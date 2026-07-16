@@ -1,0 +1,365 @@
+{% extends "base_hub_servicos.html" %}
+{% load static %}
+
+{% block title %}Telefonia - Dashboard{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'telefonia/css/main_telefonia.css' %}?v=1.1">
+    <link rel="stylesheet" href="{% static 'telefonia/css/form_telefonia_modal.css' %}?v=1.1">
+    <!-- DataTables CSS via CDN -->
+    <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
+    <!-- Select2 CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <style>
+        .dashboard-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+{% endblock %}
+
+{% block painel_servicos %}
+    <div class="d-flex flex-column" style="min-height: 100%;">
+        <div class="container-fluid mt-3 flex-grow-1 d-flex flex-column">
+            
+            <!-- Cabeçalho -->
+            <div class="dashboard-header mb-4">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h2 class="fw-bold mb-1"><i class="bi bi-telephone me-3"></i>Gestão de Telefonia</h2>
+                        <p class="mb-0 opacity-75">Controle de solicitações, senhas e aparelhos telefônicos.</p>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+                            <i class="bi bi-telephone-plus me-2"></i>Serviços de Telefonia
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-solicitacao-telefone"><i class="bi bi-headset me-2 text-primary"></i>Nova Solicitação de Aparelho</a></li>
+                            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-solicitacao-senha"><i class="bi bi-key me-2 text-info"></i>Nova Senha</a></li>
+                            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-aparelho-voip"><i class="bi bi-phone me-2 text-success"></i>Registrar Aparelho</a></li>
+                            <li><a class="dropdown-item py-2" href="#" onclick="abrirModalNovaRemessa()"><i class="bi bi-truck me-2 text-warning"></i>Nova Remessa</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navegação por Abas (Tabs) -->
+            <ul class="nav nav-tabs custom-tabs mb-3" id="telefoniaTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+                        <i class="bi bi-bar-chart-steps"></i> Dashboard
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="solicitacoes-aparelhos-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-aparelhos" type="button" role="tab">
+                        <i class="bi bi-list-check"></i> Solicitações de Aparelhos
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="solicitacoes-senhas-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-senhas" type="button" role="tab">
+                        <i class="bi bi-key"></i> Solicitações de Senhas
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="aparelhos-tab" data-bs-toggle="tab" data-bs-target="#aparelhos" type="button" role="tab">
+                        <i class="bi bi-cpu"></i> Aparelhos (Geral)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="remessas-tab" data-bs-toggle="tab" data-bs-target="#remessas" type="button" role="tab">
+                        <i class="bi bi-truck"></i> Remessas para Manutenção
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Conteúdo das Abas -->
+            <div class="tab-content flex-grow-1" id="telefoniaTabsContent" style="padding-bottom: 20px; padding: 10px;">
+                
+                <!-- ABA 1: DASHBOARD -->
+                <div class="tab-pane fade show active" id="dashboard" role="tabpanel" tabindex="0">
+                    
+                    <!-- Linha Superior de KPIs -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 h-100 interactive-card" style="border-radius: 12px; border-left: 5px solid #10b981 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted fw-bold mb-1">Aparelhos Disponíveis</h6>
+                                            <h3 class="fw-bold mb-0 text-dark">{{ aparelhos_disponiveis }}</h3>
+                                            <small class="text-success"><i class="bi bi-check-circle"></i> Prontos para uso</small>
+                                        </div>
+                                        <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                            <i class="bi bi-box-seam text-success fs-3"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 h-100 interactive-card" style="border-radius: 12px; border-left: 5px solid #3b82f6 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted fw-bold mb-1">Aparelhos Instalados</h6>
+                                            <h3 class="fw-bold mb-0 text-dark">{{ aparelhos_instalados }}</h3>
+                                            <small class="text-primary"><i class="bi bi-telephone-outbound"></i> Em operação</small>
+                                        </div>
+                                        <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                            <i class="bi bi-telephone text-primary fs-3"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card shadow-sm border-0 h-100 interactive-card" style="border-radius: 12px; border-left: 5px solid #ef4444 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted fw-bold mb-1">Aparelhos Defeituosos</h6>
+                                            <h3 class="fw-bold mb-0 text-dark">{{ aparelhos_defeituosos }}</h3>
+                                            <small class="text-danger"><i class="bi bi-tools"></i> Precisam de reparo</small>
+                                        </div>
+                                        <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                            <i class="bi bi-exclamation-triangle text-danger fs-3"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Solicitações Recebidas (Lista Rápida) -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <div class="card shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirListaRecebidas()">
+                                <div class="card-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
+                                    <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
+                                        <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>AÇÃO NECESSÁRIA: Instalações Pendentes de Aparelho
+                                    </h6>
+                                    <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
+                                </div>
+                                <div class="card-body pt-0 pb-2">
+                                    <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
+                                        <div class="text-center text-muted py-2">
+                                            <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
+                                            Carregando solicitações pendentes...
+                                        </div>
+                                    </div>
+                                    <div class="text-center" id="rodape-widget-recebidas">
+                                        <button class="btn btn-danger btn-sm w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
+                                            <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha Inferior de Desempenho e Solicitações -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100 interactive-card" style="border-radius: 12px;" onclick="new bootstrap.Tab(document.getElementById('solicitacoes-aparelhos-tab')).show()">
+                                <div class="card-header bg-white border-0 pt-4 pb-0">
+                                    <h6 class="fw-bold"><i class="bi bi-list-task me-2 text-warning"></i>Status das Solicitações VOIP</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-around align-items-center mt-3">
+                                        <div class="text-center">
+                                            <h2 class="fw-bold text-warning">{{ solicitacoes_pendentes }}</h2>
+                                            <span class="text-muted">Pendentes/Em Análise</span>
+                                        </div>
+                                        <div class="vr" style="height: 50px;"></div>
+                                        <div class="text-center">
+                                            <h2 class="fw-bold text-success">{{ solicitacoes_concluidas }}</h2>
+                                            <span class="text-muted">Concluídas</span>
+                                        </div>
+                                    </div>
+                                    <div class="progress mt-4" style="height: 10px; border-radius: 10px;">
+                                        {% if solicitacoes_concluidas > 0 or solicitacoes_pendentes > 0 %}
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: {% widthratio solicitacoes_concluidas solicitacoes_concluidas|add:solicitacoes_pendentes 100 %}%"></div>
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: {% widthratio solicitacoes_pendentes solicitacoes_concluidas|add:solicitacoes_pendentes 100 %}%"></div>
+                                        {% else %}
+                                            <div class="progress-bar bg-light" role="progressbar" style="width: 100%"></div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0 h-100 interactive-card" style="border-radius: 12px;" onclick="new bootstrap.Tab(document.getElementById('solicitacoes-senhas-tab')).show()">
+                                <div class="card-header bg-white border-0 pt-4 pb-0">
+                                    <h6 class="fw-bold"><i class="bi bi-key me-2 text-info"></i>Gestão de Senhas</h6>
+                                </div>
+                                <div class="card-body d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <p class="text-muted mb-2">Total de senhas de telefone solicitadas e geridas pelo sistema.</p>
+                                        <h2 class="fw-bold text-dark">{{ total_senhas }}</h2>
+                                        <span class="badge bg-info text-white">Registros Ativos</span>
+                                    </div>
+                                    <i class="bi bi-asterisk text-light" style="font-size: 5rem; opacity: 0.5;"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção de Gráficos -->
+                    <div class="row mt-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold text-muted mb-3"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Status das Solicitações</h6>
+                                    <div style="height: 250px;">
+                                        <canvas id="chartSolicitacoes"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                                <div class="card-body">
+                                    <h6 class="fw-bold text-muted mb-3"><i class="bi bi-bar-chart-fill me-2 text-info"></i>Situação dos Aparelhos Voip</h6>
+                                    <div style="height: 250px;">
+                                        <canvas id="chartAparelhos"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ABA 2: SOLICITAÇÕES APARELHOS -->
+                <div class="tab-pane fade" id="solicitacoes-aparelhos" role="tabpanel" tabindex="0">
+                    <div class="table-responsive">
+                        <table id="tabela-solicitacoes" class="table custom-modern-table table-compacta w-100">
+                            <thead class="custom-thead">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Protocolo</th>
+                                    <th>Unidade</th>
+                                    <th>Sigla</th>
+                                    <th>Local</th>
+                                    <th>Qtd.</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populado via DataTables (AJAX) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 3: SOLICITAÇÕES SENHAS -->
+                <div class="tab-pane fade" id="solicitacoes-senhas" role="tabpanel" tabindex="0">
+                    <div class="table-responsive">
+                        <table id="tabela-senhas" class="table custom-modern-table table-compacta w-100">
+                            <thead class="custom-thead">
+                                <tr>
+                                    <th>Data Cadastro</th>
+                                    <th>Protocolo</th>
+                                    <th>Usuário</th>
+                                    <th>Sigla Unidade</th>
+                                    <th>Ramal</th>
+                                    <th>Tem Desvio?</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populado via DataTables (AJAX) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 4: APARELHOS GERAIS -->
+                <div class="tab-pane fade" id="aparelhos" role="tabpanel" tabindex="0">
+                    <div class="table-responsive mt-3">
+                        <table id="tabela-aparelhos" class="table custom-modern-table table-compacta w-100">
+                            <thead class="custom-thead">
+                                <tr>
+                                    <th>Cadastrado em</th>
+                                    <th>Patrimônio</th>
+                                    <th>Modelo</th>
+                                    <th>MAC Address</th>
+                                    <th>Ramal</th>
+                                    <th>Integridade</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populado via DataTables (AJAX) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 5: REMESSAS DE MANUTENCAO -->
+                <div class="tab-pane fade" id="remessas" role="tabpanel" tabindex="0">
+                    <div class="table-responsive mt-3">
+                        <table id="tabela-remessas" class="table custom-modern-table table-compacta w-100">
+                            <thead class="custom-thead">
+                                <tr>
+                                    <th>Data Remessa</th>
+                                    <th>Memorando</th>
+                                    <th>Empresa</th>
+                                    <th>Total Aparelhos</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populado via DataTables (AJAX) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Includes dos Modais -->
+    {% include 'telefonia/includes/modal_lista_recebidas.html' %}
+    {% include 'telefonia/includes/form_solicitacao_modal.html' %}
+    {% include 'telefonia/includes/form_aparelho_modal.html' %}
+    {% include 'telefonia/includes/form_concluir_solicitacao_modal.html' %}
+    {% include 'telefonia/includes/form_visualizar_aparelho_modal.html' %}
+    {% include 'telefonia/includes/form_senha_modal.html' %}
+    {% include 'telefonia/includes/form_remessa_modal.html' %}
+    {% include 'telefonia/includes/form_visualizar_senha_modal.html' %}
+    {% include 'telefonia/includes/form_visualizar_solicitacao_modal.html' %}
+    {% include 'telefonia/includes/form_editar_solicitacao_modal.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+    
+    <script>
+        // Variável global para checar permissão de edição no Javascript
+        window.userCanEdit = {% if request.user.is_superuser or request.user.perfil.is_admin or request.user.perfil.is_supervisor %}true{% else %}false{% endif %};
+    </script>
+    
+    <!-- Select2 JS via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- Script Customizado da Telefonia -->
+    <script src="{% static 'telefonia/js/telefonia/modal_forms.js' %}?v=1.15"></script>
+    <script src="{% static 'telefonia/js/telefonia/list_telefonia.js' %}?v=1.15"></script>
+    
+    <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'telefonia/js/telefonia/dashboard_charts.js' %}"></script>
+{% endblock %}

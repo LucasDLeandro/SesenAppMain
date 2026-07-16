@@ -25,11 +25,18 @@ ELEVATOR_CHOICE = [
 STATUS_ELEVADOR_CHOICES = [
     ('ATIVO', 'ATIVO'),
     ('PARADO', 'PARADO'),
+    ('PROGRAMADO', 'PROGRAMADO'),
 ]
 
 STATUS_OS = [
     ('ABERTA', 'ABERTA'),
     ('CONCLUIDA', 'CONCLUIDA'),
+]
+
+TIPO_CHAMADO_CHOICES = [
+    ('CORRETIVO', 'CORRETIVO'),
+    ('PREVENTIVO', 'PREVENTIVO'),
+    ('EMERGENCIAL', 'EMERGENCIAL'),
 ]
 
 SERVICES_LIST = [
@@ -57,7 +64,7 @@ SERVICES_LIST = [
 from .mapa_servicos import Categoria, Servico
 
 #from .eng_reg_os_model import EngServiceReg
-from .elev_so_model import ElevOrderReg
+from .elev_so_model import ElevOrderReg, ManutencaoPreventiva, PecaManutencao
 
 
 

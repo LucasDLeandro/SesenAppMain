@@ -1,7 +1,5 @@
 from django.db import models
 
-
-
 #Choices para o campo de status
 class StatusSolicitacao(models.TextChoices):
     RECEBIDA = 'recebida', 'Recebida'
@@ -10,12 +8,8 @@ class StatusSolicitacao(models.TextChoices):
     CONCLUIDA = 'concluida', 'Concluída'
 
 class IntegridadeAparelho(models.TextChoices):
-
-    PERFEITO = 'perfeito', 'Perfeito'
-    BOM_ESTADO = 'bom_estado', 'Bom Estado'
-    REGULAR = 'regular', 'Regular'
-    RUIM = 'ruim', 'Ruim'
-    CRITICO = 'critico', 'Crítico'
+    FUNCIONA = 'funciona', 'Funciona'
+    DEFEITO = 'defeito', 'Defeito'
 
 DESVIO_CHOICES = [
     (True, 'Sim'),
@@ -24,4 +18,10 @@ DESVIO_CHOICES = [
 
 from .solicitacao_aparelho import TelefoneSolicitacao
 from .aparelhos_telefonicos import AparelhoVoip
-from .aparelhos_defeito import AparelhoDefeito
+from .remessa_manutencao import RemessaManutencao
+from .solicitacao_senha import CriarSenha
+from .contrato_colaborador import ContratoColaborador
+from .aparelhos_manutencao import AparelhoManutencao
+from .padrao_senha import PadraoSenhaTelefonia
+from .padrao_tutorial import PadraoTutorialTelefonia
+from .padrao_email import PadraoEmailTelefonia
