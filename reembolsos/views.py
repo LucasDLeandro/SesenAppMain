@@ -96,14 +96,14 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from django.shortcuts import get_object_or_404
 import datetime
-# from xhtml2pdf import pisa  # Comentado temporariamente - módulo não instalado
+from xhtml2pdf import pisa
 from io import BytesIO
 
-# from reportlab.lib import colors  # Comentado temporariamente - módulo não instalado
-# from reportlab.lib.pagesizes import A4
-# from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
-# from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-# from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 
 @login_required
 def gerar_pdf_controle_anual(request, pk):

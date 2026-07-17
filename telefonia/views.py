@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-# from xhtml2pdf import pisa  # Comentado temporariamente - módulo não instalado
+from xhtml2pdf import pisa
 
 from .models import (
     TelefoneSolicitacao, AparelhoVoip, RemessaManutencao, CriarSenha, 
