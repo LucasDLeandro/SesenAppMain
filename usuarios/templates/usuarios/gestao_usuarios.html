@@ -208,7 +208,7 @@
                     </div>
 
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control rounded-3 bg-light text-muted" id="create_password" name="password" value="Sesenapp123" required>
+                        <input type="text" class="form-control rounded-3 bg-light text-muted" id="create_password" name="password" value="{{ default_password }}" required>
                         <label for="create_password"><i class="bi bi-key me-2 text-primary"></i>Senha Inicial Padrão</label>
                     </div>
 
@@ -372,7 +372,8 @@
     function abrirModalCriar() {
         document.getElementById('form-criar-usuario').reset();
         // Reset defaults
-        document.querySelector('#form-criar-usuario [name="password"]').value = 'Sesenapp123';
+        document.querySelector('#form-criar-usuario [name="is_active"]').checked = true;
+        document.querySelector('#form-criar-usuario [name="password"]').value = '{{ default_password }}';
         document.querySelector('#form-criar-usuario [name="telefone"]').value = '61';
         new bootstrap.Modal(document.getElementById('modal-criar-usuario')).show();
     }
@@ -489,7 +490,7 @@
     }
 
     async function reenviarEmailBoasVindas(userId) {
-        if (!confirm('Deseja reenviar o e-mail de boas-vindas? Isso irá redefinir a senha do usuário para "Sesenapp123" e tentará disparar o e-mail novamente.')) return;
+        if (!confirm('Deseja reenviar o e-mail de boas-vindas? Isso irá redefinir a senha do usuário para "{{ default_password }}" e tentará disparar o e-mail novamente.')) return;
 
         Swal.fire({
             title: 'Enviando...',

@@ -129,7 +129,11 @@ def gestao_usuarios(request):
             
         return redirect('gestao_usuarios')
         
-    return render(request, 'usuarios/gestao_usuarios.html', {'config': config})
+    from django.conf import settings
+    return render(request, 'usuarios/gestao_usuarios.html', {
+        'config': config,
+        'default_password': settings.DEFAULT_USER_PASSWORD
+    })
 
 def meu_perfil_view(request):
     if not request.user.is_authenticated:

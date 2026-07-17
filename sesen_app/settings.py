@@ -27,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-change-it')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['tsevm203.tse.jus.br', 'tsevm203', '10.30.24.124', '127.0.0.1', 'localhost', 'sesenapp.cosen.tse']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
 
 
 # Application definition
@@ -206,3 +206,6 @@ SIMPLE_JWT = {
     # Adiciona a palavra 'Bearer' na frente do token no cabeçalho HTTP
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# Usuários
+DEFAULT_USER_PASSWORD = os.environ.get('DEFAULT_USER_PASSWORD', 'Sesenapp123')

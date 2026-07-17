@@ -27,7 +27,8 @@ class UserViewSet(viewsets.ModelViewSet):
         user = self.get_object()
         
         # Gera e define a senha temporária padrão para o reenvio
-        raw_password = 'Sesenapp123'
+        from django.conf import settings
+        raw_password = settings.DEFAULT_USER_PASSWORD
         user.set_password(raw_password)
         user.save()
 
