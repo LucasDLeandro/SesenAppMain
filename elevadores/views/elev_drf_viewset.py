@@ -422,15 +422,13 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         feriados_br = holidays.country_holidays('BR', language='pt_BR')
         HRS_UTEIS_DIA = 12.0
 
-        inicio = kwargs.get('inicio')
-        fim = kwargs.get('fim')
+        inicio_dt = kwargs.get('inicio')
+        fim_dt = kwargs.get('fim')
 
-        if hasattr(inicio, 'date'):
-            inicio = inicio.date()
-        if hasattr(fim, 'date'):
-            fim = fim.date()
+        inicio_date = inicio_dt.date() if hasattr(inicio_dt, 'date') else inicio_dt
+        fim_date = fim_dt.date() if hasattr(fim_dt, 'date') else fim_dt
 
-        qnt_dias_uteis = feriados_br.get_working_days_count(inicio, fim)
+        qnt_dias_uteis = feriados_br.get_working_days_count(inicio_date, fim_date)
         qnt_horas_uteis_totais = Decimal(str(HRS_UTEIS_DIA * qnt_dias_uteis))
 
         # Inicializa todos os elevadores com 0 horas paradas
@@ -444,8 +442,8 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         from django.db.models import Q
         
         qs_hist = ElevadorParadaHistorico.objects.filter(
-            Q(data_hora_parada__lte=fim) & 
-            (Q(data_hora_retorno__isnull=True) | Q(data_hora_retorno__gte=inicio))
+            Q(data_hora_parada__lte=fim_dt) & 
+            (Q(data_hora_retorno__isnull=True) | Q(data_hora_retorno__gte=inicio_dt))
         )
         
         # Como o Django no calcula interseo nativamente em hrs teis, vamos somar o que a model calculou
@@ -463,12 +461,12 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             
             # Definir os limites de interseo para a parada no ms corrente
             parada_inicio = p.data_hora_parada.date()
-            parada_fim = p.data_hora_retorno.date() if p.data_hora_retorno else fim
+            parada_fim = p.data_hora_retorno.date() if p.data_hora_retorno else fim_date
             
             # Interseção
             
-            intersecao_inicio = max(inicio, parada_inicio)
-            intersecao_fim = min(fim, parada_fim)
+            intersecao_inicio = max(inicio_date, parada_inicio)
+            intersecao_fim = min(fim_date, parada_fim)
             
             if intersecao_inicio <= intersecao_fim:
                 # Contar dias teis na interseo
@@ -476,7 +474,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 hrs_paradas = Decimal(str(dias_uteis_parado * HRS_UTEIS_DIA))
                 
                 # Se for no mesmo dia e tiver tempo_parado armazenado, usa o tempo_parado para maior preciso
-                if p.data_hora_parada.date() >= inicio and p.data_hora_retorno and p.data_hora_retorno.date() <= fim and p.tempo_parado:
+                if p.data_hora_parada.date() >= inicio_date and p.data_hora_retorno and p.data_hora_retorno.date() <= fim_date and p.tempo_parado:
                     hrs_paradas = p.tempo_parado
                 elif hrs_paradas > qnt_horas_uteis_totais:
                     hrs_paradas = qnt_horas_uteis_totais
