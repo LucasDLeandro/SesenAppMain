@@ -31,9 +31,7 @@ export async function loadDataDashboard({...kwargs}) {
     try {
         const resposta = await fetch(urlFiltrada)
         dados_api = await resposta.json()
-
-        console.log(dados_api)
-
+        
         return dados_api
 
     } catch (erro) {
