@@ -242,12 +242,6 @@ class ElevOrderReg(models.Model):
     def __str__(self):
         return f'{self.protocolo}'
 
-    def save(self, *args, **kwargs):
-        if not self.protocolo:
-            import datetime
-            self.protocolo = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-        super().save(*args, **kwargs)
-
 
 class ManutencaoPreventiva(models.Model):
     STATUS_MPM = [

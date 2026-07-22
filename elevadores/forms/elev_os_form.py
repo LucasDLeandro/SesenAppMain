@@ -29,6 +29,7 @@ class ElevCreateOsForm(forms.ModelForm):
         model = ElevOrderReg
         fields = [
             'data_hora',
+            'protocolo',
             'elevador',
             'aprisionamento',
             'ocorrencia',
@@ -40,6 +41,7 @@ class ElevCreateOsForm(forms.ModelForm):
             ]
         
         widgets = {
+            'protocolo': forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '20', 'placeholder': 'Ex: 123456...', 'required': True}),
             'elevador': forms.Select(attrs={'type': 'select', 'class': 'form-select', 'required': True}),
             'aprisionamento': forms.Select(attrs={'class':'form-select'}),
             'ocorrencia': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
