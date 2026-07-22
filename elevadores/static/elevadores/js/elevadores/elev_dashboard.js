@@ -1518,3 +1518,539 @@ document.addEventListener('DOMContentLoaded', () => {
         visao360Tab.addEventListener('shown.bs.tab', carregarVisao360);
     }
 });
+
+
+// --- DEMANDAS PENDENTES (APPENDED) ---
+window.abrirModalDemandasPendentes = async function() {
+    try {
+        const [resOs, resPecas, resMpm] = await Promise.all([
+            fetch('/elevadores/api/elevadoress/'),
+            fetch('/elevadores/api/peca_manutencao/'),
+            fetch('/elevadores/api/manutencao_preventiva/')
+        ]);
+
+        let demandas = [];
+
+        if (resOs.ok) {
+            const osData = await resOs.json();
+            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
+                let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO')) {
+                    const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
+                    tempo = `${minPassados} min`;
+                } else if (o.status === 'AGUARDANDO PEÇAS') {
+                    tempo = 'Pausado';
+                }
+                demandas.push({
+                    tipo: 'os',
+                    dataOrigem: o.data_hora,
+                    dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
+                    ref: o.protocolo,
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : '<span class="badge bg-primary">Em Andamento</span>',
+                    equip: o.elevador,
+                    tempo: tempo,
+                    id: o.id,
+                    status: o.status,
+                    extra: o
+                });
+            });
+        }
+
+        if (resPecas.ok) {
+            const pecasData = await resPecas.json();
+            pecasData.filter(p => p.status !== 'SUBSTITUIDA').forEach(p => {
+                demandas.push({
+                    tipo: 'peca',
+                    dataOrigem: p.data_registro || p.created_at || new Date().toISOString(),
+                    dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
+                    ref: p.tipo_peca,
+                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
+                    equip: p.elevador,
+                    tempo: p.status,
+                    id: p.id,
+                    extra: p
+                });
+            });
+        }
+
+        if (resMpm.ok) {
+            const mpmData = await resMpm.json();
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+                demandas.push({
+                    tipo: 'mpm',
+                    dataOrigem: m.mes_referencia,
+                    dataExibicao: m.mes_referencia,
+                    ref: 'Prevenção Mensal',
+                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    equip: m.elevador,
+                    tempo: 'Atrasada',
+                    id: m.id,
+                    extra: m
+                });
+            });
+        }
+
+        // Ordenar demandas: OS no topo (mais nova para mais antiga), demais da mais antiga para mais nova
+        demandas.sort((a, b) => {
+            if (a.tipo === 'os' && b.tipo !== 'os') return -1;
+            if (a.tipo !== 'os' && b.tipo === 'os') return 1;
+            if (a.tipo === 'os' && b.tipo === 'os') {
+                return new Date(b.dataOrigem) - new Date(a.dataOrigem);
+            }
+            return new Date(a.dataOrigem) - new Date(b.dataOrigem);
+        });
+
+        const tbody = document.getElementById('demandas-tbody');
+        tbody.innerHTML = '';
+
+        if (demandas.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success py-4"><i class="bi bi-emoji-smile fs-4 d-block mb-2"></i>Nenhuma pendência encontrada!</td></tr>';
+        } else {
+            demandas.forEach(d => {
+                let btnAction = '';
+                if (d.tipo === 'os') {
+                    if (d.status === 'ABERTA') {
+                        const osStr = encodeURIComponent(JSON.stringify(d.extra));
+                        btnAction = `<button class="btn btn-sm btn-primary fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirModalRegistrarChegada('${osStr}'), 400)"><i class="bi bi-person-walking me-1"></i>Registrar Chegada</button>`;
+                    } else {
+                        btnAction = `<button class="btn btn-sm btn-success fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => editarOS(${d.id}), 400)"><i class="bi bi-check2-circle me-1"></i>Concluir O.S.</button>`;
+                    }
+                } else if (d.tipo === 'peca') {
+                    const pecaStr = encodeURIComponent(JSON.stringify(d.extra));
+                    btnAction = `
+                        <div class="d-flex flex-nowrap gap-1">
+                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peça">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-warning text-dark fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => openConcluirModal(${d.id}), 400)"><i class="bi bi-tools me-1"></i>Trocar Peça</button>
+                        </div>
+                    `;
+                } else if (d.tipo === 'mpm') {
+                    const mpmStr = encodeURIComponent(JSON.stringify(d.extra));
+                    const mpmConcluirStr = encodeURIComponent(JSON.stringify({id: d.id, elevador: d.equip, mes: d.dataExibicao}));
+                    btnAction = `
+                        <div class="d-flex flex-nowrap gap-1">
+                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarMPM('${mpmStr}'), 400)" title="Visualizar MPM">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirConclusaoMPMDemandas('${mpmConcluirStr}'), 400)"><i class="bi bi-calendar-check me-1"></i>Executar MPM</button>
+                        </div>
+                    `;
+                }
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="text-muted fw-bold">${d.dataExibicao}</td>
+                        <td class="fw-bold">${d.ref}</td>
+                        <td>${d.tipoNome}</td>
+                        <td>${d.equip}</td>
+                        <td class="text-danger fw-bold">${d.tempo}</td>
+                        <td>${btnAction}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        const badge = document.getElementById('badge-demandas-pendentes');
+        if (badge) badge.innerText = demandas.length;
+
+        const modalEl = document.getElementById('modal-lista-concluir-demandas');
+        // Garantimos que não existam múltiplos backdrops usando getInstance
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if (!modal) {
+            modal = new bootstrap.Modal(modalEl);
+        }
+        modal.show();
+        
+    }
+}
+
+window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
+    const data = JSON.parse(decodeURIComponent(mpmStrEncoded));
+        document.getElementById('concluirMPMId').value = data.id;
+        document.getElementById('concluirMPMElevadorText').innerText = data.elevador;
+        document.getElementById('concluirMPMMesText').innerText = data.mes;
+        document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
+        document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
+        
+        const userField = document.getElementById('user_hidden_logado');
+        if(userField) document.getElementById('concluirMPMTecnico').value = userField.value;
+
+        const modalEl = document.getElementById('modalConcluirMPM');
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+}
+
+document.getElementById('formConcluirMPM')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('concluirMPMId').value;
+    const tec = document.getElementById('concluirMPMTecnico').value;
+    const dataExec = document.getElementById('concluirMPMData').value;
+    const status = document.getElementById('concluirMPMStatus').value;
+    
+    // Obter CSRF token
+    let csrfToken = '';
+    const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+    if(csrfElement) csrfToken = csrfElement.value;
+    else {
+        // Tentar obter via cookie se não houver no dom
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                csrfToken = cookie.substring('csrftoken='.length, cookie.length);
+                break;
+            }
+        }
+    }
+
+    try {
+        const resp = await fetch('/elevadores/api/manutencao_preventiva/' + id + '/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                tecnico: tec,
+                data_execucao: dataExec,
+                status: status
+            })
+        });
+
+        if(resp.ok) {
+            Swal.fire('Sucesso', 'Manutenção registrada!', 'success');
+            const mEl = document.getElementById('modalConcluirMPM');
+            if (mEl) {
+                const m = bootstrap.Modal.getInstance(mEl);
+                if(m) m.hide();
+            }
+            abrirModalDemandasPendentes();
+            if(typeof loadMPMTable === 'function') loadMPMTable();
+            window.location.reload();
+        } else {
+            Swal.fire('Erro', 'Não foi possível salvar', 'error');
+        }
+    } catch(err) {
+        console.error(err);
+        Swal.fire('Erro', 'Erro de conexão', 'error');
+    }
+});
+
+window.abrirModalRegistrarChegada = function(osStrEncoded) {
+    const data = JSON.parse(decodeURIComponent(osStrEncoded));
+    document.getElementById('chegadaIdOS').value = data.id;
+    
+    // Preencher campos read-only com informações da abertura
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+    
+    setVal('chegadaProtocolo', data.protocolo || '');
+    setVal('chegadaElevador', data.elevador || '');
+    
+    let dataAbertura = '';
+    if(data.data_hora) {
+        dataAbertura = new Date(data.data_hora).toLocaleString('pt-BR');
+    }
+    setVal('chegadaDataAbertura', dataAbertura);
+    
+    setVal('chegadaAprisionamento', (data.aprisionamento === true || data.aprisionamento === 'Sim') ? 'Sim' : 'Não');
+    setVal('chegadaElevadorParado', data.elevador_parado || 'ATIVO');
+    setVal('chegadaAtendente', data.atendente || '');
+    setVal('chegadaSolicitante', data.solicitante || '');
+    setVal('chegadaAlarmeEms', data.alarme_ems || 'Nenhum');
+    setVal('chegadaOcorrencia', data.ocorrencia || '');
+    
+    // Configurar horário atual padrão
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    setVal('chegadaDataHora', now.toISOString().slice(0, 16));
+    
+    // Obter registrante
+    const userField = document.getElementById('user_hidden_logado');
+    if(userField) setVal('chegadaRegistrador', userField.value);
+    
+    setVal('chegadaProtocolo', data.protocolo || '');
+    setVal('chegadaElevador', data.elevador || '');
+    
+    let dataAbertura = '';
+    if(data.data_hora) {
+        dataAbertura = new Date(data.data_hora).toLocaleString('pt-BR');
+    }
+    setVal('chegadaDataAbertura', dataAbertura);
+    
+    setVal('chegadaAprisionamento', (data.aprisionamento === true || data.aprisionamento === 'Sim') ? 'Sim' : 'Não');
+    setVal('chegadaElevadorParado', data.elevador_parado || 'ATIVO');
+    setVal('chegadaAtendente', data.atendente || '');
+    setVal('chegadaSolicitante', data.solicitante || '');
+    setVal('chegadaAlarmeEms', data.alarme_ems || 'Nenhum');
+    setVal('chegadaOcorrencia', data.ocorrencia || '');
+    
+    // Configurar horário atual padrão
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+    setVal('chegadaDataHora', now.toISOString().slice(0, 16));
+    
+    // Obter registrante
+    const userField = document.getElementById('user_hidden_logado');
+    if(userField) setVal('chegadaRegistrador', userField.value);
+
+    setVal('chegadaTecnico', '');
+    setVal('chegadaAcompanhante', '');
+
+    // Inicializa Select2 no campo chegadaTecnico
+    const $selectTecnico = $('#chegadaTecnico');
+    if (!$selectTecnico.hasClass("select2-hidden-accessible")) {
+        $selectTecnico.select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#modalRegistrarChegadaOS'),
+            tags: true,
+            placeholder: "Ex: João Silva ou selecione na lista",
+            allowClear: true
+        });
+    }
+
+    // Inicializa Select2 no campo chegadaAcompanhante
+    const $selectAcompanhante = $('#chegadaAcompanhante');
+    if (!$selectAcompanhante.hasClass("select2-hidden-accessible")) {
+        $selectAcompanhante.select2({
+            theme: 'bootstrap-5',
+            dropdownParent: $('#modalRegistrarChegadaOS'),
+            tags: true,
+            placeholder: "Selecione o técnico do TSE",
+            allowClear: true
+        });
+    }
+
+    // Buscar técnicos da Otis e preencher selects (chegadaTecnico usa Select2, os demais são selects normais)
+    if (window.tecnicosOtisCache) {
+        preencherSelectsTecnicos(window.tecnicosOtisCache);
+    } else {
+        fetch('/elevadores/api/elevadoress/tecnicos_otis/')
+            .then(res => res.json())
+            .then(tecnicos => {
+                window.tecnicosOtisCache = tecnicos;
+                preencherSelectsTecnicos(tecnicos);
+            })
+            .catch(err => console.error('Erro ao buscar técnicos da Otis', err));
+    }
+
+    function preencherSelectsTecnicos(tecnicos) {
+        // 1. Select2 para chegadaTecnico
+        $selectTecnico.empty();
+        $selectTecnico.append(new Option('', '', false, false)); // placeholder
+        tecnicos.forEach(tec => {
+            $selectTecnico.append(new Option(tec, tec, false, false));
+        });
+        $selectTecnico.val(null).trigger('change');
+    }
+
+    // Buscar equipe do TSE (Contrato de Manutenção Predial) e preencher select2
+    fetch('/empresas/api/contatos_por_app/?app=MANUTENCAO_PREDIAL')
+        .then(res => res.json())
+        .then(contatos => {
+            $selectAcompanhante.empty();
+            $selectAcompanhante.append(new Option('', '', false, false)); // placeholder
+            contatos.forEach(c => {
+                const cargoStr = (c.cargo || '').toLowerCase();
+                if (cargoStr.includes('técnico') || cargoStr.includes('tecnico') || cargoStr.includes('supervisor')) {
+                    const valueStr = `${c.nome} (${c.cargo})`;
+                    const textStr = `${c.nome} - ${c.cargo} - ${c.empresa}`;
+                    $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
+                }
+            });
+
+            const loggedUser = document.getElementById('chegadaAcompanhante').getAttribute('data-logged-user');
+            if (loggedUser) {
+                let optionsArray = $selectAcompanhante.find('option').toArray();
+                let optionExists = optionsArray.some(opt => opt.value.startsWith(loggedUser));
+                
+                if (!optionExists) {
+                    const valueStr = `${loggedUser} (Usuário Sesen)`;
+                    const textStr = `${loggedUser} - Usuário Sesen`;
+                    $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
+                }
+                
+                let optionToSelect = $selectAcompanhante.find('option').toArray().find(opt => opt.value.startsWith(loggedUser));
+                if (optionToSelect) {
+                    $selectAcompanhante.val(optionToSelect.value).trigger('change');
+                } else {
+                    $selectAcompanhante.val(null).trigger('change');
+                }
+            } else {
+                $selectAcompanhante.val(null).trigger('change');
+            }
+        })
+        .catch(err => console.error('Erro ao buscar equipe da manutenção predial', err));
+
+    const modalEl = document.getElementById('modalRegistrarChegadaOS');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+}
+
+document.getElementById('formRegistrarChegadaOS')?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('chegadaIdOS').value;
+    const dataChegada = document.getElementById('chegadaDataHora').value;
+    const tec = document.getElementById('chegadaTecnico').value;
+    const acomp = document.getElementById('chegadaAcompanhante').value;
+    const registrador = document.getElementById('chegadaRegistrador').value;
+
+    let csrfToken = '';
+    const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+    if(csrfElement) csrfToken = csrfElement.value;
+    else {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                csrfToken = cookie.substring('csrftoken='.length, cookie.length);
+                break;
+            }
+        }
+    }
+
+    try {
+        const resp = await fetch(`/elevadores/api/elevadoress/${id}/registrar_chegada/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                data_hora_chegada: dataChegada,
+                tecnico: tec,
+                acompanhante: acomp,
+                registrador_chegada: registrador
+            })
+        });
+
+        const data = await resp.json();
+
+        if(resp.ok && data.sucesso) {
+            Swal.fire('Sucesso!', 'Chegada registrada. OS em Andamento!', 'success');
+            const mEl = document.getElementById('modalRegistrarChegadaOS');
+            if (mEl) {
+                const m = bootstrap.Modal.getInstance(mEl);
+                if(m) m.hide();
+            }
+            carregarWidgetDemandasDashboard();
+            if(typeof loadOSTable === 'function') loadOSTable();
+        } else {
+            Swal.fire('Erro', data.mensagem || 'Falha ao registrar.', 'error');
+        }
+    } catch(err) {
+        console.error(err);
+        Swal.fire('Erro', 'Erro de rede.', 'error');
+    }
+
+
+// --- WIDGET DEMANDAS PENDENTES (APPENDED) ---
+window.carregarWidgetDemandasDashboard = async function() {
+    try {
+        const [resOs, resPecas, resMpm] = await Promise.all([
+            fetch('/elevadores/api/elevadoress/'),
+            fetch('/elevadores/api/peca_manutencao/'),
+            fetch('/elevadores/api/manutencao_preventiva/')
+        ]);
+
+        let demandas = [];
+
+        if (resOs.ok) {
+            const osData = await resOs.json();
+            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
+                let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO')) {
+                    const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
+                    tempo = `${minPassados} min`;
+                } else if (o.status === 'AGUARDANDO PEÇAS') {
+                    tempo = 'Pausado';
+                }
+                demandas.push({
+                    tipo: 'os',
+                    dataOrigem: o.data_hora,
+                    dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
+                    ref: o.protocolo,
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : '<span class="badge bg-primary">Em Andamento</span>',
+                    equip: o.elevador,
+                    tempo: tempo,
+                    status: o.status,
+                    extra: o
+                });
+            });
+        }
+
+        if (resPecas.ok) {
+            const pecasData = await resPecas.json();
+            pecasData.filter(p => p.status !== 'SUBSTITUIDA').forEach(p => {
+                demandas.push({
+                    tipo: 'peca',
+                    dataOrigem: p.data_registro || p.created_at || new Date().toISOString(),
+                    dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
+                    ref: p.tipo_peca,
+                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
+                    equip: p.elevador,
+                    tempo: p.status
+                });
+            });
+        }
+
+        if (resMpm.ok) {
+            const mpmData = await resMpm.json();
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+                demandas.push({
+                    tipo: 'mpm',
+                    dataOrigem: m.mes_referencia,
+                    dataExibicao: m.mes_referencia,
+                    ref: 'Prevenção Mensal',
+                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    equip: m.elevador,
+                    tempo: 'Atrasada'
+                });
+            });
+        }
+
+        // Ordenar demandas: OS no topo (mais nova para mais antiga), demais da mais antiga para mais nova
+        demandas.sort((a, b) => {
+            if (a.tipo === 'os' && b.tipo !== 'os') return -1;
+            if (a.tipo !== 'os' && b.tipo === 'os') return 1;
+            if (a.tipo === 'os' && b.tipo === 'os') {
+                return new Date(b.dataOrigem) - new Date(a.dataOrigem);
+            }
+            return new Date(a.dataOrigem) - new Date(b.dataOrigem);
+        });
+
+        const listGroup = document.getElementById('lista-demandas-dashboard');
+        if (listGroup) {
+            listGroup.innerHTML = '';
+            if (demandas.length === 0) {
+                listGroup.innerHTML = '<div class="text-center text-success py-3 fw-bold"><i class="bi bi-emoji-smile fs-4 d-block mb-1"></i>Tudo em Dia! Nenhuma pendência.</div>';
+            } else {
+                demandas.slice(0, 3).forEach(d => {
+                    listGroup.innerHTML += `
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 rounded mb-1" style="background-color: #fffaf0;">
+                            <div>
+                                <small class="text-danger"><i class="bi bi-clock me-1"></i> Data/Ref: ${d.dataExibicao}</small><br>
+                                <span class="fw-bold text-dark fs-6">${d.ref}</span> ${d.tipoNome}<br>
+                                <small class="text-muted">Equip: ${d.equip}</small>
+                            </div>
+                            <i class="bi bi-chevron-right text-danger"></i>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        const badge = document.getElementById('badge-demandas-pendentes');
+        if (badge) badge.innerText = demandas.length;
+
+    } catch(e) {
+        console.error("Erro no widget de demandas", e);
+    }
+}
+
+// Chamar no carregamento
+document.addEventListener('DOMContentLoaded', () => {
+    carregarWidgetDemandasDashboard();
+});
