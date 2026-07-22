@@ -214,3 +214,21 @@ SIMPLE_JWT = {
 
 # Usuários
 DEFAULT_USER_PASSWORD = os.environ.get('DEFAULT_USER_PASSWORD', 'Sesenapp123')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': 'C:/Lucas/SesenAppMain/django_error.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    },
+}

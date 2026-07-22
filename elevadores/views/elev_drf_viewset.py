@@ -401,6 +401,11 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         inicio = kwargs.get('inicio')
         fim = kwargs.get('fim')
 
+        if hasattr(inicio, 'date'):
+            inicio = inicio.date()
+        if hasattr(fim, 'date'):
+            fim = fim.date()
+
         qnt_dias_uteis = feriados_br.get_working_days_count(inicio, fim)
         qnt_horas_uteis_totais = Decimal(str(HRS_UTEIS_DIA * qnt_dias_uteis))
 
@@ -437,10 +442,6 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             parada_fim = p.data_hora_retorno.date() if p.data_hora_retorno else fim
             
             # Interseção
-            if hasattr(inicio, 'date'):
-                inicio = inicio.date()
-            if hasattr(fim, 'date'):
-                fim = fim.date()
             
             intersecao_inicio = max(inicio, parada_inicio)
             intersecao_fim = min(fim, parada_fim)
