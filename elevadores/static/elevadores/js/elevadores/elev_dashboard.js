@@ -285,8 +285,7 @@ async function dadosIndicadorQuatro() {
     const corpoChartQuatro = document.getElementById('chart-4');
     if(!corpoChartQuatro) return;
     try {
-        if(filtroDinamicoChartQuatro) {
-        }
+
         
         const nomesElevadores = [...listaElevadores];
         const valDisp = listaElevadores.map(nomeElevador => {
@@ -333,9 +332,7 @@ async function dadosIndicadorQuatro() {
 
         Plotly.react(corpoChartQuatro, novoTraceChartQuatro, layoutChartQuatro)
         
-        if(filtroDinamicoChartQuatro) {
-
-    } catch(err) {
+} catch(err) {
         console.error(err);
     }
 }
@@ -700,8 +697,7 @@ async function dadosIndicadorDois() {
     if(!corpoChartDois) return;
     
     try {
-        if(filtroDinamicoChartDois) {
-        }
+
         
         const x_days = [];
         const y_elevs = [];
@@ -808,9 +804,7 @@ async function dadosIndicadorDois() {
 
         Plotly.react(corpoChartDois, [trace], layoutChartDois);
 
-        if(filtroDinamicoChartDois) {
-
-    } catch(erro) {
+} catch(erro) {
         console.error("Erro ao renderizar gr├ífico 2:", erro);
         corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gr├ífico.</div>';
     }
