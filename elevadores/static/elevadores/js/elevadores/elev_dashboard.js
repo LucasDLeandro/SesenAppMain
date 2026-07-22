@@ -1923,6 +1923,7 @@ document.getElementById('formRegistrarChegadaOS')?.addEventListener('submit', as
         console.error(err);
         Swal.fire('Erro', 'Erro de rede.', 'error');
     }
+});
 
 
 // --- WIDGET DEMANDAS PENDENTES (APPENDED) ---
