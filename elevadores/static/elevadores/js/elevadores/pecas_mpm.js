@@ -114,7 +114,7 @@ async function loadPecasTable() {
                 <td>${item.tipo_peca}</td>
                 <td>${formatData(item.data_previsao_troca)}</td>
                 <td><span class="badge bg-${isSub ? "success" : "warning text-dark"}">${item.status}</span></td>
-                <td class="text-danger fw-bold elev-timer-global text-nowrap" data-start="${isSub ? '' : (item.data_registro || '')}">${isSub ? '-' : 'Calculando...'}</td>
+                <td class="text-danger fw-bold elev-timer text-nowrap" data-start="${isSub ? '' : (item.data_registro || '')}">${isSub ? '-' : 'Calculando...'}</td>
                 <td>
                     <div class="d-flex flex-nowrap justify-content-center gap-1">
                         <button class="btn btn-sm btn-outline-primary" onclick="abrirVisualizarPeca('${encodeURIComponent(JSON.stringify(item))}')" title="Visualizar"><i class="bi bi-eye"></i></button>

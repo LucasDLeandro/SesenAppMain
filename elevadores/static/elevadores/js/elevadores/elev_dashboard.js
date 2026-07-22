@@ -1288,17 +1288,32 @@ function carregarRegistroParadas() {
                 const dataInicioFmt = new Date(item.data_hora_parada).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
                 
                 let tempoTotal = '-';
+                let impactoBadge = '-';
+                
                 if (item.data_hora_retorno && item.data_hora_parada) {
                     const diffMs = new Date(item.data_hora_retorno) - new Date(item.data_hora_parada);
-                    const diffHrs = (diffMs / (1000 * 60 * 60)).toFixed(2);
-                    tempoTotal = diffHrs;
+                    const diffHrs = diffMs / (1000 * 60 * 60);
+                    tempoTotal = diffHrs.toFixed(2);
+                    
+                    const impacto = ((diffHrs / 720) * 100).toFixed(2);
+                    let badgeColor = 'bg-success';
+                    if (impacto > 5) badgeColor = 'bg-danger';
+                    else if (impacto > 1) badgeColor = 'bg-warning text-dark';
+                    impactoBadge = `<span class="badge ${badgeColor}">-${impacto}%</span>`;
+                } else if (!item.data_hora_retorno && item.data_hora_parada) {
+                    const diffMs = new Date() - new Date(item.data_hora_parada);
+                    const diffHrs = diffMs / (1000 * 60 * 60);
+                    tempoTotal = diffHrs.toFixed(2) + ' (atual)';
+                    const impacto = ((diffHrs / 720) * 100).toFixed(2);
+                    impactoBadge = `<span class="badge bg-danger">-${impacto}%</span>`;
                 }
                 
                 tr.innerHTML = `
                     <td><span class="badge bg-secondary">${item.elevador}</span></td>
                     <td>${dataInicioFmt}</td>
                     <td>${retornoBadge}</td>
-                    <td>${tempoTotal}</td>
+                    <td class="fw-bold">${tempoTotal}</td>
+                    <td>${impactoBadge}</td>
                     <td class="text-center">
                         <button class="btn btn-sm btn-outline-primary" onclick="abrirModalVisualizarParada(${item.id})" title="Visualizar Registro de Parada"><i class="bi bi-eye"></i></button>
                     </td>
