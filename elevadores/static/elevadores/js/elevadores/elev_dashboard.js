@@ -1192,6 +1192,9 @@ function carregarAlarmesEms() {
                     <td>${item.descricao}</td>
                     <td><span class="badge bg-secondary">${item.elevador}</span></td>
                     <td><span class="text-muted"><i class="bi bi-person me-1"></i>${item.usuario_registrador || '-'}</span></td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirModalVisualizarAlarmeEms(${item.id})" title="Visualizar Alarme"><i class="bi bi-eye"></i></button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1275,22 +1278,29 @@ function carregarRegistroParadas() {
             lista.forEach(item => {
                 const tr = document.createElement('tr');
                 let retornoBadge = '-';
-                if (item.data_retorno) {
-                    const dataRetornoFmt = new Date(item.data_retorno).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
+                if (item.data_hora_retorno) {
+                    const dataRetornoFmt = new Date(item.data_hora_retorno).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
                     retornoBadge = `<span class="badge bg-success">${dataRetornoFmt}</span>`;
                 } else {
                     retornoBadge = `<span class="badge bg-danger">PARADO</span>`;
                 }
                 
-                const dataInicioFmt = new Date(item.data_inicio).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
+                const dataInicioFmt = new Date(item.data_hora_parada).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
+                
+                let tempoTotal = '-';
+                if (item.data_hora_retorno && item.data_hora_parada) {
+                    const diffMs = new Date(item.data_hora_retorno) - new Date(item.data_hora_parada);
+                    const diffHrs = (diffMs / (1000 * 60 * 60)).toFixed(2);
+                    tempoTotal = diffHrs;
+                }
                 
                 tr.innerHTML = `
-                    <td><span class="badge bg-secondary">${item.elevador_nome}</span></td>
+                    <td><span class="badge bg-secondary">${item.elevador}</span></td>
                     <td>${dataInicioFmt}</td>
                     <td>${retornoBadge}</td>
-                    <td>${item.tempo_parado || '-'}</td>
+                    <td>${tempoTotal}</td>
                     <td class="text-center">
-                        ${item.os_relacionada ? `<button class="btn btn-sm btn-outline-primary" onclick="mostrarDetalhesElev(${item.os_relacionada})" title="Visualizar O.S relacionada"><i class="bi bi-eye"></i></button>` : '-'}
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirModalVisualizarParada(${item.id})" title="Visualizar Registro de Parada"><i class="bi bi-eye"></i></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -1308,6 +1318,43 @@ function carregarRegistroParadas() {
             tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger">Erro ao carregar os dados.</td></tr>';
         });
 }
+
+window.abrirModalVisualizarParada = function(id) {
+    fetch(`/elevadores/api/registro_paradas/${id}/`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('visParadaElevador').innerText = data.elevador || '-';
+            document.getElementById('visParadaInicio').innerText = data.data_hora_parada ? new Date(data.data_hora_parada).toLocaleString('pt-BR') : '-';
+            document.getElementById('visParadaFim').innerText = data.data_hora_retorno ? new Date(data.data_hora_retorno).toLocaleString('pt-BR') : 'Parado';
+            document.getElementById('visParadaOS').innerText = data.os_relacionada || 'Nenhuma';
+            
+            const m = new bootstrap.Modal(document.getElementById('modalVisualizarParada'));
+            m.show();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Erro ao carregar os detalhes da parada.');
+        });
+};
+
+window.abrirModalVisualizarAlarmeEms = function(id) {
+    fetch(`/elevadores/api/alarme_ems/${id}/`)
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('visAlarmeElevador').innerText = data.elevador || '-';
+            document.getElementById('visAlarmeTipo').innerText = data.tipo_evento || '-';
+            document.getElementById('visAlarmeData').innerText = data.data_hora ? new Date(data.data_hora).toLocaleString('pt-BR') : '-';
+            document.getElementById('visAlarmeDescricao').innerText = data.descricao || '-';
+            document.getElementById('visAlarmeUsuario').innerText = data.usuario_registrador || '-';
+            
+            const m = new bootstrap.Modal(document.getElementById('modalVisualizarAlarmeEms'));
+            m.show();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Erro ao carregar os detalhes do alarme.');
+        });
+};
 
 // 3. Visão 360
 function carregarVisao360() {
@@ -1609,7 +1656,7 @@ window.abrirModalDemandasPendentes = async function() {
                 if (d.tipo === 'os') {
                     if (d.status === 'ABERTA') {
                         const osStr = encodeURIComponent(JSON.stringify(d.extra));
-                        btnAction = `<button class="btn btn-sm btn-primary fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirModalRegistrarChegada('${osStr}'), 400)"><i class="bi bi-person-walking me-1"></i>Registrar Chegada</button>`;
+                        btnAction = `<button class="btn btn-sm btn-primary fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirModalRegistrarChegada('${osStr}'), 400)"><i class="bi bi-person-walking me-1"></i>Iniciar Atendimento</button>`;
                     } else {
                         btnAction = `<button class="btn btn-sm btn-success fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => editarOS(${d.id}), 400)"><i class="bi bi-check2-circle me-1"></i>Concluir O.S.</button>`;
                     }

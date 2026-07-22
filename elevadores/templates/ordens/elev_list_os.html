@@ -70,7 +70,7 @@
                 <i class="bi bi-stopwatch-fill text-warning me-1"></i> Registro de Paradas
             </button>
         </li>
-        <li class="nav-item" role="presentation">
+        <li class="nav-item d-none" role="presentation">
             <button class="nav-link" id="visao360-tab" data-bs-toggle="tab" data-bs-target="#visao360-content" type="button" role="tab" aria-controls="visao360-content" aria-selected="false">
                 <i class="bi bi-clock-history text-info me-1"></i> Histórico Mensal
             </button>
@@ -123,6 +123,7 @@
                                 <th scope="col" class="py-3 text-center">Ocorrência</th>
                                 <th scope="col" class="py-3 text-center">Elevador</th>
                                 <th scope="col" class="py-3 text-center">Usuário</th>
+                                <th scope="col" class="py-3 text-center">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="tabela-alarmes-ems" class="border-bottom">
@@ -418,6 +419,80 @@
 {% include 'ordens/includes/modal_visualizar_peca.html' %}
 {% include 'ordens/includes/modal_editar_peca.html' %}
 {% include 'ordens/includes/modal_file_viewer.html' %}
+
+<!-- Modal Visualizar Parada -->
+<div class="modal fade" id="modalVisualizarParada" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning text-dark border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-stopwatch-fill me-2"></i>Detalhes da Parada</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Elevador:</span>
+                        <span id="visParadaElevador" class="fw-bold"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Início:</span>
+                        <span id="visParadaInicio" class="fw-bold"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Retorno:</span>
+                        <span id="visParadaFim" class="fw-bold text-success"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">O.S. Relacionada:</span>
+                        <span id="visParadaOS" class="badge bg-primary"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Visualizar Alarme EMS -->
+<div class="modal fade" id="modalVisualizarAlarmeEms" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="bi bi-bell-fill me-2"></i>Detalhes do Alarme EMS</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Elevador:</span>
+                        <span id="visAlarmeElevador" class="fw-bold"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Tipo Evento:</span>
+                        <span id="visAlarmeTipo" class="fw-bold"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Data/Hora:</span>
+                        <span id="visAlarmeData" class="fw-bold"></span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="text-muted d-block mb-1">Ocorrência:</span>
+                        <span id="visAlarmeDescricao" class="fw-bold d-block text-break"></span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-muted">Registrado por:</span>
+                        <span id="visAlarmeUsuario" class="badge bg-secondary"></span>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     window.userCanEditElevadores = {% if request.user.is_superuser or request.user.perfil.is_admin or request.user.perfil.is_supervisor %}true{% else %}false{% endif %};
