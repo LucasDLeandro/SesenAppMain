@@ -127,21 +127,44 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         from elevadores.serializers import calc_hrs_uteis_parado
                         from ..models.elev_so_model import ElevadorParadaHistorico
                         tmp_parado = calc_hrs_uteis_parado(elev_status.data_hora_parada, timezone.now())
-                        ElevadorParadaHistorico.objects.create(
-                            elevador=os_salva.elevador,
-                            data_hora_parada=elev_status.data_hora_parada,
-                            data_hora_retorno=timezone.now(),
-                            tempo_parado=Decimal(str(tmp_parado)),
-                            os_relacionada=os_salva
-                        )
+                        hist = ElevadorParadaHistorico.objects.filter(elevador=os_salva.elevador, data_hora_retorno__isnull=True).first()
+                        if hist:
+                            hist.data_hora_retorno = timezone.now()
+                            hist.tempo_parado = Decimal(str(tmp_parado))
+                            hist.os_relacionada = os_salva
+                            hist.save()
+                        else:
+                            ElevadorParadaHistorico.objects.create(
+                                elevador=os_salva.elevador,
+                                data_hora_parada=elev_status.data_hora_parada,
+                                data_hora_retorno=timezone.now(),
+                                tempo_parado=Decimal(str(tmp_parado)),
+                                os_relacionada=os_salva
+                            )
                     
                     elev_status.status = 'ATIVO'
                     elev_status.data_hora_parada = None
                     elev_status.save()
             elif os_salva.elevador_parado == 'PARADO':
-                # Mantém parado. NÃO reseta a data_hora_parada, para que o dashboard continue contando do zero original.
+                was_ativo = (elev_status.status != 'PARADO')
                 elev_status.status = 'PARADO'
+                
+                # Se não tinha data_hora_parada anterior (estava ativo e ficou parado agora ou perdeu a data),
+                # define como agora (ou data da OS)
+                if not elev_status.data_hora_parada:
+                    elev_status.data_hora_parada = os_salva.data_hora if os_salva.data_hora else timezone.now()
+                
                 elev_status.save()
+                
+                if was_ativo:
+                    from ..models.elev_so_model import ElevadorParadaHistorico
+                    hist_aberto = ElevadorParadaHistorico.objects.filter(elevador=os_salva.elevador, data_hora_retorno__isnull=True).exists()
+                    if not hist_aberto:
+                        ElevadorParadaHistorico.objects.create(
+                            elevador=os_salva.elevador,
+                            data_hora_parada=elev_status.data_hora_parada,
+                            os_relacionada=os_salva
+                        )
         except ElevadorStatus.DoesNotExist:
             pass
 
@@ -727,12 +750,29 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         data_hora_retorno = timezone.now()
                         tmp_parado = calc_hrs_uteis_parado(elev.data_hora_parada, data_hora_retorno)
                         
-                        ElevadorParadaHistorico.objects.create(
-                            elevador=elevador_nome,
-                            data_hora_parada=elev.data_hora_parada,
-                            data_hora_retorno=data_hora_retorno,
-                            tempo_parado=Decimal(str(tmp_parado))
-                        )
+                        hist = ElevadorParadaHistorico.objects.filter(elevador=elevador_nome, data_hora_retorno__isnull=True).first()
+                        if hist:
+                            hist.data_hora_retorno = data_hora_retorno
+                            hist.tempo_parado = Decimal(str(tmp_parado))
+                            hist.save()
+                        else:
+                            ElevadorParadaHistorico.objects.create(
+                                elevador=elevador_nome,
+                                data_hora_parada=elev.data_hora_parada,
+                                data_hora_retorno=data_hora_retorno,
+                                tempo_parado=Decimal(str(tmp_parado))
+                            )
+
+                    elif novo_status == 'PARADO' and elev.status != 'PARADO':
+                        if not elev.data_hora_parada:
+                            elev.data_hora_parada = timezone.now()
+                        
+                        hist_aberto = ElevadorParadaHistorico.objects.filter(elevador=elevador_nome, data_hora_retorno__isnull=True).exists()
+                        if not hist_aberto:
+                            ElevadorParadaHistorico.objects.create(
+                                elevador=elevador_nome,
+                                data_hora_parada=elev.data_hora_parada
+                            )
 
                     elev.status = novo_status
                     if novo_status == 'PROGRAMADO':
