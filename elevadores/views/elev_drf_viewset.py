@@ -859,11 +859,17 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     'registrado_por': peca.tecnico_identificador
                 })
                 
-        # Ordenar os eventos de cada elevador
-        for elev in historico:
-            historico[elev].sort(key=lambda x: x['data_hora'] or '', reverse=True)
+        resultado = []
+        for elev, eventos in historico.items():
+            eventos.sort(key=lambda x: x['data_hora'] or '', reverse=True)
+            resultado.append({
+                'elevador': elev,
+                'eventos': eventos,
+                'disponibilidade': 100,
+                'tempo_parado_str': '--'
+            })
             
-        return Response(historico, status=status.HTTP_200_OK)
+        return Response(resultado, status=status.HTTP_200_OK)
 
 class ManutencaoPreventivaViewSet(viewsets.ModelViewSet):
     from ..models import ManutencaoPreventiva

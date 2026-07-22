@@ -1256,7 +1256,7 @@ function carregarRegistroParadas() {
     
     tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>Carregando paradas...</td></tr>';
     
-    fetch('/elevadores/api/elevador_parada_historico/')
+    fetch('/elevadores/api/registro_paradas/')
         .then(res => res.json())
         .then(data => {
             const lista = Array.isArray(data) ? data : (data.results || []);
