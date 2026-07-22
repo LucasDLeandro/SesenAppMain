@@ -2,83 +2,84 @@
 <!-- Modal Perfil de Usuário -->
 <div class="modal fade" id="modal-perfil-usuario" tabindex="-1" aria-labelledby="modalPerfilLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 15px; overflow: hidden;">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
       
-      <!-- Cabeçalho (com gradient e sem bordas duras) -->
-      <div class="modal-header d-flex flex-column align-items-center justify-content-center p-4 position-relative" style="background: linear-gradient(135deg, var(--primary, #4361ee) 0%, #3a56d4 100%); color: white; border-bottom: none;">
-        <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
-        
-        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-          <i class="bi bi-person-fill" style="font-size: 3rem; color: var(--primary, #4361ee);"></i>
-        </div>
-        <h4 class="modal-title fw-bold m-0" id="modalPerfilLabel">Meu Perfil</h4>
+      <!-- Cabeçalho -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 shadow-sm" style="background: linear-gradient(135deg, var(--primary, #4361ee) 0%, #3a56d4 100%); z-index: 10;">
+        <h5 class="modal-title fw-bold text-white d-flex align-items-center" id="modalPerfilLabel">
+            <i class="bi bi-person-circle me-2 fs-5"></i> Meu Perfil
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <!-- Corpo -->
-      <div class="modal-body p-4 bg-light">
-        <div class="card border-0 shadow-sm rounded-3">
-          <div class="card-body p-4">
+      <div class="modal-body px-4 pb-4 pt-4">
+        <form id="form-meu-perfil-modal" onsubmit="salvarMeuPerfilModal(event)">
+            <input type="hidden" id="modal_perfil_user_id" value="{{ request.user.id }}">
             
-            <div class="row mb-3">
-              <div class="col-12 text-center">
-                <h5 class="fw-bold mb-0 text-dark" id="perfil-nome">{{ user.get_full_name|default:user.username }}</h5>
-                <span class="badge bg-primary mt-2 px-3 py-2 rounded-pill" id="perfil-cargo" style="font-weight: 500;">
-                  {% if user.perfil %}
-                    {{ user.perfil.get_tipo_display }}
-                  {% else %}
-                    Sem Cargo Definido
-                  {% endif %}
-                </span>
-              </div>
+            <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                <div class="card-body p-3 text-center">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
+                        <i class="bi bi-person-fill text-primary" style="font-size: 2rem;"></i>
+                    </div>
+                    <h6 class="fw-bold mb-1 text-dark" id="perfil-nome" style="font-size: 0.9rem;">{{ user.get_full_name|default:user.username }}</h6>
+                    <span class="badge bg-primary px-2 py-1" id="perfil-cargo" >
+                        {% if user.perfil %}
+                            {{ user.perfil.get_tipo_display }}
+                        {% else %}
+                            Sem Cargo Definido
+                        {% endif %}
+                    </span>
+                </div>
             </div>
 
-            <hr class="text-muted">
+            <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                <div class="card-body p-3">
+                    <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-person-vcard me-2 fs-6"></i> Dados Pessoais
+                    </h6>
+                    
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login)</label>
+                            <input type="text" class="form-control  bg-light shadow-none" value="{{ request.user.username }}" readonly style="border-radius: 4px; border-color: #e2e8f0;">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome</label>
+                            <input type="text" class="form-control  shadow-none" id="modal_perfil_first_name" value="{{ request.user.first_name }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label text-muted fw-bold text-uppercase mb-1" >Sobrenome</label>
+                            <input type="text" class="form-control  shadow-none" id="modal_perfil_last_name" value="{{ request.user.last_name }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                        </div>
 
-            <form id="form-meu-perfil-modal" onsubmit="salvarMeuPerfilModal(event)">
-              <input type="hidden" id="modal_perfil_user_id" value="{{ request.user.id }}">
-              
-              <div class="row mt-4">
-                <div class="col-12 mb-3">
-                  <label class="form-label text-muted fw-bold mb-1 small text-uppercase">Nome de Usuário (Login)</label>
-                  <input type="text" class="form-control bg-light" value="{{ request.user.username }}" readonly>
+                        <div class="col-12">
+                            <label class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail</label>
+                            <input type="email" class="form-control  shadow-none" id="modal_perfil_email" value="{{ request.user.email }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                        </div>
+                        
+                        <div class="col-12">
+                            <label class="form-label text-muted fw-bold text-uppercase mb-1" >Telefone (WhatsApp)</label>
+                            <input type="text" class="form-control  mask-telefone shadow-none" id="modal_perfil_telefone" value="{{ request.user.perfil.telefone|default:'' }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                            <div class="form-text mt-1" >Inclua o DDD. Ex: (61) 9 9999-9999</div>
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="col-md-6 mb-3">
-                  <label class="form-label text-muted fw-bold mb-1 small text-uppercase">Nome</label>
-                  <input type="text" class="form-control" id="modal_perfil_first_name" value="{{ request.user.first_name }}">
-                </div>
-                
-                <div class="col-md-6 mb-3">
-                  <label class="form-label text-muted fw-bold mb-1 small text-uppercase">Sobrenome</label>
-                  <input type="text" class="form-control" id="modal_perfil_last_name" value="{{ request.user.last_name }}">
-                </div>
-
-                <div class="col-12 mb-3">
-                  <label class="form-label text-muted fw-bold mb-1 small text-uppercase">E-mail</label>
-                  <input type="email" class="form-control" id="modal_perfil_email" value="{{ request.user.email }}">
-                </div>
-                
-                <div class="col-12 mb-3">
-                  <label class="form-label text-muted fw-bold mb-1 small text-uppercase">Telefone (WhatsApp)</label>
-                  <input type="text" class="form-control mask-telefone" id="modal_perfil_telefone" value="{{ request.user.perfil.telefone|default:'' }}">
-                  <div class="form-text">Inclua o DDD. Ex: (61) 9 9999-9999</div>
-                </div>
-              </div>
             </div>
-          </div>
-        </div>
+      </div>
         
-        <!-- Rodapé -->
-        <div class="modal-footer bg-light border-top-0 d-flex justify-content-between pb-4">
-          <a href="{% url 'trocar_senha' %}" class="btn btn-outline-secondary rounded-pill px-4">Alterar Senha</a>
-          <div>
-            <button type="button" class="btn btn-secondary rounded-pill px-4 me-2" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-primary rounded-pill px-4">Salvar Alterações</button>
+      <!-- Rodapé -->
+      <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-between">
+          <a href="{% url 'trocar_senha' %}" class="btn btn-outline-secondary px-3 shadow-sm" style="border-radius: 8px;">Alterar Senha</a>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-outline-secondary px-3 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-3 shadow-sm fw-bold" style="border-radius: 8px;">Salvar Alterações</button>
           </div>
-        </div>
+      </div>
       </form>
       <script src="{% static 'js/perfil_modal.js' %}"></script>
-
     </div>
   </div>
 </div>

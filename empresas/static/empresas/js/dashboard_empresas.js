@@ -52,6 +52,7 @@ $(document).ready(function() {
     }
 
     tabelaEmpresas = $('#tabela-empresas').DataTable({
+        responsive: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json"
         },
@@ -334,8 +335,14 @@ function editarContato(contatoId) {
                         <input type="text" id="swal-nome" class="form-control" value="${data.nome_contato}">
                     </div>
                     <div class="mb-2">
-                        <label class="form-label fw-bold small">Cargo</label>
-                        <input type="text" id="swal-cargo" class="form-control" value="${data.cargo || ''}">
+                        <label class="form-label fw-bold small">Cargo *</label>
+                        <select id="swal-cargo" class="form-select">
+                            <option value="Gerência" ${data.cargo === 'Gerência' ? 'selected' : ''}>Gerência</option>
+                            <option value="Supervisor" ${data.cargo === 'Supervisor' ? 'selected' : ''}>Supervisor</option>
+                            <option value="Administrativo" ${data.cargo === 'Administrativo' ? 'selected' : ''}>Administrativo</option>
+                            <option value="Preposto" ${data.cargo === 'Preposto' ? 'selected' : ''}>Preposto</option>
+                            <option value="Técnico" ${data.cargo === 'Técnico' ? 'selected' : ''}>Técnico</option>
+                        </select>
                     </div>
                     <div class="mb-2">
                         <label class="form-label fw-bold small">E-mail</label>

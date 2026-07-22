@@ -14,6 +14,8 @@ class Contrato(forms.ModelForm):
     class Meta:
         model = Contratos
         fields = [
+            'categoria',
+            'subcategoria',
             'empresa',
             'cnpj',
             'num_contrato',

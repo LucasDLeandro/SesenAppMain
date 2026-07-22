@@ -1,0 +1,63 @@
+                .table-contacts-premium th {
+                    text-transform: uppercase;
+                    font-size: 0.75rem;
+                    letter-spacing: 0.5px;
+                    color: #6c757d;
+                    border-bottom: 2px solid #f1f5f9;
+                    background-color: #f8fafc;
+                    padding-top: 1rem;
+                    padding-bottom: 1rem;
+                }
+                .table-contacts-premium td {
+                    vertical-align: middle;
+                    border-bottom: 1px solid #f1f5f9;
+                    padding-top: 0.75rem;
+                    padding-bottom: 0.75rem;
+                }
+                .input-borderless {
+                    border: 1px solid transparent;
+                    background-color: transparent;
+                    box-shadow: none !important;
+                    transition: all 0.2s;
+                    border-radius: 6px;
+                }
+                .input-borderless:hover {
+                    background-color: #f8fafc;
+                    border-color: #e2e8f0;
+                }
+                .input-borderless:focus {
+                    background-color: #fff;
+                    border-color: #cbd5e1;
+                    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.1) !important;
+                }
+                .btn-remove-row-subtle {
+                    color: #94a3b8;
+                    background: transparent;
+                    border: none;
+                    transition: color 0.2s;
+                }
+                .btn-remove-row-subtle:hover {
+                    color: #ef4444;
+                }
+                .input-group-borderless .input-group-text {
+                    background: transparent;
+                    border: 1px solid transparent;
+                    color: #94a3b8;
+                }
+                .input-group-borderless:hover .input-group-text,
+                .input-group-borderless:hover .input-borderless {
+                    background-color: #f8fafc;
+                    border-color: #e2e8f0;
+                }
+                .input-group-borderless:focus-within .input-group-text,
+                .input-group-borderless:focus-within .input-borderless {
+                    background-color: #fff;
+                    border-color: #cbd5e1;
+                }
+                .input-group-borderless:focus-within .input-borderless {
+                    box-shadow: none !important;
+                }
+                .input-group-borderless:focus-within {
+                    box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.1);
+                    border-radius: 6px;
+                }

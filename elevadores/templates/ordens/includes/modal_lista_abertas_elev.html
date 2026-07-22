@@ -1,3 +1,4 @@
+{% load static %}
 <div class="modal fade modal-ordens-wrapper" id="modal-lista-abertas-elev" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content border-0 shadow-lg bg-body">
@@ -10,13 +11,7 @@
       <div class="modal-body p-4">
         <p class="text-muted mb-4">Abaixo estão as ordens de serviço (O.S) que aguardam manutenção ou conclusão pelo técnico.</p>
         
-        <style>
-          /* Permite quebra de texto para evitar rolagem horizontal em modais */
-          #tabela-elev-abertas-modal td {
-              white-space: normal !important;
-              word-wrap: break-word;
-          }
-        </style>
+<link rel="stylesheet" href="{% static 'elevadores/css/modal_lista_abertas.css' %}?v=1.0">
 
         <div class="table-responsive" style="overflow-x: hidden;">
             <table class="table table-hover table-borderless align-middle custom-modern-table table-compacta w-100" id="tabela-elev-abertas-modal">
@@ -28,6 +23,7 @@
                         <th style="width: 40% !important; min-width: 200px;">Ocorrência</th>
                         <th class="text-nowrap text-center">Preso?</th>
                         <th class="text-nowrap text-center">Status</th>
+                        <th class="text-nowrap text-center">Tempo Pendente</th>
                         <th style="width: 15% !important;" class="text-nowrap text-end">Ações</th>
                     </tr>
                 </thead>
@@ -48,6 +44,9 @@
                                 </td>
                                 <td class="text-nowrap align-middle text-center">
                                     <span class="badge bg-warning">ABERTA</span>
+                                </td>
+                                <td class="text-nowrap align-middle text-center fw-bold text-danger elev-timer-global" data-start="{{ os.data_hora|date:'c' }}">
+                                    Calculando...
                                 </td>
                                 <td class="text-nowrap align-middle text-end">
                                     <button class="btn btn-sm btn-primary text-nowrap" style="white-space: nowrap;" onclick="abrirModalElevConcluir('{{ os.id }}', '{{ os.protocolo }}')" title="Concluir O.S">

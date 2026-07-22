@@ -1,63 +1,69 @@
-<div class="modal fade modal-ordens-wrapper" id="modal-visualizar-aparelho" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modal-visualizar-aparelho" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
-          <i class="bi bi-eye-fill me-2"></i> Detalhes do Aparelho
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold" style="color: #0f172a;">
+          <i class="bi bi-eye-fill text-primary me-2"></i> Detalhes do Aparelho
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body modal-ordens-body px-4">
+      <div class="modal-body px-4 pb-4 pt-4">
         
-        <div class="form-section-modal">
-          <h6 class="form-section-title-modal">
-            <i class="bi bi-info-circle"></i> Informações Gerais
-          </h6>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Patrimônio:</strong> <span id="vis-ap-patrimonio"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Modelo:</strong> <span id="vis-ap-modelo"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>FCN:</strong> <span id="vis-ap-fcn"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>MAC Address:</strong> <span id="vis-ap-mac"></span>
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 10px;">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary mb-4 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+              <i class="bi bi-info-circle me-2 fs-5"></i> Informações Gerais
+            </h6>
+            <div class="row gy-4">
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Patrimônio</span>
+                <span class="text-dark fw-medium" id="vis-ap-patrimonio"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Modelo</span>
+                <span class="text-dark fw-medium" id="vis-ap-modelo"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >FCN</span>
+                <span class="text-dark fw-medium" id="vis-ap-fcn"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >MAC Address</span>
+                <span class="text-dark fw-medium text-uppercase" id="vis-ap-mac" style="letter-spacing: 1px;"></span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="form-section-modal mt-3">
-          <h6 class="form-section-title-modal">
-            <i class="bi bi-diagram-3"></i> Status e Alocação
-          </h6>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Integridade:</strong> <span id="vis-ap-integridade"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Status:</strong> <span id="vis-ap-status"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Ramal Vinculado:</strong> <span id="vis-ap-ramal"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Sala/Local:</strong> <span id="vis-ap-sala"></span>
+        <div class="card border-0 shadow-sm mb-2" style="border-radius: 10px;">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary mb-4 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+              <i class="bi bi-diagram-3 me-2 fs-5"></i> Status e Alocação
+            </h6>
+            <div class="row gy-4">
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Integridade</span>
+                <span class="text-dark fw-medium" id="vis-ap-integridade"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Status</span>
+                <span class="text-dark fw-medium" id="vis-ap-status"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Ramal Vinculado</span>
+                <span class="text-dark fw-bold fs-6" id="vis-ap-ramal"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Sala/Local</span>
+                <span class="text-dark fw-medium" id="vis-ap-sala"></span>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
-      <div class="modal-ordens-footer mt-2 mb-4 d-flex justify-content-end px-4 gap-2">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg me-2"></i>Fechar
-        </button>
+      <div class="modal-footer border-0 px-4 pb-4 pt-1">
+        <button type="button" class="btn btn-secondary px-4 shadow-sm" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>

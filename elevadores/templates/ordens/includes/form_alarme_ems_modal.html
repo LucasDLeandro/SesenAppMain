@@ -1,0 +1,93 @@
+<div class="modal fade modal-ordens-wrapper" id="modalRegistrarAlarmeEms" tabindex="-1" aria-labelledby="modalAlarmeEmsTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-bell-fill fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Registrar Alarme EMS</h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="form-alarme-ems">
+          
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                
+                <!-- Informações do Evento -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-info-circle me-2"></i> Informações do Alarme
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="alarmeElevador" class="form-label small fw-bold text-muted">Elevador <span class="text-danger">*</span></label>
+                                <select class="form-select" id="alarmeElevador" name="elevador" required>
+                                  <option value="">Selecione...</option>
+                                  {% for key, value in elevator_choices %}
+                                      <option value="{{ key }}">{{ value }}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="alarmeTipo" class="form-label small fw-bold text-muted">Tipo de Evento <span class="text-danger">*</span></label>
+                                <select class="form-select" id="alarmeTipo" name="tipo_evento" required>
+                                  <option value="EVENT">EVENT (Evento Comum)</option>
+                                  <option value="ALARM">ALARM (Alarme Crítico)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="alarmeDataHora" class="form-label small fw-bold text-muted">Data e Hora do Evento <span class="text-danger">*</span></label>
+                                <input type="datetime-local" class="form-control" id="alarmeDataHora" name="data_hora" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <!-- Ocorrência -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-chat-text me-2"></i> Descrição
+                        </h6>
+                        <div class="flex-grow-1 d-flex flex-column">
+                            <label for="alarmeDescricao" class="form-label small fw-bold text-muted">Detalhes do Evento <span class="text-danger">*</span></label>
+                            <textarea class="form-control flex-grow-1" id="alarmeDescricao" name="descricao" rows="4" placeholder="Ex: E5 foi para NAV Modo" required></textarea>
+                        </div>
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            <i class="bi bi-lightbulb"></i> Descreva com precisão a ocorrência registrada no sistema.
+                        </small>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm" onclick="salvarAlarmeEms()">
+              <i class="bi bi-check-lg me-2"></i> Salvar Registro
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

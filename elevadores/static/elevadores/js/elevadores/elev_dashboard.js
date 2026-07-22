@@ -198,7 +198,7 @@ async function dadosIndicadorUm() {
         
                     anoDesteMes.checked = false
                     
-                    // Restaura os dados padrão
+                    // Restaura os dados padr├úo
                     Plotly.react(corpoChartUm, dadosPlotly, layoutChartUm)
                 }   
 
@@ -254,7 +254,7 @@ async function dadosIndicadorTres() {
             
             xaxis: { 
                 type: 'date',
-                tickformat: '%d/%m', // Formatação brasileira
+                tickformat: '%d/%m', // Formata├º├úo brasileira
                 dtick: 86400000,
                 showgrid: true,
                 gridcolor:'#f0f0f0',
@@ -264,7 +264,7 @@ async function dadosIndicadorTres() {
                 type: 'category',
                 categoryorder: 'array',
                 categoryarray: [...listaElevadores],
-                title: 'Quantidade de Ocorrências',
+                title: 'Quantidade de Ocorr├¬ncias',
                 tickmode: 'linear',
                 dtick: 0.1,
                 automargin: true,
@@ -272,7 +272,7 @@ async function dadosIndicadorTres() {
                 range: [-0.5, listaElevadores.length -0.5]
                 
             },
-            showlegend: false, // Ligamos a legenda para você poder filtrar clicando
+            showlegend: false, // Ligamos a legenda para voc├¬ poder filtrar clicando
             height: 500,
             margin: { l: 50, r: 20, t: 50, b: 50 }, // Margens mais limpas
             hovermode: 'closest' // O tooltip foca na bolha exata que o mouse encostar
@@ -341,7 +341,7 @@ async function dadosIndicadorTres() {
         
                     anoDesteMes.checked = false
                     
-                    // Restaura o layout para o mês atual e recarrega os dados padrão
+                    // Restaura o layout para o m├¬s atual e recarrega os dados padr├úo
                     layout.xaxis.range = [inicioMesAtual, fimMesAtual]
                     Plotly.react(corpoChartTres, dadosPlotly, layout)
                 }   
@@ -482,9 +482,9 @@ async function dadosIndicadorQuatro() {
             hovertemplate: 
                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
-                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
-                'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
+                'Hrs ├║teis no M├¬s Total: <b>%{customdata[2]}</b><br>' +
+                'Dias ├║teis no M├¬s Total: <b>%{customdata[3]}</b><br>' +
+                'Horas Dispon├¡veis: <b>%{customdata[4]}</b><br>' +
                 'Disponibilidade: <b>%{y}%</b>' +
                 '<extra></extra>',
             textposition: 'auto',
@@ -549,9 +549,9 @@ async function dadosIndicadorQuatro() {
                             hovertemplate: 
                                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
-                                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
-                                'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
+                                'Hrs ├║teis no M├¬s Total: <b>%{customdata[2]}</b><br>' +
+                                'Dias ├║teis no M├¬s Total: <b>%{customdata[3]}</b><br>' +
+                                'Horas Dispon├¡veis: <b>%{customdata[4]}</b><br>' +
                                 'Disponibilidade: <b>%{y}%</b>' +
                                 '<extra></extra>',
                             textposition: 'auto',
@@ -567,7 +567,7 @@ async function dadosIndicadorQuatro() {
                           todosCheckboxes.forEach(checkbox => checkbox.disabled = false);
                           anoDesteMes.checked = false;
                           
-                          // Restaura os dados padrão
+                          // Restaura os dados padr├úo
                           Plotly.react(corpoChartQuatro, novoTraceChartQuatro, layoutChartQuatro)
                       }
                 }
@@ -982,10 +982,10 @@ async function dadosIndicadorDois() {
             text: text_status,
             hovertemplate: 
                 '<b>Elevador:</b> %{y}<br>' +
-                '<b>Dia Execução:</b> %{x}<br>' +
+                '<b>Dia Execu├º├úo:</b> %{x}<br>' +
                 '<b>Status:</b> %{text}<br>' +
                 '<b>OS:</b> %{customdata[0]}<br>' +
-                '<b>Técnico:</b> %{customdata[1]}' +
+                '<b>T├®cnico:</b> %{customdata[1]}' +
                 '<extra></extra>'
         };
 
@@ -1002,7 +1002,7 @@ async function dadosIndicadorDois() {
 
         const layoutChartDois = {
             xaxis: {
-                title: 'Dia do Mês',
+                title: 'Dia do M├¬s',
                 range: [0, ultimoDiaAtual],
                 tickmode: 'array',
                 tickvals: tickvalsAtual,
@@ -1119,7 +1119,7 @@ async function dadosIndicadorDois() {
                             ticktextFiltro.push(`${i.toString().padStart(2, '0')}/${mes.toString().padStart(2, '0')}`);
                         }
 
-                        // Atualiza a janela de visualização do gráfico (range) para o mês filtrado
+                        // Atualiza a janela de visualiza├º├úo do gr├ífico (range) para o m├¬s filtrado
                         layoutChartDois.xaxis.range = [0, ultimoDiaMes];
                         layoutChartDois.xaxis.tickvals = tickvalsFiltro;
                         layoutChartDois.xaxis.ticktext = ticktextFiltro;
@@ -1139,7 +1139,7 @@ async function dadosIndicadorDois() {
                             widgetInd2Val.innerText = ultimaDataStr;
                         }
 
-                        // Restaura os dados padrão
+                        // Restaura os dados padr├úo
                         layoutChartDois.xaxis.range = [0, ultimoDiaAtual];
                         layoutChartDois.xaxis.tickvals = tickvalsAtual;
                         layoutChartDois.xaxis.ticktext = ticktextAtual;
@@ -1151,7 +1151,370 @@ async function dadosIndicadorDois() {
             });
         }
     } catch(erro) {
-        console.error("Erro ao renderizar gráfico 2:", erro);
-        corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gráfico.</div>';
+        console.error("Erro ao renderizar gr├ífico 2:", erro);
+        corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gr├ífico.</div>';
     }
-}
+}
+
+
+// === NOVAS FUNCIONALIDADES: ALARMES EMS, REGISTRO PARADAS E VISÃO 360 ===
+
+// 1. Alarmes EMS
+function carregarAlarmesEms() {
+    const tbody = document.getElementById('tabela-alarmes-ems');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>Carregando alarmes...</td></tr>';
+    
+    fetch('/elevadores/api/alarme_ems/')
+        .then(res => res.json())
+        .then(data => {
+            const lista = Array.isArray(data) ? data : (data.results || []);
+            
+            const tabelaEl = $('#tabela-ems');
+            if ($.fn.DataTable.isDataTable(tabelaEl)) {
+                tabelaEl.DataTable().destroy();
+            }
+            
+            tbody.innerHTML = '';
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Nenhum alarme registrado.</td></tr>';
+                return;
+            }
+            
+            lista.forEach(item => {
+                const dateObj = new Date(item.data_hora);
+                const dataFmt = dateObj.toLocaleDateString('pt-BR') + ' ' + dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const badgeClass = item.tipo_evento === 'ALARM' ? 'bg-danger' : 'bg-warning text-dark';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><span class="badge ${badgeClass}">${item.tipo_evento}</span></td>
+                    <td>${dataFmt}</td>
+                    <td>${item.descricao}</td>
+                    <td><span class="badge bg-secondary">${item.elevador}</span></td>
+                    <td><span class="text-muted"><i class="bi bi-person me-1"></i>${item.usuario_registrador || '-'}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (typeof DataTable !== 'undefined') {
+                new DataTable(tabelaEl[0], {
+                    language: { url: 'https://cdn.datatables.net/plug-ins/2.0.3/i18n/pt-BR.json' },
+                    order: [[1, 'desc']]
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao buscar alarmes EMS', err);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger">Erro ao carregar os dados.</td></tr>';
+        });
+}
+
+window.salvarAlarmeEms = function() {
+    const form = document.getElementById('form-alarme-ems');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+
+    const payload = {
+        tipo_evento: document.getElementById('alarmeTipo').value,
+        data_hora: document.getElementById('alarmeDataHora').value,
+        elevador: document.getElementById('alarmeElevador').value,
+        descricao: document.getElementById('alarmeDescricao').value
+    };
+
+    fetch('/elevadores/api/alarme_ems/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(async res => {
+        if (!res.ok) throw new Error('Erro ao salvar alarme');
+        return res.json();
+    })
+    .then(data => {
+        const modalEl = document.getElementById('modalRegistrarAlarmeEms');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+        form.reset();
+        
+        carregarAlarmesEms();
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Ocorreu um erro ao registrar o alarme. Tente novamente.');
+    });
+};
+
+// 2. Registro de Paradas
+function carregarRegistroParadas() {
+    const tbody = document.getElementById('tabela-paradas-body');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>Carregando paradas...</td></tr>';
+    
+    fetch('/elevadores/api/elevador_parada_historico/')
+        .then(res => res.json())
+        .then(data => {
+            const lista = Array.isArray(data) ? data : (data.results || []);
+            
+            const tabelaEl = $('#tabela-paradas');
+            if ($.fn.DataTable.isDataTable(tabelaEl)) {
+                tabelaEl.DataTable().destroy();
+            }
+            
+            tbody.innerHTML = '';
+            if (lista.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-muted">Nenhuma parada registrada.</td></tr>';
+                return;
+            }
+            
+            lista.forEach(item => {
+                const tr = document.createElement('tr');
+                let retornoBadge = '-';
+                if (item.data_retorno) {
+                    const dataRetornoFmt = new Date(item.data_retorno).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
+                    retornoBadge = `<span class="badge bg-success">${dataRetornoFmt}</span>`;
+                } else {
+                    retornoBadge = `<span class="badge bg-danger">PARADO</span>`;
+                }
+                
+                const dataInicioFmt = new Date(item.data_inicio).toLocaleString('pt-BR', {hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric'});
+                
+                tr.innerHTML = `
+                    <td><span class="badge bg-secondary">${item.elevador_nome}</span></td>
+                    <td>${dataInicioFmt}</td>
+                    <td>${retornoBadge}</td>
+                    <td>${item.tempo_parado || '-'}</td>
+                    <td class="text-center">
+                        ${item.os_relacionada ? `<button class="btn btn-sm btn-outline-primary" onclick="mostrarDetalhesElev(${item.os_relacionada})" title="Visualizar O.S relacionada"><i class="bi bi-eye"></i></button>` : '-'}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if (typeof DataTable !== 'undefined') {
+                new DataTable(tabelaEl[0], {
+                    language: { url: 'https://cdn.datatables.net/plug-ins/2.0.3/i18n/pt-BR.json' },
+                    order: [[1, 'desc']]
+                });
+            }
+        })
+        .catch(err => {
+            console.error('Erro ao buscar registro de paradas', err);
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-danger">Erro ao carregar os dados.</td></tr>';
+        });
+}
+
+// 3. Visão 360
+function carregarVisao360() {
+    const inputMes = document.getElementById('filtroMesVisao360');
+    if (!inputMes) return;
+    
+    // Set current month if empty
+    if (!inputMes.value) {
+        const hoje = new Date();
+        inputMes.value = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, '0')}`;
+    }
+    
+    renderizarCardsVisao360(inputMes.value);
+    
+    inputMes.addEventListener('change', (e) => {
+        renderizarCardsVisao360(e.target.value);
+    });
+}
+
+function renderizarCardsVisao360(mes) {
+    const grid = document.getElementById('grid-visao360');
+    const loading = document.getElementById('loading-visao360');
+    if (!grid || !loading) return;
+    
+    grid.style.display = 'none';
+    loading.classList.remove('d-none');
+    
+    fetch(`/elevadores/api/elevadoress/historico_mensal/?mes=${mes}`)
+        .then(res => res.json())
+        .then(data => {
+            loading.classList.add('d-none');
+            grid.style.display = 'grid';
+            grid.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                grid.innerHTML = '<div class="col-12 text-center text-muted">Nenhum histórico encontrado.</div>';
+                grid.style.display = 'block';
+                return;
+            }
+            
+            data.forEach(elev => {
+                const card = document.createElement('div');
+                card.className = 'card border-0 shadow-sm h-100 rounded-4';
+                
+                let eventosHTML = '';
+                if (elev.eventos && elev.eventos.length > 0) {
+                    eventosHTML = '<div class="mt-3">';
+                    const eventosMax = elev.eventos.slice(0, 3);
+                    eventosMax.forEach(ev => {
+                        let icon = 'bi-record-circle';
+                        let color = 'text-primary';
+                        if (ev.tipo === 'ALARME') { icon = 'bi-bell-fill'; color = 'text-danger'; }
+                        else if (ev.tipo === 'MPM') { icon = 'bi-tools'; color = 'text-success'; }
+                        else if (ev.tipo === 'PEÇA') { icon = 'bi-nut-fill'; color = 'text-info'; }
+                        
+                        eventosHTML += `
+                            <div class="d-flex align-items-center mb-2 small">
+                                <i class="bi ${icon} ${color} me-2"></i>
+                                <span class="text-truncate" title="${ev.titulo}">${ev.titulo}</span>
+                            </div>
+                        `;
+                    });
+                    
+                    if (elev.eventos.length > 3) {
+                        eventosHTML += `<div class="text-center mt-2"><span class="badge bg-light text-secondary">+ ${elev.eventos.length - 3} eventos</span></div>`;
+                    }
+                    eventosHTML += '</div>';
+                } else {
+                    eventosHTML = '<div class="mt-3 text-center text-muted small"><i class="bi bi-check-circle me-1"></i>Sem ocorrências</div>';
+                }
+                
+                card.innerHTML = `
+                    <div class="card-body d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0 fw-bold text-secondary">${elev.elevador}</h6>
+                            <span class="badge bg-primary rounded-pill">${elev.disponibilidade}% Disp</span>
+                        </div>
+                        <div class="text-muted small mb-2"><i class="bi bi-clock me-1"></i>Parado: ${elev.tempo_parado_str}</div>
+                        <hr class="my-2">
+                        <div class="flex-grow-1">
+                            ${eventosHTML}
+                        </div>
+                        <div class="mt-3 text-center">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill w-100" onclick="abrirModalHistoricoElevador('${elev.elevador}', '${mes}')">
+                                Ver Histórico Completo
+                            </button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        })
+        .catch(err => {
+            console.error('Erro ao buscar histórico', err);
+            loading.classList.add('d-none');
+            grid.style.display = 'block';
+            grid.innerHTML = '<div class="col-12 text-center text-danger">Erro ao carregar visão 360.</div>';
+        });
+}
+
+window.abrirModalHistoricoElevador = function(elevador, mes) {
+    const modalBody = document.getElementById('modalVisao360Body');
+    if (!modalBody) return;
+    
+    modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
+    
+    const modal = new bootstrap.Modal(document.getElementById('modalVisao360'));
+    modal.show();
+    
+    fetch(`/elevadores/api/elevadoress/historico_mensal/?mes=${mes}`)
+        .then(res => res.json())
+        .then(data => {
+            const elevData = data.find(d => d.elevador === elevador);
+            if (!elevData) {
+                modalBody.innerHTML = '<div class="alert alert-warning">Elevador não encontrado.</div>';
+                return;
+            }
+            
+            let html = `
+                <div class="card bg-light border-0 mb-4 rounded-4">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h6 class="text-muted mb-1 small">Disponibilidade</h6>
+                                <h4 class="mb-0 fw-bold text-primary">${elevData.disponibilidade}%</h4>
+                            </div>
+                            <div class="col-4 border-start border-end">
+                                <h6 class="text-muted mb-1 small">Eventos</h6>
+                                <h4 class="mb-0 fw-bold text-dark">${elevData.eventos.length}</h4>
+                            </div>
+                            <div class="col-4">
+                                <h6 class="text-muted mb-1 small">Tempo Parado</h6>
+                                <h5 class="mb-0 fw-bold text-danger">${elevData.tempo_parado_str}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            if (elevData.eventos.length === 0) {
+                html += '<div class="text-center text-muted my-5"><i class="bi bi-check-circle fs-1 d-block mb-3"></i>Nenhum evento registrado neste mês.</div>';
+            } else {
+                html += '<div class="timeline">';
+                elevData.eventos.forEach(ev => {
+                    const dataFmt = new Date(ev.data).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'});
+                    
+                    let icon = 'bi-record-circle';
+                    let bg = 'bg-primary';
+                    let text = 'text-primary';
+                    
+                    if (ev.tipo === 'ALARME') { icon = 'bi-bell-fill'; bg = 'bg-danger'; text = 'text-danger'; }
+                    else if (ev.tipo === 'MPM') { icon = 'bi-tools'; bg = 'bg-success'; text = 'text-success'; }
+                    else if (ev.tipo === 'PEÇA') { icon = 'bi-nut-fill'; bg = 'bg-info'; text = 'text-info'; }
+                    
+                    html += `
+                        <div class="d-flex mb-4">
+                            <div class="${bg} rounded-circle d-flex align-items-center justify-content-center text-white me-3 flex-shrink-0 shadow-sm" style="width: 40px; height: 40px;">
+                                <i class="bi ${icon}"></i>
+                            </div>
+                            <div class="card border-0 shadow-sm flex-grow-1 rounded-4">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between mb-2">
+                                        <h6 class="mb-0 fw-bold ${text}">${ev.tipo}</h6>
+                                        <span class="text-muted small"><i class="bi bi-clock me-1"></i>${dataFmt}</span>
+                                    </div>
+                                    <h6 class="mb-1">${ev.titulo}</h6>
+                                    <p class="mb-0 text-muted small">${ev.detalhes ? ev.detalhes.substring(0, 100) + (ev.detalhes.length > 100 ? '...' : '') : 'Sem detalhes.'}</p>
+                                    ${ev.os_relacionada ? `
+                                        <button class="btn btn-sm btn-outline-primary mt-2 rounded-pill px-3" onclick="mostrarDetalhesElev(${ev.os_relacionada})">
+                                            <i class="bi bi-eye me-1"></i> Ver O.S
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+            }
+            
+            modalBody.innerHTML = html;
+        })
+        .catch(err => {
+            console.error(err);
+            modalBody.innerHTML = '<div class="alert alert-danger">Erro ao carregar o histórico.</div>';
+        });
+};
+
+// Event Listeners for Tabs
+document.addEventListener('DOMContentLoaded', () => {
+    // Carregar alarmes quando a aba for clicada
+    const emsTab = document.getElementById('ems-tab');
+    if (emsTab) {
+        emsTab.addEventListener('shown.bs.tab', carregarAlarmesEms);
+    }
+    
+    // Carregar paradas quando a aba for clicada
+    const paradasTab = document.getElementById('paradas-tab');
+    if (paradasTab) {
+        paradasTab.addEventListener('shown.bs.tab', carregarRegistroParadas);
+    }
+    
+    // Carregar visão 360 quando a aba for clicada
+    const visao360Tab = document.getElementById('visao360-tab');
+    if (visao360Tab) {
+        visao360Tab.addEventListener('shown.bs.tab', carregarVisao360);
+    }
+});

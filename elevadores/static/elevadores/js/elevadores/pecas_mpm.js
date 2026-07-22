@@ -6,25 +6,77 @@ async function loadMPMTable() {
         const response = await fetch("/elevadores/api/manutencao_preventiva/");
         if (!response.ok) throw new Error("Falha ao buscar MPM");
         const data = await response.json();
+        const lista = Array.isArray(data) ? data : (data.results || []);
         
+        const tabelaEl = $('#tabela-mpm-dados');
+        if ($.fn.DataTable.isDataTable(tabelaEl)) {
+            tabelaEl.DataTable().destroy();
+        }
+
         const tbody = document.getElementById("mpm-tbody");
         if (!tbody) return;
         tbody.innerHTML = "";
         
-        data.forEach(item => {
+        const meses = {
+            '01': 'JAN', '02': 'FEV', '03': 'MAR', '04': 'ABR',
+            '05': 'MAI', '06': 'JUN', '07': 'JUL', '08': 'AGO',
+            '09': 'SET', '10': 'OUT', '11': 'NOV', '12': 'DEZ'
+        };
+
+        const formatData = (dateStr) => {
+            if (!dateStr || dateStr === 'null') return 'N/A';
+            const p = dateStr.split('-');
+            if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+            return dateStr;
+        };
+
+        lista.forEach(item => {
+            let mesRefFormatado = item.mes_referencia;
+            let dataPrevista = '-';
+            let mesRefSort = item.mes_referencia;
+            if (item.mes_referencia && item.mes_referencia.includes('-')) {
+                const parts = item.mes_referencia.split('-');
+                if (parts.length >= 2) {
+                    const ano = parts[0];
+                    const mes = parts[1];
+                    mesRefFormatado = `${meses[mes] || mes}/${ano}`;
+                    dataPrevista = `10/${mes}/${ano}`;
+                }
+            }
+
+            // Extract number from elevador for sorting
+            const match = item.elevador.match(/\d+/);
+            const elevNum = match ? parseInt(match[0], 10) : 999;
+
             const tr = document.createElement("tr");
             tr.innerHTML = `
-                <td>${item.elevador}</td>
-                <td>${item.mes_referencia}</td>
-                <td>${item.data_execucao || "N/A"}</td>
+                <td>${item.ordem_servico || "-"}</td>
+                <td data-order="${elevNum}">${item.elevador}</td>
+                <td data-order="${mesRefSort}">${mesRefFormatado}</td>
+                <td>${dataPrevista}</td>
+                <td>${formatData(item.data_execucao)}</td>
                 <td>${item.tecnico || "N/A"}</td>
                 <td><span class="badge bg-${item.status === "EXECUTADO" ? "success" : "danger"}">${item.status}</span></td>
                 <td>
-                    <button class="btn btn-sm btn-outline-danger" onclick="deleteMPM(${item.id})"><i class="bi bi-trash"></i></button>
+                    <div class="d-flex flex-nowrap justify-content-center gap-1">
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirVisualizarMPM('${encodeURIComponent(JSON.stringify(item))}')" title="Visualizar">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editarMPM(${item.id})" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteMPM(${item.id})" title="Excluir"><i class="bi bi-trash"></i></button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+        
+        if (typeof DataTable !== 'undefined') {
+            new DataTable(tabelaEl[0], {
+                language: { url: 'https://cdn.datatables.net/plug-ins/2.0.3/i18n/pt-BR.json' },
+                pageLength: 14,
+                order: [[2, 'desc'], [1, 'asc']] // Ordem por mês decrescente (coluna 2), e elevador crescente (coluna 1)
+            });
+        }
     } catch (error) {
         console.error("Erro ao carregar MPM:", error);
     }
@@ -35,32 +87,52 @@ async function loadPecasTable() {
         const response = await fetch("/elevadores/api/peca_manutencao/");
         if (!response.ok) throw new Error("Falha ao buscar Peças");
         const data = await response.json();
+        const lista = Array.isArray(data) ? data : (data.results || []);
+        
+        const tabelaEl = $('#tabela-pecas-dados');
+        if ($.fn.DataTable.isDataTable(tabelaEl)) {
+            tabelaEl.DataTable().destroy();
+        }
         
         const tbody = document.getElementById("pecas-tbody");
         if (!tbody) return;
         tbody.innerHTML = "";
         
-        data.forEach(item => {
+        const formatData = (dateStr) => {
+            if (!dateStr || dateStr === 'null') return '-';
+            const p = dateStr.split('-');
+            if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+            return dateStr;
+        };
+
+        lista.forEach(item => {
             const isSub = item.status === "SUBSTITUIDA";
             const tr = document.createElement("tr");
             tr.innerHTML = `
+                <td>${formatData(item.data_registro)}</td>
                 <td>${item.elevador}</td>
-                <td>${item.andar}</td>
                 <td>${item.tipo_peca}</td>
-                <td>${item.ordem_servico || "-"}</td>
-                <td>${item.tecnico_identificador || "-"}</td>
-                <td>${item.data_registro}</td>
-                <td>${item.data_previsao_troca}</td>
-                <td>${item.tecnico || "-"}</td>
-                <td>${item.data_efetiva_troca || "-"}</td>
+                <td>${formatData(item.data_previsao_troca)}</td>
                 <td><span class="badge bg-${isSub ? "success" : "warning text-dark"}">${item.status}</span></td>
+                <td class="text-danger fw-bold elev-timer-global text-nowrap" data-start="${isSub ? '' : (item.data_registro || '')}">${isSub ? '-' : 'Calculando...'}</td>
                 <td>
-                    ${!isSub ? `<button class="btn btn-sm btn-success me-1" onclick="openConcluirModal(${item.id})"><i class="bi bi-check-lg"></i> Concluir</button>` : ""}
-                    <button class="btn btn-sm btn-outline-danger" onclick="deletePeca(${item.id})"><i class="bi bi-trash"></i></button>
+                    <div class="d-flex flex-nowrap justify-content-center gap-1">
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirVisualizarPeca('${encodeURIComponent(JSON.stringify(item))}')" title="Visualizar"><i class="bi bi-eye"></i></button>
+                        <button class="btn btn-sm btn-outline-warning" onclick="editarPeca(${item.id})" title="Editar"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deletePeca(${item.id})" title="Excluir"><i class="bi bi-trash"></i></button>
+                    </div>
                 </td>
             `;
             tbody.appendChild(tr);
         });
+        
+        if (typeof DataTable !== 'undefined') {
+            new DataTable(tabelaEl[0], {
+                language: { url: 'https://cdn.datatables.net/plug-ins/2.0.3/i18n/pt-BR.json' },
+                order: [[0, 'desc']] // Ordem por data registro (agora na coluna 0)
+            });
+        }
+        if (typeof iniciarTimersGlobais === 'function') iniciarTimersGlobais();
     } catch (error) {
         console.error("Erro ao carregar Peças:", error);
     }
@@ -69,6 +141,41 @@ async function loadPecasTable() {
 document.addEventListener("DOMContentLoaded", () => {
     loadMPMTable();
     loadPecasTable();
+    carregarContratosSelect();
+
+    function carregarContratosSelect() {
+        const selects = document.querySelectorAll("#mpmContrato, #editMpmContrato");
+        if (selects.length === 0) return;
+        
+        // Busca apenas contratos vinculados ao app de Elevadores
+        fetch("/contratos/api/contratos/?categoria=ELEVADORES")
+            .then(res => res.json())
+            .then(data => {
+                const lista = Array.isArray(data) ? data : (data.results || []);
+                let optionsHtml = '<option value="" selected>Selecione um contrato...</option>';
+                lista.forEach(c => {
+                    const label = `${c.num_contrato} - ${c.empresa_nome || 'Empresa'}`;
+                    optionsHtml += `<option value="${c.id}">${label}</option>`;
+                });
+                selects.forEach(select => {
+                    select.innerHTML = optionsHtml;
+                    // Auto-seleciona o primeiro contrato de elevadores se houver apenas um
+                    if (lista.length === 1) {
+                        select.value = lista[0].id;
+                    }
+                });
+            })
+            .catch(err => console.error("Erro ao carregar contratos:", err));
+    }
+
+    // Auto-preencher mês de referência com o mês corrente
+    const mpmMesReferenciaInput = document.getElementById("mpmMesReferencia");
+    if (mpmMesReferenciaInput && !mpmMesReferenciaInput.value) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        mpmMesReferenciaInput.value = `${year}-${month}`;
+    }
 
     // Submit Cadastro MPM
     const formMPM = document.getElementById("formCadastroMPM");
@@ -76,28 +183,138 @@ document.addEventListener("DOMContentLoaded", () => {
         formMPM.addEventListener("submit", async (e) => {
             e.preventDefault();
             
-            const payload = {
-                elevador: document.getElementById("mpmElevador").value,
-                mes_referencia: document.getElementById("mpmMes").value + "-01",
-                status: document.getElementById("mpmStatus").value,
-                data_execucao: document.getElementById("mpmDataExecucao").value || null,
-                ordem_servico: document.getElementById("mpmOS").value,
-                tecnico: document.getElementById("mpmTecnico").value
-            };
+            const btnSubmit = document.getElementById("btnSubmitFormCadastroMPM");
+            if (btnSubmit) {
+                btnSubmit.disabled = true;
+                btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+            }
+
+            const formDataBase = new FormData(formMPM);
+            let mesRef = formDataBase.get("mes_referencia");
+            if (mesRef && mesRef.length === 7) {
+                formDataBase.set("mes_referencia", mesRef + "-01");
+            }
+            
+            // Get all elevator items
+            const elevadorItems = document.querySelectorAll('.mpm-elevador-item');
+            if (elevadorItems.length === 0) {
+                alert('Adicione pelo menos um elevador.');
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
+                return;
+            }
+
+            const requests = [];
+            let errorCount = 0;
+
+            for (const item of elevadorItems) {
+                const fd = new FormData();
+                
+                // Copy global data
+                for (let [key, val] of Array.from(formDataBase.entries())) {
+                    if (val !== "" && val !== null && val !== "null") {
+                        fd.set(key, val);
+                    }
+                }
+
+                // Get specific fields for this elevator
+                const elevador = item.querySelector('.mpm-elevador').value;
+                if (!elevador) continue; // Skip if no elevator selected
+                
+                const executado = item.querySelector('.mpm-executado').checked;
+                const situacao = item.querySelector('.mpm-situacao').value;
+                const ordem_servico = item.querySelector('.mpm-numero-os') ? item.querySelector('.mpm-numero-os').value : '';
+                const apresentacao = item.querySelector('.mpm-apresentacao').value;
+                const qualidade = item.querySelector('.mpm-qualidade').value;
+                const limite = item.querySelector('.mpm-limite').value;
+                const controle = item.querySelector('.mpm-controle').value;
+                const poco = item.querySelector('.mpm-poco').value;
+                const encerramento = item.querySelector('.mpm-encerramento').value;
+                const observacao = item.querySelector('.mpm-observacao').value;
+                const midia = item.querySelector('.mpm-midia').files[0];
+
+                fd.set('elevador', elevador);
+                fd.set('situacao_equipamento', situacao);
+                fd.set('status', executado ? 'EXECUTADO' : 'NAO_EXECUTADO');
+                if (ordem_servico) fd.set('ordem_servico', ordem_servico);
+                fd.set('apresentacao', apresentacao);
+                fd.set('performance_qualidade', qualidade);
+                fd.set('limite_velocidade', limite);
+                fd.set('controle', controle);
+                fd.set('poco', poco);
+                fd.set('encerramento', encerramento);
+                if (observacao) fd.set('observacao', observacao);
+                if (midia) fd.set('foto_poco', midia);
+
+                // Make request
+                const req = fetch("/elevadores/api/manutencao_preventiva/", {
+                    method: "POST",
+                    headers: { "X-CSRFToken": csrftoken },
+                    body: fd
+                }).then(async res => {
+                    if (!res.ok) {
+                        errorCount++;
+                        console.error("Erro na API para o elevador " + elevador, await res.json());
+                    }
+                }).catch(err => {
+                    errorCount++;
+                    console.error("Falha na rede para o elevador " + elevador, err);
+                });
+                requests.push(req);
+            }
+
+            await Promise.all(requests);
+
+            if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
+
+            if (errorCount === 0) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroMPM"));
+                if(modal) modal.hide();
+                formMPM.reset();
+                document.getElementById('mpmElevadoresContainer').innerHTML = ''; // Limpa a lista
+                adicionarElevadorVazio(); // Adiciona um inicial vazio
+                loadMPMTable();
+                if(typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPMs registradas com sucesso!', 'success');
+            } else {
+                alert("Alguns elevadores falharam ao salvar. Verifique o console.");
+            }
+        });
+    }
+
+    // Submit Edit MPM
+    const formEditarMPM = document.getElementById("formEditarMpm");
+    if (formEditarMPM) {
+        formEditarMPM.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(formEditarMPM);
+            const id = formData.get("id") || document.getElementById('editMpmId').value;
+            let mesRef = formData.get("mes_referencia");
+            if (mesRef && mesRef.length === 7) {
+                formData.set("mes_referencia", mesRef + "-01");
+            }
+            
+            for (let [key, val] of Array.from(formData.entries())) {
+                if (val === "" || val === null || val === "null" || (val instanceof File && val.size === 0)) {
+                    formData.delete(key);
+                }
+            }
 
             try {
-                const res = await fetch("/elevadores/api/manutencao_preventiva/", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-                    body: JSON.stringify(payload)
+                const res = await fetch(`/elevadores/api/manutencao_preventiva/${id}/`, {
+                    method: "PATCH",
+                    headers: { "X-CSRFToken": csrftoken },
+                    body: formData
                 });
                 if (res.ok) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroMPM"));
-                    modal.hide();
-                    formMPM.reset();
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarMPM"));
+                    if(modal) modal.hide();
+                    formEditarMPM.reset();
                     loadMPMTable();
+                    if(typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM atualizada com sucesso!', 'success');
                 } else {
-                    alert("Erro ao salvar MPM");
+                    const errorData = await res.json();
+                    console.error("Erro na API:", errorData);
+                    alert("Erro ao atualizar MPM. Verifique o console.");
                 }
             } catch (err) { console.error(err); }
         });
@@ -109,21 +326,29 @@ document.addEventListener("DOMContentLoaded", () => {
         formPeca.addEventListener("submit", async (e) => {
             e.preventDefault();
             
-            const payload = {
-                elevador: document.getElementById("pecaElevador").value,
-                andar: document.getElementById("pecaAndar").value,
-                tipo_peca: document.getElementById("pecaTipo").value,
-                data_previsao_troca: document.getElementById("pecaPrevisao").value,
-                ordem_servico: document.getElementById("pecaOS") ? document.getElementById("pecaOS").value : "",
-                tecnico_identificador: document.getElementById("pecaTecnicoIdentificador") ? document.getElementById("pecaTecnicoIdentificador").value : "",
-                status: "PENDENTE"
-            };
+            const formData = new FormData(formPeca);
+            // Append explicit fields if needed, but they should be correctly named in the HTML
+            // Wait, does the HTML have name attributes for all inputs?
+            // Let's manually append them if they don't have name attributes or map them
+            formData.set('elevador', document.getElementById("pecaElevador").value);
+            formData.set('andar', document.getElementById("pecaAndar").value);
+            formData.set('tipo_peca', document.getElementById("pecaTipo").value);
+            formData.set('data_previsao_troca', document.getElementById("pecaPrevisao").value);
+            if (document.getElementById("pecaOS")) formData.set('ordem_servico', document.getElementById("pecaOS").value);
+            if (document.getElementById("pecaTecnicoIdentificador")) formData.set('tecnico_identificador', document.getElementById("pecaTecnicoIdentificador").value);
+            formData.set('status', 'PENDENTE');
+
+            for (let [key, val] of Array.from(formData.entries())) {
+                if (val === "" || val === null || val === "null" || (val instanceof File && val.size === 0)) {
+                    formData.delete(key);
+                }
+            }
 
             try {
                 const res = await fetch("/elevadores/api/peca_manutencao/", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json", "X-CSRFToken": csrftoken },
-                    body: JSON.stringify(payload)
+                    headers: { "X-CSRFToken": csrftoken },
+                    body: formData
                 });
                 if (res.ok) {
                     const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroPeca"));
@@ -174,25 +399,580 @@ window.openConcluirModal = function(id) {
     modal.show();
 }
 
+window.abrirVisualizarPeca = function(pecaStrEncoded) {
+    try {
+        const item = JSON.parse(decodeURIComponent(pecaStrEncoded));
+        document.getElementById('view_peca_elevador').textContent = item.elevador || '-';
+        document.getElementById('view_peca_andar').textContent = item.andar || '-';
+        document.getElementById('view_peca_nome').textContent = item.tipo_peca || '-';
+        document.getElementById('view_peca_qtd').textContent = item.quantidade || '1';
+        
+        document.getElementById('view_peca_data_registro').textContent = item.data_registro || '-';
+        document.getElementById('view_peca_previsao').textContent = item.data_previsao_troca || '-';
+        document.getElementById('view_peca_tec_identificador').textContent = item.tecnico_identificador || '-';
+        
+        document.getElementById('view_peca_data_efetiva').textContent = item.data_efetiva_troca || '-';
+        document.getElementById('view_peca_tecnico').textContent = item.tecnico || '-';
+        
+        document.getElementById('view_peca_status').textContent = item.status || '-';
+        document.getElementById('view_peca_status').className = 'badge bg-' + (item.status === 'SUBSTITUIDA' ? 'success' : 'warning text-dark');
+        
+        document.getElementById('view_peca_os').textContent = item.ordem_servico || '-';
+
+        const midiaSecao = document.getElementById('vis_peca_secao_midia');
+        const previewBox = document.getElementById('vis_peca_midia_preview_box');
+        const downloadBtn = document.getElementById('vis_peca_midia_download-btn'); // Typo in ID matching
+        const filenameEl = document.getElementById('vis_peca_midia_filename');
+        const typeEl = document.getElementById('vis_peca_midia_type');
+        const iconEl = document.getElementById('vis_peca_midia_icon');
+        
+        if (item.midia) {
+            midiaSecao.classList.remove('d-none');
+            // Ensure ID is matched correctly
+            if(document.getElementById('vis_peca_midia_download_btn')) {
+                document.getElementById('vis_peca_midia_download_btn').href = item.midia;
+            }
+            
+            const fileName = item.midia.split('/').pop().split('?')[0];
+            filenameEl.innerText = fileName;
+            
+            const ext = fileName.split('.').pop().toLowerCase();
+            let iconClass = 'bi-file-earmark';
+            let typeName = 'Arquivo';
+            
+            if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                iconClass = 'bi-file-earmark-image';
+                typeName = 'Imagem';
+            } else if (['pdf'].includes(ext)) {
+                iconClass = 'bi-file-earmark-pdf';
+                typeName = 'Documento PDF';
+            } else if (['doc', 'docx'].includes(ext)) {
+                iconClass = 'bi-file-earmark-word';
+                typeName = 'Documento Word';
+            } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
+                iconClass = 'bi-file-earmark-play';
+                typeName = 'Vídeo';
+            }
+            
+            iconEl.innerHTML = `<i class="bi ${iconClass}"></i>`;
+            typeEl.innerText = typeName;
+            
+            previewBox.onclick = function() {
+                if (typeof window.openGenericFileViewer === 'function') {
+                    window.openGenericFileViewer(item.midia, fileName);
+                } else {
+                    window.open(item.midia, '_blank');
+                }
+            };
+        } else {
+            midiaSecao.classList.add('d-none');
+        }
+
+        const myModal = new bootstrap.Modal(document.getElementById('modalVisualizarPeca'));
+        myModal.show();
+    } catch (e) { console.error(e); }
+}
+
+window.editarPeca = async function(id) {
+    if (!window.userCanEditElevadores) {
+        if (typeof Swal !== 'undefined') Swal.fire('Acesso Negado', 'Você não tem permissão para editar registros. Apenas supervisores podem realizar esta ação.', 'error');
+        else alert('Acesso Negado: Apenas supervisores podem editar.');
+        return;
+    }
+    try {
+        const response = await fetch(`/elevadores/api/peca_manutencao/${id}/`);
+        if (!response.ok) throw new Error('Erro ao buscar dados da Peça');
+        const peca = await response.json();
+
+        document.getElementById('editPecaId').value = peca.id || id;
+        document.getElementById('editPecaElevador').value = peca.elevador || '';
+        document.getElementById('editPecaAndar').value = peca.andar || '';
+        document.getElementById('editPecaOS').value = peca.ordem_servico || '';
+        document.getElementById('editPecaTipo').value = peca.tipo_peca || '';
+        document.getElementById('editPecaTecnicoIdentificador').value = peca.tecnico_identificador || '';
+        document.getElementById('editPecaRegistro').value = peca.data_registro || '';
+        document.getElementById('editPecaPrevisao').value = peca.data_previsao_troca || '';
+        document.getElementById('editPecaStatus').value = peca.status || 'PENDENTE';
+        document.getElementById('editPecaEfetiva').value = peca.data_efetiva_troca || '';
+        document.getElementById('editPecaTecnico').value = peca.tecnico || '';
+
+        const modal = new bootstrap.Modal(document.getElementById('modalEditarPeca'));
+        modal.show();
+    } catch (e) {
+        console.error(e);
+        if (typeof Swal !== 'undefined') Swal.fire('Erro', 'Não foi possível carregar os dados da Peça.', 'error');
+    }
+}
+
+// Intercepta Form Editar Peça
+document.addEventListener("DOMContentLoaded", () => {
+    const formEditarPeca = document.getElementById("formEditarPeca");
+    if (formEditarPeca) {
+        formEditarPeca.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("editPecaId").value;
+            
+            const formData = new FormData(formEditarPeca);
+            formData.set('elevador', document.getElementById("editPecaElevador").value);
+            formData.set('andar', document.getElementById("editPecaAndar").value);
+            formData.set('ordem_servico', document.getElementById("editPecaOS").value);
+            formData.set('tipo_peca', document.getElementById("editPecaTipo").value);
+            formData.set('tecnico_identificador', document.getElementById("editPecaTecnicoIdentificador").value);
+            formData.set('data_registro', document.getElementById("editPecaRegistro").value);
+            formData.set('data_previsao_troca', document.getElementById("editPecaPrevisao").value);
+            formData.set('status', document.getElementById("editPecaStatus").value);
+            formData.set('data_efetiva_troca', document.getElementById("editPecaEfetiva").value);
+            formData.set('tecnico', document.getElementById("editPecaTecnico").value);
+
+            for (let [key, val] of Array.from(formData.entries())) {
+                if (val === "" || val === null || val === "null" || (val instanceof File && val.size === 0)) {
+                    formData.delete(key);
+                }
+            }
+
+            try {
+                const res = await fetch(`/elevadores/api/peca_manutencao/${id}/`, {
+                    method: "PATCH",
+                    headers: { 
+                        "X-CSRFToken": csrftoken 
+                    },
+                    body: formData
+                });
+                if (res.ok) {
+                    bootstrap.Modal.getInstance(document.getElementById("modalEditarPeca")).hide();
+                    loadPecasTable();
+                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso!', 'Peça atualizada com sucesso.', 'success');
+                } else {
+                    alert('Erro ao editar Peça');
+                }
+            } catch (err) { console.error(err); }
+        });
+    }
+});
+
 window.deleteMPM = async function(id) {
-    if(!confirm("Deseja realmente apagar este registro MPM?")) return;
+    if (!window.userCanEditElevadores) {
+        if (typeof Swal !== 'undefined') Swal.fire('Acesso Negado', 'Você não tem permissão para excluir registros de MPM. Apenas supervisores podem realizar esta ação.', 'error');
+        else alert('Acesso Negado: Apenas supervisores podem excluir.');
+        return;
+    }
+
+    if (typeof Swal !== 'undefined') {
+        const result = await Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja realmente apagar este registro MPM? Esta ação não pode ser desfeita.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+        });
+        if (!result.isConfirmed) return;
+    } else {
+        if(!confirm("Deseja realmente apagar este registro MPM?")) return;
+    }
+
     try {
         const res = await fetch(`/elevadores/api/manutencao_preventiva/${id}/`, {
             method: "DELETE",
             headers: { "X-CSRFToken": csrftoken }
         });
-        if (res.ok) loadMPMTable();
+        if (res.ok) {
+            loadMPMTable();
+            if (typeof Swal !== 'undefined') Swal.fire('Excluído!', 'Registro de MPM apagado com sucesso.', 'success');
+        } else {
+            if (typeof Swal !== 'undefined') Swal.fire('Erro', 'Ocorreu um problema ao excluir a MPM.', 'error');
+            else alert('Erro ao excluir MPM');
+        }
     } catch(e) { console.error(e); }
 }
 
+window.editarMPM = async function(id) {
+    if (!window.userCanEditElevadores) {
+        if (typeof Swal !== 'undefined') Swal.fire('Acesso Negado', 'Você não tem permissão para editar registros. Apenas supervisores podem realizar esta ação.', 'error');
+        else alert('Acesso Negado: Apenas supervisores podem editar.');
+        return;
+    }
+    try {
+        const modalEl = document.getElementById('modalEditarMPM');
+        // Usar bootstrap global ou construtor
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if (!modal) modal = new bootstrap.Modal(modalEl);
+        modal.show();
+
+        const loadingInfo = document.getElementById('editMpmLoadingInfo');
+        const formContent = document.getElementById('editMpmFormContent');
+        if (loadingInfo) loadingInfo.classList.remove('d-none');
+        if (formContent) formContent.classList.add('d-none');
+
+        const response = await fetch(`/elevadores/api/manutencao_preventiva/${id}/`);
+        if (!response.ok) throw new Error('Erro ao buscar dados da MPM');
+        const mpm = await response.json();
+
+        const setValAndTrigger = (id, val) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.value = val;
+            if (window.jQuery && $(el).hasClass('select2-hidden-accessible')) {
+                $(el).trigger('change.select2');
+            }
+            el.dispatchEvent(new Event('change'));
+        };
+
+        document.getElementById('editMpmId').value = mpm.id || id;
+        setValAndTrigger('editMpmContrato', mpm.contrato || '');
+        document.getElementById('editMpmMes').value = mpm.mes_referencia ? mpm.mes_referencia.substring(0, 7) : '';
+        document.getElementById('editMpmElevador').value = mpm.elevador || '';
+        document.getElementById('editMpmSituacao').value = mpm.situacao_equipamento || mpm.status || '';
+        document.getElementById('editMpmDescricaoServico').value = mpm.descricao_servico || '';
+        
+        document.getElementById('editMpmApresentacao').value = mpm.apresentacao || 'OK';
+        document.getElementById('editMpmPerformance').value = mpm.performance_qualidade || 'OK';
+        document.getElementById('editMpmLimitador').value = mpm.limitador_velocidade || 'OK';
+        document.getElementById('editMpmControle').value = mpm.controle || 'OK';
+        document.getElementById('editMpmPoco').value = mpm.poco || 'OK';
+        document.getElementById('editMpmEncerramento').value = mpm.encerramento || 'OK';
+        
+        document.getElementById('editMpmObservacao').value = mpm.observacao || '';
+        
+        setValAndTrigger('editMpmTecnicoNome', mpm.tecnico || '');
+        document.getElementById('editMpmTecnicoChapa').value = mpm.tecnico_chapa || '';
+        document.getElementById('editMpmDataExecucao').value = mpm.data_execucao || '';
+        document.getElementById('editMpmHoraChegada').value = mpm.hora_chegada ? mpm.hora_chegada.substring(0, 5) : '';
+        document.getElementById('editMpmHoraSaida').value = mpm.hora_saida ? mpm.hora_saida.substring(0, 5) : '';
+        
+        setValAndTrigger('editMpmClienteNome', mpm.cliente_nome || '');
+        document.getElementById('editMpmClienteEmail').value = mpm.cliente_email || '';
+        document.getElementById('editMpmClienteComentarios').value = mpm.cliente_comentarios || '';
+        document.getElementById('editMpmClienteData').value = mpm.cliente_data || '';
+
+        // Limpar os campos de arquivo para não causar problemas
+        const fPoco = document.getElementById('editMpmFotoPoco');
+        if (fPoco) fPoco.value = '';
+        const fMidia = document.getElementById('editMpmMidia');
+        if (fMidia) fMidia.value = '';
+
+        if (loadingInfo) loadingInfo.classList.add('d-none');
+        if (formContent) formContent.classList.remove('d-none');
+        
+    } catch (e) {
+        console.error(e);
+        if (typeof Swal !== 'undefined') Swal.fire('Erro', 'Não foi possível carregar os dados da MPM.', 'error');
+        else alert('Erro ao carregar dados da MPM');
+    }
+}
+
 window.deletePeca = async function(id) {
-    if(!confirm("Deseja realmente apagar esta peça?")) return;
+    if (!window.userCanEditElevadores) {
+        if (typeof Swal !== 'undefined') Swal.fire('Acesso Negado', 'Você não tem permissão para excluir peças. Apenas supervisores podem realizar esta ação.', 'error');
+        else alert('Acesso Negado: Apenas supervisores podem excluir.');
+        return;
+    }
+    
+    if (typeof Swal !== 'undefined') {
+        const result = await Swal.fire({
+            title: 'Tem certeza?',
+            text: "Deseja realmente apagar esta peça? Esta ação não pode ser desfeita.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+        });
+        if (!result.isConfirmed) return;
+    } else {
+        if(!confirm("Deseja realmente apagar esta peça?")) return;
+    }
+
     try {
         const res = await fetch(`/elevadores/api/peca_manutencao/${id}/`, {
             method: "DELETE",
             headers: { "X-CSRFToken": csrftoken }
         });
-        if (res.ok) loadPecasTable();
+        if (res.ok) {
+            loadPecasTable();
+            if (typeof Swal !== 'undefined') Swal.fire('Excluída!', 'Peça apagada com sucesso.', 'success');
+        } else {
+            if (typeof Swal !== 'undefined') Swal.fire('Erro', 'Ocorreu um problema ao excluir a Peça.', 'error');
+            else alert('Erro ao excluir Peça');
+        }
     } catch(e) { console.error(e); }
 }
 
+window.abrirVisualizarMPM = function(mpmStrEncoded) {
+    const data = JSON.parse(decodeURIComponent(mpmStrEncoded));
+    
+    document.getElementById('vis-mpm-mes').innerText = data.mes_referencia ? data.mes_referencia.substring(0, 7) : '-';
+    document.getElementById('vis-mpm-elevador').innerText = data.elevador || '-';
+    document.getElementById('vis-mpm-situacao').innerText = data.situacao_equipamento || data.status || '-';
+    document.getElementById('vis-mpm-descricao').innerText = data.descricao_servico || '-';
+    document.getElementById('vis-mpm-observacao').innerText = data.observacao || '-';
+    
+    // Checklist
+    document.getElementById('vis-mpm-chk-apresentacao').innerText = data.apresentacao || 'OK';
+    document.getElementById('vis-mpm-chk-performance').innerText = data.performance_qualidade || 'OK';
+    document.getElementById('vis-mpm-chk-limitador').innerText = data.limitador_velocidade || 'OK';
+    document.getElementById('vis-mpm-chk-controle').innerText = data.controle || 'OK';
+    document.getElementById('vis-mpm-chk-poco').innerText = data.poco || 'OK';
+    document.getElementById('vis-mpm-chk-encerramento').innerText = data.encerramento || 'OK';
+    
+    // Foto
+    const fotoContainer = document.getElementById('vis-mpm-foto-container');
+    const fotoImg = document.getElementById('vis-mpm-foto');
+    if (data.foto_poco) {
+        fotoImg.src = data.foto_poco;
+        fotoContainer.style.display = 'block';
+    } else {
+        fotoImg.src = '';
+        fotoContainer.style.display = 'none';
+    }
+    
+    // Envolvidos
+    document.getElementById('vis-mpm-tecnico-nome').innerText = data.tecnico || '-';
+    document.getElementById('vis-mpm-tecnico-chapa').innerText = data.tecnico_chapa || 'Chapa não informada';
+    document.getElementById('vis-mpm-data-exec').innerText = data.data_execucao ? data.data_execucao.split('-').reverse().join('/') : '-';
+    document.getElementById('vis-mpm-hora-chegada').innerText = data.hora_chegada ? data.hora_chegada.substring(0, 5) : '-';
+    document.getElementById('vis-mpm-hora-saida').innerText = data.hora_saida ? data.hora_saida.substring(0, 5) : '-';
+    
+    // Visto
+    document.getElementById('vis-mpm-cliente-nome').innerText = data.cliente_nome || '-';
+    document.getElementById('vis-mpm-cliente-email').innerText = data.cliente_email || '-';
+    document.getElementById('vis-mpm-cliente-comentarios').innerText = data.cliente_comentarios || '-';
+    document.getElementById('vis-mpm-cliente-data').innerText = data.cliente_data ? data.cliente_data.split('-').reverse().join('/') : '-';
+
+    const midiaSecao = document.getElementById('vis-mpm-secao-midia');
+    const previewBox = document.getElementById('vis-mpm-midia-preview-box');
+    const downloadBtn = document.getElementById('vis-mpm-midia-download-btn');
+    const filenameEl = document.getElementById('vis-mpm-midia-filename');
+    const typeEl = document.getElementById('vis-mpm-midia-type');
+    const iconEl = document.getElementById('vis-mpm-midia-icon');
+    
+    if (data.midia) {
+        midiaSecao.classList.remove('d-none');
+        downloadBtn.href = data.midia;
+        
+        const fileName = data.midia.split('/').pop().split('?')[0];
+        filenameEl.innerText = fileName;
+        
+        const ext = fileName.split('.').pop().toLowerCase();
+        let iconClass = 'bi-file-earmark';
+        let typeName = 'Arquivo';
+        
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            iconClass = 'bi-file-earmark-image';
+            typeName = 'Imagem';
+        } else if (['pdf'].includes(ext)) {
+            iconClass = 'bi-file-earmark-pdf';
+            typeName = 'Documento PDF';
+        } else if (['doc', 'docx'].includes(ext)) {
+            iconClass = 'bi-file-earmark-word';
+            typeName = 'Documento Word';
+        } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
+            iconClass = 'bi-file-earmark-play';
+            typeName = 'Vídeo';
+        }
+        
+        iconEl.innerHTML = `<i class="bi ${iconClass}"></i>`;
+        typeEl.innerText = typeName;
+        
+        previewBox.onclick = function() {
+            if (typeof window.openGenericFileViewer === 'function') {
+                window.openGenericFileViewer(data.midia, fileName);
+            } else {
+                window.open(data.midia, '_blank');
+            }
+        };
+    } else {
+        midiaSecao.classList.add('d-none');
+    }
+    
+    const m = new bootstrap.Modal(document.getElementById('modal-visualizar-mpm'));
+    m.show();
+}
+
+
+document.addEventListener('DOMContentLoaded', async function() {
+    try {
+        const response = await fetch('/empresas/api/contatos_por_app/?app=MANUTENCAO_PREDIAL');
+        if (response.ok) {
+            const contatos = await response.json();
+            const selects = [document.getElementById('mpmClienteNome'), document.getElementById('editMpmClienteNome')];
+            selects.forEach(select => {
+                if (!select) return;
+                const firstOption = select.querySelector('option[value=""]');
+                select.innerHTML = '';
+                if (firstOption) select.appendChild(firstOption);
+                else select.innerHTML = '<option value="">Nenhum / Não Informado</option>';
+                contatos.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = `${c.nome} (${c.cargo})`;
+                    opt.textContent = `${c.nome} - ${c.cargo} - ${c.empresa}`;
+                    select.appendChild(opt);
+                });
+                const loggedUser = select.getAttribute('data-logged-user');
+                if (loggedUser) {
+                    let optionExists = Array.from(select.options).some(opt => opt.value.startsWith(loggedUser));
+                    if (!optionExists) {
+                        const opt = document.createElement('option');
+                        opt.value = `${loggedUser} (Usuário Sesen)`;
+                        opt.textContent = `${loggedUser} - Usuário Sesen`;
+                        select.appendChild(opt);
+                    }
+                    let optionToSelect = Array.from(select.options).find(opt => opt.value.startsWith(loggedUser));
+                    if (optionToSelect) {
+                        select.value = optionToSelect.value;
+                    }
+                }
+                if (window.jQuery && $(select).hasClass('select2-hidden-accessible')) {
+                    $(select).trigger('change');
+                } else if (window.jQuery) {
+                    $(select).select2({ tags: true, dropdownParent: $(select).closest('.modal') });
+                }
+            });
+        }
+    } catch (e) {
+        console.error('Erro ao carregar contatos', e);
+    }
+});
+
+// --- LOGIC FOR MULTIPLE ELEVATORS ---
+function adicionarElevadorVazio() {
+    const container = document.getElementById('mpmElevadoresContainer');
+    const template = document.getElementById('mpmElevadorTemplate');
+    if (!container || !template) return;
+    
+    const clone = template.content.cloneNode(true);
+    const item = clone.querySelector('.mpm-elevador-item');
+    
+    // Add remove event listener
+    const btnRemove = item.querySelector('.btn-remover-elevador');
+    btnRemove.addEventListener('click', () => {
+        item.remove();
+        if (container.children.length === 0) {
+            adicionarElevadorVazio(); // Always keep at least one
+        }
+    });
+
+    container.appendChild(item);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const btnAdd = document.getElementById('btnAddElevadorMPM');
+    if (btnAdd) {
+        btnAdd.addEventListener('click', adicionarElevadorVazio);
+    }
+    
+    // Initialize first elevator block if modal exists
+    const modalRegistrar = document.getElementById('modalCadastroMPM');
+    if (modalRegistrar) {
+        modalRegistrar.addEventListener('show.bs.modal', () => {
+            const container = document.getElementById('mpmElevadoresContainer');
+            if (container && container.children.length === 0) {
+                adicionarElevadorVazio();
+            }
+        });
+    }
+
+    // Auto-fill dates when Technician is selected
+    const selectsTecnicos = document.querySelectorAll('#mpmTecnicoNome, #editMpmTecnicoNome');
+    selectsTecnicos.forEach(selectTecnico => {
+        selectTecnico.addEventListener('change', (e) => {
+            const isEdit = selectTecnico.id === 'editMpmTecnicoNome';
+            const prefix = isEdit ? 'editMpm' : 'mpm';
+            
+            // Find option and get chapa
+            const opt = selectTecnico.options[selectTecnico.selectedIndex];
+            if (opt && opt.dataset.chapa) {
+                document.getElementById(`${prefix}TecnicoChapa`).value = opt.dataset.chapa;
+            }
+            
+            // Auto fill current date and time if empty
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            
+            const dataExec = document.getElementById(`${prefix}DataExecucao`);
+            const horaCheg = document.getElementById(`${prefix}HoraChegada`);
+            const horaSaida = document.getElementById(`${prefix}HoraSaida`);
+            const dataCli = document.getElementById(`${prefix}ClienteData`);
+            
+            if (dataExec && !dataExec.value) dataExec.value = `${year}-${month}-${day}`;
+            if (horaCheg && !horaCheg.value) horaCheg.value = `${hours}:${minutes}`;
+            if (horaSaida && !horaSaida.value) horaSaida.value = `${hours}:${minutes}`;
+            if (dataCli && !dataCli.value) dataCli.value = `${year}-${month}-${day}`;
+        });
+    });
+    
+    // Fetch predial contacts for Cliente
+    carregarContatosMPMCliente();
+});
+
+function carregarContatosMPMCliente() {
+    const selectsClientes = document.querySelectorAll('#mpmClienteNome, #editMpmClienteNome');
+    if (selectsClientes.length === 0) return;
+    
+    fetch('/empresas/api/contatos_por_app/?app=MANUTENCAO_PREDIAL')
+        .then(res => res.json())
+        .then(contatos => {
+            selectsClientes.forEach(selectCliente => {
+                const isEdit = selectCliente.id === 'editMpmClienteNome';
+                const prefix = isEdit ? 'editMpm' : 'mpm';
+                
+                const firstOption = selectCliente.querySelector('option[value=""]');
+                selectCliente.innerHTML = '';
+                if (firstOption) selectCliente.appendChild(firstOption);
+                else selectCliente.innerHTML = '<option value="">Nenhum / Não Informado</option>';
+
+                const loggedUser = selectCliente.getAttribute('data-logged-user');
+
+                if (Array.isArray(contatos)) {
+                    contatos.forEach(c => {
+                        // Adiciona apenas fiscais e tecnicos prediais
+                        const cargo = (c.cargo || "").toLowerCase();
+                        if (cargo.includes("fiscal") || cargo.includes("téc") || cargo.includes("tec")) {
+                            const opt = document.createElement('option');
+                            opt.value = `${c.nome} - ${c.cargo}`;
+                            opt.textContent = `${c.nome} - ${c.cargo}`;
+                            opt.dataset.email = c.email || '';
+                            
+                            // Select if matches logged user
+                            if (loggedUser && opt.value.toLowerCase().includes(loggedUser.toLowerCase().trim())) {
+                                opt.selected = true;
+                                // auto fill email se estiver vazio no form (para edição, não sobrescrever indiscriminadamente, mas como é carregar inicial, ok)
+                                const emailInput = document.getElementById(`${prefix}ClienteEmail`);
+                                if (emailInput && !emailInput.value) emailInput.value = opt.dataset.email;
+                            }
+                            
+                            selectCliente.appendChild(opt);
+                        }
+                    });
+                }
+                
+                // Listen for changes to update email
+                selectCliente.addEventListener('change', (e) => {
+                    const opt = selectCliente.options[selectCliente.selectedIndex];
+                    const emailInput = document.getElementById(`${prefix}ClienteEmail`);
+                    if (emailInput) {
+                        if (opt && opt.dataset.email) {
+                            emailInput.value = opt.dataset.email;
+                        } else {
+                            emailInput.value = '';
+                        }
+                    }
+                });
+                // Initialize Select2 after populating options
+                if (window.jQuery && $(selectCliente).length) {
+                    $(selectCliente).select2({
+                        theme: 'bootstrap-5',
+                        width: '100%'
+                    });
+                }
+            });
+        })
+        .catch(err => console.error("Erro carregar contatos predial MPM:", err));
+}

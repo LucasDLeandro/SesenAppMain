@@ -1,4 +1,3 @@
-
 import os
 import django
 
@@ -7,7 +6,10 @@ django.setup()
 
 from django.contrib.auth.models import Group
 
-Group.objects.get_or_create(name='Telefonia - TÈcnicos')
-Group.objects.get_or_create(name='¡udio e VÌdeo - TÈcnicos')
-print('Grupos criados!')
+Group.objects.get_or_create(name='Telefonia - T√©cnicos')
+Group.objects.get_or_create(name='√Åudio e V√≠deo - T√©cnicos')
+Group.objects.get_or_create(name='Elevadores - T√©cnicos')
+Group.objects.get_or_create(name='Patrim√¥nio - T√©cnicos')
+Group.objects.get_or_create(name='Administrativo')
 
+print('Grupos criados com sucesso!')

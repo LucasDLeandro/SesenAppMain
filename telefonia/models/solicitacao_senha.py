@@ -1,9 +1,13 @@
 from telefonia.models import *
 
+class StatusSenha(models.TextChoices):
+    RECEBIDA = 'recebida', 'Recebida'
+    AGUARDANDO_SUPERVISOR = 'aguardando_supervisor', 'Aguardando Supervisor'
+    FINALIZADA = 'finalizada', 'Finalizada'
+
 class CriarSenha(models.Model):
     protocolo = models.CharField(
         max_length=20,
-        unique=True,
         null=True,
         help_text="Protocolo SEI do Documento",
         editable=True,
@@ -116,11 +120,20 @@ class CriarSenha(models.Model):
 
     tel_desvio_externo = models.CharField(
         max_length = 30,
-        null=True
+        null=True,
+        blank=True
     )
 
     nome_tecnico = models.CharField(
         max_length=100,
+        null=True,
+        blank=True
+    )
+
+    status = models.CharField(
+        max_length=50,
+        choices=StatusSenha.choices,
+        default=StatusSenha.RECEBIDA,
         null=True
     )
 

@@ -2,13 +2,13 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from ..serializers import ElevConcluirOsSerializer, ElevRegistrarOsSerializer, DashboardFiltroSerializer, ElevadorSerializer
+from ..serializers import ElevConcluirOsSerializer, ElevRegistrarOsSerializer, DashboardFiltroSerializer, ElevadorSerializer, AlarmeEmsEventSerializer
 
 
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.db.models import F, ExpressionWrapper, DurationField, Count, Sum, Value, IntegerField, DecimalField, F
+from django.db.models import F, ExpressionWrapper, DurationField, Count, Sum, Value, IntegerField, DecimalField, Q
 from django.db.models.functions import TruncMonth, TruncYear, TruncDate, Round
 from django.utils import timezone
 from django.http import JsonResponse
@@ -25,6 +25,10 @@ from notificacoes.services import auto_message
 from notificacoes.models.contato_notificacao import Contato
 from notificacoes.models.template_notificacao import TemplateMessage
 from ..models.elev_so_model import ElevOrderReg
+from empresas.models import Empresa, ContatoEmpresa
+from contratos.models.model_contratos import Contratos
+from django.contrib.auth.models import User
+from ..models.elev_so_model import AlarmeEmsEvent
 
 from decimal import Decimal
 
@@ -49,7 +53,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         os_salva = serializer.save()
 
         if os_salva.elevador_parado == 'PARADO':
-            from .models.elev_so_model import ElevadorStatus
+            from ..models.elev_so_model import ElevadorStatus
             try:
                 elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
                 if elev_status.status != 'PARADO':
@@ -71,30 +75,164 @@ class ElevadorViewSet(viewsets.ModelViewSet):
     def elev_concluir_os(self, request, pk=None):
         os_existente = self.get_object()
 
-        serializer = ElevConcluirOsSerializer(os_existente, data=request.data, partial=True)
+        # Injetar usuário logado no campo técnico se não foi enviado
+        dados = request.data.copy()
+        if not dados.get('tecnico') and request.user.is_authenticated:
+            dados['tecnico'] = request.user.get_full_name() or request.user.username
 
+        serializer = ElevConcluirOsSerializer(os_existente, data=dados, partial=True)
         serializer.is_valid(raise_exception=True)
-
         os_salva = serializer.save()
 
-        if os_salva.elevador_parado == 'PARADO':
-            from .models.elev_so_model import ElevadorStatus
-            try:
-                elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
+        # Lógica de Peças (Inteligente)
+        houve_peca = dados.get('houve_substituicao_pecas')
+        peca_desc = dados.get('peca_substituida')
+        
+        if houve_peca in ['Sim_Imediata', 'Sim_Posterior'] and peca_desc:
+            from ..models.elev_so_model import PecaManutencao
+            
+            if houve_peca == 'Sim_Imediata':
+                # Peça foi substituída
+                PecaManutencao.objects.create(
+                    elevador=os_salva.elevador,
+                    tipo_peca=peca_desc,
+                    ordem_servico=os_salva.protocolo,
+                    tecnico_identificador=os_salva.tecnico,
+                    tecnico=os_salva.tecnico,
+                    status='SUBSTITUIDA',
+                    data_efetiva_troca=os_salva.data_hora_conclusao.date() if os_salva.data_hora_conclusao else timezone.now().date(),
+                    midia=os_salva.midia
+                )
+            elif houve_peca == 'Sim_Posterior':
+                # Peça está pendente
+                PecaManutencao.objects.create(
+                    elevador=os_salva.elevador,
+                    tipo_peca=peca_desc,
+                    ordem_servico=os_salva.protocolo,
+                    tecnico_identificador=os_salva.tecnico,
+                    status='PENDENTE',
+                    midia=os_salva.midia
+                )
+
+        from ..models.elev_so_model import ElevadorStatus
+        try:
+            elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
+            
+            if os_salva.elevador_parado == 'ATIVO':
                 # Verifica se não há OUTRA OS aberta e parada
                 outras_paradas = ElevOrderReg.objects.filter(elevador=os_salva.elevador, status='ABERTA', elevador_parado='PARADO').exists()
                 if not outras_paradas:
+                    # Registra o histórico da parada total se houver data de início
+                    if elev_status.data_hora_parada:
+                        from elevadores.serializers import calc_hrs_uteis_parado
+                        from ..models.elev_so_model import ElevadorParadaHistorico
+                        tmp_parado = calc_hrs_uteis_parado(elev_status.data_hora_parada, timezone.now())
+                        ElevadorParadaHistorico.objects.create(
+                            elevador=os_salva.elevador,
+                            data_hora_parada=elev_status.data_hora_parada,
+                            data_hora_retorno=timezone.now(),
+                            tempo_parado=Decimal(str(tmp_parado)),
+                            os_relacionada=os_salva
+                        )
+                    
                     elev_status.status = 'ATIVO'
                     elev_status.data_hora_parada = None
                     elev_status.save()
-            except ElevadorStatus.DoesNotExist:
-                pass
+            elif os_salva.elevador_parado == 'PARADO':
+                # Mantém parado. NÃO reseta a data_hora_parada, para que o dashboard continue contando do zero original.
+                elev_status.status = 'PARADO'
+                elev_status.save()
+        except ElevadorStatus.DoesNotExist:
+            pass
 
-        self._disparar_notificacao(os_salva, 'os_elev_conclusao')
+        if os_salva.status == 'CONCLUIDA':
+            if houve_peca:
+                self._disparar_notificacao(os_salva, 'os_elev_conclusao_peca', peca=peca_desc)
+            else:
+                self._disparar_notificacao(os_salva, 'os_elev_conclusao')
+        elif os_salva.status == 'AGUARDANDO PEÇAS':
+            self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca', peca=peca_desc)
 
         return Response({
             'sucesso': True,
-            'mensagem': f'Ordem de Serviço: {os_salva.protocolo}, concluída com sucesso!'
+            'mensagem': f'Ordem de Serviço: {os_salva.protocolo}, salva com sucesso!'
+        }, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path='tecnicos_otis')
+    def tecnicos_otis(self, request):
+        # categoria é JSONField (lista), usar __contains para buscar dentro do array
+        contrato = Contratos.objects.filter(categoria__contains='ELEVADORES').first()
+        if not contrato or not contrato.empresa:
+            return Response([])
+        
+        empresa_elevadores = contrato.empresa
+        contatos = empresa_elevadores.contatos.filter(
+            Q(cargo__icontains='técnico') | 
+            Q(cargo__icontains='tecnico')
+        ).values_list('nome_contato', flat=True)
+        return Response(list(contatos))
+
+    @action(detail=False, methods=['get'], url_path='tecnicos_acompanhamento')
+    def tecnicos_acompanhamento(self, request):
+        tecnicos = User.objects.filter(groups__name__icontains='Elevadores')
+        nomes = [t.get_full_name() or t.username for t in tecnicos]
+        return Response(nomes)
+
+    @action(detail=True, methods=['post'], url_path='registrar_chegada')
+    def registrar_chegada(self, request, pk=None):
+        os_existente = self.get_object()
+        dados = request.data.copy()
+        
+        # Só permite registrar se ainda não estiver concluída
+        if os_existente.status in ['CONCLUIDA', 'CONCLUÍDA']:
+            return Response({'sucesso': False, 'mensagem': 'OS já está concluída.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Atualiza os dados
+        tecnico = dados.get('tecnico', '')
+        acompanhante = dados.get('acompanhante', '')
+        registrador_chegada = dados.get('registrador_chegada', '')
+        data_hora_chegada_raw = dados.get('data_hora_chegada')
+        
+        from django.utils.dateparse import parse_datetime
+        from django.utils import timezone
+        
+        if not data_hora_chegada_raw:
+            data_hora_chegada = timezone.now()
+        else:
+            if isinstance(data_hora_chegada_raw, str):
+                data_hora_chegada = parse_datetime(data_hora_chegada_raw)
+                if timezone.is_naive(data_hora_chegada):
+                    data_hora_chegada = timezone.make_aware(data_hora_chegada)
+            else:
+                data_hora_chegada = data_hora_chegada_raw
+
+        os_existente.tecnico = tecnico
+        os_existente.acompanhante = acompanhante
+        os_existente.registrador_chegada = registrador_chegada
+        os_existente.data_hora_chegada = data_hora_chegada
+        os_existente.status = 'EM ANDAMENTO'
+        os_existente.save()
+
+        # Vincula novo técnico como contato da empresa se não existir
+        if tecnico:
+            # categoria é JSONField (lista), usar __contains para buscar dentro do array
+            contrato = Contratos.objects.filter(categoria__contains='ELEVADORES').first()
+            if contrato and contrato.empresa:
+                otis = contrato.empresa
+                contato_existe = otis.contatos.filter(nome_contato__iexact=tecnico.strip()).exists()
+                if not contato_existe:
+                    ContatoEmpresa.objects.create(
+                        empresa=otis,
+                        nome_contato=tecnico.strip(),
+                        cargo='Técnico'
+                    )
+
+        # Dispara notificação de Andamento
+        self._disparar_notificacao(os_existente, 'os_elev_andamento')
+
+        return Response({
+            'sucesso': True,
+            'mensagem': 'Chegada do técnico registrada com sucesso.'
         }, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=['get'], url_path='elev_oss_concluidas')
@@ -116,6 +254,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             conclusao_local = timezone.localtime(os.data_hora_conclusao) if os.data_hora_conclusao else None
 
             os_dict = {
+                'id': os.id,
                 'protocolo': os.protocolo,
                 'data_hora': data_hora_local.strftime('%d/%m/%Y %H:%M') if data_hora_local else '',
                 'elevador': os.elevador,
@@ -131,6 +270,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 'sub_componente': 0,
                 'servico': os.servico,
                 'status': os.status,
+                'midia': os.midia.url if os.midia else '',
             }
             
 
@@ -248,85 +388,82 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         return dados_finais
     
     def api_indicador_quatro(self, **kwargs):
-        from ..models.elev_so_model import ElevadorStatus, ElevadorParadaHistorico
-        feriados_br = holidays.country_holidays('BR', language='pt_BR')
+        # Disponibilidade Média Mensal (DMM) - Indicador 4
+        from ..models.elev_so_model import ELEVATOR_CHOICE, ElevadorParadaHistorico
+        from django.db.models import Sum
         from decimal import Decimal
+        import datetime
+        import holidays
+
+        feriados_br = holidays.country_holidays('BR', language='pt_BR')
         HRS_UTEIS_DIA = 12.0
 
-        inicio = kwargs["inicio"]
-        fim = kwargs["fim"]
+        inicio = kwargs.get('inicio')
+        fim = kwargs.get('fim')
 
         qnt_dias_uteis = feriados_br.get_working_days_count(inicio, fim)
         qnt_horas_uteis_totais = Decimal(str(HRS_UTEIS_DIA * qnt_dias_uteis))
 
-        import datetime
-        from django.utils import timezone
+        # Inicializa todos os elevadores com 0 horas paradas
+        dados_parada = {key: Decimal('0.0') for key, name in ELEVATOR_CHOICE}
         
-        def to_date(val):
-            if isinstance(val, str):
-                return datetime.datetime.strptime(val, '%Y-%m-%d').date()
-            if isinstance(val, datetime.datetime):
-                return val.date()
-            if isinstance(val, datetime.date):
-                return val
-            return None
-
-        def to_aware_datetime(val, end_of_day=False):
-            if isinstance(val, str):
-                val = datetime.datetime.strptime(val, '%Y-%m-%d')
-            if isinstance(val, datetime.date) and not isinstance(val, datetime.datetime):
-                val = datetime.datetime.combine(val, datetime.time.min)
-            if end_of_day:
-                val = val.replace(hour=23, minute=59, second=59)
-            if timezone.is_naive(val):
-                val = timezone.make_aware(val)
-            return val
-
-        inicio_date = to_date(inicio)
-        fim_dt = to_aware_datetime(fim, end_of_day=True)
-
-        # Pega todos os elevadores que estão sendo monitorados e não estão desativados
-        elevadores_ativos = ElevadorStatus.objects.exclude(status__in=['DESATIVADO', 'INATIVO'])
-        
-        dados_parada = {}
-        for elev in elevadores_ativos:
-            parada_date = to_date(elev.data_hora_parada)
-            if elev.status in ['PARADO', 'PROGRAMADO'] and parada_date and parada_date < inicio_date:
-                continue
-                
-            dados_parada[elev.elevador] = Decimal('0.0')
-            
-            if elev.status in ['PARADO', 'PROGRAMADO'] and parada_date and parada_date >= inicio_date:
-                from elevadores.serializers import calc_hrs_uteis_parado
-                end_stop = min(fim_dt, timezone.now())
-                if elev.data_hora_parada < end_stop:
-                    horas_paradas = calc_hrs_uteis_parado(elev.data_hora_parada, end_stop)
-                    dados_parada[elev.elevador] += Decimal(str(horas_paradas))
-
-        qs_os = self.get_queryset().filter(
-            status='CONCLUIDA', data_hora__range=(inicio, fim)
-        ).values('elevador').annotate(
-            total_os=Sum('tempo_parado')
-        )
+        # Buscar todos os registros de paradas que de alguma forma tocam o intervalo [inicio, fim]
+        # Uma parada afeta o ms atual se:
+        # data_hora_parada <= fim AND (data_hora_retorno IS NULL OR data_hora_retorno >= inicio)
+        # O banco de dados pode ter retornos nulos ou datas que ultrapassam o ms.
         
         qs_hist = ElevadorParadaHistorico.objects.filter(
-            data_hora_retorno__range=(inicio, fim)
-        ).values('elevador').annotate(
-            total_hist=Sum('tempo_parado')
+            data_hora_parada__lte=fim
+        ).exclude(
+            data_hora_retorno__lt=inicio
         )
         
-        for item in qs_os:
-            elev_nome = item['elevador']
-            if elev_nome in dados_parada:
-                dados_parada[elev_nome] += item['total_os'] or Decimal('0.0')
+        # Como o Django no calcula interseo nativamente em hrs teis, vamos somar o que a model calculou
+        # OU calcular a interseco real. Para simplificar e manter a compatibilidade, vamos confiar que 'tempo_parado' 
+        #  preenchido. Se a model `ElevadorParadaHistorico` j armazena o tempo_parado, ns s precisamos das paradas
+        # que ocorreram neste ms. Se a data_hora_retorno est no ms, somamos o tempo_parado dela (se for parada longa, 
+        # idealmente o tempo deve ser proporcional, mas a implementao atual agrupa por ms baseado no tempo total salvo).
+        
+        # Como o usurio pede: "se um elevador estiver parado a muito tempo, a disponibilidade ser 0"
+        # Isso significa que se `data_hora_parada < inicio` e `data_hora_retorno`  nulo (ou > fim), o tempo parado no ms = `qnt_horas_uteis_totais`
+        # Vamos tratar essa lgica iterando sobre o queryset:
+        
+        for p in qs_hist:
+            elev_nome = p.elevador
             
-        for item in qs_hist:
-            elev_nome = item['elevador']
-            if elev_nome in dados_parada:
-                dados_parada[elev_nome] += item['total_hist'] or Decimal('0.0')
+            # Definir os limites de interseo para a parada no ms corrente
+            parada_inicio = p.data_hora_parada.date()
+            parada_fim = p.data_hora_retorno.date() if p.data_hora_retorno else fim
+            
+            # Interseção
+            if hasattr(inicio, 'date'):
+                inicio = inicio.date()
+            if hasattr(fim, 'date'):
+                fim = fim.date()
+            
+            intersecao_inicio = max(inicio, parada_inicio)
+            intersecao_fim = min(fim, parada_fim)
+            
+            if intersecao_inicio <= intersecao_fim:
+                # Contar dias teis na interseo
+                dias_uteis_parado = feriados_br.get_working_days_count(intersecao_inicio, intersecao_fim)
+                hrs_paradas = Decimal(str(dias_uteis_parado * HRS_UTEIS_DIA))
+                
+                # Se for no mesmo dia e tiver tempo_parado armazenado, usa o tempo_parado para maior preciso
+                if p.data_hora_parada.date() >= inicio and p.data_hora_retorno and p.data_hora_retorno.date() <= fim and p.tempo_parado:
+                    hrs_paradas = p.tempo_parado
+                elif hrs_paradas > qnt_horas_uteis_totais:
+                    hrs_paradas = qnt_horas_uteis_totais
+                    
+                if elev_nome in dados_parada:
+                    dados_parada[elev_nome] += hrs_paradas
         
         ind_quatro = []
         for elev_nome, total_parado in dados_parada.items():
+            # No permitir horas negativas de disponibilidade
+            if total_parado > qnt_horas_uteis_totais:
+                total_parado = qnt_horas_uteis_totais
+                
             hrs_disponivel = qnt_horas_uteis_totais - total_parado
             if qnt_horas_uteis_totais > 0:
                 disp_bruta = (hrs_disponivel / qnt_horas_uteis_totais) * Decimal('100.0')
@@ -449,10 +586,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 dados_finais_grafico
                 ]
 
-    def _disparar_notificacao(self, os, evento):
+    def _disparar_notificacao(self, os, evento, peca=None):
+        # Só dispara notificações para OS's do dia atual
+        hoje = timezone.localtime(timezone.now()).date()
+        if os.data_hora:
+            data_os = timezone.localtime(os.data_hora).date()
+            if data_os != hoje:
+                return
+
         contato_queryset = Contato.objects.filter(is_ativo=True)
         if evento == 'os_elev_registro':
-            template = get_object_or_404(TemplateMessage, tipo_evento=evento, is_ativo=True)
+            template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
+            if not template:
+                return
             texto = template.base_text
             for contato in contato_queryset:
                 tel = contato.telefone
@@ -469,11 +615,32 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     auto_message(tel, text)
                 except Exception as e:
                     print(f"Erro na Evolution API: {e}")
-            if not template: 
-                print("Erro: Template de conclusão não encontrado.")
+        elif evento == 'os_elev_andamento':
+            try:
+                template = get_object_or_404(TemplateMessage, tipo_evento=evento, is_ativo=True)
+                texto = template.base_text
+            except:
+                texto = "Olá {nome},\nO técnico {tecnico} chegou às {data_hora} para atender a OS {protocolo} do {elevador}.\nAcompanhante: {acompanhante}\nRegistrado por: {registrador_chegada}"
+
+            for contato in contato_queryset:
+                tel = contato.telefone
+                text = texto.format(
+                    nome=contato.nome,
+                    tecnico=os.tecnico,
+                    data_hora=os.data_hora_chegada.strftime("%d/%m/%Y às %H:%M") if os.data_hora_chegada else "",
+                    protocolo=os.protocolo,
+                    elevador=os.elevador,
+                    acompanhante=os.acompanhante or "Não informado",
+                    registrador_chegada=os.registrador_chegada or "Não informado"
+                )
+                try:
+                    auto_message(tel, text)
+                except Exception as e:
+                    print(f"Erro na Evolution API: {e}")
+        elif evento in ['os_elev_conclusao', 'os_elev_conclusao_peca', 'os_elev_aguardando_peca']:
+            template = TemplateMessage.objects.filter(tipo_evento='os_elev_conclusao', is_ativo=True).first()
+            if not template:
                 return
-        else:
-            template = get_object_or_404(TemplateMessage, tipo_evento='os_elev_conclusao', is_ativo=True)
             texto = template.base_text
             for contato in contato_queryset:
                 tel = contato.telefone
@@ -487,12 +654,15 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         servico=os.servico,
                         funcionando=os.elevador_parado
                     )
+                    
+                    if evento == 'os_elev_conclusao_peca':
+                        text += f"\n\n*Obs:* O equipamento voltou a operar, porém houve a necessidade de substituição/agendamento da peça: {peca}."
+                    elif evento == 'os_elev_aguardando_peca':
+                        text = f"Olá {contato.nome},\n\n*Aviso de Pendência:* O chamado (Protocolo: {os.protocolo}) referente ao {os.elevador} não pôde ser concluído. O elevador permanecerá PARADO aguardando a troca da peça: {peca}."
+                    
                     auto_message(tel, text)   
                 except Exception as e:
                     print(f"Erro na Evolution API: {e}")
-            if not template: 
-                print("Erro: Template de conclusão não encontrado.")
-                return
         
     
     @action(detail=False, methods=['get'], url_path='dashboard')
@@ -503,6 +673,16 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         filtros = serializer.validated_data # type: ignore
+        from django.utils import timezone
+        from dateutil.relativedelta import relativedelta
+        import datetime
+        hoje = timezone.now()
+        if 'inicio' not in filtros:
+            filtros['inicio'] = hoje.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        if 'fim' not in filtros:
+            # último dia do mês
+            prox_mes = filtros['inicio'] + relativedelta(months=1)
+            filtros['fim'] = prox_mes - datetime.timedelta(seconds=1)
 
         ind_um = self.api_indicador_um(**filtros) # type: ignore
         ind_dois = self.api_indicador_dois(**filtros)
@@ -604,7 +784,86 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 'data_hora_abertura': elev.data_hora_parada.isoformat() if elev.data_hora_parada else None
             })
             
+            
         return Response({'status_elevadores': status_lista}, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path='historico_mensal')
+    def historico_mensal(self, request):
+        mes_ano = request.query_params.get('mes')
+        if not mes_ano:
+            hoje = timezone.now()
+            mes_ano = f"{hoje.year}-{hoje.month:02d}"
+        
+        try:
+            ano, mes = map(int, mes_ano.split('-'))
+        except ValueError:
+            return Response({'error': 'Formato inválido. Use YYYY-MM'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        from ..models import ELEVATOR_CHOICE
+        elevadores_padrao = [choice[0] for choice in ELEVATOR_CHOICE]
+        historico = {elev: [] for elev in elevadores_padrao}
+        
+        # 1. OS (ElevOrderReg)
+        os_qs = ElevOrderReg.objects.filter(data_hora__year=ano, data_hora__month=mes)
+        for os_obj in os_qs:
+            if os_obj.elevador in historico:
+                historico[os_obj.elevador].append({
+                    'id': os_obj.id,
+                    'tipo': 'OS',
+                    'data_hora': os_obj.data_hora.isoformat() if os_obj.data_hora else None,
+                    'badge': 'bg-primary',
+                    'titulo': f"OS - {os_obj.tipo_chamado} ({os_obj.protocolo})",
+                    'detalhes': f"Status: {os_obj.status} | Ocorrência: {os_obj.ocorrencia}",
+                    'registrado_por': os_obj.atendente
+                })
+                
+        # 2. Alarmes EMS (AlarmeEmsEvent)
+        from ..models.elev_so_model import AlarmeEmsEvent
+        alarme_qs = AlarmeEmsEvent.objects.filter(data_hora__year=ano, data_hora__month=mes)
+        for alarme in alarme_qs:
+            if alarme.elevador in historico:
+                historico[alarme.elevador].append({
+                    'tipo': 'ALARME',
+                    'data_hora': alarme.data_hora.isoformat() if alarme.data_hora else None,
+                    'badge': 'bg-danger' if alarme.tipo_evento == 'ALARM' else 'bg-warning text-dark',
+                    'titulo': f"EMS - {alarme.tipo_evento}",
+                    'detalhes': alarme.descricao,
+                    'registrado_por': alarme.usuario_registrador
+                })
+                
+        # 3. Manutenções Preventivas (MPM)
+        from ..models import ManutencaoPreventiva
+        mpm_qs = ManutencaoPreventiva.objects.filter(mes_referencia__year=ano, mes_referencia__month=mes)
+        for mpm in mpm_qs:
+            if mpm.elevador in historico:
+                historico[mpm.elevador].append({
+                    'tipo': 'MPM',
+                    'data_hora': mpm.data_execucao.isoformat() if mpm.data_execucao else mpm.mes_referencia.isoformat(),
+                    'badge': 'bg-success',
+                    'titulo': "Manutenção Preventiva",
+                    'detalhes': f"Mês Ref: {mpm.mes_referencia} | Status: {mpm.status}",
+                    'registrado_por': mpm.tecnico
+                })
+                
+        # 4. Peças (PecaManutencao)
+        from ..models.elev_so_model import PecaManutencao
+        pecas_qs = PecaManutencao.objects.filter(data_registro__year=ano, data_registro__month=mes)
+        for peca in pecas_qs:
+            if peca.elevador in historico:
+                historico[peca.elevador].append({
+                    'tipo': 'PEÇA',
+                    'data_hora': peca.data_registro.isoformat() if peca.data_registro else None,
+                    'badge': 'bg-info text-dark',
+                    'titulo': f"Peça - {peca.tipo_peca}",
+                    'detalhes': f"Status: {peca.status} | OS: {peca.ordem_servico}",
+                    'registrado_por': peca.tecnico_identificador
+                })
+                
+        # Ordenar os eventos de cada elevador
+        for elev in historico:
+            historico[elev].sort(key=lambda x: x['data_hora'] or '', reverse=True)
+            
+        return Response(historico, status=status.HTTP_200_OK)
 
 class ManutencaoPreventivaViewSet(viewsets.ModelViewSet):
     from ..models import ManutencaoPreventiva
@@ -617,6 +876,14 @@ class PecaManutencaoViewSet(viewsets.ModelViewSet):
     from ..serializers import PecaManutencaoSerializer
     queryset = PecaManutencao.objects.all().order_by('-data_registro')
     serializer_class = PecaManutencaoSerializer
+
+class AlarmeEmsEventViewSet(viewsets.ModelViewSet):
+    queryset = AlarmeEmsEvent.objects.all()
+    serializer_class = AlarmeEmsEventSerializer
+
+    def perform_create(self, serializer):
+        user_name = self.request.user.get_full_name() or self.request.user.username if self.request.user.is_authenticated else 'Sistema'
+        serializer.save(usuario_registrador=user_name)
         
        
         
@@ -993,7 +1260,9 @@ class PecaManutencaoViewSet(viewsets.ModelViewSet):
 #         'totalizacao': totalizacao_elev
 #     })
 
-    
-    
-    
+from ..models.elev_so_model import ElevadorParadaHistorico
+from ..serializers import ElevadorParadaHistoricoSerializer
 
+class ElevadorParadaHistoricoViewSet(viewsets.ModelViewSet):
+    queryset = ElevadorParadaHistorico.objects.all().order_by('-data_hora_parada')
+    serializer_class = ElevadorParadaHistoricoSerializer

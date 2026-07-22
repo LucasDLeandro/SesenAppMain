@@ -110,6 +110,16 @@ class ContratoViewSet(viewsets.ModelViewSet):
     serializer_class = ContratoSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        qs = super().get_queryset()
+        app_vinculado = self.request.query_params.get('app_vinculado')
+        categoria = self.request.query_params.get('categoria')
+        if app_vinculado:
+            qs = qs.filter(categoria__contains=app_vinculado) # Backward compatibility
+        if categoria:
+            qs = qs.filter(categoria__contains=categoria)
+        return qs
+
 class MedicaoMensalViewSet(viewsets.ModelViewSet):
     queryset = MedicaoMensal.objects.all().order_by('-created_at')
     serializer_class = MedicaoMensalSerializer

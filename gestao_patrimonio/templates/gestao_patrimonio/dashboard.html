@@ -3,13 +3,9 @@
 
 {% block painel_servicos %}
 <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
-<style>
-    .dashboard-header { background: linear-gradient(135deg, #1A2980 0%, #26D0CE 100%); color: white; padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
-    .status-badge { padding: 5px 12px; border-radius: 20px; font-weight: 600; font-size: 0.85rem; }
-    .custom-modern-table { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-</style>
+<link rel="stylesheet" href="{% static 'gestao_patrimonio/css/dashboard_patrimonio.css' %}?v=1.0">
 
-<div class="dashboard-header d-flex justify-content-between align-items-center">
+<div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <div>
         <h2 class="fw-bold mb-0">Gestão de Patrimônio & Transferências</h2>
         <p class="mb-0 opacity-75">Controle centralizado de movimentações de equipamentos</p>
@@ -65,5 +61,6 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
-<script src="{% static 'js/transferencias_dashboard.js' %}"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="{% static 'js/transferencias_dashboard.js' %}"></script>
 {% endblock %}

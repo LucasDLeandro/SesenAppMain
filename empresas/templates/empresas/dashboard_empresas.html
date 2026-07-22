@@ -6,46 +6,7 @@
 {% block extra_css %}
     <!-- DataTables CSS via CDN -->
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
-    <style>
-        .dashboard-header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            border-radius: 12px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .form-section-title {
-            color: #2c3e50;
-            font-weight: 700;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        .contatos-section {
-            border-top: 2px solid #e9ecef;
-            padding-top: 15px;
-            margin-top: 15px;
-        }
-        .contato-card {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: var(--bg-main);
-            transition: box-shadow 0.2s;
-        }
-        .contato-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        .contato-card .btn-remove-contato {
-            opacity: 0.5;
-            transition: opacity 0.2s;
-        }
-        .contato-card:hover .btn-remove-contato {
-            opacity: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'empresas/css/dashboard_empresas.css' %}?v=1.0">
 {% endblock %}
 
 {% block painel_contratos %}
@@ -54,7 +15,7 @@
             
             <!-- Cabeçalho -->
             <div class="dashboard-header mb-4">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
                         <h2 class="fw-bold mb-1"><i class="bi bi-building me-3"></i>Gestão de Empresas</h2>
                         <p class="mb-0 opacity-75">Cadastro e gerenciamento de empresas e seus contatos.</p>
@@ -99,68 +60,84 @@
     <!-- Modal Nova/Editar Empresa -->
     <div class="modal fade" id="modal-empresa" tabindex="-1" aria-labelledby="modalEmpresaLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg bg-body">
-                <div class="modal-header border-0 pb-0 pt-4 px-4">
-                    <h5 class="modal-title fw-bold text-primary" id="modalEmpresaLabel">
-                        <i class="bi bi-building me-2"></i> <span id="empresaModalTitle">Nova Empresa</span>
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold" id="modalEmpresaLabel" style="color: #0f172a;">
+                        <i class="bi bi-building text-primary me-2"></i> <span id="empresaModalTitle">Nova Empresa</span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4">
+                <div class="modal-body px-4 pb-4 pt-4">
                     <form id="form-empresa">
                         {% csrf_token %}
                         <input type="hidden" id="empresa_id" name="id">
                         
-                        <div class="row g-3">
-                            <div class="col-md-5">
-                                <label class="form-label fw-bold">Nome da Empresa *</label>
-                                <input type="text" class="form-control format-text" id="empresa_nome" name="nome_empresa" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">CNPJ *</label>
-                                <input type="text" class="form-control mask-cnpj" id="empresa_cnpj" name="cnpj" required>
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-bold">Ramo/Classificação</label>
-                                <input type="text" class="form-control format-text" id="empresa_classificacao" name="classificacao" placeholder="Ex: Telefonia, Petróleo">
-                            </div>
-                            
-                            <div class="col-12">
-                                <label class="form-label fw-bold">Cargo/Função Principal</label>
-                                <input type="text" class="form-control format-text" id="empresa_cargo" name="cargo" placeholder="Ex: Gestor de Contratos">
-                            </div>
-                            
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">CEP</label>
-                                <input type="text" class="form-control mask-cep" id="empresa_cep" name="cep">
-                            </div>
-                            <div class="col-md-7">
-                                <label class="form-label fw-bold">Rua</label>
-                                <input type="text" class="form-control format-text" id="empresa_rua" name="rua">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-bold">Número</label>
-                                <input type="text" class="form-control format-text" id="empresa_numero" name="numero">
-                            </div>
-                            
-                            <div class="col-md-5">
-                                <label class="form-label fw-bold">Bairro</label>
-                                <input type="text" class="form-control format-text" id="empresa_bairro" name="bairro">
-                            </div>
-                            <div class="col-md-5">
-                                <label class="form-label fw-bold">Cidade</label>
-                                <input type="text" class="form-control format-text" id="empresa_cidade" name="cidade">
-                            </div>
-                            <div class="col-md-2">
-                                <label class="form-label fw-bold">Estado</label>
-                                <input type="text" class="form-control format-text" id="empresa_estado" name="estado">
+        <!-- Dados Principais -->
+                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                    <i class="bi bi-info-circle me-2 fs-6"></i> Dados Principais
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-md-5">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome da Empresa <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_nome" name="nome_empresa" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >CNPJ <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control  mask-cnpj shadow-none" id="empresa_cnpj" name="cnpj" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Ramo / Classificação</label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_classificacao" name="classificacao" placeholder="Ex: Telefonia, Petróleo" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <!-- Endereço -->
+                        <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                            <div class="card-body p-3">
+                                <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                    <i class="bi bi-geo-alt me-2 fs-6"></i> Endereço
+                                </h6>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >CEP</label>
+                                        <input type="text" class="form-control  mask-cep shadow-none" id="empresa_cep" name="cep" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-7">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Rua</label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_rua" name="rua" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Número</label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_numero" name="numero" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    
+                                    <div class="col-md-5">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Bairro</label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_bairro" name="bairro" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Cidade</label>
+                                        <input type="text" class="form-control  format-text shadow-none" id="empresa_cidade" name="cidade" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Estado</label>
+                                        <input type="text" class="form-control  format-text shadow-none text-uppercase" id="empresa_estado" name="estado" maxlength="2" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </form>
                 </div>
-                <div class="modal-footer border-0 px-4 pb-4">
-                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="salvarEmpresa()">Salvar Empresa</button>
+                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;" onclick="salvarEmpresa()">
+                        <i class="bi bi-save me-2"></i> Salvar Empresa
+                    </button>
                 </div>
             </div>
         </div>
@@ -190,7 +167,14 @@
                                         <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome do Contato *" required>
                                     </div>
                                     <div class="col-md-4">
-                                        <input type="text" class="form-control format-text" id="contato_cargo" placeholder="Cargo na Empresa">
+                                        <select class="form-select" id="contato_cargo" required>
+                                            <option value="" disabled selected>Cargo na Empresa *</option>
+                                            <option value="Gerência">Gerência</option>
+                                            <option value="Supervisor">Supervisor</option>
+                                            <option value="Administrativo">Administrativo</option>
+                                            <option value="Preposto">Preposto</option>
+                                            <option value="Técnico">Técnico</option>
+                                        </select>
                                     </div>
                                     <div class="col-md-3">
                                         <input type="email" class="form-control" id="contato_email" placeholder="E-mail">
@@ -232,6 +216,7 @@
 {% block extra_js %}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{% static 'empresas/js/dashboard_empresas.js' %}?v=2.0"></script>
 {% endblock %}

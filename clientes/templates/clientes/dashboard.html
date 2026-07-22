@@ -1,5 +1,6 @@
 {% extends 'clientes/base_clientes.html' %}
 
+{% load static %}
 {% block clientes_content %}
 <div class="row g-4 mb-4">
     <!-- Métricas -->
@@ -61,62 +62,18 @@
 {% block extra_js %}
 <!-- Adiciona o Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'clientes/js/dashboard.js' %}?v=1.0"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Dados vindos da View
         const tiposLabels = JSON.parse('{{ tipos_labels|safe }}');
         const tiposData = JSON.parse('{{ tipos_data|safe }}');
-        
         const clientesLabels = JSON.parse('{{ clientes_labels|safe }}');
         const valoresData = JSON.parse('{{ valores_data|safe }}');
 
-        // Configuração Gráfico de Tipos
-        const ctxTipo = document.getElementById('tipoChart').getContext('2d');
-        new Chart(ctxTipo, {
-            type: 'doughnut',
-            data: {
-                labels: tiposLabels.map(l => l.toUpperCase()),
-                datasets: [{
-                    data: tiposData,
-                    backgroundColor: ['#0d6efd', '#198754', '#0dcaf0', '#ffc107'],
-                    borderWidth: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
-            }
-        });
-
-        // Configuração Gráfico de Valores
-        const ctxValor = document.getElementById('valorChart').getContext('2d');
-        new Chart(ctxValor, {
-            type: 'bar',
-            data: {
-                labels: clientesLabels,
-                datasets: [{
-                    label: 'Valor Total (R$)',
-                    data: valoresData,
-                    backgroundColor: '#6610f2',
-                    borderRadius: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4] }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
+        if (typeof initDashboardClientes === 'function') {
+            initDashboardClientes(tiposLabels, tiposData, clientesLabels, valoresData);
+        }
     });
 </script>
 {% endblock %}

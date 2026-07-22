@@ -71,11 +71,68 @@ function abrirModalElevSolicitar() {
 
 function abrirModalElevConcluir(id_os, protocolo) {
     document.getElementById('id_oculto_elev_os_concluir').value = id_os
-    document.getElementById('id_protocolo_concluir_os').value = protocolo
+    
+    // Set field values
+    const inputProtocolo = document.getElementById('id_protocolo');
+    if (inputProtocolo) inputProtocolo.value = protocolo;
 
-    //const urlElevConcluirOsReal = urlElevConcluirOsBase.replace('/0/', `/${id_os}/`)
     const urlElevConcluirOsReal = `/elevadores/api/elevadoress/${id_os}/concluir_elev_os/`
     form_os_concluir.action = urlElevConcluirOsReal
+
+    const modalAbertasNode = document.getElementById('modal-lista-abertas-elev');
+    if (modalAbertasNode) {
+        const modalAbertas = bootstrap.Modal.getInstance(modalAbertasNode);
+        if (modalAbertas) modalAbertas.hide();
+    }
+    
+    // Fetch read-only info
+    const loadingInfo = document.getElementById('concluirLoadingInfo');
+    const dadosInfo = document.getElementById('concluirDadosInfo');
+    
+    if (loadingInfo && dadosInfo) {
+        loadingInfo.classList.remove('d-none');
+        dadosInfo.classList.add('d-none');
+        
+        fetch(`/elevadores/api/elevadoress/${id_os}/`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('concluirReadonlyProtocolo').value = data.protocolo || '';
+                document.getElementById('concluirReadonlyElevador').value = data.elevador || '';
+                
+                if(data.data_hora) {
+                    const dt = new Date(data.data_hora);
+                    document.getElementById('concluirReadonlyDataAbertura').value = dt.toLocaleString('pt-BR');
+                }
+                
+                document.getElementById('concluirReadonlyOcorrencia').value = data.ocorrencia || '';
+                
+                // Pre-fill fields from Registrar Chegada
+                if(data.data_hora_chegada) {
+                    const dtC = new Date(data.data_hora_chegada);
+                    const dtChegada = new Date(dtC.getTime() - (dtC.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                    const fieldChegada = document.getElementById('id_data_hora_chegada');
+                    if (fieldChegada) fieldChegada.value = dtChegada;
+                } else {
+                    const fieldChegada = document.getElementById('id_data_hora_chegada');
+                    if (fieldChegada) fieldChegada.value = '';
+                }
+
+                if(data.tecnico) {
+                    const fieldTecnico = document.getElementById('concluirTecnicoOS');
+                    if (fieldTecnico) fieldTecnico.value = data.tecnico;
+                } else {
+                    const fieldTecnico = document.getElementById('concluirTecnicoOS');
+                    if (fieldTecnico) fieldTecnico.value = '';
+                }
+                
+                loadingInfo.classList.add('d-none');
+                dadosInfo.classList.remove('d-none');
+            })
+            .catch(err => {
+                console.error("Erro ao buscar detalhes da OS: ", err);
+                loadingInfo.innerHTML = '<span class="text-danger">Erro ao carregar dados.</span>';
+            });
+    }
 
     modal_os_concluir.show()
 }
@@ -86,6 +143,45 @@ const hora_conclusao = document.getElementById('id_data_hora_conclusao')
 hora_chegada.addEventListener('change', function() {
     hora_conclusao.value = hora_chegada.value
 })
+
+const houveSubstituicaoPecas = document.getElementById('id_houve_substituicao_pecas');
+const containerPecaSubstituida = document.getElementById('container-peca-substituida');
+const pecaSubstituidaInput = document.getElementById('id_peca_substituida');
+
+if (houveSubstituicaoPecas) {
+    houveSubstituicaoPecas.addEventListener('change', function() {
+        if (this.value === 'Sim_Imediata' || this.value === 'Sim_Posterior' || this.value.startsWith('Sim')) {
+            containerPecaSubstituida.style.display = 'block';
+            pecaSubstituidaInput.required = true;
+        } else {
+            containerPecaSubstituida.style.display = 'none';
+            pecaSubstituidaInput.required = false;
+            pecaSubstituidaInput.value = '';
+        }
+    });
+}
+
+// Lógica para Justificativa de Parada
+const selectElevadorParado = document.querySelector('#form-os-concluir select[name="elevador_parado"]');
+const containerJustificativaParada = document.getElementById('container-justificativa-parada');
+const justificativaParadaInput = document.getElementById('id_justificativa_parada');
+
+if (selectElevadorParado) {
+    selectElevadorParado.addEventListener('change', function() {
+        if (this.value === 'PARADO') {
+            containerJustificativaParada.style.display = 'block';
+            if (justificativaParadaInput) justificativaParadaInput.required = true;
+        } else {
+            containerJustificativaParada.style.display = 'none';
+            if (justificativaParadaInput) {
+                justificativaParadaInput.required = false;
+                justificativaParadaInput.value = '';
+            }
+        }
+    });
+    // Dispara no carregamento inicial caso venha preenchido
+    selectElevadorParado.dispatchEvent(new Event('change'));
+}
 
 form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
     evento_elev_criar_os.preventDefault();
@@ -144,17 +240,16 @@ form_os_concluir.addEventListener('submit', async function(evento_elev_concluir_
 
         const dados = await resposta.json();
         if (resposta.ok && dados.sucesso) {
+            modal_os_concluir.hide();
             await Swal.fire({
                 title: "Sucesso!",
-                text: "A Ordem de Serviço, foi salva com sucesso",
+                text: "A Ordem de Serviço foi salva com sucesso.",
                 icon: "success"
-            })
-            modal_os_concluir.hide()
-            window.location.reload()
+            });
+            window.location.reload();
         } else {
-            console.log("Erros encontrados no formulário: ", dados.erros)
-            modal_os_concluir.hide()
-            Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos", "error")
+            console.log("Erros encontrados no formulário: ", dados);
+            Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos.", "error");
         }
 
     } catch (erro) {
@@ -171,12 +266,59 @@ function abrirModalListaAbertasElev() {
     modalLista.show();
 }
 
-function abrirModalVisualizarElev(protocolo, data_hora, elevador, ocorrencia, aprisionamento, solicitante, atendente, status, parado, chegada, saida, tmpChegada, tmpSaida, tecnico, componente, subcomponente, servico) {
+function abrirModalVisualizarElev(protocolo, data_hora, elevador, ocorrencia, aprisionamento, solicitante, atendente, status, parado, chegada, saida, tmpChegada, tmpSaida, tecnico, componente, subcomponente, servico, midia) {
     // Esconde o modal de lista se estiver aberto para não conflitar
     const modalListaEl = document.getElementById('modal-lista-abertas-elev');
     if (modalListaEl && modalListaEl.classList.contains('show')) {
         const modalLista = bootstrap.Modal.getInstance(modalListaEl);
         if (modalLista) modalLista.hide();
+    }
+
+    // Mídia
+    const midiaSecao = document.getElementById('vis-elev-secao-midia');
+    const previewBox = document.getElementById('vis-elev-midia-preview-box');
+    const downloadBtn = document.getElementById('vis-elev-midia-download-btn');
+    const filenameEl = document.getElementById('vis-elev-midia-filename');
+    const typeEl = document.getElementById('vis-elev-midia-type');
+    const iconEl = document.getElementById('vis-elev-midia-icon');
+    
+    if (midia) {
+        midiaSecao.classList.remove('d-none');
+        downloadBtn.href = midia;
+        
+        const fileName = midia.split('/').pop().split('?')[0];
+        filenameEl.innerText = fileName;
+        
+        const ext = fileName.split('.').pop().toLowerCase();
+        let iconClass = 'bi-file-earmark';
+        let typeName = 'Arquivo';
+        
+        if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+            iconClass = 'bi-file-earmark-image';
+            typeName = 'Imagem';
+        } else if (['pdf'].includes(ext)) {
+            iconClass = 'bi-file-earmark-pdf';
+            typeName = 'Documento PDF';
+        } else if (['doc', 'docx'].includes(ext)) {
+            iconClass = 'bi-file-earmark-word';
+            typeName = 'Documento Word';
+        } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
+            iconClass = 'bi-file-earmark-play';
+            typeName = 'Vídeo';
+        }
+        
+        iconEl.innerHTML = `<i class="bi ${iconClass}"></i>`;
+        typeEl.innerText = typeName;
+        
+        previewBox.onclick = function() {
+            if (typeof window.openGenericFileViewer === 'function') {
+                window.openGenericFileViewer(midia, fileName);
+            } else {
+                window.open(midia, '_blank');
+            }
+        };
+    } else {
+        midiaSecao.classList.add('d-none');
     }
 
     // Preenche os dados gerais
@@ -286,6 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Inicializa DataTable
         if (typeof DataTable !== 'undefined') {
             new DataTable(tabelaModalEl, {
+                responsive: true,
                 info: true,
                 language: {
                     "sEmptyTable": "Nenhum registro encontrado",

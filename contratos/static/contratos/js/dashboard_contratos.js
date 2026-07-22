@@ -57,6 +57,7 @@ $(document).ready(function() {
     });
 
     tabelaContratos = $('#tabela-contratos').DataTable({
+        responsive: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json"
         },
@@ -122,6 +123,7 @@ $(document).ready(function() {
     carregarContratacoesCards();
 
     let tabelaTramitacoes = $('#tabela-tramitacoes').DataTable({
+        responsive: true,
         language: { url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json" },
         ajax: { url: '/contratos/api/tramitacoes/', dataSrc: '' },
         columns: [
@@ -150,6 +152,45 @@ $(document).ready(function() {
     $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
         $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
     });
+    // Mostrar/esconder bloco de subcategorias ao marcar/desmarcar Manutenção Predial
+    $('#cat_predial').on('change', function() {
+        if ($(this).is(':checked')) {
+            $('#bloco_subcategorias').slideDown();
+        } else {
+            $('#bloco_subcategorias').slideUp();
+            $('input[name="subcategoria"]').prop('checked', false);
+        }
+    });
+
+    // IMask para valor global
+    const valorGlobalEl = document.getElementById('valor');
+    if (valorGlobalEl) {
+        window.valorGlobalMask = IMask(valorGlobalEl, {
+            mask: Number,
+            scale: 2,
+            signed: false,
+            thousandsSeparator: '.',
+            padFractionalZeros: true,
+            normalizeZeros: true,
+            radix: ',',
+            mapToRadix: ['.']
+        });
+    }
+
+    // IMask para valor mensal estimado
+    const valorMensalEl = document.getElementById('valor_mensal_estimado');
+    if (valorMensalEl) {
+        window.valorMensalMask = IMask(valorMensalEl, {
+            mask: Number,
+            scale: 2,
+            signed: false,
+            thousandsSeparator: '.',
+            padFractionalZeros: true,
+            normalizeZeros: true,
+            radix: ',',
+            mapToRadix: ['.']
+        });
+    }
 
     // Inicializar IMask para valor previsto
     const valorPrevistoEl = document.getElementById('valor_previsto');
@@ -165,6 +206,7 @@ $(document).ready(function() {
             mapToRadix: ['.']
         });
     }
+
 });
 
 function formatDate(dateStr) {
@@ -177,13 +219,20 @@ function abrirModalNovoContrato() {
     $('#form-contrato')[0].reset();
     $('#contrato_id').val('');
     $('#contrato_empresa').val('').trigger('change');
+    $('input[name="categoria"]').prop('checked', false);
+    $('input[name="subcategoria"]').prop('checked', false);
+    $('#bloco_subcategorias').hide();
     $('#processo_licitatorio').val('');
-    $('#valor_mensal_estimado').val('');
-    $('#gestor_titular').val('');
-    $('#gestor_substituto').val('');
-    $('#fiscal_titular').val('');
-    $('#fiscal_substituto').val('');
-    $('#modalContratoTitle').html('<i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Contrato');
+    
+    // Reset IMask values
+    if (window.valorGlobalMask) window.valorGlobalMask.value = '';
+    if (window.valorMensalMask) window.valorMensalMask.value = '';
+    
+    $('#fiscal_tecnico_titular').val('');
+    $('#fiscal_tecnico_substituto').val('');
+    $('#fiscal_admin_titular').val('');
+    $('#fiscal_admin_substituto').val('');
+    $('#modalContratoTitle').text('Novo Contrato');
     $('#modal-contrato').modal('show');
 }
 
@@ -191,18 +240,41 @@ function editarContrato(id) {
     $.get(`/contratos/api/contratos/${id}/`, function(data) {
         $('#contrato_id').val(data.id);
         $('#contrato_empresa').val(data.empresa).trigger('change');
+        
+        $('input[name="categoria"]').prop('checked', false);
+        $('input[name="subcategoria"]').prop('checked', false);
+        
+        if(Array.isArray(data.categoria)) {
+            data.categoria.forEach(cat => {
+                $(`input[name="categoria"][value="${cat}"]`).prop('checked', true);
+            });
+        }
+        
+        if ($('#cat_predial').is(':checked')) {
+            $('#bloco_subcategorias').show();
+            if(Array.isArray(data.subcategoria)) {
+                data.subcategoria.forEach(sub => {
+                    $(`input[name="subcategoria"][value="${sub}"]`).prop('checked', true);
+                });
+            }
+        } else {
+            $('#bloco_subcategorias').hide();
+        }
+
         $('#processo_licitatorio').val(data.processo_licitatorio || '');
         $('#num_contrato').val(data.num_contrato);
         $('#inicio_vigencia').val(data.inicio_vigencia);
         $('#termino_vigencia').val(data.termino_vigencia);
         $('#objeto').val(data.objeto);
-        $('#valor').val(data.valor);
-        $('#valor_mensal_estimado').val(data.valor_mensal_estimado);
         
-        $('#gestor_titular').val(data.gestor_titular || '');
-        $('#gestor_substituto').val(data.gestor_substituto || '');
-        $('#fiscal_titular').val(data.fiscal_titular || '');
-        $('#fiscal_substituto').val(data.fiscal_substituto || '');
+        // Tratar máscara de valores
+        if(window.valorGlobalMask) { window.valorGlobalMask.unmaskedValue = String(data.valor || ''); } else { $('#valor').val(data.valor); }
+        if(window.valorMensalMask) { window.valorMensalMask.unmaskedValue = String(data.valor_mensal_estimado || ''); } else { $('#valor_mensal_estimado').val(data.valor_mensal_estimado); }
+        
+        $('#fiscal_tecnico_titular').val(data.fiscal_tecnico_titular || '');
+        $('#fiscal_tecnico_substituto').val(data.fiscal_tecnico_substituto || '');
+        $('#fiscal_admin_titular').val(data.fiscal_admin_titular || '');
+        $('#fiscal_admin_substituto').val(data.fiscal_admin_substituto || '');
         
         $('#sei_processo').val(data.sei_processo);
         $('#sei_dod').val(data.sei_dod);
@@ -212,7 +284,7 @@ function editarContrato(id) {
         $('#sei_fiscais').val(data.sei_fiscais);
         $('#status').val(data.status);
         
-        $('#modalContratoTitle').html('<i class="bi bi-pencil me-2 text-primary"></i>Editar Contrato');
+        $('#modalContratoTitle').text('Editar Contrato');
         $('#modal-contrato').modal('show');
     });
 }
@@ -227,19 +299,29 @@ function salvarContrato() {
 
     const id = $('#contrato_id').val();
     
+    let categoriasArr = [];
+    $('input[name="categoria"]:checked').each(function() { categoriasArr.push($(this).val()); });
+    let subcategoriasArr = [];
+    $('input[name="subcategoria"]:checked').each(function() { subcategoriasArr.push($(this).val()); });
+
+    const rawValor = window.valorGlobalMask ? window.valorGlobalMask.unmaskedValue : $('#valor').val().replace(/\./g, '').replace(',', '.');
+    const rawValorMensal = window.valorMensalMask ? window.valorMensalMask.unmaskedValue : $('#valor_mensal_estimado').val().replace(/\./g, '').replace(',', '.');
+
     const data = {
         empresa: $('#contrato_empresa').val(),
+        categoria: categoriasArr,
+        subcategoria: subcategoriasArr,
         processo_licitatorio: $('#processo_licitatorio').val() || null,
         num_contrato: $('#num_contrato').val(),
         inicio_vigencia: $('#inicio_vigencia').val(),
         termino_vigencia: $('#termino_vigencia').val(),
         objeto: $('#objeto').val(),
-        valor: $('#valor').val(),
-        valor_mensal_estimado: $('#valor_mensal_estimado').val() || 0,
-        gestor_titular: $('#gestor_titular').val(),
-        gestor_substituto: $('#gestor_substituto').val(),
-        fiscal_titular: $('#fiscal_titular').val(),
-        fiscal_substituto: $('#fiscal_substituto').val(),
+        valor: rawValor,
+        valor_mensal_estimado: rawValorMensal || 0,
+        fiscal_tecnico_titular: $('#fiscal_tecnico_titular').val(),
+        fiscal_tecnico_substituto: $('#fiscal_tecnico_substituto').val(),
+        fiscal_admin_titular: $('#fiscal_admin_titular').val(),
+        fiscal_admin_substituto: $('#fiscal_admin_substituto').val(),
         sei_processo: $('#sei_processo').val(),
         sei_dod: $('#sei_dod').val(),
         sei_etp: $('#sei_etp').val(),

@@ -3,6 +3,7 @@ from rest_framework import serializers
 from decimal import Decimal
 
 from .models import ElevOrderReg
+from .models.elev_so_model import AlarmeEmsEvent, ElevadorParadaHistorico
 
 from .utils import calc_hrs_uteis_parado
 
@@ -12,25 +13,24 @@ class ElevRegistrarOsSerializer(serializers.ModelSerializer):
         model = ElevOrderReg
         fields = [
             'data_hora',
-            'protocolo',
             'elevador',
             'tipo_chamado',
             'aprisionamento',
             'ocorrencia',
             'atendente',
             'solicitante',
+            'alarme_ems',
             'elevador_parado',
-            'status'
+            'status',
+            'midia'
         ]
 
     def validate_aprisionamento(self, value):
-        print(value)
-        if value == '1':
+        if value == 'True':
             return True
-        elif value == '2':
+        elif value == 'False':
             return False
-        else:
-            return None
+        return None
 
     
 
@@ -47,7 +47,9 @@ class ElevConcluirOsSerializer(serializers.ModelSerializer):
             'servico',
             'elevador',
             'elevador_parado',
+            'justificativa_parada',
             'status',
+            'midia'
         ]
 
         read_only_fields = ['id', 'protocolo', 'elevador', 'tipo_chamado']
@@ -78,6 +80,13 @@ class DashboardFiltroSerializer(serializers.Serializer):
     dia = serializers.IntegerField(required=False)
     elev = serializers.CharField(required=False)
 
+class AlarmeEmsEventSerializer(serializers.ModelSerializer):
+    elevador_display = serializers.CharField(source='get_elevador_display', read_only=True)
+    
+    class Meta:
+        model = AlarmeEmsEvent
+        fields = '__all__'
+
 class ElevadorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ElevOrderReg
@@ -93,4 +102,11 @@ class ManutencaoPreventivaSerializer(serializers.ModelSerializer):
 class PecaManutencaoSerializer(serializers.ModelSerializer):
     class Meta:
         model = PecaManutencao
+        fields = '__all__'
+
+class ElevadorParadaHistoricoSerializer(serializers.ModelSerializer):
+    elevador_display = serializers.CharField(source='get_elevador_display', read_only=True)
+
+    class Meta:
+        model = ElevadorParadaHistorico
         fields = '__all__'

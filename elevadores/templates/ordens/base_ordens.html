@@ -4,6 +4,9 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'elevadores/css/form_ordens_modal.css' %}">
     <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/3.0.1/css/responsive.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 {% endblock %}
 
 {% block sidebar_toggle %}
@@ -23,6 +26,9 @@
     {% include 'ordens/includes/form_visualizar_os_elev_modal.html' %}
     {% include 'ordens/includes/form_ordens_modal_registrar.html' %}
     {% include 'ordens/includes/form_ordens_modal_concluir.html' %}
+    {% include 'ordens/includes/form_alarme_ems_modal.html' %}
+    {% include 'ordens/includes/modal_historico_elevador.html' %}
+    {% include 'ordens/includes/modal_historico_detalhe_evento.html' %}
 
 {% endblock %}
 
@@ -35,8 +41,11 @@
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
-    <script type="module" src="{% static 'elevadores/js/elevadores/list_elevadores.js' %}"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script type="module" src="{% static 'elevadores/js/elevadores/list_elevadores.js' %}?v=2"></script>
     <script src="{% static 'elevadores/js/elevadores/os_modal_form.js' %}"></script>
-    <script type="module" src="{% static 'elevadores/js/elevadores/elev_dashboard.js' %}"></script>
-    <script src="{% static 'elevadores/js/elevadores/pecas_mpm.js' %}"></script>
+    <script type="module" src="{% static 'elevadores/js/elevadores/elev_dashboard.js' %}?v=1.8"></script>
+    <script src="{% static 'elevadores/js/elevadores/pecas_mpm.js' %}?v=1.8"></script>
 {% endblock %}

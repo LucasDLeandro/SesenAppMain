@@ -1,0 +1,169 @@
+<div class="modal fade modal-ordens-wrapper" id="elev-edit-os-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-pencil fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Editar Chamado (OS)</h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="elev-edit-os-form" enctype="multipart/form-data">
+          <input type="hidden" id="edit_os_id" name="id">
+
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <!-- Informações Básicas -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-info-circle me-2"></i> Informações Básicas
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-7">
+                                <label class="form-label small fw-bold text-muted text-nowrap">Data/Hora</label>
+                                <input type="datetime-local" class="form-control" id="edit_os_data_hora" name="data_hora" required>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted">Protocolo</label>
+                                <input type="text" class="form-control" id="edit_os_protocolo" name="protocolo" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Solicitante</label>
+                                <input type="text" class="form-control" id="edit_os_solicitante" name="solicitante" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Atendente</label>
+                                <input type="text" class="form-control" id="edit_os_atendente" name="atendente">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhes do Elevador -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-elevator me-2"></i> Detalhes do Equipamento
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Elevador</label>
+                                <select class="form-select" id="edit_os_elevador" name="elevador" required>
+                                    <option value="" selected disabled>Selecione...</option>
+                                    <option value="Social 1 - M2674">Social 1 - M2674</option>
+                                    <option value="Social 2 - M2675">Social 2 - M2675</option>
+                                    <option value="Social 3 - M2676">Social 3 - M2676</option>
+                                    <option value="Social 4 - M2677">Social 4 - M2677</option>
+                                    <option value="Social 5 - M2678">Social 5 - M2678</option>
+                                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
+                                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
+                                    <option value="Social 8 - M2681">Social 8 - M2681</option>
+                                    <option value="Social 9 - M2682">Social 9 - M2682</option>
+                                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
+                                    <option value="Social 11 - M2684">Social 11 - M2684</option>
+                                    <option value="Social 12 - M2685">Social 12 - M2685</option>
+                                    <option value="Social 13 - M2686">Social 13 - M2686</option>
+                                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Elevador Parado?</label>
+                                <select class="form-select" id="edit_os_elevador_parado" name="elevador_parado">
+                                    <option value="PARADO">Sim</option>
+                                    <option value="ATIVO">Não</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Aprisionamento?</label>
+                                <div class="form-check mt-2">
+                                    <input class="form-check-input" type="checkbox" id="edit_os_aprisionamento" name="aprisionamento">
+                                    <label class="form-check-label" for="edit_os_aprisionamento">Com Aprisionamento</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                
+                <!-- Ocorrência -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-chat-text me-2"></i> Descrição
+                        </h6>
+                        <div class="flex-grow-1 d-flex flex-column">
+                            <label class="form-label small fw-bold text-muted">Ocorrência</label>
+                            <textarea class="form-control flex-grow-1" id="edit_os_ocorrencia" name="ocorrencia" rows="5" required></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhes Finais (Status / Manutenção) -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-tools me-2"></i> Execução
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Status</label>
+                                <select class="form-select" id="edit_os_status" name="status">
+                                    <option value="ABERTA">ABERTA</option>
+                                    <option value="CONCLUIDA">CONCLUIDA</option>
+                                    <option value="AGUARDANDO PECA">AGUARDANDO PECA</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Técnico</label>
+                                <select class="form-select" id="edit_os_tecnico" name="tecnico" required>
+                                    <option value="" selected disabled>Selecione o técnico</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Anexo / Mídia -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-paperclip me-2"></i> Anexo / Mídia
+                        </h6>
+                        <label for="edit_os_midia" class="form-label small fw-bold text-muted">Substituir / Adicionar Arquivo (Opcional)</label>
+                        <input type="file" class="form-control" id="edit_os_midia" name="midia">
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            Formatos suportados: Imagens, PDF, Word, Excel, etc.
+                        </small>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-warning rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-check-lg me-2"></i> Salvar Edição</button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>

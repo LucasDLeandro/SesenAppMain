@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_contato_modal.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_template_modal.css' %}">
+    
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 {% endblock %}
 
 
@@ -88,83 +92,159 @@
 
         <!-- Aba 2: Diretório de Contatos -->
         <div class="tab-pane fade" id="contacts-content" role="tabpanel" aria-labelledby="contacts-tab">
+            <link rel="stylesheet" href="{% static 'notificacoes/css/gerenciar_contatos.css' %}?v=1.0">
+
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold m-0 text-body">Contatos Cadastrados</h4>
-                <button class="btn btn-primary shadow-sm" id="btn-novo-contato">
-                    <i class="bi bi-plus-lg me-2"></i>Novo Contato
-                </button>
+                <div>
+                    <h4 class="fw-bold m-0 text-body">Diretório de Contatos</h4>
+                    <p class="text-muted small m-0 mt-1">Veja os contatos cadastrados no sistema.</p>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-primary shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modal-editar-contatos" style="border-radius: 8px;">
+                        <i class="bi bi-pencil-square me-2"></i> Editar Contatos
+                    </button>
+                </div>
             </div>
 
-            <!-- Grid de Cards de Contatos -->
-            <div class="row g-4">
-                <!-- Card Contato 1 -->
-                {% for contato in list_contato %}
-                    <div class="col-md-6 col-lg-4" id="card-contato-{{ contato.id }}">
-                        <div class="msg-card-contact shadow-sm">
-                            <!-- Badge Status (Canto Superior Direito) -->
-                            <div class="badge-status-card">
-                                {% if contato.is_ativo %}
-                                    <span class="badge bg-success" id="id-card-status">Ativo</span>
-                                {% else %}
-                                    <span class="badge bg-warning text-dark" id="id-card-status">Inativo</span>
-                                {% endif %}
-                            </div>
-
-                            <!-- Avatar Section -->
-                            <div class="msg-contact-avatar">
-                                <div class="avatar-icon">
-                                    <i class="bi bi-person-fill"></i>
-                                </div>
-                            </div>
-
-                            <!-- Card Body com info do contato -->
-                            <div class="msg-card-body pt-3">
-                                <p class="text-muted small mb-3" id="id-card-id" style="display: none;">{{ contato.id }}</p>
-                                <h6 class="fw-bold m-0 text-body" id="id-card-nome">{{ contato.nome }}</h6>
-                                <p class="text-muted small mb-3 format-telefone" id="id-card-telefone">{{ contato.telefone }}</p>
-                                
-                                <!-- Badge: Role -->
-                                <div class="d-flex justify-content-center mb-3">
-                                    <small class="badge bg-info" id="id-card-role">{{ contato.role }}</small>
-                                </div>
-                            </div>
-
-                            <!-- Footer com botões -->
-                            <div class="msg-card-footer">
-                                <button class="btn btn-sm btn-outline-primary" id="btn-editar-contato" onclick="abrirModalContatoUpdate(
-                                                                                                                    '{{ contato.id }}', 
-                                                                                                                    '{{ contato.nome }}', 
-                                                                                                                    '{{ contato.telefone }}', 
-                                                                                                                    '{{ contato.role }}', 
-                                                                                                                    '{{ contato.is_ativo }}'
-                                                                                                                    )" title="EditarContato">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </button>
-                                <button 
-                                    type="button" 
-                                    class="btn-deletar-contato btn btn-sm btn-outline-danger" 
-                                    title="DeletarContato" 
-                                    data-url-del-contato="{% url 'notificacoes:api_deletar_contato' 0 %}"
-                                    data-del-contato-id='{{ contato.id }}'>
-                                    <i class="bi bi-trash"></i> Deletar
-                                </button>
-                            </div>
-                        </div>
+            <!-- Tabela de Visualização (Read-Only) -->
+            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="ps-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Nome do Contato</th>
+                                    <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Telefone / WhatsApp</th>
+                                    <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Cargo / Função</th>
+                                    <th class="text-center pe-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for contato in list_contato %}
+                                <tr>
+                                    <td class="ps-4 fw-medium text-dark py-3" style="border-bottom: 1px solid #f1f5f9;">
+                                        <i class="bi bi-person-circle text-muted me-2"></i> {{ contato.nome }}
+                                    </td>
+                                    <td class="text-muted format-telefone py-3" style="border-bottom: 1px solid #f1f5f9;">{{ contato.telefone }}</td>
+                                    <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">{{ contato.role|default:"-" }}</td>
+                                    <td class="text-center pe-4 py-3" style="border-bottom: 1px solid #f1f5f9;">
+                                        {% if contato.is_ativo %}
+                                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Ativo</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Inativo</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5 text-muted">
+                                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                                            <i class="bi bi-inbox fs-3 text-secondary"></i>
+                                        </div>
+                                        <h6 class="fw-bold text-dark">Nenhum contato cadastrado</h6>
+                                        <p class="small mb-0">Clique em "Editar Contatos" para adicionar.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
-                {% empty %}
-                    <div class="col-12">
-                        <div class="alert alert-warning mb-0">
-                            <i class="bi bi-exclamation-triangle"></i> Nenhum contato encontrado no banco de dados.
-                        </div>
-                    </div>
-                {% endfor %}
+                </div>
             </div>
         </div>
 
     </div>
 
+    <!-- Modal: Editar Contatos em Lote -->
+    <div class="modal fade" id="modal-editar-contatos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content shadow" style="border-radius: 16px; border: none;">
+                <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
+                    <div>
+                        <h5 class="modal-title fw-bold text-dark"><i class="bi bi-people-fill text-primary me-2"></i> Edição de Contatos</h5>
+                        <p class="text-muted small m-0 mt-1">Adicione, altere ou exclua contatos em formato de planilha.</p>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4">
+                    <div class="d-flex justify-content-end mb-3">
+                        <div class="d-flex gap-2 w-100 justify-content-end">
+                            <button type="button" class="btn btn-outline-primary text-nowrap shadow-sm" id="btn-add-contato-row" style="border-radius: 8px;">
+                                <i class="bi bi-plus-lg me-1"></i> Linha Vazia
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border rounded-3 overflow-hidden mb-2">
+                        <div class="table-responsive" style="max-height: 50vh;">
+                            <table class="table table-borderless table-contacts-premium mb-0" id="tabela-contatos-grid">
+                                <thead>
+                                    <tr>
+                                        <th width="30%" class="ps-4">Nome do Contato</th>
+                                        <th width="20%">Telefone / WhatsApp</th>
+                                        <th width="25%">Cargo / Função</th>
+                                        <th width="15%" class="text-center">Status</th>
+                                        <th width="10%" class="text-center pe-4">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="grid-contatos-body">
+                                    {% for contato in list_contato %}
+                                    <tr data-contato-id="{{ contato.id }}" class="contato-row existing-row">
+                                        <td class="ps-4">
+                                            <div class="input-group input-group-borderless" style="border-radius: 6px;">
+                                                <span class="input-group-text border-end-0 pe-1"><i class="bi bi-person-fill text-muted opacity-50"></i></span>
+                                                <select class="form-select input-borderless border-start-0 ps-1 input-nome fw-medium text-dark select2-nome" style="width: calc(100% - 40px);">
+                                                    <option value="{{ contato.nome }}" selected="selected">{{ contato.nome }}</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control input-borderless input-telefone format-telefone text-muted" value="{{ contato.telefone }}" placeholder="(00) 00000-0000">
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control input-borderless input-role text-muted" value="{{ contato.role }}" placeholder="Cargo/Função">
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch d-inline-block">
+                                                <input class="form-check-input input-ativo fs-5 m-0" type="checkbox" role="switch" style="cursor: pointer;" {% if contato.is_ativo %}checked{% endif %}>
+                                            </div>
+                                        </td>
+                                        <td class="text-center pe-4">
+                                            <button type="button" class="btn btn-sm btn-remove-row-subtle btn-remove-row fs-5" title="Remover"><i class="bi bi-trash3"></i></button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr id="empty-row-message">
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <div class="d-flex flex-column align-items-center justify-content-center">
+                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                                                    <i class="bi bi-person-lines-fill fs-3 text-secondary"></i>
+                                                </div>
+                                                <h6 class="fw-bold text-dark">Nenhum contato cadastrado</h6>
+                                                <p class="small mb-0">Use a busca global acima ou adicione uma linha vazia para começar.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top bg-light p-4 d-flex justify-content-between align-items-center" style="border-radius: 0 0 16px 16px;">
+                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i> As alterações feitas na tabela só serão aplicadas ao salvar.</span>
+                    <div>
+                        <button type="button" class="btn btn-secondary me-2 fw-bold shadow-sm" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                        <button type="button" class="btn btn-success px-4 shadow-sm fw-bold" id="btn-save-all-contatos" style="border-radius: 8px;">
+                            <i class="bi bi-save me-2"></i> Salvar Alterações
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% include 'messages/includes/form_template_modal.html' %}
-    {% include 'messages/includes/form_contato_modal.html' %}
     
 
 
@@ -172,8 +252,13 @@
    
 {% endblock %}
 {% block extra_js %}
+    <!-- jQuery (Required for Select2) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="{% static 'message_service/js/template_modal.js' %}"></script>
-    <script src="{% static 'message_service/js/contato_modal.js' %}"></script>
-    
-
+    <script>
+        window.URL_BULK_CONTATOS = "{% url 'sys_config:bulk_contatos' %}";
+    </script>
+    <script src="{% static 'notificacoes/js/gerenciar_contatos.js' %}?v=1.0"></script>
 {% endblock %}

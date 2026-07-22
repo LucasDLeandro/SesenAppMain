@@ -83,27 +83,40 @@ def montar_email_liberacao(liberacao):
     }
 
 
-def enviar_email_liberacao(liberacao_id):
+def enviar_email_liberacao(liberacao_id, custom_to=None, custom_bcc=None, custom_subject=None, custom_body=None, anexos=None):
     try:
         liberacao = LiberacaoAcessoDiaria.objects.get(id=liberacao_id)
         dados = montar_email_liberacao(liberacao)
 
-        if not dados['pode_enviar']:
+        assunto = custom_subject if custom_subject is not None else dados['assunto']
+        corpo = custom_body if custom_body is not None else dados['corpo']
+        remetente = dados['remetente']
+        destinatario = custom_to if custom_to is not None else dados['destinatario']
+        copia_oculta = custom_bcc if custom_bcc is not None else dados['copia_oculta']
+
+        if not destinatario:
             logger.error(
-                "Template de liberação ativo sem e-mail destinatário configurado (liberação %s).",
+                "Nenhum destinatário configurado para a liberação %s.",
                 liberacao_id,
             )
             return False
 
-        bcc_list = [dados['copia_oculta']] if dados['copia_oculta'] else None
+        bcc_list = [c.strip() for c in copia_oculta.split(',') if c.strip()] if copia_oculta else None
+        to_list = [d.strip() for d in destinatario.split(',') if d.strip()]
 
         email = EmailMessage(
-            subject=dados['assunto'],
-            body=dados['corpo'],
-            from_email=dados['remetente'],
-            to=[dados['destinatario']],
+            subject=assunto,
+            body=corpo,
+            from_email=remetente,
+            to=to_list,
             bcc=bcc_list,
         )
+        
+        # Adiciona os anexos, se existirem
+        if anexos:
+            for anexo in anexos:
+                email.attach(anexo.name, anexo.read(), anexo.content_type)
+
         email.send(fail_silently=False)
 
         liberacao.email_enviado = True

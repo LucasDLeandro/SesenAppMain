@@ -1,78 +1,71 @@
-<div class="modal fade modal-ordens-wrapper" id="modal-solicitacao-telefone" tabindex="-1" aria-labelledby="modalSolicitacaoTitulo" aria-hidden="true">
+<div class="modal fade" id="modal-solicitacao-telefone" tabindex="-1" aria-labelledby="modalSolicitacaoTitulo" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
-          <i class="bi bi-headset me-2"></i> Solicitação de Telefone
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold" style="color: #0f172a;">
+          <i class="bi bi-headset text-primary me-2"></i> Solicitação de Telefone
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <!-- Body do Modal com Formulário -->
-      <div class="modal-body modal-ordens-body">
+      <div class="modal-body px-4 pb-4 pt-4">
         <form id="form-solicitacao-telefone">
           {% csrf_token %}
           <input type="hidden" id="id_oculto_solicitacao" name="id">
 
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-info-circle"></i> Dados da Solicitação
-            </h6>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="data" class="form-label">Data e Hora da Solicitação</label>
-                <input type="datetime-local" class="form-control" id="data" name="data" required>
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="protocolo" class="form-label">Protocolo SEI</label>
-                <input type="text" class="form-control uppercase-text" id="protocolo" name="protocolo" maxlength="20">
-              </div>
-            </div>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-4">
-                <label for="unidade" class="form-label">Unidade</label>
-                <input type="text" class="form-control format-text" id="unidade" name="unidade" maxlength="200">
-              </div>
-              <div class="form-group-modal col-md-4">
-                <label for="sigla_unidade" class="form-label">Sigla</label>
-                <input type="text" class="form-control uppercase-text" id="sigla_unidade" name="sigla_unidade" maxlength="20">
-              </div>
-              <div class="form-group-modal col-md-4">
-                <label for="local" class="form-label">Local</label>
-                <input type="text" class="form-control uppercase-text" id="local" name="local" maxlength="20">
-              </div>
-            </div>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="solicitante" class="form-label">Solicitante</label>
-                <input type="text" class="form-control format-text" id="solicitante" name="solicitante" maxlength="100" required>
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="qnt_solicitada" class="form-label">Qtd. Solicitada</label>
-                <input type="number" class="form-control" id="qnt_solicitada" name="qnt_solicitada" required>
-              </div>
-            </div>
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-12 full-width">
-                <label for="autorizacao_sad" class="form-label">Autorização SAD (Protocolo)</label>
-                <input type="text" class="form-control" id="autorizacao_sad" name="autorizacao_sad" maxlength="20">
+          <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-info-circle me-2 fs-6"></i> Dados da Solicitação
+              </h6>
+              
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="data" class="form-label text-muted fw-bold text-uppercase mb-1" >Data e Hora da Solicitação <span class="text-danger">*</span></label>
+                  <input type="datetime-local" class="form-control  shadow-none" id="data" name="data" required style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-6">
+                  <label for="protocolo" class="form-label text-muted fw-bold text-uppercase mb-1" >Protocolo SEI</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="protocolo" name="protocolo" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                
+                <div class="col-md-4">
+                  <label for="unidade" class="form-label text-muted fw-bold text-uppercase mb-1" >Unidade</label>
+                  <input type="text" class="form-control  format-text shadow-none" id="unidade" name="unidade" maxlength="200" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-4">
+                  <label for="sigla_unidade" class="form-label text-muted fw-bold text-uppercase mb-1" >Sigla</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="sigla_unidade" name="sigla_unidade" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-4">
+                  <label for="local" class="form-label text-muted fw-bold text-uppercase mb-1" >Local</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="local" name="local" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="solicitante" class="form-label text-muted fw-bold text-uppercase mb-1" >Solicitante <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control  format-text shadow-none" id="solicitante" name="solicitante" maxlength="100" required style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-6">
+                  <label for="qnt_solicitada" class="form-label text-muted fw-bold text-uppercase mb-1" >Qtd. Solicitada <span class="text-danger">*</span></label>
+                  <input type="number" class="form-control  shadow-none" id="qnt_solicitada" name="qnt_solicitada" required style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                
+                <div class="col-md-12">
+                  <label for="autorizacao_sad" class="form-label text-muted fw-bold text-uppercase mb-1" >Autorização SAD (Protocolo)</label>
+                  <input type="text" class="form-control  shadow-none" id="autorizacao_sad" name="autorizacao_sad" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
               </div>
             </div>
-            
           </div>
 
-          <!-- Footer com botões -->
-          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              <i class="bi bi-x-lg me-2"></i>Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-lg me-2"></i>Salvar
-            </button>
-          </div>
         </form>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;" form="form-solicitacao-telefone">
+          <i class="bi bi-save me-2"></i> Salvar
+        </button>
       </div>
     </div>
   </div>

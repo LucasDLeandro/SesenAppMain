@@ -53,6 +53,9 @@ class CriarSenhaSerializer(serializers.ModelSerializer):
     class Meta:
         model = CriarSenha
         fields = '__all__'
+        extra_kwargs = {
+            'protocolo': {'validators': []}
+        }
 
 
 class ContratoColaboradorSerializer(serializers.ModelSerializer):

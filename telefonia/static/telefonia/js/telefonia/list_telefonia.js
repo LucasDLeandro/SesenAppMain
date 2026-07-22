@@ -78,6 +78,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 1. Tabela de Solicitações de Aparelhos
     $('#tabela-solicitacoes').DataTable({
+        responsive: true,
         order: [[0, 'desc']],
         ajax: {
             url: '/telefonia/api/solicitacoes/',
@@ -151,6 +152,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 2. Tabela de Solicitações de Senhas
     $('#tabela-senhas').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
         ajax: {
             url: '/telefonia/api/senhas/',
             dataSrc: ''
@@ -182,24 +185,64 @@ document.addEventListener("DOMContentLoaded", function() {
                     return data ? '<span class="text-success fw-bold">Sim</span>' : '<span class="text-secondary">Não</span>';
                 }
             },
+            { 
+                data: 'status',
+                render: function(data) {
+                    if(data === 'recebida') return '<span class="badge bg-primary">Recebida</span>';
+                    if(data === 'aguardando_supervisor') return '<span class="badge bg-warning text-dark">Aguardando Sup.</span>';
+                    if(data === 'finalizada') return '<span class="badge bg-success">Finalizada</span>';
+                    return '<span class="badge bg-secondary">Recebida</span>'; // default retroativo
+                }
+            },
             {
                 data: 'id',
                 orderable: false,
                 className: 'text-end',
                 render: function(data, type, row) {
-                    return `
+                    let buttons = `
                         <div class="d-flex justify-content-end gap-2">
                             <button class="btn btn-sm btn-outline-info shadow-sm" onclick="visualizarSenha(${data})" title="Visualizar Detalhes">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <a href="/telefonia/senha/${data}/pdf/" target="_blank" class="btn btn-sm btn-outline-danger shadow-sm" title="Imprimir Senha Telefônica">
+                    `;
+
+                    // Botão para o Técnico
+                    if (!row.status || row.status === 'recebida') {
+                        buttons += `
+                            <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirSenha(${data})" title="Gerar Senha (Técnico)">
+                                <i class="bi bi-check-circle"></i> Concluir
+                            </button>
+                        `;
+                    }
+                    
+                    // Botão para o Supervisor
+                    if (row.status === 'aguardando_supervisor' || row.status === 'finalizada') {
+                        if (row.status === 'finalizada') {
+                            buttons += `
+                                <button class="btn btn-sm btn-warning text-dark shadow-sm" onclick="abrirModalFinalizarSenha(${data}, '${row.status}')" title="Reenviar E-mail">
+                                    <i class="bi bi-send-check"></i>
+                                </button>
+                            `;
+                        } else {
+                            buttons += `
+                                <button class="btn btn-sm btn-warning text-dark shadow-sm" onclick="abrirModalFinalizarSenha(${data}, '${row.status}')" title="Finalizar e Enviar E-mail (Supervisor)">
+                                    <i class="bi bi-envelope-check"></i> Finalizar
+                                </button>
+                            `;
+                        }
+                    }
+
+                    // Botões de utilidade extra após concluído
+                    if (row.status === 'finalizada' || row.status === 'aguardando_supervisor') {
+                        buttons += `
+                            <a href="/telefonia/senha/${data}/pdf/" target="_blank" class="btn btn-sm btn-outline-danger shadow-sm" title="Imprimir Termo">
                                 <i class="bi bi-file-earmark-pdf"></i>
                             </a>
-                            <button class="btn btn-sm btn-outline-primary shadow-sm" onclick="enviarEmailSenha(${data})" title="Enviar E-mail Institucional">
-                                <i class="bi bi-envelope"></i>
-                            </button>
-                        </div>
-                    `;
+                        `;
+                    }
+
+                    buttons += `</div>`;
+                    return buttons;
                 }
             }
         ],
@@ -213,6 +256,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 3. Tabela de Aparelhos VOIP (Geral)
     $('#tabela-aparelhos').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
         ajax: {
             url: '/gestao_patrimonio/api/aparelhos-telefonicos/',
             dataSrc: ''
@@ -268,6 +313,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 4. Tabela de Remessas para Manutenção
     $('#tabela-remessas').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
         ajax: {
             url: '/telefonia/api/remessas/',
             dataSrc: ''
@@ -303,7 +350,6 @@ document.addEventListener("DOMContentLoaded", function() {
         language: dtLanguage,
         responsive: true,
         orderCellsTop: true,
-        order: [[0, 'desc']],
         initComplete: function() {
             aplicarFiltroColunas(this.api());
         }
@@ -311,16 +357,39 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // 5. Tabela do Modal de Solicitações Recebidas
     $('#tabela-recebidas-modal').DataTable({
-        ajax: {
-            url: '/telefonia/api/solicitacoes/',
-            dataSrc: function (json) {
-                // Filtra apenas as que precisam de conclusão
-                return json.filter(item => item.status === 'recebida' || item.status === 'pendente' || item.status === 'em_analise');
-            }
+        responsive: true,
+        order: [[0, 'desc']],
+        ajax: function (data, callback, settings) {
+            Promise.all([
+                fetch('/telefonia/api/solicitacoes/'),
+                fetch('/telefonia/api/senhas/')
+            ]).then(async ([resSol, resSenhas]) => {
+                let pendentes = [];
+                if (resSol.ok) {
+                    const solicitacoes = await resSol.json();
+                    const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise');
+                    pendSol.forEach(s => {
+                        s.tipo_demanda = 'Aparelho';
+                        s.data_comparacao = new Date(s.data).getTime();
+                    });
+                    pendentes = pendentes.concat(pendSol);
+                }
+                if (resSenhas.ok) {
+                    const senhas = await resSenhas.json();
+                    const pendSenhas = senhas.filter(s => s.status === 'recebida' || s.status === 'aguardando_supervisor');
+                    pendSenhas.forEach(s => {
+                        s.tipo_demanda = 'Senha';
+                        s.data_comparacao = new Date(s.created_at).getTime();
+                        s.local = s.usuario; // unifica a propriedade para a coluna
+                    });
+                    pendentes = pendentes.concat(pendSenhas);
+                }
+                callback({ data: pendentes });
+            });
         },
         columns: [
             { 
-                data: 'data',
+                data: 'data_comparacao',
                 className: 'text-nowrap align-middle',
                 render: function(data, type, row) {
                     if(!data) return '';
@@ -332,6 +401,14 @@ document.addEventListener("DOMContentLoaded", function() {
             { 
                 data: 'protocolo',
                 className: 'text-nowrap align-middle'
+            },
+            { 
+                data: 'tipo_demanda',
+                className: 'text-nowrap align-middle text-center',
+                render: function(data) {
+                    if (data === 'Aparelho') return `<span class="badge bg-secondary"><i class="bi bi-telephone"></i> Aparelho</span>`;
+                    return `<span class="badge bg-dark"><i class="bi bi-key"></i> Senha</span>`;
+                }
             },
             { 
                 data: 'unidade',
@@ -363,6 +440,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(data === 'recebida') return `<span class="badge" style="background-color: #fd7e14; color: white; ${fs}">Recebida</span>`;
                     if(data === 'em_analise') return `<span class="badge bg-warning text-dark" style="${fs}">Em Análise</span>`;
                     if(data === 'pendente') return `<span class="badge bg-danger" style="${fs}">Pendente</span>`;
+                    if(data === 'aguardando_supervisor') return `<span class="badge bg-info text-dark" style="${fs}">Aguardando Supervisor</span>`;
                     return data;
                 }
             },
@@ -371,14 +449,30 @@ document.addEventListener("DOMContentLoaded", function() {
                 orderable: false,
                 className: 'text-nowrap align-middle text-end',
                 render: function(data, type, row) {
-                    return `<div class="d-flex justify-content-end gap-1">
-                                <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirConclusao(${row.id})" title="Concluir Instalação">
-                                    <i class="bi bi-check2-circle me-1"></i> Concluir
-                                </button>
-                                <button class="btn btn-sm btn-outline-info text-nowrap" style="white-space: nowrap;" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
-                                    <i class="bi bi-eye-fill"></i>
-                                </button>
-                            </div>`;
+                    if (row.tipo_demanda === 'Aparelho') {
+                        return `<div class="d-flex justify-content-end gap-1">
+                                    <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirConclusao(${row.id})" title="Concluir Instalação">
+                                        <i class="bi bi-check2-circle me-1"></i> Concluir
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info text-nowrap" style="white-space: nowrap;" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
+                                </div>`;
+                    } else {
+                        if (row.status === 'aguardando_supervisor') {
+                            return `<div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-outline-warning text-dark text-nowrap" style="white-space: nowrap;" onclick="abrirModalFinalizarSenha(${row.id}, '${row.status}')" title="Finalizar e Enviar E-mail">
+                                            <i class="bi bi-envelope-check me-1"></i> Enviar E-mail
+                                        </button>
+                                    </div>`;
+                        } else {
+                            return `<div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirModalConcluirSenha(${row.id})" title="Concluir Geração de Senha">
+                                            <i class="bi bi-gear me-1"></i> Gerar Senha
+                                        </button>
+                                    </div>`;
+                        }
+                    }
                 }
             }
         ],
@@ -502,50 +596,79 @@ window.editarDefeito = async function(id) {
 // Função para carregar mini lista na Dashboard
 window.carregarWidgetRecebidas = async function() {
     try {
-        const resposta = await fetch('/telefonia/api/solicitacoes/');
-        if (resposta.ok) {
-            const solicitacoes = await resposta.json();
-            const pendentes = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise');
-            
-            document.getElementById('badge-recebidas-count').textContent = pendentes.length;
-            const listGroup = document.getElementById('lista-recebidas-dashboard');
-            listGroup.innerHTML = ''; // limpa
-            
-            if (pendentes.length === 0) {
-                listGroup.innerHTML = '<div class="text-center text-muted py-2"><i class="bi bi-emoji-smile me-2"></i>Nenhuma solicitação pendente! Tudo em dia.</div>';
-                // Remove estilos de alerta
-                document.getElementById('card-widget-recebidas').className = 'card shadow-sm border-0 interactive-card';
-                document.getElementById('card-widget-recebidas').style.border = '1px solid #e0e0e0';
-                document.getElementById('titulo-widget-recebidas').className = 'fw-bold mb-0 text-success';
-                document.getElementById('titulo-widget-recebidas').innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Status: Tudo em Dia';
-                document.getElementById('badge-recebidas-count').className = 'badge bg-success rounded-pill shadow-sm';
-                document.getElementById('rodape-widget-recebidas').style.display = 'none';
-                return;
-            }
-            
-            // Caso contrário, garante que os estilos de alerta continuam existindo (recolocando caso tenham sido removidos)
-            document.getElementById('rodape-widget-recebidas').style.display = 'block';
+        const [resSol, resSenhas] = await Promise.all([
+            fetch('/telefonia/api/solicitacoes/'),
+            fetch('/telefonia/api/senhas/')
+        ]);
+        
+        let pendentes = [];
 
-            // Exibe as 3 mais recentes no widget
-            const max = Math.min(pendentes.length, 3);
-            for (let i = 0; i < max; i++) {
-                const s = pendentes[i];
-                let d = new Date(s.data);
-                const dataFormatada = d.toLocaleDateString('pt-BR');
-                const sigla = s.sigla_unidade ? s.sigla_unidade.toUpperCase() : '-';
-                
-                listGroup.innerHTML += `
-                    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: #fff5f5; border: 1px solid #ffcaca;">
-                        <div>
-                            <small class="text-danger d-block mb-0 fw-bold" style="font-size: 0.8rem;"><i class="bi bi-clock-history"></i> Data: ${dataFormatada}</small>
-                            <span class="fw-bold text-dark">${s.protocolo}</span> 
-                            <span class="text-muted ms-1" style="font-size: 0.85rem;">Unidade: ${sigla}</span>
-                        </div>
-                        <i class="bi bi-chevron-right text-danger fw-bold fs-5"></i>
-                    </div>
-                `;
-            }
+        if (resSol.ok) {
+            const solicitacoes = await resSol.json();
+            const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise');
+            pendSol.forEach(s => {
+                s.tipo_demanda = 'Aparelho';
+                s.data_comparacao = new Date(s.data).getTime();
+            });
+            pendentes = pendentes.concat(pendSol);
         }
+
+        if (resSenhas.ok) {
+            const senhas = await resSenhas.json();
+            const pendSenhas = senhas.filter(s => s.status === 'recebida' || s.status === 'aguardando_supervisor');
+            pendSenhas.forEach(s => {
+                s.tipo_demanda = 'Senha';
+                s.data_comparacao = new Date(s.created_at).getTime();
+            });
+            pendentes = pendentes.concat(pendSenhas);
+        }
+
+        // Ordena pela data mais recente primeiro
+        pendentes.sort((a, b) => b.data_comparacao - a.data_comparacao);
+        
+        document.getElementById('badge-recebidas-count').textContent = pendentes.length;
+        const listGroup = document.getElementById('lista-recebidas-dashboard');
+        listGroup.innerHTML = ''; // limpa
+        
+        if (pendentes.length === 0) {
+            listGroup.innerHTML = '<div class="text-center text-muted py-2"><i class="bi bi-emoji-smile me-2"></i>Nenhuma solicitação pendente! Tudo em dia.</div>';
+            // Remove estilos de alerta
+            document.getElementById('card-widget-recebidas').className = 'card shadow-sm border-0 interactive-card';
+            document.getElementById('card-widget-recebidas').style.border = '1px solid #e0e0e0';
+            document.getElementById('titulo-widget-recebidas').className = 'fw-bold mb-0 text-success';
+            document.getElementById('titulo-widget-recebidas').innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Status: Tudo em Dia';
+            document.getElementById('badge-recebidas-count').className = 'badge bg-success rounded-pill shadow-sm';
+            document.getElementById('rodape-widget-recebidas').style.display = 'none';
+            return;
+        }
+        
+        // Estilos de alerta
+        document.getElementById('rodape-widget-recebidas').style.display = 'block';
+        document.getElementById('card-widget-recebidas').className = 'card shadow-sm border-0 interactive-card border-danger border-2 bg-danger-subtle';
+        document.getElementById('titulo-widget-recebidas').className = 'fw-bold mb-0 text-danger';
+        document.getElementById('titulo-widget-recebidas').innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2"></i>Atenção: Demandas Pendentes';
+        document.getElementById('badge-recebidas-count').className = 'badge bg-danger rounded-pill shadow-sm';
+
+        // Exibe as 3 mais recentes no widget
+        const max = Math.min(pendentes.length, 3);
+        for (let i = 0; i < max; i++) {
+            const s = pendentes[i];
+            let d = new Date(s.data_comparacao);
+            const dataFormatada = d.toLocaleDateString('pt-BR');
+            const sigla = s.sigla_unidade ? s.sigla_unidade.toUpperCase() : '-';
+            
+            listGroup.innerHTML += `
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: #fff5f5; border: 1px solid #ffcaca;">
+                    <div>
+                        <small class="text-danger d-block mb-0 fw-bold" style="font-size: 0.8rem;"><i class="bi bi-clock-history"></i> Data: ${dataFormatada}</small>
+                        <span class="fw-bold text-dark">${s.protocolo}</span> <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">${s.tipo_demanda}</span>
+                        <br><span class="text-muted" style="font-size: 0.85rem;">Unidade: ${sigla}</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-danger fw-bold fs-5"></i>
+                </div>
+            `;
+        }
+        
     } catch (e) {
         console.error("Erro ao carregar widget:", e);
         document.getElementById('lista-recebidas-dashboard').innerHTML = '<div class="text-center text-danger py-3">Erro ao carregar.</div>';
@@ -553,7 +676,7 @@ window.carregarWidgetRecebidas = async function() {
 };
 
 window.abrirListaRecebidas = function() {
-    // Recarrega o DataTable antes de abrir para garantir dados atualizados
+    // Recarrega os DataTables
     $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
     const modalEl = document.getElementById('modal-lista-concluir-solicitacoes');
     const modal = new bootstrap.Modal(modalEl);

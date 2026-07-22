@@ -131,6 +131,25 @@ class CronogramaContratacao(models.Model):
     def __str__(self):
         return f"{self.get_fase_artefato_display()} - {self.contratacao.numero_processo}"
 
+CATEGORIA_CONTRATO_CHOICES = [
+    ('MANUTENCAO_PREDIAL', 'Manutenção Predial'),
+    ('ELEVADORES', 'Elevadores'),
+    ('TELEFONIA', 'Telefonia'),
+    ('AUDIOVIDEO', 'Áudio e Vídeo'),
+    ('TELEFONISTAS', 'Telefonistas'),
+    ('GESTAO_PATRIMONIO', 'Gestão de Patrimônio'),
+    ('REEMBOLSOS', 'Reembolsos'),
+    ('OUTROS', 'Outros')
+]
+
+SUBCATEGORIA_PREDIAL_CHOICES = [
+    ('ARQUITETURA', 'Arquitetura'),
+    ('ELETRICA', 'Elétrica'),
+    ('HIDRAULICA', 'Hidráulica'),
+    ('CIVIL', 'Civil'),
+    ('MARCENARIA', 'Marcenaria')
+]
+
 class Contratos(models.Model):
     empresa = models.ForeignKey(
         Empresa,
@@ -145,6 +164,19 @@ class Contratos(models.Model):
         related_name="contratos"
     )
     
+    categoria = models.JSONField(
+        default=list,
+        blank=True,
+        verbose_name="Categoria do Contrato"
+    )
+    
+    subcategoria = models.JSONField(
+        default=list,
+        blank=True,
+        null=True,
+        verbose_name="Subcategoria (Manutenção Predial)"
+    )
+    
     num_contrato = models.CharField(max_length=20, default='')
     objeto = models.CharField(max_length=1000, editable=True)
     
@@ -155,10 +187,10 @@ class Contratos(models.Model):
     termino_vigencia = models.DateField()
 
     # Gestores e Fiscais da Lei 14.133
-    gestor_titular = models.CharField(max_length=150, blank=True, null=True)
-    gestor_substituto = models.CharField(max_length=150, blank=True, null=True)
-    fiscal_titular = models.CharField(max_length=150, blank=True, null=True)
-    fiscal_substituto = models.CharField(max_length=150, blank=True, null=True)
+    fiscal_tecnico_titular = models.CharField(max_length=150, blank=True, null=True, verbose_name="Fiscal Técnico Titular")
+    fiscal_tecnico_substituto = models.CharField(max_length=150, blank=True, null=True, verbose_name="Fiscal Técnico Substituto")
+    fiscal_admin_titular = models.CharField(max_length=150, blank=True, null=True, verbose_name="Fiscal Administrativo Titular")
+    fiscal_admin_substituto = models.CharField(max_length=150, blank=True, null=True, verbose_name="Fiscal Adm Substituto")
 
     # Legacy fields (mantidos para evitar perda de dados em contratos antigos)
     sei_processo = models.CharField(max_length=50, default='', blank=True, null=True)

@@ -1,0 +1,37 @@
+{% load static %}
+<div class="modal fade" id="modal-lista-concluir-demandas" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold text-danger">
+          <i class="bi bi-inbox-fill me-2"></i> Demandas Pendentes
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4">
+        <p class="text-muted">Abaixo estão os chamados abertos, peças aguardando substituição e manutenções preventivas pendentes.</p>
+        
+<link rel="stylesheet" href="{% static 'elevadores/css/modal_lista_demandas.css' %}?v=1.0">
+
+        <div class="table-responsive tabela-modal-wrap" style="overflow-x: hidden;">
+            <table id="tabela-demandas-modal" class="table table-hover align-middle mb-0 text-center w-100">
+                <thead class="table-light text-secondary">
+                    <tr>
+                        <th class="fw-bold">Data de Registro</th>
+                        <th class="fw-bold">Referência</th>
+                        <th class="fw-bold">Tipo</th>
+                        <th class="fw-bold">Equipamento</th>
+                        <th class="fw-bold text-nowrap">Tempo Pendente</th>
+                        <th class="fw-bold">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="demandas-tbody">
+                    <!-- Populado via JS -->
+                </tbody>
+            </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

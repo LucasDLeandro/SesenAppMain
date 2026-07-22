@@ -92,3 +92,54 @@ class JWTCookieMiddleware:
 
         response = self.get_response(request)
         return response
+
+class RBACMiddleware:
+    """
+    Middleware que verifica se o usuário autenticado tem permissão 
+    (pertence ao grupo adequado) para acessar o módulo solicitado.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+        
+        # Mapeamento: namespace (app) -> Grupo exigido
+        self.APP_GROUP_MAPPING = {
+            'telefonia': 'Telefonia - Técnicos',
+            'elevadores': 'Elevadores - Técnicos',
+            'audiovideo': 'Áudio e Vídeo - Técnicos',
+            'gestao_patrimonio': 'Patrimônio - Técnicos',
+            'reembolsos': 'Telefonia - Técnicos',
+            
+            # Módulos Administrativos e de Gestão
+            'sys_config': 'Administrativo',  # adm_setup usa namespace 'sys_config'
+            'equipe_tecnica': 'Administrativo',
+            'empresas': 'Administrativo',
+            'contratos': 'Administrativo',
+            'usuarios': 'Administrativo',
+            'clientes': 'Administrativo',
+        }
+
+    def __call__(self, request):
+        from django.urls import resolve
+        from django.shortcuts import render
+        
+        # Ignora verificação para usuários não autenticados (barrados depois) ou superusers (acesso total)
+        if not hasattr(request, 'user') or not request.user.is_authenticated or request.user.is_superuser:
+            return self.get_response(request)
+            
+        try:
+            resolver_match = resolve(request.path_info)
+            namespace = resolver_match.namespace if resolver_match else None
+        except Exception:
+            namespace = None
+            
+        if namespace in self.APP_GROUP_MAPPING:
+            required_group = self.APP_GROUP_MAPPING[namespace]
+            # Verifica se o usuário faz parte do grupo exigido
+            if not request.user.groups.filter(name=required_group).exists():
+                context = {
+                    'module': namespace.replace('_', ' ').title(),
+                    'required_group': required_group
+                }
+                return render(request, '403_rbac.html', context, status=403)
+                
+        return self.get_response(request)

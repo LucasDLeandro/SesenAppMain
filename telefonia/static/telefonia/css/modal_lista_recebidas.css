@@ -1,0 +1,5 @@
+/* Permite quebra de texto para evitar rolagem horizontal em modais */
+.tabela-modal-wrap td {
+    white-space: normal !important;
+    word-wrap: break-word;
+}

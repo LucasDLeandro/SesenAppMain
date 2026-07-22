@@ -1,120 +1,143 @@
 <div class="modal fade modal-ordens-wrapper" id="elev-create-os-modal" tabindex="-1" aria-labelledby="modalOrdensTitulo" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);"><i class="bi bi-headset me-2"></i> Abrir Chamado</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" style="max-width: 1000px;">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-headset fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Abrir Chamado (OS)</h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
       </div>
-      <!-- Body do Modal com Formulário -->
-      <div class="modal-body modal-ordens-body">
-        <form id="elev-create-os-form">
-          {% csrf_token %}
 
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="elev-create-os-form" enctype="multipart/form-data">
+          {% csrf_token %}
           <input type="hidden" id="id_oculto_elev_os" name="id_oculto_elev_os">
 
           {% if ordem.errors %}
-            <div class="alert alert-danger mb-4" role="alert">
+            <div class="alert alert-danger mb-4 rounded-3 border-0 shadow-sm" role="alert">
               <i class="bi bi-exclamation-triangle me-2"></i>
               <strong>Erro ao submeter o formulário:</strong>
               <div class="mt-2">{{ ordem.errors }}</div>
             </div>
           {% endif %}
 
-          <!-- Seção: Informações Básicas -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-info-circle"></i> Informações Básicas
-            </h6>
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <!-- Informações Básicas -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-info-circle me-2"></i> Informações Básicas
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-7">
+                                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label small fw-bold text-muted text-nowrap">{{ ordem.data_hora.label }}</label>
+                                {{ ordem.data_hora }}
+                            </div>
+                            <div class="col-md-5">
+                                <label for="{{ ordem.protocolo.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.protocolo.label }}</label>
+                                {{ ordem.protocolo }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ ordem.solicitante.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.solicitante.label }}</label>
+                                {{ ordem.solicitante }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ ordem.atendente.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.atendente.label }}</label>
+                                {{ ordem.atendente }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="form-row-modal">
-              <div class="form-group-modal">
-                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
-                  {{ ordem.data_hora.label }}
-                </label>
-                {{ ordem.data_hora }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.protocolo.id_for_label }}" class="form-label">
-                  {{ ordem.protocolo.label }}
-                </label>
-                {{ ordem.protocolo }}
-              </div>
+                <!-- Detalhes do Elevador -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-elevator me-2"></i> Detalhes do Equipamento
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="{{ ordem.elevador.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.elevador.label }}</label>
+                                {{ ordem.elevador }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.elevador_parado.label }}</label>
+                                {{ ordem.elevador_parado }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="{{ ordem.aprisionamento.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.aprisionamento.label }}</label>
+                                {{ ordem.aprisionamento }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-row-modal">
-              <div class="form-group-modal">
-                <label for="{{ ordem.aprisionamento.id_for_label }}" class="form-label">
-                  {{ ordem.aprisionamento.label }}
-                </label>
-                {{ ordem.aprisionamento }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.atendente.id_for_label }}" class="form-label">
-                  {{ ordem.atendente.label }}
-                </label>
-                {{ ordem.atendente }}
-              </div>
-            </div>
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                
+                <!-- Ocorrência -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-chat-text me-2"></i> Descrição
+                        </h6>
+                        <div class="flex-grow-1 d-flex flex-column">
+                            <label for="{{ ordem.ocorrencia.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.ocorrencia.label }}</label>
+                            {{ ordem.ocorrencia }}
+                        </div>
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            <i class="bi bi-lightbulb"></i> Descreva detalhadamente o problema relatado pelo cliente.
+                        </small>
+                    </div>
+                </div>
 
-            <div class="form-row-modal">
-              <div class="form-group-modal full-width">
-                <label for="{{ ordem.solicitante.id_for_label }}" class="form-label">
-                  {{ ordem.solicitante.label }}
-                </label>
-                {{ ordem.solicitante }}
-              </div>
+                <!-- Integração EMS -->
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-cpu me-2"></i> Integração EMS
+                        </h6>
+                        <label for="{{ ordem.alarme_ems.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.alarme_ems.label }}</label>
+                        {{ ordem.alarme_ems }}
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            Vincule esta OS a um alarme do sistema (opcional).
+                        </small>
+                    </div>
+                </div>
+
+                <!-- Anexo / Mídia -->
+                <div class="card border-0 shadow-sm rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-paperclip me-2"></i> Anexo / Mídia
+                        </h6>
+                        <label for="id_midia" class="form-label small fw-bold text-muted">Selecione o Arquivo (Opcional)</label>
+                        <input type="file" class="form-control" id="id_midia" name="midia">
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            Formatos suportados: Imagens, PDF, Word, Excel, etc.
+                        </small>
+                    </div>
+                </div>
             </div>
           </div>
 
-          <!-- Seção: Detalhes do Elevador -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-elevator"></i> Detalhes do Elevador
-            </h6>
-
-            <div class="form-row-modal">
-              <div class="form-group-modal">
-                <label for="{{ ordem.elevador.id_for_label }}" class="form-label">
-                  {{ ordem.elevador.label }}
-                </label>
-                {{ ordem.elevador }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
-                  {{ ordem.elevador_parado.label }}
-                </label>
-                {{ ordem.elevador_parado }}
-              </div>
-            </div>
-            </div>
-
-            <!-- Seção: Descrição da Ocorrência -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-chat-text"></i> Descrição da Ocorrência
-            </h6>
-
-            <div class="form-row-modal">
-              <div class="form-group-modal full-width">
-                <label for="{{ ordem.ocorrencia.id_for_label }}" class="form-label">
-                  {{ ordem.ocorrencia.label }}
-                </label>
-                {{ ordem.ocorrencia }}
-                <small class="text-muted d-block mt-2">
-                  <i class="bi bi-lightbulb"></i> Descreva detalhadamente o problema encontrado
-                </small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer com botões -->
-          <div class="modal-ordens-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              <i class="bi bi-x-lg me-2"></i>Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-lg me-2"></i>Salvar Ordem
-            </button>
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-check-lg me-2"></i> Salvar Chamado</button>
           </div>
 
         </form>

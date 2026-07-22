@@ -1,89 +1,169 @@
 
 <!-- Modal Cadastro Peça -->
-<div class="modal fade" id="modalCadastroPeca" tabindex="-1" aria-labelledby="modalCadastroPecaLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="formCadastroPeca">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title fw-bold" id="modalCadastroPecaLabel"><i class="bi bi-tools me-2"></i>Registrar Nova Peça para Troca</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade modal-ordens-wrapper" id="modalCadastroPeca" tabindex="-1" aria-labelledby="modalCadastroPecaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-tools fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Registrar Nova Peça para Troca</h5>
+          </div>
         </div>
-        <div class="modal-body">
-            <div class="mb-3">
-                <label class="form-label">Elevador</label>
-                <select class="form-select" id="pecaElevador" required>
-                    <option value="" selected disabled>Selecione...</option>
-                    <option value="Social 1 - M2674">Social 1 - M2674</option>
-                    <option value="Social 2 - M2675">Social 2 - M2675</option>
-                    <option value="Social 3 - M2676">Social 3 - M2676</option>
-                    <option value="Social 4 - M2677">Social 4 - M2677</option>
-                    <option value="Social 5 - M2678">Social 5 - M2678</option>
-                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
-                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
-                    <option value="Social 8 - M2681">Social 8 - M2681</option>
-                    <option value="Social 9 - M2682">Social 9 - M2682</option>
-                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
-                    <option value="Social 11 - M2684">Social 11 - M2684</option>
-                    <option value="Social 12 - M2685">Social 12 - M2685</option>
-                    <option value="Social 13 - M2686">Social 13 - M2686</option>
-                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
-                </select>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="formCadastroPeca" enctype="multipart/form-data">
+          
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-geo-alt me-2"></i> Localização
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Elevador <span class="text-danger">*</span></label>
+                                <select class="form-select" id="pecaElevador" required>
+                                    <option value="" selected disabled>Selecione...</option>
+                                    <option value="Social 1 - M2674">Social 1 - M2674</option>
+                                    <option value="Social 2 - M2675">Social 2 - M2675</option>
+                                    <option value="Social 3 - M2676">Social 3 - M2676</option>
+                                    <option value="Social 4 - M2677">Social 4 - M2677</option>
+                                    <option value="Social 5 - M2678">Social 5 - M2678</option>
+                                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
+                                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
+                                    <option value="Social 8 - M2681">Social 8 - M2681</option>
+                                    <option value="Social 9 - M2682">Social 9 - M2682</option>
+                                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
+                                    <option value="Social 11 - M2684">Social 11 - M2684</option>
+                                    <option value="Social 12 - M2685">Social 12 - M2685</option>
+                                    <option value="Social 13 - M2686">Social 13 - M2686</option>
+                                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Andar/Pavimento <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="pecaAndar" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Ordem de Serviço (Opcional)</label>
+                                <input type="text" class="form-control" id="pecaOS" placeholder="Ex: OS-12345">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Andar/Pavimento</label>
-                <input type="text" class="form-control" id="pecaAndar" required>
+
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-gear me-2"></i> Detalhes da Peça
+                        </h6>
+                        <div class="row g-3 flex-grow-1">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Peça/Componente <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="pecaTipo" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Técnico que Identificou (Opcional)</label>
+                                <select class="form-select" id="pecaTecnicoIdentificador">
+                                    <option value="" selected>Selecione o técnico</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Previsão de Troca <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="pecaPrevisao" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Anexo / Outra Mídia (Opcional)</label>
+                                <input type="file" class="form-control" id="pecaMidia" name="midia">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Peça/Componente</label>
-                <input type="text" class="form-control" id="pecaTipo" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Ordem de Serviço (Opcional)</label>
-                <input type="text" class="form-control" id="pecaOS" placeholder="Ex: OS-12345">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Técnico que Identificou (Opcional)</label>
-                <input type="text" class="form-control" id="pecaTecnicoIdentificador">
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Previsão de Troca</label>
-                <input type="date" class="form-control" id="pecaPrevisao" required>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-primary">Salvar Peça</button>
-        </div>
-      </form>
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+              <i class="bi bi-check-lg me-2"></i> Salvar Peça
+            </button>
+          </div>
+
+        </form>
+      </div>
+
     </div>
   </div>
 </div>
 
 <!-- Modal Concluir Troca -->
-<div class="modal fade" id="modalConcluirTroca" tabindex="-1" aria-labelledby="modalConcluirTrocaLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="formConcluirTroca">
-        <div class="modal-header bg-light">
-          <h5 class="modal-title fw-bold" id="modalConcluirTrocaLabel"><i class="bi bi-check-circle me-2"></i>Concluir Troca de Peça</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal fade modal-ordens-wrapper" id="modalConcluirTroca" tabindex="-1" aria-labelledby="modalConcluirTrocaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-md">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-check-circle fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Concluir Troca de Peça</h5>
+          </div>
         </div>
-        <div class="modal-body">
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="formConcluirTroca">
             <input type="hidden" id="concluirPecaId">
-            <div class="mb-3">
-                <label class="form-label">Técnico Responsável</label>
-                <input type="text" class="form-control" id="concluirTecnico" required>
+            
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label small fw-bold text-muted">Técnico Responsável <span class="text-danger">*</span></label>
+                            <select class="form-select" id="concluirTecnico" required>
+                                <option value="" selected>Selecione o técnico</option>
+                            </select>
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label small fw-bold text-muted">Data Efetiva da Troca <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="concluirData" required>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Data Efetiva da Troca</label>
-                <input type="date" class="form-control" id="concluirData" required>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Confirmar Conclusão</button>
-        </div>
-      </form>
+
+          <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm">
+                <i class="bi bi-check-lg me-2"></i> Confirmar Conclusão
+            </button>
+          </div>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>

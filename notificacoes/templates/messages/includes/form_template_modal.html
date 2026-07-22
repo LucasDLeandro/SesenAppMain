@@ -48,8 +48,17 @@
                         <i class="bi bi-chat-left-text text-primary opacity-75 me-1"></i> Mensagem
                     </label>
                     {{ criarTemplate.base_text|add_class:"form-control"|attr:"rows:6"|attr:"placeholder:Prezado(a), {nome}..." }}
-                    <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Texto da mensagem que será enviada. Use as chaves como <code>{variavel}</code> para dados dinâmicos.</small>
-                </div>
+                    <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Texto da mensagem que será enviada. Use chaves para variáveis dinâmicas.</small>
+                    <div class="mt-2 p-2 bg-light rounded border border-light">
+                        <strong style="font-size: 0.8rem;" class="text-secondary"><i class="bi bi-info-circle me-1"></i>Variáveis Disponíveis:</strong>
+                        <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
+                            <li><code>{nome}</code>: Nome do Contato (sempre disponível)</li>
+                            <li><code>{protocolo}</code>: Número da OS</li>
+                            <li><code>{elevador}</code>: Nome do Equipamento</li>
+                            <li><code>{data_hora}</code> / <code>{data_hora_saida}</code>: Datas e Horários</li>
+                            <li><code>{ocorrencia}</code>, <code>{solicitante}</code>, <code>{atendente}</code>, <code>{tecnico}</code>, <code>{acompanhante}</code>, <code>{registrador_chegada}</code>, <code>{servico}</code>, <code>{funcionando}</code></li>
+                        </ul>
+                    </div>
             </div>
 
             <!-- Seletores Lado a Lado -->

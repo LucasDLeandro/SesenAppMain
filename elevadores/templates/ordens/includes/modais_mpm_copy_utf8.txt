@@ -1,0 +1,268 @@
+﻿<!-- Modal Cadastro MPM -->
+<div class="modal fade modal-ordens-wrapper" id="modalCadastroMPM" tabindex="-1" aria-labelledby="modalCadastroMPMLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-file-earmark-check fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Registrar RelatÃ³rio de ManutenÃ§Ã£o Preventiva</h5>
+            <small class="text-muted">FormulÃ¡rio de vistoria mensal do equipamento</small>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="formCadastroMPM" enctype="multipart/form-data">
+          
+          <div class="row g-4">
+            <!-- 1. DADOS BÃSICOS & CLIENTE -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-building me-2"></i> 1. Dados do Cliente e Equipamento
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Contrato / Cliente</label>
+                                <select class="form-select" id="mpmContrato" name="contrato">
+                                    <option value="" selected>Selecione um contrato...</option>
+                                    <!-- Options populated dynamically -->
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">MÃªs/Ano de ReferÃªncia <span class="text-danger">*</span></label>
+                                <input type="month" class="form-control" id="mpmMes" name="mes_referencia" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">Elevador <span class="text-danger">*</span></label>
+                                <select class="form-select" id="mpmElevador" name="elevador" required>
+                                    <option value="" selected disabled>Selecione...</option>
+                                    <option value="Social 1 - M2674">Social 1 - M2674</option>
+                                    <option value="Social 2 - M2675">Social 2 - M2675</option>
+                                    <option value="Social 3 - M2676">Social 3 - M2676</option>
+                                    <option value="Social 4 - M2677">Social 4 - M2677</option>
+                                    <option value="Social 5 - M2678">Social 5 - M2678</option>
+                                    <option value="ServiÃ§o 6 - M2679">ServiÃ§o 6 - M2679</option>
+                                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
+                                    <option value="Social 8 - M2681">Social 8 - M2681</option>
+                                    <option value="Social 9 - M2682">Social 9 - M2682</option>
+                                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
+                                    <option value="Social 11 - M2684">Social 11 - M2684</option>
+                                    <option value="Social 12 - M2685">Social 12 - M2685</option>
+                                    <option value="Social 13 - M2686">Social 13 - M2686</option>
+                                    <option value="ServiÃ§o 14 - M2687">ServiÃ§o 14 - M2687</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted">SituaÃ§Ã£o do Equipamento <span class="text-danger">*</span></label>
+                                <select class="form-select" id="mpmSituacao" name="situacao_equipamento" required>
+                                    <option value="Em Funcionamento">Em Funcionamento</option>
+                                    <option value="Parado">Parado</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. CHECKLIST DE SERVIÃ‡O -->
+            <div class="col-12">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-list-check me-2"></i> 2. ServiÃ§o Prestado
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">DescriÃ§Ã£o do serviÃ§o executado / a executar</label>
+                                <input type="text" class="form-control" id="mpmDescricaoServico" name="descricao_servico" placeholder="Ex: Foi realizada a revisÃ£o mensal...">
+                            </div>
+                            
+                            <!-- Checklists -->
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">ApresentaÃ§Ã£o</label>
+                                <select class="form-select form-select-sm" id="mpmApresentacao" name="apresentacao">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">Qualidade</label>
+                                <select class="form-select form-select-sm" id="mpmPerformance" name="performance_qualidade">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">Limit. Velocidade</label>
+                                <select class="form-select form-select-sm" id="mpmLimitador" name="limitador_velocidade">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">Controle (EL)</label>
+                                <select class="form-select form-select-sm" id="mpmControle" name="controle">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">PoÃ§o (P)</label>
+                                <select class="form-select form-select-sm" id="mpmPoco" name="poco">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 col-sm-4 col-6">
+                                <label class="form-label small fw-bold text-muted">Encerramento</label>
+                                <select class="form-select form-select-sm" id="mpmEncerramento" name="encerramento">
+                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mt-4">
+                                <label class="form-label small fw-bold text-muted">ObservaÃ§Ã£o (Adicional)</label>
+                                <textarea class="form-control" id="mpmObservacao" name="observacao" rows="2" placeholder="ObservaÃ§Ãµes do serviÃ§o..."></textarea>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                                <label class="form-label small fw-bold text-muted">Foto do PoÃ§o (Opcional)</label>
+                                <input type="file" class="form-control" id="mpmFotoPoco" name="foto_poco" accept="image/*">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 e 4. EXECUÃ‡ÃƒO E VISTO -->
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-person-badge me-2"></i> 3. Executado Por
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Nome do TÃ©cnico</label>
+                                <select class="form-select" id="mpmTecnicoNome" name="tecnico">
+                                    <option value="" selected>Selecione o tÃ©cnico</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted">Chapa</label>
+                                <input type="text" class="form-control" id="mpmTecnicoChapa" name="tecnico_chapa">
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label small fw-bold text-muted">Data da ExecuÃ§Ã£o</label>
+                                <input type="date" class="form-control" id="mpmDataExecucao" name="data_execucao">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Hora Chegada</label>
+                                <input type="time" class="form-control" id="mpmHoraChegada" name="hora_chegada">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Hora SaÃ­da</label>
+                                <input type="time" class="form-control" id="mpmHoraSaida" name="hora_saida">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-pen me-2"></i> 4. Visto do Cliente
+                        </h6>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">Nome do Representante</label>
+                                <input type="text" class="form-control" id="mpmClienteNome" name="cliente_nome">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">E-mail</label>
+                                <input type="email" class="form-control" id="mpmClienteEmail" name="cliente_email" placeholder="email@tse.jus.br">
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted">ComentÃ¡rios do Cliente</label>
+                                <input type="text" class="form-control" id="mpmClienteComentarios" name="cliente_comentarios" placeholder="...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Data do Visto</label>
+                                <input type="date" class="form-control" id="mpmClienteData" name="cliente_data">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+          </div>
+
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm">
+              <i class="bi bi-check-lg me-2"></i> Registrar RelatÃ³rio MPM
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Concluir MPM -->
+<div class="modal fade" id="modalConcluirMPM" tabindex="-1" aria-labelledby="modalConcluirMPMLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="formConcluirMPM">
+        <div class="modal-header bg-light">
+          <h5 class="modal-title fw-bold" id="modalConcluirMPMLabel"><i class="bi bi-check-circle me-2 text-success"></i>Executar Preventiva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="concluirMPMId">
+            <div class="mb-3">
+                <label class="form-label text-muted mb-0">Elevador</label>
+                <p id="concluirMPMElevadorText" class="fw-bold"></p>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted mb-0">MÃªs ReferÃªncia</label>
+                <p id="concluirMPMMesText" class="fw-bold"></p>
+            </div>
+            
+            <hr class="text-muted">
+
+            <div class="mb-3">
+                <label class="form-label">TÃ©cnico Executante</label>
+                <select class="form-select" id="concluirMPMTecnico" required>
+                    <option value="" selected>Selecione o tÃ©cnico</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Data de ExecuÃ§Ã£o</label>
+                <input type="date" class="form-control" id="concluirMPMData" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Status Final</label>
+                <select class="form-select" id="concluirMPMStatus" required>
+                    <option value="EXECUTADO">EXECUTADO</option>
+                    <option value="INOPERANTE">INOPERANTE</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success fw-bold">Confirmar ExecuÃ§Ã£o</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+

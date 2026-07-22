@@ -1,0 +1,130 @@
+<!-- Modal Visualizar Peça -->
+<div class="modal fade" id="modalVisualizarPeca" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+            <!-- Header -->
+            <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+                        <i class="bi bi-tools fs-4"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bolder mb-0 text-dark">Detalhes da Peça/Componente</h5>
+                        <small class="text-muted" id="view_peca_subtitle">Visualização de Registro de Substituição</small>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge" id="view_peca_status" style="font-size: 0.85rem;">-</span>
+                    <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Fechar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4" style="background-color: #f8f9fa;">
+                <div class="row g-4">
+                    <!-- Coluna 1: Dados Base -->
+                    <div class="col-md-6 d-flex flex-column gap-4">
+                        <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    <i class="bi bi-info-circle me-2"></i> Informações Gerais
+                                </h6>
+                                
+                                <div class="mb-4">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Elevador</small>
+                                    <span class="fs-6 fw-semibold text-dark" id="view_peca_elevador">-</span>
+                                </div>
+                                <div class="mb-4">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Andar</small>
+                                    <span class="fs-6 fw-semibold text-dark" id="view_peca_andar">-</span>
+                                </div>
+                                <div class="mb-4">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Peça/Componente</small>
+                                    <span class="fs-6 fw-bold text-primary" id="view_peca_nome">-</span>
+                                </div>
+                                <div>
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Quantidade</small>
+                                    <span class="fs-6 fw-semibold text-dark" id="view_peca_qtd">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coluna 2: Acompanhamento -->
+                    <div class="col-md-6 d-flex flex-column gap-4">
+                        <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                            <div class="card-body p-4">
+                                <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                                    <i class="bi bi-clock-history me-2"></i> Acompanhamento
+                                </h6>
+                                
+                                <div class="row mb-4 g-3">
+                                    <div class="col-6">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Data de Registro</small>
+                                        <span class="fs-6 fw-semibold text-dark" id="view_peca_data_registro">-</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Previsão</small>
+                                        <span class="fs-6 fw-semibold text-dark" id="view_peca_previsao">-</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Identificador</small>
+                                    <span class="fs-6 fw-semibold text-dark" id="view_peca_tec_identificador">-</span>
+                                </div>
+
+                                <div class="row mb-4 g-3">
+                                    <div class="col-6">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Data Efetiva</small>
+                                        <span class="fs-6 fw-semibold text-dark" id="view_peca_data_efetiva">-</span>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Resp.</small>
+                                        <span class="fs-6 fw-semibold text-dark" id="view_peca_tecnico">-</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-top">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">OS Origem</small>
+                                            <span class="badge bg-secondary px-3 py-2 fs-6 rounded-pill" id="view_peca_os">-</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                    </div>
+                        
+                        <!-- Mídia/Anexo -->
+                            <div class="card border-0 shadow-sm rounded-4 d-none" id="vis_peca_secao_midia">
+                                <div class="card-body p-4">
+                                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                                        <i class="bi bi-paperclip me-2"></i> Arquivo Anexo
+                                    </h6>
+                                    <div class="d-flex align-items-center p-3 border rounded-3 bg-light" style="cursor: pointer; transition: all 0.2s ease;" id="vis_peca_midia_preview_box" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
+                                        <div class="me-3 fs-1 text-primary" id="vis_peca_midia_icon">
+                                            <i class="bi bi-file-earmark"></i>
+                                        </div>
+                                        <div class="flex-grow-1 overflow-hidden">
+                                            <h6 class="mb-1 text-truncate fw-bold text-dark" id="vis_peca_midia_filename">Arquivo Anexo</h6>
+                                            <small class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.7rem;" id="vis_peca_midia_type">Tipo Desconhecido</small>
+                                        </div>
+                                        <div class="ms-2">
+                                            <a href="#" target="_blank" download id="vis_peca_midia_download_btn" class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="event.stopPropagation();" title="Baixar">
+                                                <i class="bi bi-download text-secondary"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

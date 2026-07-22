@@ -1,0 +1,104 @@
+    :root {
+        --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --warning-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        --danger-gradient: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+        --info-gradient: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+    }
+
+    .dashboard-header {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .metric-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        background: white;
+        overflow: hidden;
+        position: relative;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .icon-primary { background: var(--primary-gradient); }
+    .icon-success { background: var(--success-gradient); }
+    .icon-warning { background: var(--warning-gradient); }
+    .icon-danger { background: var(--danger-gradient); }
+    .icon-info { background: var(--info-gradient); }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+        letter-spacing: -0.5px;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .chart-card {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        background: white;
+    }
+    .chart-card .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .chart-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .table-vencimentos th {
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #f8f9fa;
+    }
+    .table-vencimentos td {
+        vertical-align: middle;
+        font-weight: 500;
+        border-bottom: 1px solid #f8f9fa;
+    }
+</style>

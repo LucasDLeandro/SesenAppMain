@@ -188,8 +188,26 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
     queryset = CriarSenha.objects.all().order_by('-created_at')
     serializer_class = CriarSenhaSerializer
 
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        colaboradores = data.get('colaboradores')
+
+        if colaboradores and isinstance(colaboradores, list):
+            senhas_criadas = []
+            for colab in colaboradores:
+                colab_data = data.copy()
+                colab_data.pop('colaboradores', None) # Remove a lista para nao atrapalhar o serializer
+                colab_data.update(colab)
+                serializer = self.get_serializer(data=colab_data)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+                senhas_criadas.append(serializer.data)
+            return Response(senhas_criadas, status=status.HTTP_201_CREATED)
+        else:
+            return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
-        senha = serializer.save()
+        senha = serializer.save(status='recebida')
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_senha', is_ativo=True).first()
         if template:
             tecnicos = User.objects.filter(groups__name__icontains='Telefonia')
@@ -211,6 +229,79 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
                     except Exception as e:
                         print(f"Erro ao formatar/enviar mensagem: {e}")
 
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if instance.status == 'aguardando_supervisor' and not instance.nome_tecnico:
+            instance.nome_tecnico = self.request.user.get_full_name() or self.request.user.username
+            instance.save(update_fields=['nome_tecnico'])
+
+    @action(detail=True, methods=['post'])
+    def finalizar(self, request, pk=None):
+        senha_obj = self.get_object()
+        data = request.data
+        
+        # Atualiza dados
+        senha_obj.cargo = data.get('cargo', senha_obj.cargo)
+        senha_obj.numero_contrato = data.get('numero_contrato', senha_obj.numero_contrato)
+        senha_obj.empresa_vinculada = data.get('empresa_vinculada', senha_obj.empresa_vinculada)
+        senha_obj.fiscal_contrato = data.get('fiscal_contrato', senha_obj.fiscal_contrato)
+        senha_obj.unidade_fiscal = data.get('unidade_fiscal', senha_obj.unidade_fiscal)
+        senha_obj.status = 'finalizada'
+        senha_obj.save()
+        
+        # Envio de e-mail customizado pelo supervisor
+        assunto = data.get('assunto')
+        corpo = data.get('corpo')
+        to_email = data.get('to_email')
+        bcc_email = data.get('bcc_email')
+        
+        from telefonia.views import enviar_email_senha_manual
+        # Mock request to pass data to the old function or just update the function
+        request._request.POST = request._request.POST.copy()
+        if assunto: request._request.POST['assunto'] = assunto
+        if corpo: request._request.POST['corpo'] = corpo
+        if to_email: request._request.POST['to_email'] = to_email
+        if bcc_email: request._request.POST['bcc_email'] = bcc_email
+        
+        try:
+            resp = enviar_email_senha_manual(request._request, pk=senha_obj.pk)
+            import json
+            resp_content = json.loads(resp.content)
+            if resp.status_code == 200:
+                return Response({'status': 'Senha finalizada e e-mail enviado.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': resp_content.get('error', 'Erro ao enviar email.')}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'error': f'Erro ao finalizar: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=True, methods=['get'], url_path='email-preview')
+    def email_preview(self, request, pk=None):
+        senha_obj = self.get_object()
+        from telefonia.models.padrao_email import PadraoEmailTelefonia
+        padrao = PadraoEmailTelefonia.objects.filter(ativo=True).first()
+        if not padrao:
+            return Response({"error": "Nenhum template de e-mail ativo."}, status=400)
+            
+        try:
+            corpo_formatado = padrao.corpo.format(
+                primeiro_nome=senha_obj.primeiro_nome or 'Usuário',
+                senha=senha_obj.senha or 'Não registrada'
+            )
+        except:
+            corpo_formatado = padrao.corpo
+            
+        corpo = f"{corpo_formatado}\n\n{padrao.assinatura}" if padrao.assinatura else corpo_formatado
+        
+        from django.utils.text import slugify
+        nome_usuario = slugify(senha_obj.usuario) if senha_obj.usuario and senha_obj.usuario != "N/A" else "documento_senha"
+        
+        return Response({
+            'to_email': senha_obj.email or '',
+            'bcc_email': padrao.email_copia or '',
+            'assunto': padrao.assunto or '',
+            'corpo': corpo,
+            'filename': f"{nome_usuario}.pdf"
+        })
 
 class ContratoColaboradorViewSet(viewsets.ModelViewSet):
     queryset = ContratoColaborador.objects.all().order_by('-created_at')
@@ -265,7 +356,8 @@ def gerar_pdf_senha(request, pk):
     if pdf_bytes:
         senha = CriarSenha.objects.get(pk=pk)
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
-        nome_usuario = senha.usuario if senha.usuario and senha.usuario != "N/A" else "Usuario"
+        from django.utils.text import slugify
+        nome_usuario = slugify(senha.usuario) if senha.usuario and senha.usuario != "N/A" else "usuario"
         response['Content-Disposition'] = f'inline; filename="{nome_usuario}.pdf"'
         return response
     return HttpResponse("Erro ao gerar PDF", status=500)
@@ -343,11 +435,16 @@ def enviar_email_senha_manual(request, pk):
     except Exception:
         corpo_formatado = padrao_email.corpo
         
-    corpo = f"{corpo_formatado}\n\n{padrao_email.assinatura}" if padrao_email.assinatura else corpo_formatado
+    corpo_default = f"{corpo_formatado}\n\n{padrao_email.assinatura}" if padrao_email.assinatura else corpo_formatado
         
-    assunto = padrao_email.assunto
-    to_email = [senha_obj.email]
-    bcc_email = [padrao_email.email_copia] if padrao_email.email_copia else []
+    assunto = request.POST.get('assunto') or padrao_email.assunto
+    corpo = request.POST.get('corpo') or corpo_default
+    
+    to_email_val = request.POST.get('to_email') or senha_obj.email
+    to_email = [to_email_val] if to_email_val else []
+    
+    bcc_email_val = request.POST.get('bcc_email') or padrao_email.email_copia
+    bcc_email = [bcc_email_val] if bcc_email_val else []
     
     email = EmailMessage(
         subject=assunto,

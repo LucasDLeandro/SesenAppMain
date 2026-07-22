@@ -1,110 +1,129 @@
-<div class="modal fade modal-ordens-wrapper" id="modal-visualizar-senha" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="modal-visualizar-senha" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
-          <i class="bi bi-eye-fill me-2"></i> Detalhes da Senha Telefônica
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold" style="color: #0f172a;">
+          <i class="bi bi-eye-fill text-primary me-2"></i> Detalhes da Senha Telefônica
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body modal-ordens-body px-4">
+      <div class="modal-body px-4 pb-4 pt-4">
         
-        <div class="form-section-modal">
-          <h6 class="form-section-title-modal">
-            <i class="bi bi-person-lines-fill"></i> Informações do Solicitante e Usuário
-          </h6>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Protocolo SEI:</strong> <span id="vis-senha-protocolo"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Solicitante:</strong> <span id="vis-senha-solicitante"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Unidade / Sigla:</strong> <span id="vis-senha-unidade"></span> (<span id="vis-senha-sigla"></span>)
-            </div>
-            <div class="col-md-6">
-              <strong>Cargo:</strong> <span id="vis-senha-cargo" class="badge bg-secondary"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Nome:</strong> <span id="vis-senha-usuario"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>E-mail Institucional:</strong> <span id="vis-senha-email"></span>
+        <!-- Section 1 -->
+        <div class="card border-0 shadow-sm mb-4" style="border-radius: 10px;">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary mb-4 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+              <i class="bi bi-person-lines-fill me-2 fs-5"></i> Informações do Solicitante e Usuário
+            </h6>
+            <div class="row gy-4">
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Protocolo SEI</span>
+                <span class="text-dark fw-medium" id="vis-senha-protocolo"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Solicitante</span>
+                <span class="text-dark fw-medium" id="vis-senha-solicitante"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Unidade / Sigla</span>
+                <span class="text-dark fw-medium"><span id="vis-senha-unidade"></span> (<span id="vis-senha-sigla"></span>)</span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Cargo</span>
+                <span id="vis-senha-cargo" class="badge bg-secondary px-2 py-1"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Nome do Usuário</span>
+                <span class="text-dark fw-medium" id="vis-senha-usuario"></span>
+              </div>
+              <div class="col-md-6">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >E-mail Institucional</span>
+                <span class="text-primary fw-medium" id="vis-senha-email"></span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div id="vis-dados-colaborador" style="display: none;" class="form-section-modal mt-3">
-          <h6 class="form-section-title-modal text-secondary"><i class="bi bi-person-badge"></i> Dados do Colaborador</h6>
-          <div class="row mb-2">
-              <div class="col-md-6">
-                <strong>Contrato:</strong> <span id="vis-senha-contrato"></span>
-              </div>
-              <div class="col-md-6">
-                <strong>Empresa:</strong> <span id="vis-senha-empresa"></span>
-              </div>
-          </div>
-          <div class="row">
-              <div class="col-md-6">
-                <strong>Fiscal:</strong> <span id="vis-senha-fiscal"></span>
-              </div>
-              <div class="col-md-6">
-                <strong>Lotação (Fiscal):</strong> <span id="vis-senha-unidade-fiscal"></span>
-              </div>
+        <!-- Section Colaborador (Hidden by default) -->
+        <div id="vis-dados-colaborador" style="display: none;" class="card border-0 shadow-sm mb-4">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-secondary mb-4 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+              <i class="bi bi-person-badge me-2 fs-5"></i> Dados do Colaborador
+            </h6>
+            <div class="row gy-4">
+                <div class="col-md-6">
+                  <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Contrato</span>
+                  <span class="text-dark fw-medium" id="vis-senha-contrato"></span>
+                </div>
+                <div class="col-md-6">
+                  <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Empresa</span>
+                  <span class="text-dark fw-medium" id="vis-senha-empresa"></span>
+                </div>
+                <div class="col-md-6">
+                  <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Fiscal</span>
+                  <span class="text-dark fw-medium" id="vis-senha-fiscal"></span>
+                </div>
+                <div class="col-md-6">
+                  <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Lotação (Fiscal)</span>
+                  <span class="text-dark fw-medium" id="vis-senha-unidade-fiscal"></span>
+                </div>
+            </div>
           </div>
         </div>
 
-        <div class="form-section-modal mt-3">
-          <h6 class="form-section-title-modal">
-            <i class="bi bi-gear"></i> Dados da Senha e Configurações
-          </h6>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Categoria:</strong> <span id="vis-senha-categoria"></span>
+        <!-- Section 2 -->
+        <div class="card border-0 shadow-sm mb-2" style="border-radius: 10px;">
+          <div class="card-body p-4">
+            <h6 class="fw-bold text-primary mb-4 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+              <i class="bi bi-gear me-2 fs-5"></i> Dados da Senha e Configurações
+            </h6>
+            <div class="row gy-4 mb-4">
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Categoria</span>
+                <span class="text-dark fw-medium" id="vis-senha-categoria"></span>
+              </div>
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Edifícios Permitidos</span>
+                <span class="text-dark fw-medium" id="vis-senha-edificios"></span>
+              </div>
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Ramal</span>
+                <span class="text-dark fw-medium" id="vis-senha-ramal"></span>
+              </div>
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Senha Registrada</span>
+                <span class="text-dark fw-bold fs-6" id="vis-senha-registrada" style="letter-spacing: 1px;"></span>
+              </div>
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Tem Desvio?</span>
+                <span class="text-dark fw-medium" id="vis-senha-desvio"></span>
+              </div>
+              <div class="col-md-4">
+                <span class="d-block text-muted small fw-bold text-uppercase mb-1" >Tel. Desvio</span>
+                <span class="text-dark fw-medium" id="vis-senha-tel-desvio"></span>
+              </div>
             </div>
-            <div class="col-md-6">
-              <strong>Edifícios Permitidos:</strong> <span id="vis-senha-edificios"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Senha Registrada:</strong> <span id="vis-senha-registrada"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Ramal:</strong> <span id="vis-senha-ramal"></span>
-            </div>
-          </div>
-          <div class="row mb-2">
-            <div class="col-md-6">
-              <strong>Tem Desvio?</strong> <span id="vis-senha-desvio"></span>
-            </div>
-            <div class="col-md-6">
-              <strong>Tel. Desvio:</strong> <span id="vis-senha-tel-desvio"></span>
-            </div>
-          </div>
-          <div class="row mb-2 mt-2 pt-2 border-top">
-            <div class="col-md-4">
-              <strong>Técnico:</strong> <span id="vis-senha-tecnico"></span>
-            </div>
-            <div class="col-md-4">
-              <strong>Criado em:</strong> <span id="vis-senha-created"></span>
-            </div>
-            <div class="col-md-4">
-              <strong>Atualizado:</strong> <span id="vis-senha-updated"></span>
+            
+            <div class="p-3 bg-light rounded d-flex justify-content-between align-items-center border mt-2">
+              <div>
+                <span class="d-block text-muted text-uppercase fw-bold mb-1" ><i class="bi bi-person-fill"></i> Técnico</span>
+                <span class="text-dark fw-semibold"  id="vis-senha-tecnico"></span>
+              </div>
+              <div class="text-center">
+                <span class="d-block text-muted text-uppercase fw-bold mb-1" ><i class="bi bi-calendar-check"></i> Criado em</span>
+                <span class="text-dark fw-semibold"  id="vis-senha-created"></span>
+              </div>
+              <div class="text-end">
+                <span class="d-block text-muted text-uppercase fw-bold mb-1" ><i class="bi bi-clock-history"></i> Última Atualização</span>
+                <span class="text-dark fw-semibold"  id="vis-senha-updated"></span>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
-      <div class="modal-ordens-footer mt-2 mb-4 d-flex justify-content-end px-4 gap-2">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-          <i class="bi bi-x-lg me-2"></i>Fechar
-        </button>
+      <div class="modal-footer border-0 px-4 pb-4 pt-1">
+        <button type="button" class="btn btn-secondary px-4 shadow-sm" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>

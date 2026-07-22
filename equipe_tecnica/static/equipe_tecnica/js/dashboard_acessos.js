@@ -58,6 +58,7 @@ $(document).ready(function() {
     });
 
     tabelaSolicitacoes = $('#tabela-solicitacoes').DataTable({
+        responsive: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json"
         },
@@ -119,6 +120,7 @@ $(document).ready(function() {
     });
 
     tabelaLiberacoes = $('#tabela-liberacoes').DataTable({
+        responsive: true,
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.4/i18n/pt-BR.json"
         },
@@ -523,25 +525,38 @@ function preencherModalPreviewEmail(data, permitirEnvio) {
         $('#preview-email-alerta-texto').text(data.erro);
     } else {
         alerta.addClass('d-none');
-        $('#preview-email-alerta-texto').text('');
     }
 
-    const statusBadge = $('#preview-status-badge');
-    const btnConfirmar = $('#btn-confirmar-envio-email');
-    const infoConfirmacao = $('#preview-info-confirmacao');
-
     if (data.email_enviado) {
-        statusBadge.html('<span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Enviado</span>');
-        btnConfirmar.addClass('d-none');
-        infoConfirmacao.addClass('d-none');
-    } else if (permitirEnvio && data.pode_enviar) {
-        statusBadge.html('<span class="badge bg-secondary">Não Enviado</span>');
-        btnConfirmar.removeClass('d-none');
-        infoConfirmacao.removeClass('d-none');
+        $('#preview-status-badge').replaceWith('<span id="preview-status-badge" class="badge bg-success">Já Enviado</span>');
+        $('#preview-info-confirmacao').html('<i class="bi bi-check-circle me-1"></i> Este e-mail já foi enviado.').removeClass('text-muted').addClass('text-success');
     } else {
-        statusBadge.html('<span class="badge bg-secondary">Não Enviado</span>');
-        btnConfirmar.addClass('d-none');
-        infoConfirmacao.toggleClass('d-none', !!data.erro);
+        $('#preview-status-badge').replaceWith('<span id="preview-status-badge" class="badge bg-secondary">Não Enviado</span>');
+        $('#preview-info-confirmacao').html('<i class="bi bi-info-circle me-1"></i> Revise as informações, os anexos e o conteúdo antes de confirmar o envio.').removeClass('text-success').addClass('text-muted');
+    }
+
+    if (data.template_nome) {
+        $('#preview-template-nome').text(data.template_nome);
+    } else {
+        $('.email-preview-template-badge').hide();
+    }
+
+    $('#preview-destinatario-input').val(data.destinatario || '');
+    $('#preview-copia-input').val(data.copia || '');
+    $('#preview-assunto-input').val(data.assunto || '');
+    
+    // Converte br tags para newlines no corpo para o textarea
+    let corpoText = data.corpo || '';
+    corpoText = corpoText.replace(/<br\s*[\/]?>/gi, "\n");
+    $('#preview-corpo-input').val(corpoText);
+    
+    // Limpa o input de arquivos
+    $('#preview-anexos-input').val('');
+
+    if (permitirEnvio && !data.email_enviado) {
+        $('#btn-confirmar-envio-email').removeClass('d-none');
+    } else {
+        $('#btn-confirmar-envio-email').addClass('d-none');
     }
 }
 
@@ -570,7 +585,7 @@ function confirmarEnvioEmail() {
         title: 'Confirmar envio?',
         html: `
             <p class="mb-2">O e-mail será enviado para:</p>
-            <p class="fw-bold text-primary mb-0">${$('#preview-destinatario').text()}</p>
+            <p class="fw-bold text-primary mb-0">${$('#preview-destinatario-input').val()}</p>
         `,
         icon: 'question',
         showCancelButton: true,
@@ -590,22 +605,39 @@ function confirmarEnvioEmail() {
             didOpen: () => { Swal.showLoading(); }
         });
 
+        // Monta o FormData com os campos e anexos
+        var formData = new FormData();
+        formData.append('to_email', $('#preview-destinatario-input').val());
+        formData.append('bcc_email', $('#preview-copia-input').val());
+        formData.append('assunto', $('#preview-assunto-input').val());
+        formData.append('corpo', $('#preview-corpo-input').val());
+        
+        var files = $('#preview-anexos-input')[0].files;
+        for (var i = 0; i < files.length; i++) {
+            formData.append('anexos_externos', files[i]);
+        }
+
         $.ajax({
             url: `/equipe_tecnica/api/liberacoes/${liberacaoId}/enviar_email/`,
             method: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
             headers: {
                 'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
             },
             success: function() {
                 liberacaoEmailPendenteId = null;
-                tabelaLiberacoes.ajax.reload();
-                Swal.fire('Enviado!', 'O e-mail foi enviado com sucesso para a Segurança/Portaria.', 'success');
+                Swal.fire('Sucesso!', 'O e-mail de notificação foi enviado com sucesso.', 'success');
+                tabelaLiberacoes.ajax.reload(null, false);
             },
             error: function(xhr) {
-                const msg = xhr.responseJSON?.status || 'Não foi possível enviar o e-mail.';
-                Swal.fire('Erro', msg, 'error');
+                let errorMsg = 'Ocorreu um erro ao enviar o e-mail.';
+                if (xhr.responseJSON && xhr.responseJSON.status) {
+                    errorMsg = xhr.responseJSON.status;
+                }
+                Swal.fire('Erro', errorMsg, 'error');
             }
         });
     });
 }
-

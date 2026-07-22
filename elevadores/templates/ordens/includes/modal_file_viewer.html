@@ -1,0 +1,26 @@
+{% load static %}
+<!-- Modal Genérico para Visualização de Mídia/Arquivos -->
+<div class="modal fade" id="modalFileViewer" tabindex="-1" aria-labelledby="modalFileViewerLabel" aria-hidden="true" style="z-index: 1065;">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-header bg-light border-bottom-0 rounded-top-4 pb-3">
+        <h5 class="modal-title fw-bold text-dark d-flex align-items-center" id="modalFileViewerLabel">
+          <i class="bi bi-file-earmark-text me-2 text-primary fs-4"></i> Visualizador de Arquivo
+        </h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0 text-center bg-white" style="min-height: 300px; display: flex; align-items: center; justify-content: center; overflow: hidden;" id="fileViewerContainer">
+        <!-- O conteúdo será injetado aqui via JS (img, iframe, video, etc) -->
+        <div class="p-5 text-muted">Carregando arquivo...</div>
+      </div>
+      <div class="modal-footer bg-light border-top-0 rounded-bottom-4 pt-3">
+        <a href="#" id="btnDownloadFileViewer" class="btn btn-primary fw-bold shadow-sm rounded-pill px-4" download target="_blank">
+          <i class="bi bi-download me-2"></i> Baixar Arquivo
+        </a>
+        <button type="button" class="btn btn-secondary fw-bold shadow-sm rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'elevadores/js/elevadores/modal_file_viewer.js' %}?v=1.0"></script>

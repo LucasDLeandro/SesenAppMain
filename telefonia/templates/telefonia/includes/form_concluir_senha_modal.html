@@ -1,0 +1,75 @@
+<div class="modal fade modal-ordens-wrapper" id="modal-concluir-senha" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg bg-body">
+      <div class="modal-header border-0 pb-0 pt-4 px-4">
+        <h5 class="modal-title fw-bold text-success">
+          <i class="bi bi-check-circle me-2"></i> Concluir Geração de Senha
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body modal-ordens-body">
+        <form id="form-concluir-senha">
+          {% csrf_token %}
+          <input type="hidden" id="id_conclusao_senha" name="id">
+          
+          <div class="form-section-modal">
+            <h6 class="form-section-title-modal">Dados da Solicitação</h6>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Solicitante:</strong> <span id="view_concluir_solicitante"></span>
+              </div>
+              <div class="col-md-6">
+                <strong>Unidade:</strong> <span id="view_concluir_unidade"></span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Usuário:</strong> <span id="view_concluir_usuario"></span>
+              </div>
+              <div class="col-md-6">
+                <strong>E-mail:</strong> <span id="view_concluir_email"></span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <strong>Ramal Informado:</strong> <span id="view_concluir_ramal"></span>
+              </div>
+              <div class="col-md-6">
+                <strong>Cargo:</strong> <span id="view_concluir_cargo" style="text-transform: capitalize;"></span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-section-modal mt-3">
+            <h6 class="form-section-title-modal">Ação do Técnico</h6>
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-md-6">
+                <label class="form-label fw-bold">Tem Desvio?</label>
+                <select class="form-select" id="desvio_conclusao" name="desvio">
+                  <option value="False">Não</option>
+                  <option value="True">Sim</option>
+                </select>
+              </div>
+              <div class="form-group-modal col-md-6">
+                <label class="form-label">Tel. Desvio Externo</label>
+                <input type="text" class="form-control" id="tel_desvio_conclusao" name="tel_desvio_externo" maxlength="30">
+              </div>
+            </div>
+
+            <div class="form-row-modal row mb-3">
+              <div class="form-group-modal col-12 full-width">
+                <label class="form-label fw-bold">Senha Gerada (PBX)</label>
+                <input type="text" class="form-control" id="senha_gerada" name="senha" maxlength="50" required placeholder="Insira a senha gerada">
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success">Salvar Senha</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

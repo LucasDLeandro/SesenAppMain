@@ -1,3 +1,4 @@
+{% load static %}
 <div class="modal fade modal-ordens-wrapper" id="modal-lista-concluir-solicitacoes" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content border-0 shadow-lg bg-body">
@@ -8,33 +9,30 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body modal-ordens-body px-4">
-        <p class="text-muted">Abaixo estão as solicitações que aguardam conclusão (instalação do aparelho).</p>
+        <p class="text-muted">Abaixo estão as solicitações que aguardam ação técnica (instalação ou geração de senha).</p>
         
-        <style>
-          /* Permite quebra de texto para evitar rolagem horizontal em modais */
-          #tabela-recebidas-modal td {
-              white-space: normal !important;
-              word-wrap: break-word;
-          }
-        </style>
-        <div class="table-responsive" style="overflow-x: hidden;">
+<link rel="stylesheet" href="{% static 'telefonia/css/modal_lista_recebidas.css' %}?v=1.0">
+
+        <div class="table-responsive tabela-modal-wrap" style="overflow-x: hidden;">
             <table id="tabela-recebidas-modal" class="table custom-modern-table table-compacta w-100">
                 <thead class="custom-thead">
                     <tr>
                         <th>Data</th>
                         <th>Protocolo</th>
-                        <th style="width: 70% !important; min-width: 250px;">Unidade</th>
+                        <th>Tipo</th>
+                        <th style="width: 40% !important; min-width: 200px;">Unidade</th>
                         <th>Sigla</th>
-                        <th>Local</th>
+                        <th>Usuário/Local</th>
                         <th>Status</th>
-                        <th style="width: 25% !important;">Ações</th>
+                        <th style="width: 20% !important;">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Populado via DataTables (AJAX filtrado) -->
+                    <!-- Populado via DataTables (AJAX unificado) -->
                 </tbody>
             </table>
         </div>
+
       </div>
     </div>
   </div>

@@ -36,7 +36,22 @@ class LiberacaoAcessoDiariaViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        sucesso = enviar_email_liberacao(liberacao.id)
+        # Dados customizados do form
+        to_email = request.POST.get('to_email')
+        bcc_email = request.POST.get('bcc_email')
+        assunto = request.POST.get('assunto')
+        corpo = request.POST.get('corpo')
+        anexos = request.FILES.getlist('anexos_externos')
+
+        sucesso = enviar_email_liberacao(
+            liberacao.id, 
+            custom_to=to_email, 
+            custom_bcc=bcc_email, 
+            custom_subject=assunto, 
+            custom_body=corpo, 
+            anexos=anexos
+        )
+        
         if sucesso:
             return Response({'status': 'E-mail enviado com sucesso'})
         return Response(

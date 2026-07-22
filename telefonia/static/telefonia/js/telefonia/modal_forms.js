@@ -77,8 +77,71 @@ if (form_solicitacao) {
 }
 
 if (form_senha) {
-    form_senha.addEventListener('submit', function(e) {
-        submitFormToAPI(e, form_senha, modal_senha, '/telefonia/api/senhas/', 'Solicitação de senha registrada com sucesso!');
+    form_senha.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Verifica se é edição (tem ID)
+        const id_field = form_senha.querySelector('[name="id"]').value;
+        const isUpdate = id_field && id_field.trim() !== '';
+        
+        if (isUpdate) {
+            // Se for update, usa o comportamento padrão
+            submitFormToAPI(e, form_senha, modal_senha, '/telefonia/api/senhas/', 'Solicitação de senha atualizada com sucesso!');
+            return;
+        }
+
+        // Se for criação, monta o JSON com o array de colaboradores
+        const payload = {
+            protocolo: form_senha.querySelector('[name="protocolo"]').value,
+            solicitante: form_senha.querySelector('[name="solicitante"]').value,
+            unidade: form_senha.querySelector('[name="unidade"]').value,
+            sigla_unidade: form_senha.querySelector('[name="sigla_unidade"]').value,
+            edificios: form_senha.querySelector('[name="edificios"]').value,
+            categoria: form_senha.querySelector('[name="categoria"]').value,
+            desvio: form_senha.querySelector('[name="desvio"]').value,
+            tel_desvio_externo: form_senha.querySelector('[name="tel_desvio_externo"]').value,
+            colaboradores: []
+        };
+
+        const cards = document.querySelectorAll('.colaborador-senha-card');
+        cards.forEach(card => {
+            const colab = {
+                primeiro_nome: card.querySelector('.input-primeiro-nome').value,
+                sobrenome: card.querySelector('.input-sobrenome').value,
+                ramal: card.querySelector('.input-ramal').value,
+                email: card.querySelector('.input-email').value,
+                cargo: card.querySelector('.select-cargo').value,
+                numero_contrato: card.querySelector('.input-numero-contrato').value,
+                empresa_vinculada: card.querySelector('.input-empresa').value,
+                fiscal_contrato: card.querySelector('.input-fiscal').value,
+                unidade_fiscal: card.querySelector('.input-unidade-fiscal').value
+            };
+            payload.colaboradores.push(colab);
+        });
+
+        try {
+            const resposta = await fetch('/telefonia/api/senhas/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (resposta.ok) {
+                await Swal.fire("Sucesso!", "Senhas solicitadas com sucesso!", "success");
+                form_senha.reset();
+                modal_senha.hide();
+                window.location.reload();
+            } else {
+                console.error("Erro na API:", await resposta.json());
+                Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos.", "error");
+            }
+        } catch (erro) {
+            console.error("Erro critico: ", erro);
+            Swal.fire("Erro Crítico!", "Erro ao conectar com o servidor.", "error");
+        }
     });
 }
 
@@ -415,3 +478,400 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
+// Lógica para adicionar cards dinâmicos de Senha Telefônica
+let contadorColaboradoresSenha = 0;
+
+function addColaboradorSenhaCard() {
+    contadorColaboradoresSenha++;
+    const idUnico = contadorColaboradoresSenha;
+    const container = document.getElementById('lista_colaboradores_senhas');
+
+    // Aqui montamos o card, que conterá o mesmo layout de antes, mas multiplicável
+    const cardHTML = `
+        <div class="colaborador-senha-card card mb-3 border-secondary" id="colaborador-senha-card-${idUnico}">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <strong><i class="bi bi-person me-2"></i> Usuário ${idUnico}</strong>
+                <button type="button" class="btn btn-sm btn-danger" onclick="document.getElementById('colaborador-senha-card-${idUnico}').remove()"><i class="bi bi-trash"></i></button>
+            </div>
+            <div class="card-body">
+                <div class="form-row-modal row mb-3">
+                    <div class="form-group-modal col-md-6">
+                        <label class="form-label fw-bold">Primeiro Nome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control format-text input-primeiro-nome" maxlength="50" required>
+                    </div>
+                    <div class="form-group-modal col-md-6">
+                        <label class="form-label fw-bold">Sobrenome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control format-text input-sobrenome" maxlength="100" required>
+                    </div>
+                </div>
+                
+                <div class="form-row-modal row mb-3">
+                    <div class="form-group-modal col-md-6">
+                        <label class="form-label">Ramal</label>
+                        <input type="text" class="form-control input-ramal" maxlength="10">
+                    </div>
+                    <div class="form-group-modal col-md-6">
+                        <label class="form-label">E-mail Institucional</label>
+                        <input type="email" class="form-control input-email" maxlength="255">
+                    </div>
+                </div>
+
+                <div class="form-row-modal row mb-3">
+                    <div class="form-group-modal col-md-12 full-width">
+                        <label class="form-label">Cargo</label>
+                        <select class="form-select select-cargo" onchange="toggleCargoFieldsDinâmico(this, ${idUnico})">
+                            <option value="servidor" selected>Servidor</option>
+                            <option value="colaborador">Colaborador</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="dados_colaborador_detalhes_${idUnico}" style="display: none;" class="bg-light p-3 rounded border">
+                    <h6 class="text-secondary fw-bold mb-3"><i class="bi bi-person-badge"></i> Dados do Contrato</h6>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-6">
+                            <label class="form-label">Selecione o Contrato</label>
+                            <select class="form-select select-contrato-existente" onchange="mudarContratoDinamico(this, ${idUnico})">
+                                <option value="">-- Selecione --</option>
+                                <option value="novo">+ Novo Contrato</option>
+                            </select>
+                        </div>
+                        <div class="form-group-modal col-md-6 div-numero-contrato" style="display: none;">
+                            <label class="form-label">Número do Contrato</label>
+                            <input type="text" class="form-control input-numero-contrato" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="form-row-modal row mb-3">
+                        <div class="form-group-modal col-md-6 div-empresa-vinculada" style="display: none;">
+                            <label class="form-label fw-bold">Empresa Vinculada</label>
+                            <input type="text" class="form-control format-text input-empresa" maxlength="100">
+                        </div>
+                        <div class="form-group-modal col-md-6 div-fiscal-contrato" style="display: none;">
+                            <label class="form-label fw-bold">Fiscal do Contrato</label>
+                            <input type="text" class="form-control format-text input-fiscal" maxlength="100">
+                        </div>
+                    </div>
+                    <div class="form-row-modal row mb-2">
+                        <div class="form-group-modal col-md-12 full-width div-unidade-fiscal" style="display: none;">
+                            <label class="form-label fw-bold">Unidade do Fiscal</label>
+                            <input type="text" class="form-control format-text input-unidade-fiscal" maxlength="200">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    container.insertAdjacentHTML('beforeend', cardHTML);
+
+    // Preenche os contratos no novo select criado
+    if (window.contratosColaboradorCache) {
+        const selectElem = container.querySelector(`#colaborador-senha-card-${idUnico} .select-contrato-existente`);
+        window.contratosColaboradorCache.forEach(c => {
+            selectElem.innerHTML += `<option value="${c.numero_contrato}">${c.numero_contrato}</option>`;
+        });
+    }
+}
+
+function mudarContratoDinamico(selectElement, idUnico) {
+    const card = document.getElementById(`colaborador-senha-card-${idUnico}`);
+    const inputNumero = card.querySelector('.input-numero-contrato');
+    const inputEmpresa = card.querySelector('.input-empresa');
+    const inputFiscal = card.querySelector('.input-fiscal');
+    const inputUnidade = card.querySelector('.input-unidade-fiscal');
+    
+    // Mostra as divs que escondem os inputs do contrato
+    card.querySelector('.div-numero-contrato').style.display = 'block';
+    card.querySelector('.div-empresa-vinculada').style.display = 'block';
+    card.querySelector('.div-fiscal-contrato').style.display = 'block';
+    card.querySelector('.div-unidade-fiscal').style.display = 'block';
+
+    if (selectElement.value === 'novo') {
+        inputNumero.value = '';
+        inputEmpresa.value = '';
+        inputFiscal.value = '';
+        inputUnidade.value = '';
+
+        inputNumero.readOnly = false;
+        inputEmpresa.readOnly = false;
+        inputFiscal.readOnly = false;
+        inputUnidade.readOnly = false;
+    } else if (selectElement.value !== '') {
+        const contrato = window.contratosColaboradorCache.find(c => c.numero_contrato === selectElement.value);
+        if (contrato) {
+            inputNumero.value = contrato.numero_contrato;
+            inputEmpresa.value = contrato.empresa_vinculada;
+            inputFiscal.value = contrato.fiscal_contrato;
+            inputUnidade.value = contrato.unidade_fiscal;
+
+            // Se selecionou um existente, bloqueia edição
+            inputNumero.readOnly = true;
+            inputEmpresa.readOnly = true;
+            inputFiscal.readOnly = true;
+            inputUnidade.readOnly = true;
+        }
+    } else {
+        // Se voltou para o "-- Selecione --"
+        card.querySelector('.div-numero-contrato').style.display = 'none';
+        card.querySelector('.div-empresa-vinculada').style.display = 'none';
+        card.querySelector('.div-fiscal-contrato').style.display = 'none';
+        card.querySelector('.div-unidade-fiscal').style.display = 'none';
+        inputNumero.value = '';
+        inputEmpresa.value = '';
+        inputFiscal.value = '';
+        inputUnidade.value = '';
+    }
+}
+
+function toggleCargoFieldsDinâmico(selectElement, idUnico) {
+    const container = document.getElementById(`dados_colaborador_detalhes_${idUnico}`);
+    if (selectElement.value === 'colaborador') {
+        container.style.display = 'block';
+        // Garante que o cache de contratos seja recarregado se não houver
+        if (!window.contratosColaboradorCache || window.contratosColaboradorCache.length === 0) {
+            if (typeof carregarContratos === 'function') {
+                carregarContratos();
+            }
+        }
+    } else {
+        container.style.display = 'none';
+        // Limpar campos
+        container.querySelectorAll('input').forEach(input => input.value = '');
+        container.querySelectorAll('select').forEach(sel => sel.value = '');
+    }
+}
+
+// Inicializa com um card aberto ao abrir o modal
+document.getElementById('modal-solicitacao-senha').addEventListener('show.bs.modal', function (e) {
+    if (contadorColaboradoresSenha === 0) {
+        addColaboradorSenhaCard();
+    }
+});
+
+// -----------------------------------------
+// FLUXO DO TÉCNICO (Concluir Senha)
+// -----------------------------------------
+window.abrirModalConcluirSenha = async function(id) {
+    document.getElementById('id_conclusao_senha').value = id;
+    document.getElementById('senha_gerada').value = '';
+    document.getElementById('desvio_conclusao').value = 'False';
+    document.getElementById('tel_desvio_conclusao').value = '';
+    
+    // Limpa campos visuais temporariamente
+    document.getElementById('view_concluir_solicitante').innerText = 'Carregando...';
+    document.getElementById('view_concluir_unidade').innerText = 'Carregando...';
+    document.getElementById('view_concluir_usuario').innerText = 'Carregando...';
+    document.getElementById('view_concluir_email').innerText = 'Carregando...';
+    document.getElementById('view_concluir_ramal').innerText = 'Carregando...';
+    document.getElementById('view_concluir_cargo').innerText = 'Carregando...';
+
+    var myModal = new bootstrap.Modal(document.getElementById('modal-concluir-senha'));
+    myModal.show();
+
+    // Busca os dados da solicitação para exibir
+    try {
+        const res = await fetch(`/telefonia/api/senhas/${id}/`);
+        if (res.ok) {
+            const data = await res.json();
+            document.getElementById('view_concluir_solicitante').innerText = data.solicitante || 'N/A';
+            document.getElementById('view_concluir_unidade').innerText = data.unidade || 'N/A';
+            document.getElementById('view_concluir_usuario').innerText = data.usuario || 'N/A';
+            document.getElementById('view_concluir_email').innerText = data.email || 'N/A';
+            document.getElementById('view_concluir_ramal').innerText = data.ramal || 'N/A';
+            document.getElementById('view_concluir_cargo').innerText = data.cargo || 'servidor';
+            if (data.desvio) document.getElementById('desvio_conclusao').value = 'True';
+            if (data.tel_desvio_externo) document.getElementById('tel_desvio_conclusao').value = data.tel_desvio_externo;
+        }
+    } catch (err) {
+        console.error("Erro ao buscar dados", err);
+    }
+}
+
+const formConcluirSenha = document.getElementById('form-concluir-senha');
+if (formConcluirSenha) {
+    formConcluirSenha.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('id_conclusao_senha').value;
+        const payload = {
+            senha: document.getElementById('senha_gerada').value,
+            desvio: document.getElementById('desvio_conclusao').value === 'True',
+            tel_desvio_externo: document.getElementById('tel_desvio_conclusao').value || null,
+            status: 'aguardando_supervisor'
+        };
+
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const resposta = await fetch(`/telefonia/api/senhas/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!resposta.ok) {
+                const data = await resposta.json();
+                throw new Error(data.error || 'Erro ao salvar a senha.');
+            }
+
+            Swal.fire('Sucesso!', 'Senha gerada e enviada para o Supervisor.', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modal-concluir-senha')).hide();
+            if(typeof $('#tabela-senhas') !== 'undefined') $('#tabela-senhas').DataTable().ajax.reload(null, false);
+        } catch (error) {
+            Swal.fire('Erro!', error.message, 'error');
+        }
+    });
+}
+
+// -----------------------------------------
+// FLUXO DO SUPERVISOR (Finalizar e E-mail)
+// -----------------------------------------
+window.abrirModalFinalizarSenha = function(id, status = 'aguardando_supervisor') {
+    document.getElementById('id_finalizacao_senha').value = id;
+    document.getElementById('cargo_finalizacao').value = 'servidor';
+    window.toggleCargoFinalizacao('servidor');
+    document.getElementById('select_contrato_finalizacao').value = '';
+
+    // Esconder o bloco de Ação do Supervisor se for reenvio (já finalizado)
+    const blocoAcao = document.getElementById('bloco_acao_supervisor_finalizacao');
+    if (blocoAcao) {
+        blocoAcao.style.display = (status === 'finalizada') ? 'none' : 'block';
+    }
+
+    // Configura o link para abrir o PDF em nova aba
+    const linkPreview = document.getElementById('link_preview_senha');
+    if (linkPreview) {
+        linkPreview.href = `/telefonia/senha/${id}/pdf/`;
+    }
+    
+    // Busca dados do email preview
+    document.getElementById('email_para_finalizacao').value = 'Carregando...';
+    document.getElementById('email_copia_finalizacao').value = 'Carregando...';
+    document.getElementById('email_assunto_finalizacao').value = 'Carregando...';
+    document.getElementById('email_corpo_finalizacao').value = 'Carregando...';
+    
+    const nomeArquivo = document.getElementById('nome_arquivo_senha_preview');
+    if (nomeArquivo) nomeArquivo.innerText = 'Carregando...';
+
+    fetch(`/telefonia/api/senhas/${id}/email-preview/`)
+        .then(res => res.json())
+        .then(data => {
+            if(!data.error) {
+                document.getElementById('email_para_finalizacao').value = data.to_email || '';
+                document.getElementById('email_copia_finalizacao').value = data.bcc_email || '';
+                document.getElementById('email_assunto_finalizacao').value = data.assunto || '';
+                document.getElementById('email_corpo_finalizacao').value = data.corpo || '';
+                if (nomeArquivo) nomeArquivo.innerText = data.filename || 'Documento.pdf';
+            } else {
+                console.error("Erro ao carregar preview do email:", data.error);
+                if (nomeArquivo) nomeArquivo.innerText = 'Documento.pdf';
+            }
+        }).catch(err => {
+            console.error("Erro:", err);
+            if (nomeArquivo) nomeArquivo.innerText = 'Documento.pdf';
+        });
+
+    var myModal = new bootstrap.Modal(document.getElementById('modal-finalizar-senha'));
+    myModal.show();
+}
+
+window.toggleCargoFinalizacao = function(valor) {
+    const container = document.getElementById('dados_contrato_finalizacao');
+    if (valor === 'colaborador') {
+        container.style.display = 'block';
+        if (!window.contratosColaboradorCache || window.contratosColaboradorCache.length === 0) {
+            if (typeof window.carregarContratos === 'function') {
+                window.carregarContratos();
+            }
+        }
+        
+        // Popula select se estiver vazio
+        const selectElem = document.getElementById('select_contrato_finalizacao');
+        if (selectElem.options.length <= 2 && window.contratosColaboradorCache) {
+            window.contratosColaboradorCache.forEach(c => {
+                selectElem.innerHTML += `<option value="${c.numero_contrato}">${c.numero_contrato}</option>`;
+            });
+        }
+    } else {
+        container.style.display = 'none';
+        container.querySelectorAll('input').forEach(i => i.value = '');
+    }
+}
+
+window.mudarContratoFinalizacao = function(valor) {
+    const inputNumero = document.getElementById('numero_contrato_finalizacao');
+    const inputEmpresa = document.getElementById('empresa_finalizacao');
+    const inputFiscal = document.getElementById('fiscal_finalizacao');
+    const inputUnidade = document.getElementById('unidade_fiscal_finalizacao');
+    
+    document.querySelector('.div_numero_contrato_finalizacao').style.display = 'block';
+    document.querySelector('.div_empresa_finalizacao').style.display = 'block';
+    document.querySelector('.div_fiscal_finalizacao').style.display = 'block';
+    document.querySelector('.div_unidade_fiscal_finalizacao').style.display = 'block';
+
+    if (valor === 'novo') {
+        inputNumero.value = ''; inputEmpresa.value = ''; inputFiscal.value = ''; inputUnidade.value = '';
+        inputNumero.readOnly = false; inputEmpresa.readOnly = false; inputFiscal.readOnly = false; inputUnidade.readOnly = false;
+    } else if (valor !== '') {
+        const contrato = window.contratosColaboradorCache.find(c => c.numero_contrato === valor);
+        if (contrato) {
+            inputNumero.value = contrato.numero_contrato; inputEmpresa.value = contrato.empresa_vinculada;
+            inputFiscal.value = contrato.fiscal_contrato; inputUnidade.value = contrato.unidade_fiscal;
+            inputNumero.readOnly = true; inputEmpresa.readOnly = true; inputFiscal.readOnly = true; inputUnidade.readOnly = true;
+        }
+    } else {
+        document.querySelector('.div_numero_contrato_finalizacao').style.display = 'none';
+        document.querySelector('.div_empresa_finalizacao').style.display = 'none';
+        document.querySelector('.div_fiscal_finalizacao').style.display = 'none';
+        document.querySelector('.div_unidade_fiscal_finalizacao').style.display = 'none';
+        inputNumero.value = ''; inputEmpresa.value = ''; inputFiscal.value = ''; inputUnidade.value = '';
+    }
+}
+
+const formFinalizarSenha = document.getElementById('form-finalizar-senha');
+if (formFinalizarSenha) {
+    formFinalizarSenha.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('id_finalizacao_senha').value;
+        const payload = {
+            cargo: document.getElementById('cargo_finalizacao').value,
+            numero_contrato: document.getElementById('numero_contrato_finalizacao').value,
+            empresa_vinculada: document.getElementById('empresa_finalizacao').value,
+            fiscal_contrato: document.getElementById('fiscal_finalizacao').value,
+            unidade_fiscal: document.getElementById('unidade_fiscal_finalizacao').value,
+            to_email: document.getElementById('email_para_finalizacao').value,
+            bcc_email: document.getElementById('email_copia_finalizacao').value,
+            assunto: document.getElementById('email_assunto_finalizacao').value,
+            corpo: document.getElementById('email_corpo_finalizacao').value,
+            status: 'finalizada'
+        };
+
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            // Endpoint novo que fará o UPDATE + Envio do Email
+            const resposta = await fetch(`/telefonia/api/senhas/${id}/finalizar/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!resposta.ok) {
+                const data = await resposta.json();
+                throw new Error(data.error || 'Erro ao finalizar a senha.');
+            }
+
+            Swal.fire('Sucesso!', 'Senha finalizada e e-mail enviado com sucesso.', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modal-finalizar-senha')).hide();
+            if(typeof $('#tabela-senhas') !== 'undefined') $('#tabela-senhas').DataTable().ajax.reload(null, false);
+        } catch (error) {
+            Swal.fire('Erro!', error.message, 'error');
+        }
+    });
+}
+

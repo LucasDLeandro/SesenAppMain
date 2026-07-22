@@ -1,117 +1,275 @@
 <div class="modal fade modal-ordens-wrapper" id="elev-concluir-os-modal" tabindex="-1" aria-labelledby="modalOrdensTitulo" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold text-success"><i class="bi bi-clipboard-check me-2"></i> Concluir Ordem</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" style="max-width: 1000px;">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-clipboard-check fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark">Concluir Ordem</h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
       </div>
-      <!-- Body do Modal com Formulário -->
-      <div class="modal-body modal-ordens-body">
-        <form id="elev-concluir-os-form">
-          {% csrf_token %}
 
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="elev-concluir-os-form" enctype="multipart/form-data">
+          {% csrf_token %}
           <input type="hidden" id="id_oculto_elev_os_concluir" name="id_oculto_elev_os_concluir">
 
           {% if ordem_concluir.errors %}
-            <div class="alert alert-danger mb-4" role="alert">
+            <div class="alert alert-danger mb-4 rounded-3 border-0 shadow-sm" role="alert">
               <i class="bi bi-exclamation-triangle me-2"></i>
               <strong>Erro ao submeter o formulário:</strong>
               <div class="mt-2">{{ ordem_concluir.errors }}</div>
             </div>
           {% endif %}
 
-          <!-- Seção: Informações Básicas -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-info-circle"></i> Informações de Conclusão da OS
-            </h6>
-
-            <div class="form-row-modal">
-              <div class="form-group-modal">
-                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.data_hora_chegada.label }}
-                </label>
-                {{ ordem_concluir.data_hora_chegada }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.data_hora.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.data_hora_conclusao.label }}
-                </label>
-                {{ ordem_concluir.data_hora_conclusao }}
-              </div>
-              
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                <!-- Seção: Informações Básicas (Leitura) -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                  <div class="card-body p-4">
+                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-info-circle me-2"></i> Informações
+                    </h6>
+                    <div class="text-center py-4" id="concluirLoadingInfo">
+                        <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div><br> Carregando...
+                    </div>
+                    <div class="row g-3 d-none" id="concluirDadosInfo">
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Protocolo</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="concluirReadonlyProtocolo" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Elevador</label>
+                        <input type="text" class="form-control form-control-sm bg-light fw-bold" id="concluirReadonlyElevador" readonly>
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label text-muted small fw-bold mb-1 text-nowrap">Data/Hora Abertura</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="concluirReadonlyDataAbertura" readonly>
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label text-muted small fw-bold mb-1">Ocorrência Inicial</label>
+                        <textarea class="form-control form-control-sm bg-light" id="concluirReadonlyOcorrencia" rows="3" readonly></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
 
-            <div class="form-row-modal">
-              <div class="form-group-modal">
-                <label for="{{ ordem.protocolo.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.protocolo.label }}
-                </label>
-                {{ ordem_concluir.protocolo }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.atendente.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.tecnico.label }}
-                </label>
-                {{ ordem_concluir.tecnico }}
-              </div>
-            </div>
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <!-- Dados de Conclusão -->
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-body p-4">
+                    <h6 class="fw-bold text-success text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-pencil-square me-2"></i> Preencher Dados de Conclusão
+                    </h6>
+                    <div class="d-none">
+                      {{ ordem_concluir.protocolo }}
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="{{ ordem_concluir.data_hora_chegada.id_for_label }}" class="form-label small fw-bold text-muted text-nowrap">{{ ordem_concluir.data_hora_chegada.label }}</label>
+                            {{ ordem_concluir.data_hora_chegada }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ ordem_concluir.data_hora_conclusao.id_for_label }}" class="form-label small fw-bold text-muted text-nowrap">{{ ordem_concluir.data_hora_conclusao.label }}</label>
+                            {{ ordem_concluir.data_hora_conclusao }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="{{ ordem_concluir.tecnico.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.tecnico.label }}</label>
+                            {{ ordem_concluir.tecnico }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ ordem_concluir.elevador_parado.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.elevador_parado.label }}</label>
+                            {{ ordem_concluir.elevador_parado }}
+                        </div>
+                        <div class="col-md-8">
+                            <label for="{{ ordem_concluir.status.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.status.label }}</label>
+                            {{ ordem_concluir.status }}
+                        </div>
+                        <div class="col-md-12" id="container-justificativa-parada" style="display: none;">
+                            <label for="{{ ordem_concluir.justificativa_parada.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.justificativa_parada.label }}</label>
+                            {{ ordem_concluir.justificativa_parada }}
+                        </div>
+                    </div>
+                  </div>
+                </div>
 
-            <div class="form-row-modal">
-              
+                <!-- Serviço e Peças -->
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-body p-4">
+                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-chat-text me-2"></i> Descrição do Serviço
+                    </h6>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="{{ ordem_concluir.servico.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.servico.label }}</label>
+                            {{ ordem_concluir.servico }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="{{ ordem_concluir.houve_substituicao_pecas.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.houve_substituicao_pecas.label }}</label>
+                            {{ ordem_concluir.houve_substituicao_pecas }}
+                        </div>
+                        <div class="col-md-12" id="container-peca-substituida" style="display: none;">
+                            <label for="{{ ordem_concluir.peca_substituida.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem_concluir.peca_substituida.label }}</label>
+                            {{ ordem_concluir.peca_substituida }}
+                        </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Anexo / Mídia -->
+                <div class="card border-0 shadow-sm rounded-4 mt-4">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            <i class="bi bi-paperclip me-2"></i> Anexo / Mídia
+                        </h6>
+                        <label for="id_midia_concluir" class="form-label small fw-bold text-muted">Selecione o Arquivo (Opcional)</label>
+                        <input type="file" class="form-control" id="id_midia_concluir" name="midia">
+                        <small class="text-muted d-block mt-2" style="font-size: 0.75rem;">
+                            Formatos suportados: Imagens, PDF, Word, Excel, etc.
+                        </small>
+                    </div>
+                </div>
+
             </div>
           </div>
 
-          <!-- Seção: Detalhes do Elevador -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-elevator"></i> Detalhes do Elevador
-            </h6>
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-check-lg me-2"></i> Concluir Ordem</button>
+          </div>
 
-            <div class="form-row-modal">
-              
-              <div class="form-group-modal">
-                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.elevador_parado.label }}
-                </label>
-                {{ ordem_concluir.elevador_parado }}
-              </div>
-              <div class="form-group-modal">
-                <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.status.label }}
-                </label>
-                {{ ordem_concluir.status }}
-              </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal Registrar Chegada -->
+<div class="modal fade modal-ordens-wrapper" id="modalRegistrarChegadaOS" tabindex="-1" aria-labelledby="modalRegistrarChegadaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" style="max-width: 1000px;">
+    <div class="modal-content border-0 shadow-lg bg-body rounded-4">
+      
+      <!-- HEADER -->
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-light rounded-top-4 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 48px; height: 48px;">
+            <i class="bi bi-geo-alt fs-4"></i>
+          </div>
+          <div>
+            <h5 class="modal-title fw-bolder mb-0 text-dark" id="modalRegistrarChegadaLabel">Registrar Chegada</h5>
+          </div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm px-3 rounded-pill fw-semibold shadow-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-lg me-1"></i> Fechar
+        </button>
+      </div>
+
+      <!-- BODY -->
+      <div class="modal-body px-4 py-4" style="background-color: #f8f9fa;">
+        <form id="formRegistrarChegadaOS">
+          <input type="hidden" id="chegadaIdOS" name="id_os">
+          <input type="hidden" id="chegadaRegistrador" name="registrador_chegada">
+
+          <div class="row g-4">
+            <!-- COLUNA ESQUERDA -->
+            <div class="col-md-5 d-flex flex-column gap-4">
+                
+                <!-- Informações do Chamado -->
+                <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                  <div class="card-body p-4">
+                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                        <i class="bi bi-info-circle me-2"></i> Informações do Chamado
+                    </h6>
+                    <div class="row g-3">
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Protocolo</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="chegadaProtocolo" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Elevador</label>
+                        <input type="text" class="form-control form-control-sm bg-light fw-bold" id="chegadaElevador" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1 text-nowrap">Data/Hora Abertura</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="chegadaDataAbertura" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label text-muted small fw-bold mb-1">Aprisionamento</label>
+                        <input type="text" class="form-control form-control-sm bg-light text-danger fw-bold" id="chegadaAprisionamento" readonly>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold mb-1">Elevador Parado?</label>
+                        <input type="text" class="form-control form-control-sm bg-light text-warning fw-bold" id="chegadaElevadorParado" readonly>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold mb-1">Solicitante</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="chegadaSolicitante" readonly>
+                      </div>
+                      <div class="col-md-4">
+                        <label class="form-label text-muted small fw-bold mb-1">Atendente</label>
+                        <input type="text" class="form-control form-control-sm bg-light" id="chegadaAtendente" readonly>
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label text-muted small fw-bold mb-1">Ocorrência Inicial</label>
+                        <textarea class="form-control form-control-sm bg-light" id="chegadaOcorrencia" rows="3" readonly></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <!-- COLUNA DIREITA -->
+            <div class="col-md-7 d-flex flex-column gap-4">
+                
+                <!-- Dados de Chegada -->
+                <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-body p-4">
+                    <h6 class="fw-bold text-primary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-pencil-square me-2"></i> Preencher Dados de Chegada
+                    </h6>
+                    <div class="row g-3">
+                      <div class="col-md-12">
+                        <label for="chegadaDataHora" class="form-label small fw-bold text-muted">Horário de Chegada</label>
+                        <input type="datetime-local" class="form-control" id="chegadaDataHora" name="data_hora_chegada" required>
+                      </div>
+                      <div class="col-md-12">
+                        <label for="chegadaTecnico" class="form-label small fw-bold text-muted">Nome do Técnico</label>
+                        <select class="form-select" id="chegadaTecnico" name="tecnico" required>
+                          <!-- preenchido via js -->
+                        </select>
+                      </div>
+                      <div class="col-md-12">
+                        <label for="chegadaAcompanhante" class="form-label small fw-bold text-muted">Acompanhante TSE</label>
+                        <select class="form-select" id="chegadaAcompanhante" name="acompanhante" data-logged-user="{{ request.user.get_full_name|default:request.user.username }}">
+                          <option value="">Nenhum / Não Informado</option>
+                          <!-- preenchido via js -->
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
 
-          <!-- Seção: Descrição da Ocorrência -->
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-chat-text"></i> Descrição da Serviço
-            </h6>
-
-            <div class="form-row-modal">
-              <div class="form-group-modal full-width">
-                <label for="{{ ordem.ocorrencia.id_for_label }}" class="form-label">
-                  {{ ordem_concluir.servico.label }}
-                </label>
-                {{ ordem_concluir.servico }}
-                <small class="text-muted d-block mt-2">
-                  <i class="bi bi-lightbulb"></i> Descreva detalhadamente o serviço executado
-                </small>
-              </div>
-            </div>
-          </div>
-
-          <!-- Footer com botões -->
-          <div class="modal-ordens-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              <i class="bi bi-x-lg me-2"></i>Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-lg me-2"></i>Concluir Ordem
-            </button>
+          <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+            <button type="button" class="btn btn-light rounded-pill px-4 fw-semibold" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm"><i class="bi bi-check-lg me-2"></i> Confirmar Chegada</button>
           </div>
 
         </form>

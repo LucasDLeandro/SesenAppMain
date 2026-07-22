@@ -1,66 +1,57 @@
-<div class="modal fade modal-ordens-wrapper" id="modal-aparelho-voip" tabindex="-1" aria-labelledby="modalAparelhoTitulo" aria-hidden="true">
+<div class="modal fade" id="modal-aparelho-voip" tabindex="-1" aria-labelledby="modalAparelhoTitulo" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-md">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
-          <i class="bi bi-phone me-2"></i> Cadastro de Aparelho VOIP
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold" style="color: #0f172a;">
+          <i class="bi bi-phone text-primary me-2"></i> Cadastro de Aparelho VOIP
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <!-- Body do Modal com Formulário -->
-      <div class="modal-body modal-ordens-body">
+      <div class="modal-body px-4 pb-4 pt-4">
         <form id="form-aparelho-voip">
           {% csrf_token %}
           <input type="hidden" id="id_oculto_aparelho" name="id">
 
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-cpu"></i> Detalhes do Dispositivo
-            </h6>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="patrimonio" class="form-label">Patrimônio</label>
-                <input type="text" class="form-control uppercase-text" id="patrimonio" name="patrimonio" maxlength="10">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="modelo" class="form-label">Modelo</label>
-                <input type="text" class="form-control uppercase-text" id="modelo" name="modelo" maxlength="30">
-              </div>
-            </div>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="fcn" class="form-label">FCN</label>
-                <input type="text" class="form-control uppercase-text" id="fcn" name="fcn" maxlength="15">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="mac_address" class="form-label">MAC Address</label>
-                <input type="text" class="form-control uppercase-text" id="mac_address" name="mac_address" maxlength="20">
-              </div>
-            </div>
-            
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-12 full-width">
-                <label for="integridade" class="form-label">Integridade</label>
-                <select class="form-select" id="integridade" name="integridade">
-                  <option value="funciona" selected>Funciona</option>
-                  <option value="defeito">Defeito</option>
-                </select>
+          <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-cpu me-2 fs-6"></i> Detalhes do Dispositivo
+              </h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="patrimonio" class="form-label text-muted fw-bold text-uppercase mb-1" >Patrimônio</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="patrimonio" name="patrimonio" maxlength="10" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-6">
+                  <label for="modelo" class="form-label text-muted fw-bold text-uppercase mb-1" >Modelo</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="modelo" name="modelo" maxlength="30" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-6">
+                  <label for="fcn" class="form-label text-muted fw-bold text-uppercase mb-1" >FCN</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="fcn" name="fcn" maxlength="15" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-6">
+                  <label for="mac_address" class="form-label text-muted fw-bold text-uppercase mb-1" >MAC Address</label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="mac_address" name="mac_address" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-12">
+                  <label for="integridade" class="form-label text-muted fw-bold text-uppercase mb-1" >Integridade</label>
+                  <select class="form-select  shadow-none" id="integridade" name="integridade" style="border-radius: 4px; border-color: #e2e8f0;">
+                    <option value="funciona" selected>Funciona</option>
+                    <option value="defeito">Defeito</option>
+                  </select>
+                </div>
               </div>
             </div>
-          </div>
-
-          <!-- Footer com botões -->
-          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              <i class="bi bi-x-lg me-2"></i>Cancelar
-            </button>
-            <button type="submit" class="btn btn-success">
-              <i class="bi bi-check-lg me-2"></i>Salvar Aparelho
-            </button>
           </div>
         </form>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success px-4 shadow-sm fw-bold" style="border-radius: 8px;" form="form-aparelho-voip">
+          <i class="bi bi-save me-2"></i> Salvar
+        </button>
       </div>
     </div>
   </div>

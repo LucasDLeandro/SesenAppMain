@@ -144,9 +144,8 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Telefonia - Template de Documento de Senha</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
-                                <strong>Prévia:</strong><br><br>
-                                "Instruções para Celular: {{ temp.instrucoes_celular }}<br><br>
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
+                                <strong>Prévia:</strong><br><br>"Instruções para Celular: {{ temp.instrucoes_celular }}<br><br>
                                 {{ temp.termo_obrigatorio|truncatewords:20 }}"
                             </div>
                         </div>
@@ -208,9 +207,8 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Telefonia - Tutorial de Utilização e GRU</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
-                                <strong>Prévia (Introdução):</strong><br><br>
-                                "{{ temp.introducao|striptags|truncatewords:20 }}"
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
+                                <strong>Prévia (Introdução):</strong><br><br>"{{ temp.introducao|striptags|truncatewords:20 }}"
                             </div>
                         </div>
                         
@@ -288,14 +286,14 @@
                             <p class="mb-1"><strong>Assunto:</strong> {{ temp.assunto }}</p>
                         </div>
                         <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
+                            <button class="btn  btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </button>
                             <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este template de e-mail?');">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="delete_email_template">
                                 <input type="hidden" name="template_id" value="{{ temp.id }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
+                                <button type="submit" class="btn  btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
                                     <i class="bi bi-trash"></i> Excluir
                                 </button>
                             </form>
@@ -334,10 +332,10 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Esta mensagem será disparada para a equipe técnica no fechamento desta demanda.</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555; white-space: pre-wrap;">{{ temp.base_text }}</div>
+                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555; white-space: pre-wrap;">{{ temp.base_text }}</div>
                         </div>
                         <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-end">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateWhatsapp({{ temp.id }}, `{{ temp.base_text|escapejs }}`)">
+                            <button class="btn  btn-outline-primary" onclick="editarTemplateWhatsapp({{ temp.id }}, `{{ temp.base_text|escapejs }}`)">
                                 <i class="bi bi-pencil-square me-2"></i> Editar Texto
                             </button>
                         </div>
@@ -368,14 +366,13 @@
                     </div>
                     <div class="msg-card-body flex-grow-1">
                         <p class="text-muted small mb-3">Estes textos serão utilizados na emissão dos Relatórios Anuais e de Solicitação de Reembolso na Gestão de Reembolsos.</p>
-                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; font-size: 0.85rem; color: #555;">
+                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
                             <strong>Cabeçalho:</strong><br>
                             {{ config_reembolsos.cabecalho_linha1 }}<br>
                             {{ config_reembolsos.cabecalho_linha2 }}<br>
                             {{ config_reembolsos.cabecalho_linha3 }}<br><br>
                             <strong>Título Anual:</strong> {{ config_reembolsos.titulo_tabela_anual }}<br><br>
-                            <strong>Rodapé 1:</strong><br>
-                            "{{ config_reembolsos.nota_rodape_1|striptags|truncatewords:20 }}"<br><br>
+                            <strong>Rodapé 1:</strong><br>"{{ config_reembolsos.nota_rodape_1|striptags|truncatewords:20 }}"<br><br>
                             <strong>Prefixo Rodapé 2:</strong> {{ config_reembolsos.nota_rodape_2_prefix }}
                         </div>
                     </div>
@@ -394,51 +391,65 @@
 
 <!-- Modal de Configuração de Reembolsos -->
 <div class="modal fade" id="modalConfig" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-primary text-white border-0">
-                <h5 class="modal-title"><i class="bi bi-gear-fill me-2"></i>Configurações de Textos dos Relatórios de Reembolso</h5>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+            <div class="modal-header border-0 pb-3 pt-4 px-4 bg-primary shadow-sm" style="z-index: 10;">
+                <h5 class="modal-title fw-bold text-white d-flex align-items-center">
+                    <i class="bi bi-gear-fill me-2 fs-5"></i> Configurações de Textos dos Relatórios de Reembolso
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body bg-light">
+            <div class="modal-body px-4 pb-4 pt-4">
                 <form id="formConfig">
-                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Cabeçalho</h6>
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Linha 1</label>
-                            <input type="text" class="form-control" id="config-cabecalho_linha1" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Linha 2</label>
-                            <input type="text" class="form-control" id="config-cabecalho_linha2" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Linha 3</label>
-                            <input type="text" class="form-control" id="config-cabecalho_linha3" required>
+                    <h6 class="text-primary fw-bold text-uppercase mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-layout-heading me-2 fs-6"></i> Cabeçalho
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Linha 1</label>
+                                    <input type="text" class="form-control  shadow-none" id="config-cabecalho_linha1" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Linha 2</label>
+                                    <input type="text" class="form-control  shadow-none" id="config-cabecalho_linha2" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Linha 3</label>
+                                    <input type="text" class="form-control  shadow-none" id="config-cabecalho_linha3" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">Tabelas e Rodapé</h6>
-                    <div class="row g-3">
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Título do Controle Anual</label>
-                            <input type="text" class="form-control" id="config-titulo_tabela_anual" required>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Nota de Rodapé (Observação 1)</label>
-                            <textarea class="form-control" id="config-nota_rodape_1" rows="3" required></textarea>
-                            <small class="text-muted">Você pode usar tags HTML básicas como &lt;b&gt;, &lt;br/&gt;</small>
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold text-muted small">Prefixo da Nota de Designação</label>
-                            <input type="text" class="form-control" id="config-nota_rodape_2_prefix" required>
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-table me-2 fs-6"></i> Tabelas e Rodapé
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Título do Controle Anual</label>
+                                    <input type="text" class="form-control  shadow-none" id="config-titulo_tabela_anual" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nota de Rodapé (Observação 1)</label>
+                                    <textarea class="form-control  shadow-none" id="config-nota_rodape_1" rows="3" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                    <small class="text-muted mt-1 d-block" >Você pode usar tags HTML básicas como &lt;b&gt;, &lt;br/&gt;</small>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Prefixo da Nota de Designação</label>
+                                    <input type="text" class="form-control  shadow-none" id="config-nota_rodape_2_prefix" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer border-0 bg-light">
-                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary rounded-pill px-4" onclick="salvarConfig()"><i class="bi bi-save me-2"></i>Salvar</button>
+            <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;" onclick="salvarConfig()"><i class="bi bi-save me-2"></i>Salvar</button>
             </div>
         </div>
     </div>
@@ -446,97 +457,105 @@
 
 <!-- Modal de Edição de Template SENHA -->
 <div class="modal fade" id="modalTemplate" tabindex="-1" aria-labelledby="modalTemplateLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-bottom">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+            <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
                 <h5 class="modal-title text-primary fw-bold" id="modalTemplateLabel"><i class="bi bi-pencil-square me-2"></i>Novo Template</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-4 pb-4 pt-4">
                 <form method="POST" id="form-template">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="save_senha_template">
                     <input type="hidden" name="template_id" id="template_id" value="">
                     
-                    <div class="mb-4 bg-light p-3 rounded">
-                        <div class="form-check form-switch fs-5">
-                            <input class="form-check-input" type="checkbox" role="switch" id="ativo" name="ativo">
-                            <label class="form-check-label ms-2" for="ativo">
-                                Definir como Template Ativo
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="nome" class="form-label fw-bold">Nome do Template</label>
-                        <input type="text" class="form-control" id="nome" name="nome" required placeholder="Ex: Modelo Claro S.A.">
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Informações do Topo (Cabeçalho)</h6>
-                        
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label for="cabecalho_logo" class="form-label fw-bold">Logo (Texto Grande)</label>
-                                <input type="text" class="form-control" id="cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE">
-                            </div>
-                            <div class="col-md-8">
-                                <label for="cabecalho_sublogo" class="form-label fw-bold">Sub-logo (Texto Menor)</label>
-                                <input type="text" class="form-control" id="cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral">
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="form-check form-switch fs-6 mb-0 d-flex align-items-center">
+                                <input class="form-check-input mt-0 me-2" type="checkbox" role="switch" id="ativo" name="ativo">
+                                <label class="form-check-label text-muted fw-bold text-uppercase" for="ativo" style="padding-top: 1px;">
+                                    Definir como Template Ativo
+                                </label>
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="cabecalho_subtitulo" class="form-label fw-bold">Subtítulo (Lado Direito)</label>
-                            <input type="text" class="form-control" id="cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN">
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <label for="nome" class="form-label text-muted fw-bold text-uppercase mb-1" >Nome do Template</label>
+                            <input type="text" class="form-control  shadow-none" id="nome" name="nome" required placeholder="Ex: Modelo Claro S.A." style="border-radius: 4px; border-color: #e2e8f0;">
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Instruções de Discagem</h6>
-                        
-                        <div class="mb-3">
-                            <label for="instrucoes_celular" class="form-label fw-bold">Celular</label>
-                            <input type="text" class="form-control" id="instrucoes_celular" name="instrucoes_celular" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="instrucoes_interurbanas" class="form-label fw-bold">Interurbanas</label>
-                            <input type="text" class="form-control" id="instrucoes_interurbanas" name="instrucoes_interurbanas" required>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="instrucoes_internacionais" class="form-label fw-bold">Internacionais</label>
-                            <input type="text" class="form-control" id="instrucoes_internacionais" name="instrucoes_internacionais" required>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Cláusulas e Termos</h6>
-                        
-                        <div class="mb-3">
-                            <label for="termo_obrigatorio" class="form-label fw-bold">Obrigatório</label>
-                            <textarea class="form-control" id="termo_obrigatorio" name="termo_obrigatorio" rows="4" required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="termo_ligacoes_longa_distancia" class="form-label fw-bold">Ligações de Longa Distância</label>
-                            <textarea class="form-control" id="termo_ligacoes_longa_distancia" name="termo_ligacoes_longa_distancia" rows="4" required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="termo_ressarcimento" class="form-label fw-bold">Ressarcimento</label>
-                            <textarea class="form-control" id="termo_ressarcimento" name="termo_ressarcimento" rows="4" required></textarea>
+                    <h6 class="text-primary fw-bold text-uppercase mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-layout-text-sidebar-reverse me-2 fs-6"></i> Informações do Topo (Cabeçalho)
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="cabecalho_logo" class="form-label text-muted fw-bold text-uppercase mb-1" >Logo (Texto Grande)</label>
+                                    <input type="text" class="form-control  shadow-none" id="cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="cabecalho_sublogo" class="form-label text-muted fw-bold text-uppercase mb-1" >Sub-logo (Texto Menor)</label>
+                                    <input type="text" class="form-control  shadow-none" id="cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label for="cabecalho_subtitulo" class="form-label text-muted fw-bold text-uppercase mb-1" >Subtítulo (Lado Direito)</label>
+                                    <input type="text" class="form-control  shadow-none" id="cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end border-top pt-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
-                            <i class="bi bi-save me-2"></i> Salvar Template
-                        </button>
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-telephone me-2 fs-6"></i> Instruções de Discagem
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="instrucoes_celular" class="form-label text-muted fw-bold text-uppercase mb-1" >Celular</label>
+                                    <input type="text" class="form-control  shadow-none" id="instrucoes_celular" name="instrucoes_celular" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label for="instrucoes_interurbanas" class="form-label text-muted fw-bold text-uppercase mb-1" >Interurbanas</label>
+                                    <input type="text" class="form-control  shadow-none" id="instrucoes_interurbanas" name="instrucoes_interurbanas" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label for="instrucoes_internacionais" class="form-label text-muted fw-bold text-uppercase mb-1" >Internacionais</label>
+                                    <input type="text" class="form-control  shadow-none" id="instrucoes_internacionais" name="instrucoes_internacionais" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-file-earmark-text me-2 fs-6"></i> Cláusulas e Termos
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="termo_obrigatorio" class="form-label text-muted fw-bold text-uppercase mb-1" >Obrigatório</label>
+                                    <textarea class="form-control  shadow-none" id="termo_obrigatorio" name="termo_obrigatorio" rows="4" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="termo_ligacoes_longa_distancia" class="form-label text-muted fw-bold text-uppercase mb-1" >Ligações de Longa Distância</label>
+                                    <textarea class="form-control  shadow-none" id="termo_ligacoes_longa_distancia" name="termo_ligacoes_longa_distancia" rows="4" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="termo_ressarcimento" class="form-label text-muted fw-bold text-uppercase mb-1" >Ressarcimento</label>
+                                    <textarea class="form-control  shadow-none" id="termo_ressarcimento" name="termo_ressarcimento" rows="4" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;"><i class="bi bi-save me-2"></i> Salvar Template</button>
                     </div>
                 </form>
             </div>
@@ -568,14 +587,14 @@
                             <p class="mb-1"><strong>Assunto:</strong> {{ temp.assunto }}</p>
                         </div>
                         <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-between">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
+                            <button class="btn  btn-outline-primary" onclick="editarTemplateEmail({{ temp.id }}, '{{ temp.nome|escapejs }}', '{{ temp.assunto|escapejs }}', '{{ temp.email_copia|escapejs|default:"" }}', `{{ temp.corpo|escapejs }}`, `{{ temp.assinatura|escapejs }}`, {{ temp.ativo|yesno:'true,false' }})">
                                 <i class="bi bi-pencil-square"></i> Editar
                             </button>
                             <form method="POST" class="d-inline" onsubmit="return confirm('Tem certeza que deseja excluir este template de e-mail?');">
                                 {% csrf_token %}
                                 <input type="hidden" name="action" value="delete_email_template">
                                 <input type="hidden" name="template_id" value="{{ temp.id }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
+                                <button type="submit" class="btn  btn-outline-danger" title="Excluir Template" {% if temp.ativo %}disabled{% endif %}>
                                     <i class="bi bi-trash"></i> Excluir
                                 </button>
                             </form>
@@ -595,98 +614,106 @@
 
 <!-- Modal de Edição de Template TUTORIAL -->
 <div class="modal fade" id="modalTemplateTutorial" tabindex="-1" aria-labelledby="modalTemplateTutorialLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-header border-bottom">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+            <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
                 <h5 class="modal-title text-primary fw-bold" id="modalTemplateTutorialLabel"><i class="bi bi-pencil-square me-2"></i>Novo Template de Tutorial</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-4 pb-4 pt-4">
                 <form method="POST" id="form-template-tutorial">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="save_tutorial_template">
                     <input type="hidden" name="template_id" id="tutorial_template_id" value="">
                     
-                    <div class="mb-4 bg-light p-3 rounded">
-                        <div class="form-check form-switch fs-5">
-                            <input class="form-check-input" type="checkbox" role="switch" id="tutorial_ativo" name="ativo">
-                            <label class="form-check-label ms-2" for="tutorial_ativo">
-                                Definir como Template Ativo
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="tutorial_nome" class="form-label fw-bold">Nome do Template</label>
-                        <input type="text" class="form-control" id="tutorial_nome" name="nome" required placeholder="Ex: Tutorial Padrão">
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Informações do Topo (Cabeçalho)</h6>
-                        
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-4">
-                                <label for="tutorial_cabecalho_logo" class="form-label fw-bold">Logo (Texto Grande)</label>
-                                <input type="text" class="form-control" id="tutorial_cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE">
-                            </div>
-                            <div class="col-md-8">
-                                <label for="tutorial_cabecalho_sublogo" class="form-label fw-bold">Sub-logo (Texto Menor)</label>
-                                <input type="text" class="form-control" id="tutorial_cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral">
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="form-check form-switch fs-6 mb-0 d-flex align-items-center">
+                                <input class="form-check-input mt-0 me-2" type="checkbox" role="switch" id="tutorial_ativo" name="ativo">
+                                <label class="form-check-label text-muted fw-bold text-uppercase" for="tutorial_ativo" style="padding-top: 1px;">
+                                    Definir como Template Ativo
+                                </label>
                             </div>
                         </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_cabecalho_subtitulo" class="form-label fw-bold">Subtítulo (Lado Direito)</label>
-                            <input type="text" class="form-control" id="tutorial_cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN">
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <label for="tutorial_nome" class="form-label text-muted fw-bold text-uppercase mb-1" >Nome do Template</label>
+                            <input type="text" class="form-control  shadow-none" id="tutorial_nome" name="nome" required placeholder="Ex: Tutorial Padrão" style="border-radius: 4px; border-color: #e2e8f0;">
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Página 1: Introdução e Passo a Passo</h6>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_introducao" class="form-label fw-bold">Introdução</label>
-                            <textarea class="form-control" id="tutorial_introducao" name="introducao" rows="4" required></textarea>
-                            <div class="form-text text-muted">Permite o uso de tags HTML, ex: &lt;b&gt; para negrito ou &lt;p&gt; para parágrafo.</div>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_exemplo_email" class="form-label fw-bold">Exemplo do E-mail (Passo a passo)</label>
-                            <textarea class="form-control" id="tutorial_exemplo_email" name="exemplo_email" rows="8" required></textarea>
-                        </div>
-                    </div>
-
-                    <div class="mb-4">
-                        <h6 class="fw-bold border-bottom pb-2 mb-3 mt-4">Páginas Seguintes: FAQs e Instruções Detalhadas</h6>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_secao_validacao" class="form-label fw-bold">Seção: Validação das ligações</label>
-                            <textarea class="form-control" id="tutorial_secao_validacao" name="secao_validacao" rows="6" required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_secao_pagamento" class="form-label fw-bold">Seção: Pagamento das ligações</label>
-                            <textarea class="form-control" id="tutorial_secao_pagamento" name="secao_pagamento" rows="6" required></textarea>
-                        </div>
-                        
-                        <div class="mb-3">
-                            <label for="tutorial_secao_consequencias" class="form-label fw-bold">Seção: Consequências do Não Pagamento</label>
-                            <textarea class="form-control" id="tutorial_secao_consequencias" name="secao_consequencias" rows="6" required></textarea>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="tutorial_secao_duvidas" class="form-label fw-bold">Seção: Outras Dúvidas Frequentes</label>
-                            <textarea class="form-control" id="tutorial_secao_duvidas" name="secao_duvidas" rows="6" required></textarea>
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-layout-text-sidebar-reverse me-2 fs-6"></i> Informações do Topo (Cabeçalho)
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="tutorial_cabecalho_logo" class="form-label text-muted fw-bold text-uppercase mb-1" >Logo (Texto Grande)</label>
+                                    <input type="text" class="form-control  shadow-none" id="tutorial_cabecalho_logo" name="cabecalho_logo" required placeholder="Ex: TSE" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-md-8">
+                                    <label for="tutorial_cabecalho_sublogo" class="form-label text-muted fw-bold text-uppercase mb-1" >Sub-logo (Texto Menor)</label>
+                                    <input type="text" class="form-control  shadow-none" id="tutorial_cabecalho_sublogo" name="cabecalho_sublogo" required placeholder="Ex: Tribunal Superior Eleitoral" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                                <div class="col-12">
+                                    <label for="tutorial_cabecalho_subtitulo" class="form-label text-muted fw-bold text-uppercase mb-1" >Subtítulo (Lado Direito)</label>
+                                    <input type="text" class="form-control  shadow-none" id="tutorial_cabecalho_subtitulo" name="cabecalho_subtitulo" required placeholder="Ex: Secretaria de Administração | COSEN - SESEN" style="border-radius: 4px; border-color: #e2e8f0;">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-end border-top pt-4">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-primary px-4 py-2 fw-bold">
-                            <i class="bi bi-save me-2"></i> Salvar Template
-                        </button>
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-1-circle me-2 fs-6"></i> Página 1: Introdução e Passo a Passo
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="tutorial_introducao" class="form-label text-muted fw-bold text-uppercase mb-1" >Introdução</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_introducao" name="introducao" rows="4" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                    <div class="form-text mt-1 text-muted" >Permite o uso de tags HTML, ex: &lt;b&gt; para negrito ou &lt;p&gt; para parágrafo.</div>
+                                </div>
+                                <div class="col-12">
+                                    <label for="tutorial_exemplo_email" class="form-label text-muted fw-bold text-uppercase mb-1" >Exemplo do E-mail (Passo a passo)</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_exemplo_email" name="exemplo_email" rows="8" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6 class="text-primary fw-bold text-uppercase mt-2 mb-2 d-flex align-items-center" style="letter-spacing: 0.5px;">
+                        <i class="bi bi-2-circle me-2 fs-6"></i> Páginas Seguintes: FAQs e Instruções Detalhadas
+                    </h6>
+                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <label for="tutorial_secao_validacao" class="form-label text-muted fw-bold text-uppercase mb-1" >Seção: Validação das ligações</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_secao_validacao" name="secao_validacao" rows="6" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="tutorial_secao_pagamento" class="form-label text-muted fw-bold text-uppercase mb-1" >Seção: Pagamento das ligações</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_secao_pagamento" name="secao_pagamento" rows="6" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="tutorial_secao_consequencias" class="form-label text-muted fw-bold text-uppercase mb-1" >Seção: Consequências do Não Pagamento</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_secao_consequencias" name="secao_consequencias" rows="6" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <label for="tutorial_secao_duvidas" class="form-label text-muted fw-bold text-uppercase mb-1" >Seção: Outras Dúvidas Frequentes</label>
+                                    <textarea class="form-control  shadow-none" id="tutorial_secao_duvidas" name="secao_duvidas" rows="6" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;"><i class="bi bi-save me-2"></i> Salvar Template</button>
                     </div>
                 </form>
             </div>
@@ -696,47 +723,41 @@
 
 <!-- Modal de Edição de Template WHATSAPP -->
 <div class="modal fade" id="modalTemplateWhatsapp" tabindex="-1" aria-labelledby="modalTemplateWhatsappLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header border-bottom bg-light">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+            <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
                 <h5 class="modal-title text-success fw-bold" id="modalTemplateWhatsappLabel">
                     <i class="bi bi-whatsapp me-2"></i>Editar Notificação WhatsApp
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body px-4 pb-4 pt-4">
                 <form method="POST" id="form-template-whatsapp">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="save_whatsapp_template">
                     <input type="hidden" name="template_id" id="whatsapp_template_id" value="">
                     
-                    <div class="mb-3">
-                        <label for="whatsapp_mensagem" class="form-label fw-bold">Texto da Mensagem</label>
-                        <div class="form-text mb-2 text-info">
-                            Variáveis disponíveis para os templates de Telefonia:<br>
-                            <code>{tecnico}</code> = Nome do técnico recebendo a mensagem.<br>
-                            <code>{solicitante}</code> = Nome de quem solicitou.<br>
-                            <code>{protocolo}</code> = Número do protocolo.<br>
-                            <code>{unidade}</code> = A unidade por extenso (ex: Diretoria Geral).<br>
-                            <code>{sigla_unidade}</code> = A sigla (ex: DG).<br>
-                            <code>{ramal}</code> = Número do ramal associado (se houver).<br>
-                            <hr class="my-2 text-secondary">
-                            <strong>Apenas Aparelhos:</strong><br>
-                            <code>{local}</code> = O local (sala/setor).<br>
-                            <code>{qnt_solicitada}</code> = A quantidade de aparelhos.<br>
-                            <strong>Apenas Senhas:</strong><br>
-                            <code>{usuario}</code> = Nome do usuário da senha.<br>
+                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card-body p-3">
+                            <label for="whatsapp_mensagem" class="form-label text-muted fw-bold text-uppercase mb-2" >Texto da Mensagem</label>
+                            <div class="form-text mb-3 text-info p-2 rounded" style="background-color: rgba(13, 202, 240, 0.05); border: 1px solid rgba(13, 202, 240, 0.2);">
+                                <strong>Variáveis disponíveis:</strong><br>
+                                <code>{tecnico}</code> = Nome do técnico.<br>
+                                <code>{solicitante}</code> = Nome do solicitante.<br>
+                                <code>{protocolo}</code> = Número do protocolo.<br>
+                                <code>{unidade}</code> / <code>{sigla_unidade}</code> = Unidade.<br>
+                                <code>{ramal}</code> = Ramal.<br>
+                                <hr class="my-2 border-info opacity-25">
+                                <span class="d-block mb-1"><strong>Aparelhos:</strong> <code>{local}</code>, <code>{qnt_solicitada}</code></span>
+                                <span class="d-block"><strong>Senhas:</strong> <code>{usuario}</code></span>
+                            </div>
+                            <textarea class="form-control  shadow-none font-monospace" id="whatsapp_mensagem" name="mensagem" rows="10" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
                         </div>
-                        <textarea class="form-control" id="whatsapp_mensagem" name="mensagem" rows="10" required></textarea>
                     </div>
                     
-                    <div class="d-flex justify-content-end border-top pt-4 mt-3">
-                        <button type="button" class="btn btn-secondary px-4 py-2 fw-bold me-2" data-bs-dismiss="modal">
-                            Cancelar
-                        </button>
-                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold">
-                            <i class="bi bi-save me-2"></i> Salvar Mensagem
-                        </button>
+                    <div class="d-flex justify-content-end gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success px-4 shadow-sm fw-bold" style="border-radius: 8px;"><i class="bi bi-save me-2"></i> Salvar Mensagem</button>
                     </div>
                 </form>
             </div>
@@ -747,91 +768,5 @@
 
 {% block extra_js %}
 <script src="{% static 'js/config_telefonia.js' %}"></script>
-<script>
-function abrirModalConfig() {
-    fetch('/reembolsos/api/configuracao-pdf/')
-        .then(response => {
-            if(!response.ok) throw new Error('Network response was not ok');
-            return response.json();
-        })
-        .then(data => {
-            document.getElementById('config-cabecalho_linha1').value = data.cabecalho_linha1;
-            document.getElementById('config-cabecalho_linha2').value = data.cabecalho_linha2;
-            document.getElementById('config-cabecalho_linha3').value = data.cabecalho_linha3;
-            document.getElementById('config-titulo_tabela_anual').value = data.titulo_tabela_anual;
-            document.getElementById('config-nota_rodape_1').value = data.nota_rodape_1;
-            document.getElementById('config-nota_rodape_2_prefix').value = data.nota_rodape_2_prefix;
-            
-            var modal = new bootstrap.Modal(document.getElementById('modalConfig'));
-            modal.show();
-        })
-        .catch(err => {
-            Swal.fire('Erro', 'Não foi possível carregar as configurações', 'error');
-        });
-}
-
-function salvarConfig() {
-    // Pegar o CSRF token do template ou do cookie
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-
-    const data = {
-        cabecalho_linha1: document.getElementById('config-cabecalho_linha1').value,
-        cabecalho_linha2: document.getElementById('config-cabecalho_linha2').value,
-        cabecalho_linha3: document.getElementById('config-cabecalho_linha3').value,
-        titulo_tabela_anual: document.getElementById('config-titulo_tabela_anual').value,
-        nota_rodape_1: document.getElementById('config-nota_rodape_1').value,
-        nota_rodape_2_prefix: document.getElementById('config-nota_rodape_2_prefix').value
-    };
-
-    fetch('/reembolsos/api/configuracao-pdf/', {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if(!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-    })
-    .then(data => {
-        var modalInstance = bootstrap.Modal.getInstance(document.getElementById('modalConfig'));
-        if (modalInstance) modalInstance.hide();
-        Swal.fire({
-            icon: 'success',
-            title: 'Salvo!',
-            text: 'Configurações de PDF atualizadas com sucesso.',
-            timer: 2000,
-            showConfirmButton: false
-        }).then(() => {
-            window.location.reload();
-        });
-    })
-    .catch(err => {
-        Swal.fire('Erro', 'Não foi possível salvar as configurações', 'error');
-    });
-}
-
-function editarTemplateWhatsapp(id, mensagem) {
-    document.getElementById('whatsapp_template_id').value = id;
-    document.getElementById('whatsapp_mensagem').value = mensagem;
-    
-    var modal = new bootstrap.Modal(document.getElementById('modalTemplateWhatsapp'));
-    modal.show();
-}
-</script>
+<script src="{% static 'adm_setup/js/configuracao_telefonia.js' %}?v=1.0"></script>
 {% endblock %}

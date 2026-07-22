@@ -1,171 +1,95 @@
-<div class="modal fade modal-ordens-wrapper" id="modal-solicitacao-senha" tabindex="-1" aria-labelledby="modalSenhaTitulo" aria-hidden="true">
+<div class="modal fade" id="modal-solicitacao-senha" tabindex="-1" aria-labelledby="modalSenhaTitulo" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg bg-body">
-      <div class="modal-header border-0 pb-0 pt-4 px-4">
-        <h5 class="modal-title fw-bold" style="color: var(--primary-blue);">
-          <i class="bi bi-key me-2"></i> Solicitação de Senha
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold" style="color: #0f172a;">
+          <i class="bi bi-key text-primary me-2"></i> Solicitação de Senha
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <!-- Body do Modal com Formulário -->
-      <div class="modal-body modal-ordens-body">
+      <div class="modal-body px-4 pb-4 pt-4">
         <form id="form-solicitacao-senha">
           {% csrf_token %}
           <input type="hidden" id="id_oculto_senha" name="id">
 
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal">
-              <i class="bi bi-info-circle"></i> Informações Básicas
-            </h6>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="protocolo_senha" class="form-label">Protocolo SEI</label>
-                <input type="text" class="form-control" id="protocolo_senha" name="protocolo" maxlength="20">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="solicitante_senha" class="form-label fw-bold">Solicitante</label>
-                <input type="text" class="form-control format-text" id="solicitante_senha" name="solicitante" maxlength="100">
-              </div>
-            </div>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="unidade_senha" class="form-label fw-bold">Unidade</label>
-                <input type="text" class="form-control format-text" id="unidade_senha" name="unidade" maxlength="200">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="sigla_unidade_senha" class="form-label fw-bold">Sigla da Unidade</label>
-                <input type="text" class="form-control uppercase-text" id="sigla_unidade_senha" name="sigla_unidade" maxlength="20">
-              </div>
-            </div>
-
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="senha_registrada" class="form-label">Senha Registrada</label>
-                <input type="text" class="form-control" id="senha_registrada" name="senha" maxlength="50" placeholder="Ex: 365*98">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="edificios_senha" class="form-label">Edifícios Permitidos</label>
-                <input type="text" class="form-control" id="edificios_senha" name="edificios" maxlength="100" value="Ed. Sede/Anexo">
-              </div>
-            </div>
-            
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="primeiro_nome_senha" class="form-label fw-bold">Primeiro Nome <span class="text-danger">*</span></label>
-                <input type="text" class="form-control format-text" id="primeiro_nome_senha" name="primeiro_nome" maxlength="50" required>
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="sobrenome_senha" class="form-label fw-bold">Sobrenome <span class="text-danger">*</span></label>
-                <input type="text" class="form-control format-text" id="sobrenome_senha" name="sobrenome" maxlength="100" required>
-              </div>
-            </div>
-            
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-6">
-                <label for="ramal_senha" class="form-label">Ramal</label>
-                <input type="text" class="form-control" id="ramal_senha" name="ramal" maxlength="10">
-              </div>
-              <div class="form-group-modal col-md-6">
-                <label for="email_senha" class="form-label">E-mail Institucional</label>
-                <input type="email" class="form-control" id="email_senha" name="email" maxlength="255">
-              </div>
-            </div>
-            
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-12 full-width">
-                <label for="cargo_senha" class="form-label">Cargo</label>
-                <select class="form-select" id="cargo_senha" name="cargo" onchange="toggleColaboradorFields(this.value)">
-                  <option value="servidor" selected>Servidor</option>
-                  <option value="colaborador">Colaborador</option>
-                </select>
-              </div>
-            </div>
-            
-            <div id="dados_colaborador_container" style="display: none;" class="bg-light p-3 rounded mb-3 border">
-                <h6 class="text-secondary fw-bold mb-3"><i class="bi bi-person-badge"></i> Dados do Colaborador</h6>
-                <div class="form-row-modal row mb-3">
-                  <div class="form-group-modal col-md-6">
-                    <label for="select_contrato_senha" class="form-label">Selecione o Contrato</label>
-                    <select class="form-select" id="select_contrato_senha" onchange="window.mudarContrato(this.value)">
-                        <option value="">-- Selecione --</option>
-                        <option value="novo">+ Novo Contrato</option>
-                    </select>
-                  </div>
-                  <div class="form-group-modal col-md-6" id="div_numero_contrato_novo" style="display: none;">
-                    <label for="numero_contrato_senha" class="form-label">Número do Contrato</label>
-                    <input type="text" class="form-control" id="numero_contrato_senha" name="numero_contrato" maxlength="50">
-                  </div>
+          <!-- Informações Básicas -->
+          <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-info-circle me-2 fs-6"></i> Informações Básicas
+              </h6>
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="protocolo_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Protocolo SEI</label>
+                  <input type="text" class="form-control  shadow-none" id="protocolo_senha" name="protocolo" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
                 </div>
-                <div class="form-row-modal row mb-3">
-                  <div class="form-group-modal col-md-6">
-                    <label for="empresa_vinculada_senha" class="form-label fw-bold">Empresa Vinculada</label>
-                    <input type="text" class="form-control format-text" id="empresa_vinculada_senha" name="empresa_vinculada" maxlength="100">
-                  </div>
-                  <div class="form-group-modal col-md-6">
-                    <label for="fiscal_contrato_senha" class="form-label fw-bold">Fiscal do Contrato</label>
-                    <input type="text" class="form-control format-text" id="fiscal_contrato_senha" name="fiscal_contrato" maxlength="100">
-                  </div>
+                <div class="col-md-6">
+                  <label for="solicitante_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Solicitante <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control  format-text shadow-none" id="solicitante_senha" name="solicitante" maxlength="100" style="border-radius: 4px; border-color: #e2e8f0;">
                 </div>
-                <div class="form-row-modal row mb-2">
-                  <div class="form-group-modal col-md-12 full-width">
-                    <label for="unidade_fiscal_senha" class="form-label fw-bold">Unidade do Fiscal</label>
-                    <input type="text" class="form-control format-text" id="unidade_fiscal_senha" name="unidade_fiscal" maxlength="200">
-                  </div>
+                <div class="col-md-6">
+                  <label for="unidade_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Unidade <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control  format-text shadow-none" id="unidade_senha" name="unidade" maxlength="200" style="border-radius: 4px; border-color: #e2e8f0;">
                 </div>
-            </div>
-
-          </div>
-
-          <div class="form-section-modal">
-            <h6 class="form-section-title-modal mt-3">
-              <i class="bi bi-telephone-forward"></i> Configurações e Desvio
-            </h6>
-            
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-4">
-                <label for="categoria_senha" class="form-label">Categoria</label>
-                <input type="text" class="form-control" id="categoria_senha" name="categoria" maxlength="10">
+                <div class="col-md-6">
+                  <label for="sigla_unidade_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Sigla da Unidade <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control  uppercase-text shadow-none" id="sigla_unidade_senha" name="sigla_unidade" maxlength="20" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-12">
+                  <label for="edificios_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Edifícios Permitidos</label>
+                  <input type="text" class="form-control  shadow-none" id="edificios_senha" name="edificios" maxlength="100" value="Ed. Sede/Anexo" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
               </div>
-              <div class="form-group-modal col-md-4">
-                <label for="desvio_senha" class="form-label">Tem Desvio?</label>
-                <select class="form-select" id="desvio_senha" name="desvio">
-                  <option value="False" selected>Não</option>
-                  <option value="True">Sim</option>
-                </select>
-              </div>
-              <div class="form-group-modal col-md-4">
-                <label for="tel_desvio_externo" class="form-label">Tel. Desvio Externo</label>
-                <input type="text" class="form-control" id="tel_desvio_externo" name="tel_desvio_externo" maxlength="30">
-              </div>
-            </div>
 
-            <div class="form-row-modal row mb-3">
-              <div class="form-group-modal col-md-12 full-width">
-                <label for="nome_tecnico_senha" class="form-label">Nome do Técnico Responsável</label>
-                <select class="form-select" id="nome_tecnico_senha" name="nome_tecnico">
-                    <option value="" disabled selected>Selecione um técnico...</option>
-                    {% for tecnico in tecnicos %}
-                        <option value="{{ tecnico.get_full_name|default:tecnico.username }}">{{ tecnico.get_full_name|default:tecnico.username }}</option>
-                    {% empty %}
-                        <option value="" disabled>Nenhum técnico de telefonia encontrado</option>
-                    {% endfor %}
-                </select>
+              <!-- Pessoas / Senhas -->
+              <div id="colaboradores-senhas-container" class="mt-4 border-top pt-3">
+                <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                  <i class="bi bi-people me-2 fs-6"></i> Pessoas / Senhas a serem criadas
+                </h6>
+                <div id="lista_colaboradores_senhas">
+                    <!-- Cards de pessoas serão inseridos aqui -->
+                </div>
+                <button type="button" class="btn  btn-outline-primary mt-2" id="btn-add-colaborador-senha" onclick="addColaboradorSenhaCard()">
+                    <i class="bi bi-plus-circle me-1"></i> Adicionar Usuário
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Footer com botões -->
-          <div class="modal-ordens-footer mt-4 d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
-              <i class="bi bi-x-lg me-2"></i>Cancelar
-            </button>
-            <button type="submit" class="btn btn-primary">
-              <i class="bi bi-check-lg me-2"></i>Salvar
-            </button>
+          <!-- Configurações e Desvio -->
+          <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-telephone-forward me-2 fs-6"></i> Configurações e Desvio
+              </h6>
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label for="categoria_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Categoria</label>
+                  <input type="text" class="form-control  shadow-none" id="categoria_senha" name="categoria" maxlength="10" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+                <div class="col-md-4">
+                  <label for="desvio_senha" class="form-label text-muted fw-bold text-uppercase mb-1" >Tem Desvio?</label>
+                  <select class="form-select  shadow-none" id="desvio_senha" name="desvio" style="border-radius: 4px; border-color: #e2e8f0;">
+                    <option value="False" selected>Não</option>
+                    <option value="True">Sim</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label for="tel_desvio_externo" class="form-label text-muted fw-bold text-uppercase mb-1" >Tel. Desvio Externo</label>
+                  <input type="text" class="form-control  shadow-none" id="tel_desvio_externo" name="tel_desvio_externo" maxlength="30" style="border-radius: 4px; border-color: #e2e8f0;">
+                </div>
+              </div>
+            </div>
           </div>
+
         </form>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary px-4 shadow-sm fw-bold" style="border-radius: 8px;" form="form-solicitacao-senha">
+          <i class="bi bi-save me-2"></i> Salvar
+        </button>
       </div>
     </div>
   </div>

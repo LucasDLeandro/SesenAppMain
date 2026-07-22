@@ -1,4 +1,5 @@
 from elevadores.models import *
+from sesen_app.utils import dinamic_upload_path
 
 class ElevadorStatus(models.Model):
     elevador = models.CharField(
@@ -57,6 +58,14 @@ class ElevadorParadaHistorico(models.Model):
     data_hora_retorno = models.DateTimeField(
         verbose_name="Data e Hora do Retorno"
     )
+    os_relacionada = models.ForeignKey(
+        'ElevOrderReg',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="OS Relacionada",
+        related_name="paradas_historico"
+    )
     tempo_parado = models.DecimalField(
         max_digits=8,
         decimal_places=2,
@@ -79,15 +88,13 @@ class ElevOrderReg(models.Model):
     protocolo = models.CharField(
         max_length=20, 
         unique=True, 
-        null=False, 
-        blank=False, 
+        null=True, 
+        blank=True, 
         verbose_name="Protocolo", 
         help_text="Digite o protocolo da OS, ex: 123456789...", 
         editable=True, 
         error_messages= {
             'unique': "Este protocolo já existe. Por favor, verifique e tente novamente.",
-            'blank': "O campo não pode estar vazio. Por favor, insira o protocolo da OS.",
-            'null': "O campo não pode ser nulo. Por favor, insira o protocolo da OS.",
             'max_length': "O protocolo excedeu o número máximo de caracteres permitidos (20).",
         }
     )
@@ -125,8 +132,8 @@ class ElevOrderReg(models.Model):
 
     atendente = models.CharField(
         max_length=200, 
-        null=False, 
-        blank=False, 
+        null=True, 
+        blank=True, 
         default="",
         verbose_name="Atendente",
         )
@@ -144,6 +151,27 @@ class ElevOrderReg(models.Model):
         blank=False, 
         choices=STATUS_ELEVADOR_CHOICES, 
         verbose_name="Status do Elevador"
+    )
+    
+    justificativa_parada = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Justificativa da Parada",
+        help_text="Descreva o motivo da continuidade da parada."
+    )
+    
+    midia = models.FileField(
+        upload_to=dinamic_upload_path,
+        null=True,
+        blank=True,
+        verbose_name="Anexo/Mídia"
+    )
+
+    alarme_ems = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Alarme EMS"
     )
 
     data_hora_chegada = models.DateTimeField(
@@ -177,6 +205,22 @@ class ElevOrderReg(models.Model):
         help_text="Insira o nome do técnico responsável pelo atendimento.",
     )
 
+    acompanhante = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Acompanhante",
+        help_text="Nome do usuário que acompanhou o técnico.",
+    )
+
+    registrador_chegada = models.CharField(
+        max_length=200,
+        null=True,
+        blank=True,
+        verbose_name="Registrado por",
+        help_text="Usuário que registrou a chegada do técnico.",
+    )
+
     servico = models.CharField(
         max_length=600,
         null=False,
@@ -198,6 +242,12 @@ class ElevOrderReg(models.Model):
     def __str__(self):
         return f'{self.protocolo}'
 
+    def save(self, *args, **kwargs):
+        if not self.protocolo:
+            import datetime
+            self.protocolo = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        super().save(*args, **kwargs)
+
 
 class ManutencaoPreventiva(models.Model):
     STATUS_MPM = [
@@ -213,6 +263,15 @@ class ManutencaoPreventiva(models.Model):
         choices=ELEVATOR_CHOICE,
         verbose_name="Elevador",
         help_text="Selecione o elevador.",
+    )
+    
+    # Integração com Contrato
+    contrato = models.ForeignKey(
+        'contratos.Contratos',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Contrato Cliente"
     )
     
     data_execucao = models.DateField(
@@ -293,6 +352,47 @@ class ManutencaoPreventiva(models.Model):
         help_text="O mês e ano a qual este relatório pertence (use o dia 1 do mês)",
     )
 
+    # Checklist de Serviço Prestado
+    CHECKLIST_CHOICES = [
+        ('OK', 'OK'),
+        ('NOK', 'NOK'),
+        ('NA', 'N/A'),
+    ]
+    apresentacao = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Apresentação")
+    performance_qualidade = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Performance de qualidade")
+    limitador_velocidade = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Limitador Velocidade (P)")
+    controle = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Controle (EL)")
+    poco = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Poço (P)")
+    encerramento = models.CharField(max_length=5, choices=CHECKLIST_CHOICES, default='OK', verbose_name="Encerramento")
+    
+    descricao_servico = models.TextField(null=True, blank=True, verbose_name="Descrição do serviço executado / a executar")
+    observacao = models.TextField(null=True, blank=True, verbose_name="Observação")
+    
+    SITUACAO_CHOICES = [
+        ('Em Funcionamento', 'Em Funcionamento'),
+        ('Parado', 'Parado'),
+    ]
+    situacao_equipamento = models.CharField(max_length=50, choices=SITUACAO_CHOICES, default='Em Funcionamento', verbose_name="Situação do Equipamento")
+    foto_poco = models.ImageField(upload_to='mpm_fotos/', null=True, blank=True, verbose_name="Foto Poço")
+
+    # Execução (Horários)
+    tecnico_chapa = models.CharField(max_length=50, null=True, blank=True, verbose_name="Chapa do Técnico")
+    hora_chegada = models.TimeField(null=True, blank=True, verbose_name="Hora Chegada")
+    hora_saida = models.TimeField(null=True, blank=True, verbose_name="Hora Saída")
+
+    # Visto do Cliente
+    cliente_comentarios = models.TextField(null=True, blank=True, verbose_name="Comentários do cliente")
+    cliente_nome = models.CharField(max_length=200, null=True, blank=True, verbose_name="Nome Cliente (Visto)")
+    cliente_email = models.EmailField(max_length=254, null=True, blank=True, verbose_name="E-mail Cliente")
+    cliente_data = models.DateField(null=True, blank=True)
+    
+    midia = models.FileField(
+        upload_to=dinamic_upload_path,
+        null=True,
+        blank=True,
+        verbose_name="Anexo/Mídia"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -312,6 +412,8 @@ class PecaManutencao(models.Model):
     )
     andar = models.CharField(
         max_length=50,
+        null=True,
+        blank=True,
         verbose_name="Andar/Pavimento"
     )
     tipo_peca = models.CharField(
@@ -323,6 +425,8 @@ class PecaManutencao(models.Model):
         verbose_name="Data de Registro"
     )
     data_previsao_troca = models.DateField(
+        null=True,
+        blank=True,
         verbose_name="Previsão de Troca"
     )
     
@@ -359,8 +463,41 @@ class PecaManutencao(models.Model):
         verbose_name="Status"
     )
     
+    valor_estimado = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Valor Estimado"
+    )
+    
+    midia = models.FileField(
+        upload_to=dinamic_upload_path,
+        null=True,
+        blank=True,
+        verbose_name="Anexo/Mídia"
+    )
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f'{self.tipo_peca} - {self.elevador}'
+
+class AlarmeEmsEvent(models.Model):
+    TIPO_EVENTO_CHOICES = [
+        ('EVENT', 'EVENT'),
+        ('ALARM', 'ALARM'),
+    ]
+    tipo_evento = models.CharField(max_length=10, choices=TIPO_EVENTO_CHOICES, verbose_name="Tipo de Evento")
+    data_hora = models.DateTimeField(verbose_name="Data e Hora do Evento")
+    descricao = models.CharField(max_length=500, verbose_name="Descrição")
+    elevador = models.CharField(max_length=50, choices=ELEVATOR_CHOICE, verbose_name="Elevador")
+    usuario_registrador = models.CharField(max_length=150, blank=True, null=True, verbose_name="Usuário Registrador")
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-data_hora']
+
+    def __str__(self):
+        return f"{self.tipo_evento} - {self.elevador} - {self.data_hora}"

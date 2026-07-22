@@ -11,16 +11,7 @@
     <!-- Select2 CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-    <style>
-        .dashboard-header {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            border-radius: 12px;
-            padding: 25px;
-            color: white;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'telefonia/css/main_telefonia_header.css' %}?v=1.0">
 {% endblock %}
 
 {% block painel_servicos %}
@@ -29,7 +20,7 @@
             
             <!-- Cabeçalho -->
             <div class="dashboard-header mb-4">
-                <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
                         <h2 class="fw-bold mb-1"><i class="bi bi-telephone me-3"></i>Gestão de Telefonia</h2>
                         <p class="mb-0 opacity-75">Controle de solicitações, senhas e aparelhos telefônicos.</p>
@@ -155,7 +146,7 @@
                                         </div>
                                     </div>
                                     <div class="text-center" id="rodape-widget-recebidas">
-                                        <button class="btn btn-danger btn-sm w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
+                                        <button class="btn btn-danger  w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
                                             <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
                                         </button>
                                     </div>
@@ -335,6 +326,8 @@
     {% include 'telefonia/includes/form_concluir_solicitacao_modal.html' %}
     {% include 'telefonia/includes/form_visualizar_aparelho_modal.html' %}
     {% include 'telefonia/includes/form_senha_modal.html' %}
+    {% include 'telefonia/includes/form_concluir_senha_modal.html' %}
+    {% include 'telefonia/includes/form_finalizar_senha_modal.html' %}
     {% include 'telefonia/includes/form_remessa_modal.html' %}
     {% include 'telefonia/includes/form_visualizar_senha_modal.html' %}
     {% include 'telefonia/includes/form_visualizar_solicitacao_modal.html' %}
@@ -346,7 +339,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
-    
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script>
     <script>
         // Variável global para checar permissão de edição no Javascript
         window.userCanEdit = {% if request.user.is_superuser or request.user.perfil.is_admin or request.user.perfil.is_supervisor %}true{% else %}false{% endif %};

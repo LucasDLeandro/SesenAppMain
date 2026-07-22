@@ -7,7 +7,7 @@ class TemplateMessage(models.Model):
         ('os_elev_conclusao', 'Elevadores - Conclusão de OS Aberta'),
         ('tel_solicitacao_aparelho', 'Telefonia - Solicitação de Aparelho'),
         ('tel_solicitacao_senha', 'Telefonia - Solicitação de Senha'),
-        ('VAGO_1', 'Elevadores - TEMPLATE VAGO - 1', ),
+        ('os_elev_andamento', 'Elevadores - OS em Andamento' ),
         ('VAGO_2', 'Elevadores - TEMPLATE VAGO - 2', ),
         ('VAGO_3', 'Elevadores - TEMPLATE VAGO - 3', ),
         ('VAGO_4', 'Elevadores - TEMPLATE VAGO - 4', ),

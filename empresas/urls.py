@@ -11,4 +11,5 @@ router.register(r'contatos', views.ContatoEmpresaViewSet, basename='contato')
 urlpatterns = [
     path('', views.dashboard_empresas, name='dashboard_empresas'),
     path('api/', include(router.urls)),
+    path('api/contatos_por_app/', views.get_contatos_por_app, name='contatos_por_app'),
 ]

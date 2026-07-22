@@ -19,6 +19,7 @@ html {
 body {
     margin: 0 !important;
     padding: 0 !important;
+    overflow: hidden; /* Prevent body scrolling */
 }
 
 [data-bs-theme="dark"] {
@@ -51,11 +52,14 @@ body {
     padding: 0 !important;
 }
 
-/* 3. Navbar Superior */
+/* 3. Navegação e Header */
 .custom-navbar {
     background-color: var(--nav-bg) !important;
     border-bottom: 1px solid var(--border-color);
     padding: 0.6rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
 }
 
 .navbar-title { color: var(--nav-text) !important; font-weight: 600; }
@@ -65,6 +69,8 @@ body {
 
 .custom-main-content {
     height: calc(100vh - 62px); /* Altura da viewport menos a altura do navbar */
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Sidebar Responsiva a Temas */
@@ -74,6 +80,16 @@ body {
     margin: 0 !important;
     left: 0;
     border-right: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) {
+    .sidebar-lateral {
+        position: sticky;
+        top: 62px; /* Altura aproximada do navbar */
+        height: calc(100vh - 62px);
+        overflow-y: auto;
+        z-index: 1040;
+    }
 }
 
 .sidebar-heading {

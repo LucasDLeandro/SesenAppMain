@@ -55,6 +55,7 @@ function initDataTables() {
     }
 
     $('#tabela-solicitacoes').DataTable({
+        responsive: true,
         ajax: {
             url: '/reembolsos/api/solicitacoes/',
             dataSrc: ''
@@ -128,6 +129,7 @@ function initDataTables() {
     });
 
     $('#tabela-servidores').DataTable({
+        responsive: true,
         ajax: {
             url: '/reembolsos/api/servidores/',
             dataSrc: ''
