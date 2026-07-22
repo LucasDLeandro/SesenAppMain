@@ -22,8 +22,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
 
     path('categorias_e_servicos/', cat_serv_view.cat_serv_view, name='cat_serv_list'),
-    path('', ordens_view.main_ordens, name='inicio_elevadores'),
-    path('elevadores/', elev_list_os_view.elev_list_os, name='elev_list_os'),
+    path('', elev_list_os_view.elev_list_os, name='elev_list_os'),
     #path('api/oss/criarElevOs/', elev_so_view.api_elev_criar_os, name='api_criar_elev_os'),
     #path('api/elev/dadosDashboard/', elev_so_view.api_elev_dashboard, name='api_elev_dados_dashboard'),
     #path('api/oss/concluirElevOs/<int:id_elev_os>/', elev_so_view.api_elev_concluir_os, name='api_concluir_elev_os'),

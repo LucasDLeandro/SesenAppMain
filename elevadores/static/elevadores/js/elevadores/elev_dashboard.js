@@ -110,9 +110,6 @@ async function dadosIndicadorUm() {
         Plotly.react(corpoChartUm, dadosPlotly, layoutChartUm)
 
 
-
-
-
     } catch (erro) {
         console.error("Erro ao tentar filtrar os dados:", erro);
     }
@@ -161,7 +158,7 @@ async function dadosIndicadorTres() {
                 dtick: 86400000,
                 showgrid: true,
                 gridcolor:'#f0f0f0',
-                range: [getGlobalDateRange().inicio || inicioMesAtual, getGlobalDateRange().fim || fimMesAtual],
+                range: [inicioMesAtual, fimMesAtual],
             },
             yaxis: { 
                 type: 'category',
@@ -182,7 +179,8 @@ async function dadosIndicadorTres() {
         }
         
         Plotly.react(corpoChartTres, dadosPlotly, layout)
-         
+        
+
     } catch (erro) {
         console.error("Erro ao tentar filtrar os dados:", erro);
     }
@@ -335,8 +333,8 @@ async function dadosIndicadorQuatro() {
 
         Plotly.react(corpoChartQuatro, novoTraceChartQuatro, layoutChartQuatro)
         
-        if(filtroDinamicoChartQuatro) {;
-        }
+        if(filtroDinamicoChartQuatro) {
+
     } catch(err) {
         console.error(err);
     }
@@ -810,8 +808,8 @@ async function dadosIndicadorDois() {
 
         Plotly.react(corpoChartDois, [trace], layoutChartDois);
 
-        if(filtroDinamicoChartDois) {;
-        }
+        if(filtroDinamicoChartDois) {
+
     } catch(erro) {
         console.error("Erro ao renderizar gr├ífico 2:", erro);
         corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gr├ífico.</div>';
@@ -1824,11 +1822,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 dadosIndicadorDois();
                 dadosIndicadorTres();
                 dadosIndicadorQuatro();
+                atualizarCardsIndicadores();
             } catch (e) {
                 console.error("Erro ao atualizar gráficos:", e);
             }
 
-            btn.innerHTML = textOrig;
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Atualizar Gráficos';
             btn.disabled = false;
         });
     }
