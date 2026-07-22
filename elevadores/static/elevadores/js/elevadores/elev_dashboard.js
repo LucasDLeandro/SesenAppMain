@@ -1771,30 +1771,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
     const userField = document.getElementById('user_hidden_logado');
     if(userField) setVal('chegadaRegistrador', userField.value);
     
-    setVal('chegadaProtocolo', data.protocolo || '');
-    setVal('chegadaElevador', data.elevador || '');
-    
-    let dataAbertura = '';
-    if(data.data_hora) {
-        dataAbertura = new Date(data.data_hora).toLocaleString('pt-BR');
-    }
-    setVal('chegadaDataAbertura', dataAbertura);
-    
-    setVal('chegadaAprisionamento', (data.aprisionamento === true || data.aprisionamento === 'Sim') ? 'Sim' : 'Não');
-    setVal('chegadaElevadorParado', data.elevador_parado || 'ATIVO');
-    setVal('chegadaAtendente', data.atendente || '');
-    setVal('chegadaSolicitante', data.solicitante || '');
-    setVal('chegadaAlarmeEms', data.alarme_ems || 'Nenhum');
-    setVal('chegadaOcorrencia', data.ocorrencia || '');
-    
-    // Configurar horário atual padrão
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-    setVal('chegadaDataHora', now.toISOString().slice(0, 16));
-    
-    // Obter registrante
-    const userField = document.getElementById('user_hidden_logado');
-    if(userField) setVal('chegadaRegistrador', userField.value);
+
 
     setVal('chegadaTecnico', '');
     setVal('chegadaAcompanhante', '');
