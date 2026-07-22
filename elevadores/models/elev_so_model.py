@@ -56,7 +56,8 @@ class ElevadorParadaHistorico(models.Model):
         verbose_name="Data e Hora da Parada"
     )
     data_hora_retorno = models.DateTimeField(
-        verbose_name="Data e Hora do Retorno"
+        verbose_name="Data e Hora do Retorno",
+        null=True, blank=True
     )
     os_relacionada = models.ForeignKey(
         'ElevOrderReg',

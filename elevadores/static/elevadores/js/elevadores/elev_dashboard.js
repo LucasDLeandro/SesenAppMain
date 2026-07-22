@@ -627,7 +627,7 @@ export function atualizarCardsIndicadores() {
         let achouAlgum = false;
         
         dados_api.ind_quatro.forEach(item => {
-            if (item.disponibilidade < menorDisp) {
+            if (item.disponibilidade > 0 && item.disponibilidade < menorDisp) {
                 menorDisp = item.disponibilidade;
                 elevadorMenorDisp = item.elevador;
                 achouAlgum = true;

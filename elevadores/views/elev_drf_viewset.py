@@ -412,10 +412,11 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         # data_hora_parada <= fim AND (data_hora_retorno IS NULL OR data_hora_retorno >= inicio)
         # O banco de dados pode ter retornos nulos ou datas que ultrapassam o ms.
         
+        from django.db.models import Q
+        
         qs_hist = ElevadorParadaHistorico.objects.filter(
-            data_hora_parada__lte=fim
-        ).exclude(
-            data_hora_retorno__lt=inicio
+            Q(data_hora_parada__lte=fim) & 
+            (Q(data_hora_retorno__isnull=True) | Q(data_hora_retorno__gte=inicio))
         )
         
         # Como o Django no calcula interseo nativamente em hrs teis, vamos somar o que a model calculou
