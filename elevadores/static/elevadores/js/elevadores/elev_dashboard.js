@@ -1881,6 +1881,15 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             $selectTecnico.append(new Option(tec, tec, false, false));
         });
         $selectTecnico.val(null).trigger('change');
+
+        const outrosSelects = document.querySelectorAll('#edit_os_tecnico, #mpmTecnicoNome, #editMpmTecnicoNome, #concluirMPMTecnico, #pecaTecnicoIdentificador, #concluirTecnico, #editPecaTecnicoIdentificador, #editPecaTecnico, #concluirTecnicoOS, #id_tecnico');
+        outrosSelects.forEach(select => {
+            let optionsHtml = '<option value="" selected disabled>Selecione o técnico</option>';
+            tecnicos.forEach(tec => {
+                optionsHtml += `<option value="${tec}">${tec}</option>`;
+            });
+            select.innerHTML = optionsHtml;
+        });
     }
 
     // Buscar equipe do TSE (Contrato de Manutenção Predial) e preencher select2
