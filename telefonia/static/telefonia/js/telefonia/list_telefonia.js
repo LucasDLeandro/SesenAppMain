@@ -134,8 +134,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-eye-fill"></i>
                             </button>`;
                     if (window.userCanEdit) {
-                        buttons += `<button class="btn btn-sm btn-outline-primary" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
+                        buttons += `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
                                 <i class="bi bi-pencil-square"></i>
+                            </button>`;
+                        buttons += `<button class="btn btn-sm btn-outline-danger" onclick="deletarSolicitacao(${row.id})" title="Deletar Solicitação">
+                                <i class="bi bi-trash"></i>
                             </button>`;
                     }
                     return buttons;
@@ -288,12 +291,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: 'id',
                 orderable: false,
                 render: function(data) {
-                    return `<button class="btn btn-sm btn-outline-info me-1" onclick="visualizarAparelho(${data})" title="Visualizar Detalhes">
+                    let buttons = `<button class="btn btn-sm btn-outline-info me-1" onclick="visualizarAparelho(${data})" title="Visualizar Detalhes">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-primary" onclick="editarAparelho(${data})" title="Editar Aparelho">
+                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editarAparelho(${data})" title="Editar Aparelho">
                                 <i class="bi bi-pencil-square"></i>
                             </button>`;
+                    if (window.userCanEdit) {
+                        buttons += `<button class="btn btn-sm btn-outline-danger" onclick="deletarAparelho(${data})" title="Deletar Aparelho">
+                                <i class="bi bi-trash"></i>
+                            </button>`;
+                    }
+                    return buttons;
                 }
             }
         ],
@@ -1149,6 +1158,61 @@ window.mudarContrato = function(valor) {
             inputUnidade.readOnly = true;
         }
     }
+}
+
+// Funções de Deleção
+function deletarSolicitacao(id) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Deseja realmente deletar esta solicitação? Esta ação não pode ser desfeita.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/telefonia/api/solicitacoes/${id}/`, {
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire('Deletado!', 'Solicitação deletada com sucesso.', 'success');
+                    $('#tabela-solicitacoes').DataTable().ajax.reload(null, false);
+                } else {
+                    Swal.fire('Erro!', 'Ocorreu um erro ao deletar.', 'error');
+                }
+            });
+        }
+    });
+}
+
+function deletarAparelho(id) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Deseja realmente deletar este aparelho? Esta ação não pode ser desfeita.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sim, deletar!',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/gestao_patrimonio/api/aparelhos-telefonicos/${id}/`, {
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            }).then(response => {
+                if (response.ok) {
+                    Swal.fire('Deletado!', 'Aparelho deletado com sucesso.', 'success');
+                    $('#tabela-aparelhos').DataTable().ajax.reload(null, false);
+                } else {
+                    Swal.fire('Erro!', 'Ocorreu um erro ao deletar.', 'error');
+                }
+            });
+        }
+    });
 };
 
 function getCookie(name) {

@@ -326,7 +326,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
     
     def api_indicador_dois(self, **kwargs):
         from ..models import ManutencaoPreventiva
-        from ..models.elev_so_model import ElevadorStatus
+        from ..models.elev_so_model import ElevadorStatus, ELEVATOR_CHOICE
         
         elevadores_parados = set(ElevadorStatus.objects.filter(status='PARADO').values_list('elevador', flat=True))
 
@@ -334,30 +334,31 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             mes_referencia__range=(kwargs['inicio'], kwargs['fim'])
         )
         
-        indicador_dois = []
-        elevadores_processados = set()
+        elevadores_processados = {}
         
         for mpm in qs_filtrado:
             status = 'PARADO' if mpm.elevador in elevadores_parados else mpm.status
             data_exec = '' if status == 'PARADO' else (mpm.data_execucao.strftime('%d/%m/%Y') if mpm.data_execucao else '')
-            os_dict = {
+            elevadores_processados[mpm.elevador] = {
                 'elevador': mpm.elevador,
                 'data_execucao': data_exec,
                 'ordem_servico': mpm.ordem_servico or '',
                 'tecnico': mpm.tecnico or '',
                 'status': status,
             }
-            indicador_dois.append(os_dict)
-            elevadores_processados.add(mpm.elevador)
             
-        for elev in elevadores_parados:
-            if elev not in elevadores_processados:
+        indicador_dois = []
+        for key, name in ELEVATOR_CHOICE:
+            if key in elevadores_processados:
+                indicador_dois.append(elevadores_processados[key])
+            else:
+                status = 'PARADO' if key in elevadores_parados else 'PENDENTE'
                 indicador_dois.append({
-                    'elevador': elev,
+                    'elevador': key,
                     'data_execucao': '',
                     'ordem_servico': '',
                     'tecnico': '',
-                    'status': 'PARADO'
+                    'status': status
                 })
                 
         return indicador_dois
@@ -702,7 +703,8 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         import datetime
         hoje = timezone.now()
         if 'inicio' not in filtros:
-            filtros['inicio'] = hoje.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            primeiro_dia_mes_atual = hoje.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            filtros['inicio'] = primeiro_dia_mes_atual - relativedelta(months=1)
         if 'fim' not in filtros:
             # último dia do mês
             prox_mes = filtros['inicio'] + relativedelta(months=1)
