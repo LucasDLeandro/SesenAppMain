@@ -30,8 +30,8 @@ export function mesAnoAtual() {
     const anoAtual = agora.getFullYear();
     const mes = agora.getMonth();
 
-    const dataDiaInicio = new Date(anoAtual, mes - 1, 1).toISOString().substring(0,10)
-    const dataDiaFim = new Date(anoAtual, mes, 0).toISOString().substring(0,10)
+    const dataDiaInicio = new Date(anoAtual, mes, 1).toISOString().substring(0,10)
+    const dataDiaFim = new Date(anoAtual, mes + 1, 0).toISOString().substring(0,10)
 
     const anoAtualInicio = new Date(anoAtual, 0, 1).toISOString().substring(0,10)
     const anoAtualFim = new Date(anoAtual, 11, 31).toISOString().substring(0,10)
