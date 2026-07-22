@@ -390,6 +390,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
 
         df['data_truncada'] = df['data_truncada'].astype(str)
         df['tamanho_z'] = df['ocorrencias'] * 20
+        df['protocolo'] = df['protocolo'].fillna('-')
         #df['elevador'] = pd.Categorical(df['elevador'], categories=listaElevadores)
 
         df_agrupado = df.groupby('elevador', observed=False).agg({
