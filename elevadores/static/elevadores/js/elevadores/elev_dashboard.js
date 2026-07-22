@@ -161,7 +161,7 @@ async function dadosIndicadorTres() {
                 dtick: 86400000,
                 showgrid: true,
                 gridcolor:'#f0f0f0',
-                range: [inicioMesAtual, fimMesAtual],
+                range: [getGlobalDateRange().inicio || inicioMesAtual, getGlobalDateRange().fim || fimMesAtual],
             },
             yaxis: { 
                 type: 'category',
@@ -752,8 +752,10 @@ async function dadosIndicadorDois() {
                 '<extra></extra>'
         };
 
-        const anoAtual = parseInt(inicioMesAtual.substring(0, 4));
-        const mesAtual = parseInt(inicioMesAtual.substring(5, 7));
+        const globalRange = getGlobalDateRange();
+        const baseDataStr = globalRange.inicio || inicioMesAtual;
+        const anoAtual = parseInt(baseDataStr.substring(0, 4));
+        const mesAtual = parseInt(baseDataStr.substring(5, 7));
         const ultimoDiaAtual = new Date(anoAtual, mesAtual, 0).getDate();
 
         const tickvalsAtual = [];

@@ -62,7 +62,6 @@
     function abrirModalCriar() {
         document.getElementById('form-criar-usuario').reset();
         // Reset defaults
-        document.querySelector('#form-criar-usuario [name="is_active"]').checked = true;
         document.querySelector('#form-criar-usuario [name="password"]').value = window.DEFAULT_PASSWORD;
         document.querySelector('#form-criar-usuario [name="telefone"]').value = '61';
         new bootstrap.Modal(document.getElementById('modal-criar-usuario')).show();
