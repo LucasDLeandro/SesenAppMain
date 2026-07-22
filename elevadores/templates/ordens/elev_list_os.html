@@ -219,16 +219,6 @@
                 </div>
             </div>
 
-            <!-- Indicadores Resumo -->
-            <div class="custom-card shadow-sm border-0 rounded-3 p-4 bg-body">
-                <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Indicadores de Desempenho</h5>
-                <div class="row g-3">
-                    <div class="col-12 col-md-3">
-                        <div class="card border-0 shadow-sm rounded-4 h-100 hover-effect-card" style="background: #ffffff; border: 1px solid #eef0f2 !important;">
-                            <div class="card-body p-4 d-flex flex-column justify-content-between text-center">
-                                <div class="mb-4">
-                                    <h6 class="text-secondary fw-bold text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px; line-height: 1.4;">Atendimento de Chamadas Emergenciais (ACE)</h6>
-                                </div>
                                 <div class="mb-4">
                                     <h2 class="fw-bolder text-dark mb-0 display-6" id="widget-ind1-val" style="letter-spacing: -1px;">--</h2>
                                 </div>
@@ -290,6 +280,53 @@
         </div> <!-- fechamento tab3-content -->
 
         <div class="tab-pane fade" id="graficos-content" role="tabpanel" aria-labelledby="graficos-tab">
+
+            <!-- Filtro Global -->
+            <div class="custom-card shadow-sm border-0 rounded-3 p-4 bg-body mb-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-calendar3 me-2"></i>Filtro de Período</h5>
+                <form id="global-date-filter" class="row g-3 align-items-end">
+                    <div class="col-12 col-md-4">
+                        <label for="global-mes" class="form-label fw-bold text-secondary">Mês</label>
+                        <select class="form-select" id="global-mes">
+                            <option value="01">Janeiro</option>
+                            <option value="02">Fevereiro</option>
+                            <option value="03">Março</option>
+                            <option value="04">Abril</option>
+                            <option value="05">Maio</option>
+                            <option value="06">Junho</option>
+                            <option value="07">Julho</option>
+                            <option value="08">Agosto</option>
+                            <option value="09">Setembro</option>
+                            <option value="10">Outubro</option>
+                            <option value="11">Novembro</option>
+                            <option value="12">Dezembro</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <label for="global-ano" class="form-label fw-bold text-secondary">Ano</label>
+                        <select class="form-select" id="global-ano">
+                            <!-- Anos populados via JS -->
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <button type="button" id="btn-atualizar-dashboard" class="btn btn-primary w-100 fw-bold">
+                            <i class="bi bi-arrow-clockwise me-2"></i>Atualizar Gráficos
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Indicadores Resumo -->
+            <div class="custom-card shadow-sm border-0 rounded-3 p-4 bg-body">
+                <h5 class="fw-bold mb-3"><i class="bi bi-graph-up me-2"></i>Indicadores de Desempenho</h5>
+                <div class="row g-3">
+                    <div class="col-12 col-md-3">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 hover-effect-card" style="background: #ffffff; border: 1px solid #eef0f2 !important;">
+                            <div class="card-body p-4 d-flex flex-column justify-content-between text-center">
+                                <div class="mb-4">
+                                    <h6 class="text-secondary fw-bold text-uppercase mb-0" style="font-size: 0.75rem; letter-spacing: 0.5px; line-height: 1.4;">Atendimento de Chamadas Emergenciais (ACE)</h6>
+                                </div>
+
             <div class="custom-card shadow-sm border-0 rounded-3 p-4 bg-body">
 
                 <!-- Área de Gráficos (Grid) -->
@@ -299,14 +336,6 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column bg-white" style="min-height: 340px;">
                             <div class="d-flex justify-content-between align-items-center mb-0">
                                 <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-pie-chart me-2"></i>Indicador 1 - ACE</h6>
-                                <div class="dropdown" id="dropdown-chart-1-filter">
-                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-1" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                        <i class="bi bi-funnel me-1"></i> Período
-                                    </button>
-                
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-1" aria-labelledby="btn-dropdown-chart-1">
-                                    </ul>
-                                </div>
                             </div>
                             <div id="chart-1" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                                 
@@ -319,14 +348,6 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column bg-white" style="min-height: 340px;">
                             <div class="d-flex justify-content-between align-items-center mb-0">
                                 <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-bar-chart me-2"></i>Indicador 2 - MPM</h6>
-                                <div class="dropdown" id="dropdown-chart-2-filter">
-                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-2" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                        <i class="bi bi-funnel me-1"></i> Período
-                                    </button>
-                
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-2" aria-labelledby="btn-dropdown-chart-2">
-                                    </ul>
-                                </div>
                             </div>
                             <div id="chart-2" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                                 
@@ -340,14 +361,6 @@
                             <div class="d-flex justify-content-between align-items-center mb-0">
                                 <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-activity me-2"></i>Indicador 3 - Indice de Chamados Reincidentes (ICR)</h6>
 
-                                <div class="dropdown" id="dropdown-chart-3-filter">
-                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-3" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                        <i class="bi bi-funnel me-1"></i> Período
-                                    </button>
-                
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-3" aria-labelledby="btn-dropdown-chart-3">
-                                    </ul>
-                                </div>
                             </div>
                             <div id="chart-3" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                                
@@ -360,14 +373,6 @@
                         <div class="card border-0 shadow-sm rounded-4 p-4 h-100 d-flex flex-column bg-white" style="min-height: 340px;">
                             <div class="d-flex justify-content-between align-items-center mb-0">
                                 <h6 class="text-start mb-0 fw-bold text-secondary"><i class="bi bi-graph-up me-2"></i>Indicador 4 - Disponibilidade Média Mensal (DMM)</h6>
-                                <div class="dropdown" id="dropdown-chart-4-filter">
-                                    <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-4" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                        <i class="bi bi-funnel me-1"></i> Período
-                                    </button>
-                
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-4" aria-labelledby="btn-dropdown-chart-4">
-                                    </ul>
-                                </div>
                             </div>
                             <div id="chart-4" class="text-center text-muted flex-grow-1 d-flex flex-column align-items-center justify-content-center">
                                 
@@ -383,15 +388,7 @@
                                 <div class="col-12 col-md-6 d-flex flex-column p-0 pe-md-3 border-end border-light text-center text-muted">
                                     <div class="d-flex justify-content-between align-items-center mb-0">
                                         <h6 class="text-start mb-0 fw-bold text-secondary flex-shrink-0"><i class="bi bi-pie-chart-fill me-2"></i>Gráfico de Ocorrências</h6>
-                                        <div class="dropdown" id="dropdown-chart-5-filter">
-                                            <button class="btn btn-chart-filter dropdown-toggle shadow-sm" type="button" id="btn-dropdown-chart-5" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
-                                                <i class="bi bi-funnel me-1"></i> Período
-                                            </button>
-                        
-                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 dropdown-chart-filter" id="filtro-dinamico-chart-5" aria-labelledby="btn-dropdown-chart-5">
-                                            </ul>
-                                        </div>
-                                    </div>
+                                            </div>
                                     <div id="chart-5" class="flex-grow-1 w-100 h-100 d-flex align-items-center justify-content-center">
                                     </div>
                                 </div>

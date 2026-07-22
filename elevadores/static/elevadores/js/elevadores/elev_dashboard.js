@@ -75,8 +75,6 @@ async function dadosIndicadorUm() {
             }
         })
 
-        filtroAnosMeses(filtroDinamicoChartUm, rangeDeAnos, rangeDeMeses)
-
         const dadosPlotly = [{
             x: categoriasX,
             y: dadosY,
@@ -216,9 +214,7 @@ async function dadosIndicadorTres() {
     const filtroDinamicoChartTres = document.getElementById('filtro-dinamico-chart-3')
     const corpoChartTres = document.getElementById('chart-3')
     
-    try {  
-        
-        filtroAnosMeses(filtroDinamicoChartTres, rangeDeAnos, rangeDeMeses)
+    try {
 
        const dadosPlotly = dados_api.ind_tres.map(seriePandas => {
             return {
@@ -419,7 +415,7 @@ async function dadosVisaoGeral() {
 const elev_tab_dash = document.getElementById('elev-tab-dash')
 if (elev_tab_dash) {
     elev_tab_dash.addEventListener('click', async () => {
-        await loadDataDashboard({inicio: inicioMesAtual, fim: fimMesAtual})
+        await loadDataDashboard(getGlobalDateRange())
         dadosVisaoGeral();
         dadosIndicadorUm();
         dadosIndicadorDois();
@@ -432,7 +428,7 @@ if (elev_tab_dash) {
 document.addEventListener('DOMContentLoaded', async () => {
     const tabDashContent = document.getElementById('tab3-content');
     if (tabDashContent && tabDashContent.classList.contains('active')) {
-        await loadDataDashboard({inicio: inicioMesAtual, fim: fimMesAtual});
+        await loadDataDashboard(getGlobalDateRange());
         dadosVisaoGeral();
         dadosIndicadorUm();
         dadosIndicadorDois();
@@ -451,7 +447,6 @@ async function dadosIndicadorQuatro() {
     if(!corpoChartQuatro) return;
     try {
         if(filtroDinamicoChartQuatro) {
-            filtroAnosMeses(filtroDinamicoChartQuatro, rangeDeAnos, rangeDeMeses);
         }
         
         const nomesElevadores = [...listaElevadores];
@@ -937,7 +932,6 @@ async function dadosIndicadorDois() {
     
     try {
         if(filtroDinamicoChartDois) {
-            filtroAnosMeses(filtroDinamicoChartDois, rangeDeAnos, rangeDeMeses);
         }
         
         const x_days = [];
@@ -2102,4 +2096,70 @@ window.carregarWidgetDemandasDashboard = async function() {
 // Chamar no carregamento
 document.addEventListener('DOMContentLoaded', () => {
     carregarWidgetDemandasDashboard();
+});
+
+
+// Global Filter Logic
+function getGlobalDateRange() {
+    const mesElement = document.getElementById('global-mes');
+    const anoElement = document.getElementById('global-ano');
+    
+    if (!mesElement || !anoElement) return {};
+    
+    const mes = mesElement.value;
+    const ano = anoElement.value;
+    
+    if(!mes || !ano) return {};
+    
+    const inicio = `${ano}-${mes}-01`;
+    const ultimoDia = new Date(ano, parseInt(mes), 0).getDate();
+    const fim = `${ano}-${mes}-${ultimoDia}`;
+    return {inicio, fim};
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const anoSelect = document.getElementById('global-ano');
+    if (anoSelect) {
+        const anoAtual = new Date().getFullYear();
+        for (let i = 2020; i <= anoAtual; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = i;
+            anoSelect.appendChild(option);
+        }
+        
+        let mesPrev = new Date().getMonth(); // 0-indexed
+        let anoPrev = anoAtual;
+        if (mesPrev === 0) {
+            mesPrev = 12;
+            anoPrev = anoAtual - 1;
+        }
+        document.getElementById('global-mes').value = mesPrev.toString().padStart(2, '0');
+        document.getElementById('global-ano').value = anoPrev;
+    }
+
+    const btnAtualizar = document.getElementById('btn-atualizar-dashboard');
+    if (btnAtualizar) {
+        btnAtualizar.addEventListener('click', async () => {
+            const btn = btnAtualizar;
+            const textOrig = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Atualizando...';
+            btn.disabled = true;
+
+            const range = getGlobalDateRange();
+            await loadDataDashboard(range);
+            try {
+                dadosVisaoGeral();
+                dadosIndicadorUm();
+                dadosIndicadorDois();
+                dadosIndicadorTres();
+                dadosIndicadorQuatro();
+            } catch (e) {
+                console.error("Erro ao atualizar gráficos:", e);
+            }
+
+            btn.innerHTML = textOrig;
+            btn.disabled = false;
+        });
+    }
 });
