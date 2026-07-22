@@ -1662,6 +1662,8 @@ window.abrirModalDemandasPendentes = async function() {
         }
         modal.show();
         
+    } catch(e) {
+        console.error("Erro ao abrir modal", e);
     }
 }
 
