@@ -1826,3 +1826,44 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+window.carregarTecnicosGlobais = function() {
+    if (window.tecnicosOtisCache) {
+        preencherSelectsTecnicos(window.tecnicosOtisCache);
+    } else {
+        fetch('/elevadores/api/elevadoress/tecnicos_otis/')
+            .then(res => res.json())
+            .then(tecnicos => {
+                window.tecnicosOtisCache = tecnicos;
+                preencherSelectsTecnicos(tecnicos);
+            })
+            .catch(err => console.error('Erro ao buscar tecnicos', err));
+    }
+
+    function preencherSelectsTecnicos(tecnicos) {
+        const $selectTecnico = $('#chegadaTecnico');
+        if ($selectTecnico.length) {
+            $selectTecnico.empty();
+            $selectTecnico.append(new Option('', '', false, false));
+            tecnicos.forEach(tec => {
+                $selectTecnico.append(new Option(tec, tec, false, false));
+            });
+            $selectTecnico.val(null).trigger('change');
+        }
+
+        const outrosSelects = document.querySelectorAll('#edit_os_tecnico, #mpmTecnicoNome, #editMpmTecnicoNome, #concluirMPMTecnico, #pecaTecnicoIdentificador, #concluirTecnico, #editPecaTecnicoIdentificador, #editPecaTecnico, #concluirTecnicoOS, #id_tecnico');
+        outrosSelects.forEach(select => {
+            let optionsHtml = '<option value="" selected disabled>Selecione o tcnico</option>';
+            tecnicos.forEach(tec => {
+                optionsHtml += `<option value="${tec}">${tec}</option>`;
+            });
+            select.innerHTML = optionsHtml;
+        });
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.carregarTecnicosGlobais) {
+        window.carregarTecnicosGlobais();
+    }
+});

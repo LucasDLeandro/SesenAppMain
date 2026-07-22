@@ -183,17 +183,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=['get'], url_path='tecnicos_otis')
     def tecnicos_otis(self, request):
-        # categoria é JSONField (lista), usar __contains para buscar dentro do array
-        contrato = Contratos.objects.filter(categoria__contains='ELEVADORES').first()
-        if not contrato or not contrato.empresa:
-            return Response([])
+        empresas_ids = set()
+        for c in Contratos.objects.all():
+            if c.categoria and 'ELEVADORES' in [str(cat).upper() for cat in c.categoria]:
+                if c.empresa_id:
+                    empresas_ids.add(c.empresa_id)
         
-        empresa_elevadores = contrato.empresa
-        contatos = empresa_elevadores.contatos.filter(
-            Q(cargo__icontains='técnico') | 
-            Q(cargo__icontains='tecnico')
-        ).values_list('nome_contato', flat=True)
-        return Response(list(contatos))
+        contatos = ContatoEmpresa.objects.filter(empresa_id__in=empresas_ids)
+        tecnicos = []
+        for contato in contatos:
+            cargo = (contato.cargo or '').lower()
+            if any(term in cargo for term in ['tecnico', 'tcnico', 'técnico', 't\u00e9cnico', 'tǸcnico']):
+                tecnicos.append(contato.nome_contato)
+        return Response(list(set(tecnicos)))
 
     @action(detail=False, methods=['get'], url_path='tecnicos_acompanhamento')
     def tecnicos_acompanhamento(self, request):
