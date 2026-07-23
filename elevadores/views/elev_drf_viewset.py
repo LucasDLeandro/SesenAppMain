@@ -169,7 +169,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             pass
 
         if os_salva.status == 'CONCLUIDA':
-            if houve_peca:
+            if houve_peca in ['Sim_Imediata', 'Sim_Posterior']:
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao_peca', peca=peca_desc)
             else:
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao')
@@ -625,14 +625,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             print(f"Erro silencioso ao disparar notificação: {e}")
 
     def _do_disparar_notificacao(self, os, evento, peca=None):
-        # Só dispara notificações para OS's do dia atual
         hoje = timezone.localtime(timezone.now()).date()
-        if os.data_hora:
+        if evento == 'os_elev_registro' and os.data_hora:
             data_os = timezone.localtime(os.data_hora).date()
             if data_os != hoje:
                 return
 
-        contato_queryset = Contato.objects.filter(is_ativo=True)
+        contatos_ativos = Contato.objects.filter(is_ativo=True)
+        contato_queryset = []
+        telefones_vistos = set()
+        for c in contatos_ativos:
+            if c.telefone and c.telefone not in telefones_vistos:
+                telefones_vistos.add(c.telefone)
+                contato_queryset.append(c)
         if evento == 'os_elev_registro':
             template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
             if not template:
