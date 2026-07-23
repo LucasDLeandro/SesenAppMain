@@ -224,11 +224,11 @@ async function dadosVisaoGeral() {
         const baseDataStr = globalRange.inicio || inicioMesAtual;
         const anoAtualStr = baseDataStr.substring(0, 4);
 
-        const dataInicio = new Date(${anoAtualStr}-01-01);
+        const dataInicio = new Date(`${anoAtualStr}-01-01`);
         dataInicio.setDate(dataInicio.getDate() - 15);
         const inicioAjustado = dataInicio.toISOString().split('T')[0];
 
-        const dataFim = new Date(${anoAtualStr}-12-31);
+        const dataFim = new Date(`${anoAtualStr}-12-31`);
         dataFim.setDate(dataFim.getDate() + 15);
         const fimAjustado = dataFim.toISOString().split('T')[0];
 
