@@ -172,6 +172,7 @@ async function dadosIndicadorTres() {
                 textposition: 'middle center',
                 textfont: { color: '#000', weight: 'bold' },
                 type: 'scatter',
+                cliponaxis: false,
                 marker: {
                     symbol: 'square',
                     size: seriePandas.y.map(ocorrencias => ocorrencias *15),
