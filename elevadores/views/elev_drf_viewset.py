@@ -389,7 +389,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         if df.empty:
             # Montamos a estrutura vazia para não quebrar o front-end
             dados_vazios = [{'name': elev, 'x': [], 'y': [], 'z': [], 'protocolo': []} for elev in listaElevadores]
-            return JsonResponse({'ind_tres': dados_vazios})
+            return dados_vazios
 
         df['data_truncada'] = df['data_truncada'].astype(str)
         df['tamanho_z'] = df['ocorrencias'] * 20
