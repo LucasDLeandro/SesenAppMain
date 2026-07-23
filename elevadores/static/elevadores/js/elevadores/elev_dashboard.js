@@ -1803,9 +1803,48 @@ window.carregarWidgetDemandasDashboard = async function() {
         const listGroup = document.getElementById('lista-demandas-dashboard');
         if (listGroup) {
             listGroup.innerHTML = '';
+            
+            const cardTitulo = document.getElementById('titulo-widget-recebidas');
+            const cardBadge = document.getElementById('badge-demandas-pendentes');
+            const cardRodape = document.getElementById('rodape-widget-recebidas');
+            const cardWidget = document.getElementById('card-widget-recebidas');
+
             if (demandas.length === 0) {
-                listGroup.innerHTML = '<div class="text-center text-success py-3 fw-bold"><i class="bi bi-emoji-smile fs-4 d-block mb-1"></i>Tudo em Dia! Nenhuma pendência.</div>';
+                if (cardTitulo) {
+                    cardTitulo.classList.remove('text-danger');
+                    cardTitulo.classList.add('text-success');
+                    cardTitulo.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Status: Tudo em Dia';
+                }
+                if (cardBadge) {
+                    cardBadge.classList.remove('bg-danger', 'pulse-badge');
+                    cardBadge.classList.add('bg-success');
+                }
+                if (cardRodape) {
+                    cardRodape.classList.add('d-none');
+                }
+                if (cardWidget) {
+                    cardWidget.classList.remove('widget-recebidas-alerta');
+                    cardWidget.style.border = '1px solid #dee2e6';
+                }
+                listGroup.innerHTML = '<div class="text-center text-secondary py-3"><i class="bi bi-emoji-smile text-secondary me-2"></i>Nenhuma solicitação pendente! Tudo em dia.</div>';
             } else {
+                if (cardTitulo) {
+                    cardTitulo.classList.remove('text-success');
+                    cardTitulo.classList.add('text-danger');
+                    cardTitulo.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes';
+                }
+                if (cardBadge) {
+                    cardBadge.classList.remove('bg-success');
+                    cardBadge.classList.add('bg-danger', 'pulse-badge');
+                }
+                if (cardRodape) {
+                    cardRodape.classList.remove('d-none');
+                }
+                if (cardWidget) {
+                    cardWidget.classList.add('widget-recebidas-alerta');
+                    cardWidget.style.border = '';
+                }
+                
                 demandas.slice(0, 3).forEach(d => {
                     listGroup.innerHTML += `
                         <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 rounded mb-1" style="background-color: #fffaf0;">

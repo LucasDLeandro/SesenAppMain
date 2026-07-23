@@ -174,7 +174,10 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             else:
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao')
         elif os_salva.status == 'AGUARDANDO PEÇAS':
-            self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca', peca=peca_desc)
+            if os_salva.elevador_parado == 'PARADO':
+                self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_parado', peca=peca_desc)
+            else:
+                self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_ativo', peca=peca_desc)
 
         return Response({
             'sucesso': True,
@@ -691,8 +694,8 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     auto_message(tel, text)
                 except Exception as e:
                     print(f"Erro na Evolution API: {e}")
-        elif evento in ['os_elev_conclusao', 'os_elev_conclusao_peca', 'os_elev_aguardando_peca']:
-            template = TemplateMessage.objects.filter(tipo_evento='os_elev_conclusao', is_ativo=True).first()
+        elif evento in ['os_elev_conclusao', 'os_elev_conclusao_peca', 'os_elev_aguardando_peca_parado', 'os_elev_aguardando_peca_ativo']:
+            template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
             if not template:
                 return
             texto = template.base_text
@@ -712,12 +715,8 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         solicitante=os.solicitante or 'Não informado',
                         acompanhante=os.acompanhante or 'Não informado',
                         registrador_chegada=os.registrador_chegada or 'Não informado',
+                        peca=peca or 'Não informado',
                     )
-                    
-                    if evento == 'os_elev_conclusao_peca':
-                        text += f"\n\n*Obs:* O equipamento voltou a operar, porém houve a necessidade de substituição/agendamento da peça: {peca}."
-                    elif evento == 'os_elev_aguardando_peca':
-                        text = f"Olá {contato.nome},\n\n*Aviso de Pendência:* O chamado (Protocolo: {os.protocolo}) referente ao {os.elevador} não pôde ser concluído. O elevador permanecerá PARADO aguardando a troca da peça: {peca}."
                     
                     auto_message(tel, text)   
                 except Exception as e:

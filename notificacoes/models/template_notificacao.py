@@ -8,9 +8,9 @@ class TemplateMessage(models.Model):
         ('tel_solicitacao_aparelho', 'Telefonia - Solicitação de Aparelho'),
         ('tel_solicitacao_senha', 'Telefonia - Solicitação de Senha'),
         ('os_elev_andamento', 'Elevadores - OS em Andamento' ),
-        ('VAGO_2', 'Elevadores - TEMPLATE VAGO - 2', ),
-        ('VAGO_3', 'Elevadores - TEMPLATE VAGO - 3', ),
-        ('VAGO_4', 'Elevadores - TEMPLATE VAGO - 4', ),
+        ('os_elev_conclusao_peca', 'Elevadores - Conclusão de OS c/ Troca de Peça'),
+        ('os_elev_aguardando_peca_parado', 'Elevadores - OS Aguardando Peça (Elev. Parado)'),
+        ('os_elev_aguardando_peca_ativo', 'Elevadores - OS Aguardando Peça (Elev. Funcionando)'),
         ('VAGO_5', 'Elevadores - TEMPLATE VAGO - 5', ),
         ('VAGO_6', 'Elevadores - TEMPLATE VAGO - 6', )
     ]
