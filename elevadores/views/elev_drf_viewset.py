@@ -572,7 +572,8 @@ class ElevadorViewSet(viewsets.ModelViewSet):
 
         df_pivot = df.pivot(index='ano', columns='mes', values='mes_total').astype('Int64')
         df_pivot['Total'] = df_pivot.sum(axis=1)
-        df_pivot = df_pivot.astype(object).fillna('-')
+        pd.set_option('future.no_silent_downcasting', True)
+        df_pivot = df_pivot.astype(object).fillna('-').infer_objects(copy=False)
         df_pivot.columns.name=None
         df_pivot = df_pivot.reset_index()
         df_pivot = df_pivot.rename(columns=meses_list)

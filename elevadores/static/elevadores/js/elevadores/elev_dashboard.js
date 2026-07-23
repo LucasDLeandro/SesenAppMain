@@ -1403,7 +1403,7 @@ window.abrirModalDemandasPendentes = async function() {
                         const osStr = encodeURIComponent(JSON.stringify(d.extra));
                         btnAction = `<button class="btn btn-sm btn-primary fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirModalRegistrarChegada('${osStr}'), 400)"><i class="bi bi-person-walking me-1"></i>Iniciar Atendimento</button>`;
                     } else {
-                        btnAction = `<button class="btn btn-sm btn-success fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => editarOS(${d.id}), 400)"><i class="bi bi-check2-circle me-1"></i>Concluir O.S.</button>`;
+                        btnAction = `<button class="btn btn-sm btn-success fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirModalElevConcluir(${d.id}, '${d.ref}'), 400)"><i class="bi bi-check2-circle me-1"></i>Concluir O.S.</button>`;
                     }
                 } else if (d.tipo === 'peca') {
                     const pecaStr = encodeURIComponent(JSON.stringify(d.extra));

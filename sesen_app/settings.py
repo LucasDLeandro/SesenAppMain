@@ -200,6 +200,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 from datetime import timedelta
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 SIMPLE_JWT = {
     # Tempo de vida do Token de Acesso (aumentado para 8 horas para melhor experiência do usuário)
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=8), 
