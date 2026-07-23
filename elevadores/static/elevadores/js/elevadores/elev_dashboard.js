@@ -169,7 +169,7 @@ async function dadosIndicadorTres() {
                     ]
                 }),
                 mode: 'markers+text',
-                textposition: 'top center',
+                textposition: 'middle center',
                 textfont: { color: '#000', weight: 'bold' },
                 type: 'scatter',
                 marker: {
