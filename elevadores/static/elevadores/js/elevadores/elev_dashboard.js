@@ -2,7 +2,9 @@
 window.initFiltrosDash = function() {
     const anoSelect = document.getElementById('global-ano');
     if (anoSelect) {
+        let isFirstTime = false;
         if (anoSelect.options.length === 0) {
+            isFirstTime = true;
             const anoAtual = new Date().getFullYear();
             for (let i = 2020; i <= anoAtual; i++) {
                 const option = document.createElement('option');
@@ -12,8 +14,7 @@ window.initFiltrosDash = function() {
             }
         }
         
-        // So inicializa se estiver vazio para nao sobrescrever selecoes do usuario caso chamado multiplas vezes
-        if (!document.getElementById('global-mes').value || !document.getElementById('global-ano').value) {
+        if (isFirstTime) {
             let mesPrev = new Date().getMonth(); // 0-indexed
             let anoPrev = new Date().getFullYear();
             if (mesPrev === 0) {
