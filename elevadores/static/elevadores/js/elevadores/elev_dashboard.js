@@ -168,7 +168,9 @@ async function dadosIndicadorTres() {
                         seriePandas.protocolo[index]
                     ]
                 }),
-                mode: 'markers',
+                mode: 'markers+text',
+                textposition: 'top center',
+                textfont: { color: '#000', weight: 'bold' },
                 type: 'scatter',
                 marker: {
                     symbol: 'square',
