@@ -15,6 +15,7 @@ Recomenda-se o uso de um ambiente virtual (venv).
    pip install -r requirements.txt
 
 *Nota: O pacote waitress foi adicionado ao requirements.txt para servir como o servidor WSGI de produção em ambiente Windows.*
+*Nota 2: Certifique-se de que o Pandas e demais bibliotecas de análise de dados instaladas via requirements.txt estejam na versão correta, para o correto funcionamento dos dashboards (Indicadores).*
 
 =============================================================================
 2. CONFIGURAÇÃO DO SERVIDOR WSGI (WAITRESS)
@@ -64,7 +65,8 @@ O Nginx será responsável por receber as requisições de rede (porta 80), serv
 
 3. Antes de iniciar, garanta que os arquivos estáticos estão reunidos executando:
    python manage.py collectstatic
-4. Para iniciar o Nginx, dê dois cliques no nginx.exe, ou via terminal execute `start nginx`.
+4. IMPORTANTE: Para forçar os navegadores dos usuários a baixarem as versões mais recentes dos scripts JS (evitando bugs de cache antigo), certifique-se de que os parâmetros `?v=X.X` nos arquivos de template (.html) foram atualizados, e instrua os usuários a realizar um Hard Refresh (Ctrl + F5).
+5. Para iniciar o Nginx, dê dois cliques no nginx.exe, ou via terminal execute `start nginx`.
 
 =============================================================================
 4. LÓGICA DE ARMAZENAMENTO DE MÍDIAS (UPLOADS)
