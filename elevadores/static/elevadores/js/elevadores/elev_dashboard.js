@@ -8,8 +8,8 @@ window.initFiltrosDash = function() {
             const anoAtual = new Date().getFullYear();
             for (let i = 2020; i <= anoAtual; i++) {
                 const option = document.createElement('option');
-                option.value = i;
-                option.text = i;
+                option.value = i.toString();
+                option.text = i.toString();
                 anoSelect.appendChild(option);
             }
         }
@@ -21,8 +21,14 @@ window.initFiltrosDash = function() {
                 mesPrev = 12;
                 anoPrev = anoPrev - 1;
             }
-            document.getElementById('global-mes').value = mesPrev.toString().padStart(2, '0');
-            document.getElementById('global-ano').value = anoPrev;
+            
+            const mesValue = mesPrev.toString().padStart(2, '0');
+            const anoValue = anoPrev.toString();
+            
+            document.getElementById('global-mes').value = mesValue;
+            document.getElementById('global-ano').value = anoValue;
+            
+            console.log('initFiltrosDash set global-mes to', mesValue, 'and global-ano to', anoValue);
         }
     }
 };
@@ -129,6 +135,8 @@ async function dadosIndicadorUm() {
         const layoutChartUm = {
             xaxis: {
                 type: 'category',
+                tickangle: -45,
+                automargin: true,
             },
             height: 500
         }
@@ -178,6 +186,19 @@ async function dadosIndicadorTres() {
         })
         
         
+        const globalRange3 = getGlobalDateRange();
+        const inicioStr3 = globalRange3.inicio || inicioMesAtual;
+        const fimStr3 = globalRange3.fim || fimMesAtual;
+        
+        let dataInicioObj3 = new Date(inicioStr3 + 'T12:00:00');
+        dataInicioObj3.setHours(dataInicioObj3.getHours() - 24);
+        
+        let dataFimObj3 = new Date(fimStr3 + 'T12:00:00');
+        dataFimObj3.setHours(dataFimObj3.getHours() + 24);
+        
+        const rangeInicio3 = dataInicioObj3.toISOString().substring(0, 19).replace('T', ' ');
+        const rangeFim3 = dataFimObj3.toISOString().substring(0, 19).replace('T', ' ');
+
         const layout = {
             
             xaxis: { 
@@ -186,7 +207,9 @@ async function dadosIndicadorTres() {
                 dtick: 86400000,
                 showgrid: true,
                 gridcolor:'#f0f0f0',
-                range: [getGlobalDateRange().inicio || inicioMesAtual, getGlobalDateRange().fim || fimMesAtual],
+                range: [rangeInicio3, rangeFim3],
+                tickangle: -45,
+                automargin: true,
             },
             yaxis: { 
                 type: 'category',
