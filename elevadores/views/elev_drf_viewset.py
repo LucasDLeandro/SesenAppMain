@@ -619,6 +619,12 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 ]
 
     def _disparar_notificacao(self, os, evento, peca=None):
+        try:
+            self._do_disparar_notificacao(os, evento, peca)
+        except Exception as e:
+            print(f"Erro silencioso ao disparar notificação: {e}")
+
+    def _do_disparar_notificacao(self, os, evento, peca=None):
         # Só dispara notificações para OS's do dia atual
         hoje = timezone.localtime(timezone.now()).date()
         if os.data_hora:
