@@ -1,0 +1,26 @@
+# Regras e Permissões para Recebimento de Notificações de Elevadores
+
+Para que um usuário (contato) cadastrado no sistema receba as notificações automáticas de WhatsApp referentes aos elevadores (como Abertura de OS, Andamento, Conclusão, Aguardando Peça, etc.), as seguintes regras e condições devem ser atendidas:
+
+## 1. Presença no Diretório de Contatos
+O usuário não precisa ser um usuário de acesso ao sistema (login/senha), mas obrigatoriamente precisa estar cadastrado no **Diretório de Contatos** (módulo de Notificações). 
+
+## 2. Dados Obrigatórios
+O cadastro do contato deve possuir:
+- **Nome**: Identificação do contato que será usada na personalização da mensagem (ex: "Olá {nome}...").
+- **Telefone**: Um número de telefone/WhatsApp válido (cadastrado no campo `telefone`) para onde a API de mensagens fará o disparo.
+
+## 3. Permissão de Recebimento (Status do Contato)
+O contato precisa ter a permissão de recebimento ativa:
+- O campo **Ativo** (`is_ativo`) deve estar habilitado.
+- No formulário de contatos, esta é a opção que define se a pessoa deve ou não receber notificações automáticas do sistema. Se estiver desativada, o contato é ignorado e não recebe os alertas.
+
+## 4. Regra de Cargo (Role)
+Para as notificações específicas do módulo de **Elevadores**, o sistema atualmente envia os alertas de forma ampla (em "broadcast") para **todos** os contatos que possuam o status Ativo.
+- Não é exigido que o contato tenha um cargo (`role`) específico (como "Gerente", "Síndico", "Manutenção", etc.). 
+- Estar cadastrado e ativo é o requisito principal.
+
+## 5. Gatilhos do Sistema (Templates Ativos)
+Para que o disparo ocorra, o evento gerador também precisa ter permissão global no sistema:
+- O **Template de Mensagem** correspondente ao evento do elevador (ex: *Elevadores - Registro de Nova OS*, *Elevadores - OS em Andamento*, *Elevadores - Conclusão de OS Aberta*) deve estar habilitado e salvo como **Ativo**.
+- Se o template de um evento específico for desativado, nenhum contato da lista receberá notificações daquele evento em particular.

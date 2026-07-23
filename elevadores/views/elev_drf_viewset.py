@@ -642,12 +642,17 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 tel = contato.telefone
                 text = texto.format(
                     nome=contato.nome,
-                    atendente=os.atendente,
-                    data_hora=os.data_hora.strftime("%d/%m/%Y às %H:%M"),
+                    atendente=os.atendente or 'Não informado',
+                    data_hora=os.data_hora.strftime("%d/%m/%Y às %H:%M") if os.data_hora else "",
                     elevador=os.elevador,
                     ocorrencia=os.ocorrencia,
                     protocolo=os.protocolo,
                     solicitante=os.solicitante,
+                    tecnico=os.tecnico or 'Não informado',
+                    acompanhante=os.acompanhante or 'Não informado',
+                    registrador_chegada=os.registrador_chegada or 'Não informado',
+                    servico=os.servico or 'Não informado',
+                    funcionando=os.elevador_parado or 'Não informado',
                 )
                 try:
                     auto_message(tel, text)
@@ -664,12 +669,17 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 tel = contato.telefone
                 text = texto.format(
                     nome=contato.nome,
-                    tecnico=os.tecnico,
+                    tecnico=os.tecnico or 'Não informado',
                     data_hora=os.data_hora_chegada.strftime("%d/%m/%Y às %H:%M") if os.data_hora_chegada else "",
                     protocolo=os.protocolo,
                     elevador=os.elevador,
                     acompanhante=os.acompanhante or "Não informado",
-                    registrador_chegada=os.registrador_chegada or "Não informado"
+                    registrador_chegada=os.registrador_chegada or "Não informado",
+                    atendente=os.atendente or 'Não informado',
+                    ocorrencia=os.ocorrencia or 'Não informado',
+                    solicitante=os.solicitante or 'Não informado',
+                    servico=os.servico or 'Não informado',
+                    funcionando=os.elevador_parado or 'Não informado',
                 )
                 try:
                     auto_message(tel, text)
@@ -687,10 +697,15 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         nome=contato.nome,
                         protocolo=os.protocolo,
                         elevador=os.elevador,
-                        tecnico=os.tecnico,
-                        data_hora_saida=os.data_hora_conclusao.strftime("%d/%m/%Y às %H:%M"),
-                        servico=os.servico,
-                        funcionando=os.elevador_parado
+                        tecnico=os.tecnico or 'Não informado',
+                        data_hora_saida=os.data_hora_conclusao.strftime("%d/%m/%Y às %H:%M") if os.data_hora_conclusao else "",
+                        servico=os.servico or 'Não informado',
+                        funcionando=os.elevador_parado or 'Não informado',
+                        atendente=os.atendente or 'Não informado',
+                        ocorrencia=os.ocorrencia or 'Não informado',
+                        solicitante=os.solicitante or 'Não informado',
+                        acompanhante=os.acompanhante or 'Não informado',
+                        registrador_chegada=os.registrador_chegada or 'Não informado',
                     )
                     
                     if evento == 'os_elev_conclusao_peca':

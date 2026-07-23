@@ -13,6 +13,7 @@ class ElevRegistrarOsSerializer(serializers.ModelSerializer):
         model = ElevOrderReg
         fields = [
             'data_hora',
+            'protocolo',
             'elevador',
             'tipo_chamado',
             'aprisionamento',
