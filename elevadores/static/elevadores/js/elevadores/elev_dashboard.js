@@ -1,3 +1,30 @@
+
+window.initFiltrosDash = function() {
+    const anoSelect = document.getElementById('global-ano');
+    if (anoSelect) {
+        if (anoSelect.options.length === 0) {
+            const anoAtual = new Date().getFullYear();
+            for (let i = 2020; i <= anoAtual; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.text = i;
+                anoSelect.appendChild(option);
+            }
+        }
+        
+        // So inicializa se estiver vazio para nao sobrescrever selecoes do usuario caso chamado multiplas vezes
+        if (!document.getElementById('global-mes').value || !document.getElementById('global-ano').value) {
+            let mesPrev = new Date().getMonth(); // 0-indexed
+            let anoPrev = new Date().getFullYear();
+            if (mesPrev === 0) {
+                mesPrev = 12;
+                anoPrev = anoPrev - 1;
+            }
+            document.getElementById('global-mes').value = mesPrev.toString().padStart(2, '0');
+            document.getElementById('global-ano').value = anoPrev;
+        }
+    }
+};
 import {formatDataIso, mesAnoAtual, filtroAnosMeses, changeFiltro, listaElevadores} from './utils.js';
 
 const elev_selecionado = document.getElementById('dash-elevador')
@@ -154,11 +181,11 @@ async function dadosIndicadorTres() {
             
             xaxis: { 
                 type: 'date',
-                tickformat: '%d/%m', // Formata├º├úo brasileira
+                tickformat: '%d/%m',
                 dtick: 86400000,
                 showgrid: true,
                 gridcolor:'#f0f0f0',
-                range: [inicioMesAtual, fimMesAtual],
+                range: [getGlobalDateRange().inicio || inicioMesAtual, getGlobalDateRange().fim || fimMesAtual],
             },
             yaxis: { 
                 type: 'category',
@@ -193,11 +220,15 @@ async function dadosVisaoGeral() {
         const eixoX = dados_api.totalizacao[4]['mes_exato']
         const eixoY = dados_api.totalizacao[4]['total_mes']
 
-        const dataInicio = new Date(inicioAnoAtual);
-        dataInicio.setDate(dataInicio.getDate() - 15);
-        const inicioAjustado = dataInicio.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+                const globalRange = getGlobalDateRange();
+        const baseDataStr = globalRange.inicio || inicioMesAtual;
+        const anoAtualStr = baseDataStr.substring(0, 4);
 
-        const dataFim = new Date(fimAnoAtual);
+        const dataInicio = new Date(${anoAtualStr}-01-01);
+        dataInicio.setDate(dataInicio.getDate() - 15);
+        const inicioAjustado = dataInicio.toISOString().split('T')[0];
+
+        const dataFim = new Date(${anoAtualStr}-12-31);
         dataFim.setDate(dataFim.getDate() + 15);
         const fimAjustado = dataFim.toISOString().split('T')[0];
 
@@ -265,6 +296,7 @@ if (elev_tab_dash) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    if (window.initFiltrosDash) window.initFiltrosDash();
     const tabDashContent = document.getElementById('tab3-content');
     if (tabDashContent && tabDashContent.classList.contains('active')) {
         await loadDataDashboard(getGlobalDateRange());
@@ -1780,25 +1812,7 @@ function getGlobalDateRange() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const anoSelect = document.getElementById('global-ano');
-    if (anoSelect) {
-        const anoAtual = new Date().getFullYear();
-        for (let i = 2020; i <= anoAtual; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.text = i;
-            anoSelect.appendChild(option);
-        }
-        
-        let mesPrev = new Date().getMonth(); // 0-indexed
-        let anoPrev = anoAtual;
-        if (mesPrev === 0) {
-            mesPrev = 12;
-            anoPrev = anoAtual - 1;
-        }
-        document.getElementById('global-mes').value = mesPrev.toString().padStart(2, '0');
-        document.getElementById('global-ano').value = anoPrev;
-    }
+    window.initFiltrosDash();
 
     const btnAtualizar = document.getElementById('btn-atualizar-dashboard');
     if (btnAtualizar) {
