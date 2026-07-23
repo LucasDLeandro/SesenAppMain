@@ -392,11 +392,16 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             return dados_vazios
 
         df['data_truncada'] = df['data_truncada'].astype(str)
-        df['tamanho_z'] = df['ocorrencias'] * 20
         df['protocolo'] = df['protocolo'].fillna('-')
-        #df['elevador'] = pd.Categorical(df['elevador'], categories=listaElevadores)
 
-        df_agrupado = df.groupby('elevador', observed=False).agg({
+        df_dia = df.groupby(['elevador', 'data_truncada'], observed=False).agg({
+            'ocorrencias': 'sum',
+            'protocolo': lambda x: '<br>'.join(x.astype(str))
+        }).reset_index()
+
+        df_dia['tamanho_z'] = df_dia['ocorrencias'] * 20
+
+        df_agrupado = df_dia.groupby('elevador', observed=False).agg({
             'data_truncada': list,
             'ocorrencias': list,
             'tamanho_z': list,
