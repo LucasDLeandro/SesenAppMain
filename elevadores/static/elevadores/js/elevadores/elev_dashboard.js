@@ -406,7 +406,19 @@ export function atualizarCardsIndicadores() {
     
     const widgetInd2Val = document.getElementById('widget-ind2-val');
     if (widgetInd2Val && dados_api.ind_dois) {
-        widgetInd2Val.innerText = `${dados_api.ind_dois.length}`;
+        let ultimoDiaExec = 0;
+        dados_api.ind_dois.forEach(item => {
+            if (item.status === 'EXECUTADO' && item.data_execucao) {
+                const parts = item.data_execucao.split('/'); // DD/MM/YYYY
+                if (parts.length === 3) {
+                    const dia = parseInt(parts[0], 10);
+                    if (dia > ultimoDiaExec) {
+                        ultimoDiaExec = dia;
+                    }
+                }
+            }
+        });
+        widgetInd2Val.innerText = ultimoDiaExec > 0 ? ultimoDiaExec : '--';
     } else if (widgetInd2Val) {
         widgetInd2Val.innerText = '--';
     }
@@ -418,8 +430,8 @@ export function atualizarCardsIndicadores() {
         let maxChamados = 0;
         
         dados_api.ind_tres.forEach(serie => {
-            if (serie.y && serie.y.length > 0) {
-                const chamadosTotais = serie.y.reduce((acc, curr) => acc + curr, 0);
+            if (serie.y && serie.y.length > 0 && serie.protocolo && serie.protocolo.length > 0) {
+                const chamadosTotais = serie.y.reduce((acc, curr) => acc + parseInt(curr, 10), 0);
                 if (chamadosTotais > maxChamados) {
                     maxChamados = chamadosTotais;
                     elevadorMaisChamados = serie.name;
@@ -434,6 +446,9 @@ export function atualizarCardsIndicadores() {
             widgetInd3Val.innerText = '--';
             widgetInd3Elev.innerText = '--';
         }
+    } else if (widgetInd3Val) {
+        widgetInd3Val.innerText = '--';
+        if (widgetInd3Elev) widgetInd3Elev.innerText = '--';
     }
 
     const widgetInd4Val = document.getElementById('widget-ind4-val');
