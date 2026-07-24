@@ -1098,3 +1098,25 @@ Traceback (most recent call last):
                     f'is not JSON serializable')
 TypeError: Object of type JsonResponse is not JSON serializable
 "GET /elevadores/api/elevadoress/dashboard/?inicio=2020-01-01&fim=2020-01-31 HTTP/1.1" 500 150220
+Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\utils\deprecation.py", line 119, in __call__
+    response = self.process_request(request)
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\http\request.py", line 202, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.

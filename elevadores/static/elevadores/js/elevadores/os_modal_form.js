@@ -125,6 +125,32 @@ function abrirModalElevConcluir(id_os, protocolo) {
                     if (fieldTecnico) fieldTecnico.value = '';
                 }
                 
+                // Lógica visual para OS Aguardando Peças
+                const selectPecas = document.getElementById('id_houve_substituicao_pecas');
+                let alertContainer = document.getElementById('alert-os-pendente');
+                if (!alertContainer) {
+                    alertContainer = document.createElement('div');
+                    alertContainer.id = 'alert-os-pendente';
+                    dadosInfo.prepend(alertContainer);
+                }
+
+                if (data.status === 'AGUARDANDO PEÇAS') {
+                    if (selectPecas) {
+                        selectPecas.value = 'Não houve necessidade';
+                        selectPecas.closest('.mb-3') ? selectPecas.closest('.mb-3').style.display = 'none' : selectPecas.style.display = 'none';
+                    }
+                    const selectStatus = document.getElementById('id_status');
+                    if (selectStatus) selectStatus.value = 'CONCLUIDA';
+                    
+                    alertContainer.innerHTML = '<div class="alert alert-info py-2" role="alert"><i class="bi bi-info-circle me-2"></i><strong>Atenção:</strong> A peça que estava pendente será dada como substituída com sucesso, com a data e horário definidos acima.</div>';
+                } else {
+                    if (selectPecas) {
+                        selectPecas.value = 'Não houve necessidade';
+                        selectPecas.closest('.mb-3') ? selectPecas.closest('.mb-3').style.display = 'block' : selectPecas.style.display = 'block';
+                    }
+                    alertContainer.innerHTML = '';
+                }
+
                 loadingInfo.classList.add('d-none');
                 dadosInfo.classList.remove('d-none');
             })

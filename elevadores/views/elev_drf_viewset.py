@@ -80,9 +80,21 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         if not dados.get('tecnico') and request.user.is_authenticated:
             dados['tecnico'] = request.user.get_full_name() or request.user.username
 
+        was_aguardando = os_existente.status == 'AGUARDANDO PEÇAS'
+
         serializer = ElevConcluirOsSerializer(os_existente, data=dados, partial=True)
         serializer.is_valid(raise_exception=True)
         os_salva = serializer.save()
+
+        # Autocompletar peça se a OS estava aguardando
+        if was_aguardando and os_salva.status == 'CONCLUIDA':
+            from ..models.elev_so_model import PecaManutencao
+            pecas_pendentes = PecaManutencao.objects.filter(ordem_servico=os_salva.protocolo, status='PENDENTE')
+            for peca_pend in pecas_pendentes:
+                peca_pend.status = 'SUBSTITUIDA'
+                peca_pend.data_efetiva_troca = os_salva.data_hora_conclusao.date() if os_salva.data_hora_conclusao else timezone.now().date()
+                peca_pend.tecnico = os_salva.tecnico
+                peca_pend.save()
 
         # Lógica de Peças (Inteligente)
         houve_peca = dados.get('houve_substituicao_pecas')

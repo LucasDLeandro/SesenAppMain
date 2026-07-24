@@ -114,10 +114,11 @@ async function loadPecasTable() {
                 <td>${item.tipo_peca}</td>
                 <td>${formatData(item.data_previsao_troca)}</td>
                 <td><span class="badge bg-${isSub ? "success" : "warning text-dark"}">${item.status}</span></td>
-                <td class="text-danger fw-bold elev-timer text-nowrap" data-start="${isSub ? '' : (item.data_registro || '')}">${isSub ? '-' : 'Calculando...'}</td>
+                <td class="text-danger fw-bold elev-timer text-nowrap" data-start="${isSub ? '' : (item.created_at || item.data_registro || '')}">${isSub ? '-' : 'Calculando...'}</td>
                 <td>
                     <div class="d-flex flex-nowrap justify-content-center gap-1">
                         <button class="btn btn-sm btn-outline-primary" onclick="abrirVisualizarPeca('${encodeURIComponent(JSON.stringify(item))}')" title="Visualizar"><i class="bi bi-eye"></i></button>
+                        ${(!item.ordem_servico && item.status === 'PENDENTE') ? `<button class="btn btn-sm btn-success text-white fw-bold shadow-sm" onclick="openConcluirModal(${item.id})" title="Concluir Troca"><i class="bi bi-check2-circle"></i></button>` : ''}
                         <button class="btn btn-sm btn-outline-warning" onclick="editarPeca(${item.id})" title="Editar"><i class="bi bi-pencil"></i></button>
                         <button class="btn btn-sm btn-outline-danger" onclick="deletePeca(${item.id})" title="Excluir"><i class="bi bi-trash"></i></button>
                     </div>

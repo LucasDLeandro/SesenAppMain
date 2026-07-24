@@ -1325,18 +1325,16 @@ window.abrirModalDemandasPendentes = async function() {
             const osData = await resOs.json();
             osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
                 let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
-                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO')) {
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEÇAS')) {
                     const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
                     tempo = `${minPassados} min`;
-                } else if (o.status === 'AGUARDANDO PEÇAS') {
-                    tempo = 'Pausado';
                 }
                 demandas.push({
                     tipo: 'os',
                     dataOrigem: o.data_hora,
                     dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
                     ref: o.protocolo,
-                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : '<span class="badge bg-primary">Em Andamento</span>',
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEÇAS' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
                     equip: o.elevador,
                     tempo: tempo,
                     id: o.id,
@@ -1351,7 +1349,7 @@ window.abrirModalDemandasPendentes = async function() {
             pecasData.filter(p => p.status !== 'SUBSTITUIDA').forEach(p => {
                 demandas.push({
                     tipo: 'peca',
-                    dataOrigem: p.data_registro || p.created_at || new Date().toISOString(),
+                    dataOrigem: p.created_at || p.data_registro || new Date().toISOString(),
                     dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
                     ref: p.tipo_peca,
                     tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
@@ -1412,7 +1410,6 @@ window.abrirModalDemandasPendentes = async function() {
                             <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peça">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-warning text-dark fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => openConcluirModal(${d.id}), 400)"><i class="bi bi-tools me-1"></i>Trocar Peça</button>
                         </div>
                     `;
                 } else if (d.tipo === 'mpm') {
@@ -1740,18 +1737,16 @@ window.carregarWidgetDemandasDashboard = async function() {
             const osData = await resOs.json();
             osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
                 let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
-                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO')) {
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEÇAS')) {
                     const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
                     tempo = `${minPassados} min`;
-                } else if (o.status === 'AGUARDANDO PEÇAS') {
-                    tempo = 'Pausado';
                 }
                 demandas.push({
                     tipo: 'os',
                     dataOrigem: o.data_hora,
                     dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
                     ref: o.protocolo,
-                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : '<span class="badge bg-primary">Em Andamento</span>',
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEÇAS' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
                     equip: o.elevador,
                     tempo: tempo,
                     status: o.status,

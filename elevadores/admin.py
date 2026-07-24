@@ -2,9 +2,8 @@ from django.contrib import admin
 
 
 # Register your models here.
-from .models.elev_so_model import ElevOrderReg, ElevadorStatus
-from .models.eng_reg_os_model import EngServiceReg
-from .models.mapa_servicos import Categoria, Servico
+from .models.elev_so_model import ElevOrderReg, ElevadorStatus, PecaManutencao
+from .models.mapa_servicos import Categoria
 
 
 
@@ -27,4 +26,20 @@ class ElevOrderRegAdmin(admin.ModelAdmin):
 class ElevadorStatusAdmin(admin.ModelAdmin):
     list_display = ('elevador', 'status', 'data_hora_parada')
     list_filter = ('status',)
-    search_fields = ('elevador',)
+    search_fields = ('elevador',)
+
+from django.apps import apps
+
+@admin.register(PecaManutencao)
+class PecaManutencaoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'elevador', 'tipo_peca', 'status', 'tecnico', 'data_registro', 'data_efetiva_troca')
+    list_filter = ('status', 'elevador')
+    search_fields = ('id', 'tipo_peca', 'tecnico', 'ordem_servico')
+
+# Register all other models dynamically
+app_models = apps.get_app_config('elevadores').get_models()
+for model in app_models:
+    try:
+        admin.site.register(model)
+    except admin.sites.AlreadyRegistered:
+        pass
