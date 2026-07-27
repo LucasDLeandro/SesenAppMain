@@ -439,23 +439,86 @@
     function abrirModalAditivo() {
         Swal.fire({
             title: 'Novo Termo Aditivo',
+            width: '700px',
             html: `
-                <input id="swal-numero" class="swal2-input" placeholder="Número (Ex: 1/2026)">
-                <input id="swal-objeto" class="swal2-input" placeholder="Objeto (Resumo da mudança)">
-                <input id="swal-val-aditivado" type="number" step="0.01" class="swal2-input" placeholder="Valor Aditivado (Use - para redução)">
-                <input id="swal-novo-global" type="number" step="0.01" class="swal2-input" placeholder="Novo Valor Global">
-                <input id="swal-inicio" type="date" class="swal2-input" placeholder="Início">
-                <input id="swal-fim" type="date" class="swal2-input" placeholder="Fim">
+                <div class="row text-start mt-2 px-3">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Número (Ex: 1/2026)</label>
+                        <input id="swal-numero" class="form-control rounded-pill" placeholder="Número">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Objeto</label>
+                        <input id="swal-objeto" class="form-control rounded-pill" placeholder="Resumo da mudança">
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Valor Aditivado (Use - para redução)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
+                            <input id="swal-val-aditivado" type="text" class="form-control border-start-0 rounded-end-pill fw-bold text-end text-primary" placeholder="0,00">
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Novo Valor Global</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
+                            <input id="swal-novo-global" type="text" class="form-control border-start-0 rounded-end-pill fw-bold text-end text-success" placeholder="0,00">
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Início da Vigência</label>
+                        <input id="swal-inicio" type="date" class="form-control rounded-pill">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Fim da Vigência</label>
+                        <input id="swal-fim" type="date" class="form-control rounded-pill">
+                    </div>
+                </div>
             `,
             confirmButtonText: 'Salvar',
             showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                confirmButton: 'btn btn-primary rounded-pill px-4 me-2 shadow-sm',
+                cancelButton: 'btn btn-secondary rounded-pill px-4 shadow-sm'
+            },
+            buttonsStyling: false,
+            didOpen: () => {
+                if (typeof IMask !== 'undefined') {
+                    IMask(document.getElementById('swal-val-aditivado'), {
+                        mask: Number,
+                        scale: 2,
+                        signed: true,
+                        thousandsSeparator: '.',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: ','
+                    });
+                    IMask(document.getElementById('swal-novo-global'), {
+                        mask: Number,
+                        scale: 2,
+                        signed: false,
+                        thousandsSeparator: '.',
+                        padFractionalZeros: true,
+                        normalizeZeros: true,
+                        radix: ','
+                    });
+                }
+            },
             preConfirm: () => {
+                let valAdit = document.getElementById('swal-val-aditivado').value;
+                let valGlob = document.getElementById('swal-novo-global').value;
+                
+                valAdit = valAdit ? parseFloat(valAdit.replace(/\./g, '').replace(',', '.')) : 0;
+                valGlob = valGlob ? parseFloat(valGlob.replace(/\./g, '').replace(',', '.')) : 0;
+
                 return {
                     contrato: CONTRATO_ID,
                     numero: document.getElementById('swal-numero').value,
                     objeto: document.getElementById('swal-objeto').value,
-                    valor_aditivado: document.getElementById('swal-val-aditivado').value || 0,
-                    novo_valor_global: document.getElementById('swal-novo-global').value || 0,
+                    valor_aditivado: valAdit,
+                    novo_valor_global: valGlob,
                     inicio_vigencia: document.getElementById('swal-inicio').value,
                     termino_vigencia: document.getElementById('swal-fim').value
                 }
