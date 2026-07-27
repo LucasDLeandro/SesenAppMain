@@ -7,6 +7,16 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{% static 'contratos/css/dashboard_contratos.css' %}?v=1.0">
+<style>
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .status-pendente { background-color: #fef3c7; color: #d97706; }
+    .status-pago { background-color: #d1fae5; color: #059669; }
+</style>
 {% endblock %}
 
 {% block painel_contratos %}
@@ -77,6 +87,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Nav Tabs Principal -->
+    <ul class="nav nav-tabs mb-4" id="mainTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-bold" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#tab-dashboard" type="button" role="tab"><i class="bi bi-pie-chart-fill me-2"></i>Dashboard</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="contratos-tab" data-bs-toggle="tab" data-bs-target="#tab-contratos" type="button" role="tab"><i class="bi bi-file-earmark-check me-2"></i>Contratos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-bold" id="pagamentos-tab" data-bs-toggle="tab" data-bs-target="#tab-pagamentos" type="button" role="tab"><i class="bi bi-cash-stack me-2"></i>Pagamentos</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="mainTabsContent">
+        <!-- Aba 1: Dashboard -->
+        <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel">
 
     <!-- Top Metrics -->
     <div class="row g-4 mb-4">
@@ -165,18 +192,10 @@
         </div>
     </div>
 
-    <!-- Nav Tabs para a Tabela de Gestão -->
-    <ul class="nav nav-tabs mb-4" id="contratosTabs" role="tablist">
-        <li class="nav-item" role="presentation">
-            <button class="nav-link active fw-bold text-dark" id="vigentes-tab" data-bs-toggle="tab" data-bs-target="#vigentes" type="button" role="tab"><i class="bi bi-file-earmark-check me-2"></i>Contratos Vigentes</button>
-        </li>
-    </ul>
+        </div> <!-- End Aba 1: Dashboard -->
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="contratosTabsContent">
-        
-        <!-- Aba 1: Contratos Vigentes -->
-        <div class="tab-pane fade show active" id="vigentes" role="tabpanel">
+        <!-- Aba 2: Contratos -->
+        <div class="tab-pane fade" id="tab-contratos" role="tabpanel">
             <div class="card card-dashboard">
                 <div class="card-header bg-white border-bottom py-3">
                     <h5 class="mb-0 fw-bold" style="font-size: 1.1rem;"><i class="bi bi-list-check me-2 text-primary"></i>Lista de Contratos Filtrados</h5>
@@ -201,9 +220,41 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> <!-- End Aba 2: Contratos -->
 
-    </div>
+        <!-- Aba 3: Pagamentos -->
+        <div class="tab-pane fade" id="tab-pagamentos" role="tabpanel">
+            <div class="card card-dashboard">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold" style="font-size: 1.1rem;"><i class="bi bi-cash-stack me-2 text-success"></i>Lista de Pagamentos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle w-100" id="tabela-pagamentos">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Competência</th>
+                                    <th>Contrato</th>
+                                    <th>Empresa</th>
+                                    <th>Valor Faturado</th>
+                                    <th>Glosa</th>
+                                    <th>Multa</th>
+                                    <th>Valor a Pagar</th>
+                                    <th>Status</th>
+                                    <th>Ordem Pag.</th>
+                                    <th class="text-end">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pagamentos-body">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Aba 3: Pagamentos -->
+
+    </div> <!-- End mainTabsContent -->
 </div>
 
 <!-- Modal Novo/Editar Contrato -->
@@ -716,4 +767,260 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script src="{% static 'contratos/js/dashboard_contratos.js' %}?v=1.3"></script>
 <script src="{% static 'contratos/js/dashboard_contratos_metrics.js' %}?v=1.0"></script>
+
+
+<!-- Modal Detalhes do Pagamento -->
+<div class="modal fade" id="modalDetalhesPagamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: var(--card-bg);">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title" style="color: var(--text-main); font-weight: 600;">Detalhes do Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-pagamento">
+                    <input type="hidden" id="pagamento_id">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Contrato</p>
+                            <h5 id="modal_contrato" style="color: var(--text-main);"></h5>
+                            <p class="text-muted mb-1 mt-3">Empresa</p>
+                            <h6 id="modal_empresa" style="color: var(--text-main);"></h6>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-1">Competência</p>
+                            <h4 id="modal_competencia" class="text-primary"></h4>
+                            <span id="modal_status_badge" class="status-badge mt-2 d-inline-block"></span>
+                        </div>
+                    </div>
+
+                    <h6 class="border-bottom border-secondary pb-2 mb-3 mt-4" style="color: var(--text-main);">Valores Financeiros</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Faturado</label>
+                            <input type="text" class="form-control" id="modal_faturado" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Glosa (R$)</label>
+                            <input type="text" class="form-control text-danger" id="modal_glosa" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Multa (R$)</label>
+                            <input type="text" class="form-control text-danger" id="modal_multa" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">A Pagar</label>
+                            <input type="text" class="form-control text-success fw-bold" id="modal_pago" readonly>
+                        </div>
+                    </div>
+
+                    <h6 class="border-bottom border-secondary pb-2 mb-3" style="color: var(--text-main);">Protocolos e Documentos</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">Relatório Mensal</label>
+                            <input type="text" class="form-control" id="modal_prot_rel" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">IMR</label>
+                            <input type="text" class="form-control" id="modal_prot_imr" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">TRD / TRT</label>
+                            <input type="text" class="form-control" id="modal_prot_trd" readonly>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label text-muted">Nota Fiscal</label>
+                            <input type="text" class="form-control" id="modal_prot_nf" readonly>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label text-muted">Nota Técnica de Atesto</label>
+                            <input type="text" class="form-control" id="modal_prot_nt" readonly>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
+                        <div class="card-body">
+                            <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-8">
+                                    <label class="form-label">Ordem de Pagamento (Doc. SEI, SIAFI, etc)</label>
+                                    <input type="text" class="form-control" id="input_ordem_pagamento" placeholder="Ex: OB 2026OB123456">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Status</label>
+                                    <select class="form-select" id="input_status">
+                                        <option value="PENDENTE">PENDENTE</option>
+                                        <option value="PAGO">PAGO</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        carregarPagamentos();
+    });
+
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+    };
+
+    let listaPagamentos = [];
+
+    function carregarPagamentos() {
+        console.log("Iniciando fetch para /contratos/api/pagamentos/");
+        fetch('/contratos/api/pagamentos/')
+            .then(response => {
+                console.log("Resposta status:", response.status);
+                if (!response.ok) {
+                    throw new Error("Erro HTTP: " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Dados recebidos da API:", data);
+                const results = data.results !== undefined ? data.results : (Array.isArray(data) ? data : []);
+                console.log("Resultados extraídos:", results);
+                listaPagamentos = results;
+                renderTabela(results);
+            })
+            .catch(err => {
+                console.error("Erro ao carregar pagamentos:", err);
+                const tbody = document.getElementById('pagamentos-body');
+                if (tbody) tbody.innerHTML = `<tr><td colspan="10" class="text-center text-danger">Erro ao carregar dados: ${err.message}</td></tr>`;
+            });
+    }
+
+    function renderTabela(pagamentos) {
+        const tbody = document.getElementById('pagamentos-body');
+        if (!tbody) {
+            console.error("Elemento pagamentos-body não encontrado!");
+            return;
+        }
+        tbody.innerHTML = '';
+        
+        if (!Array.isArray(pagamentos)) {
+            console.error("Dados passados para renderTabela não são um array:", pagamentos);
+            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Erro de formato nos dados recebidos.</td></tr>';
+            return;
+        }
+
+        if (pagamentos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">Nenhum pagamento registrado.</td></tr>';
+            return;
+        }
+
+        try {
+            pagamentos.forEach(pag => {
+                const statusClass = pag.status === 'PAGO' ? 'status-pago' : 'status-pendente';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-bold">${pag.competencia || '-'}</td>
+                    <td>${pag.contrato_num || '-'}</td>
+                    <td><small class="text-muted">${pag.empresa_nome || '-'}</small></td>
+                    <td>${formatCurrency(pag.valor_faturado)}</td>
+                    <td class="text-danger">${formatCurrency(pag.valor_glosa)}</td>
+                    <td class="text-danger">${formatCurrency(pag.valor_multa)}</td>
+                    <td class="text-success fw-bold">${formatCurrency(pag.valor_pago)}</td>
+                    <td><span class="status-badge ${statusClass}">${pag.status || 'PENDENTE'}</span></td>
+                    <td>${pag.ordem_pagamento || '<span class="text-muted">Não vinculada</span>'}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary" onclick="abrirModalDetalhesPagamento(${pag.id})">
+                            <i class="bi bi-eye"></i> Detalhes
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch (e) {
+            console.error("Erro ao renderizar linhas da tabela:", e);
+            tbody.innerHTML += `<tr><td colspan="10" class="text-center text-danger">Erro ao processar as linhas.</td></tr>`;
+        }
+    }
+
+    let modalPagamentoInstance = null;
+
+    window.abrirModalDetalhesPagamento = function(id) {
+        if(!modalPagamentoInstance) {
+            modalPagamentoInstance = new bootstrap.Modal(document.getElementById('modalDetalhesPagamento'));
+        }
+        
+        const pag = listaPagamentos.find(p => p.id === id);
+        if (!pag) return;
+
+        document.getElementById('pagamento_id').value = pag.id;
+        document.getElementById('modal_contrato').textContent = pag.contrato_num || '-';
+        document.getElementById('modal_empresa').textContent = pag.empresa_nome || '-';
+        document.getElementById('modal_competencia').textContent = pag.competencia || '-';
+        
+        const badge = document.getElementById('modal_status_badge');
+        badge.textContent = pag.status;
+        badge.className = 'status-badge ' + (pag.status === 'PAGO' ? 'status-pago' : 'status-pendente');
+
+        document.getElementById('modal_faturado').value = formatCurrency(pag.valor_faturado);
+        document.getElementById('modal_glosa').value = formatCurrency(pag.valor_glosa);
+        document.getElementById('modal_multa').value = formatCurrency(pag.valor_multa);
+        document.getElementById('modal_pago').value = formatCurrency(pag.valor_pago);
+
+        document.getElementById('modal_prot_rel').value = pag.protocolo_relatorio_mensal || '-';
+        document.getElementById('modal_prot_imr').value = pag.protocolo_imr || '-';
+        document.getElementById('modal_prot_trd').value = pag.protocolo_trd_trt || '-';
+        document.getElementById('modal_prot_nf').value = pag.protocolo_nf || '-';
+        document.getElementById('modal_prot_nt').value = pag.protocolo_nota_tecnica || '-';
+
+        document.getElementById('input_ordem_pagamento').value = pag.ordem_pagamento || '';
+        document.getElementById('input_status').value = pag.status;
+
+        modalPagamentoInstance.show();
+    };
+
+    window.salvarPagamento = function() {
+        const id = document.getElementById('pagamento_id').value;
+        const ordem = document.getElementById('input_ordem_pagamento').value;
+        const status = document.getElementById('input_status').value;
+
+        const csrftoken = getCookie('csrftoken');
+
+        fetch('/contratos/api/pagamentos/' + id + '/', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                ordem_pagamento: ordem,
+                status: status
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                modalPagamentoInstance.hide();
+                carregarPagamentos();
+            } else {
+                alert('Erro ao atualizar pagamento.');
+            }
+        })
+        .catch(err => console.error(err));
+    };
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
 {% endblock %}
