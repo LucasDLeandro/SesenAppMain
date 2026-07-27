@@ -24,12 +24,12 @@
             <div class="offcanvas-body d-flex flex-column p-0">
                 <div class="sidebar-heading">Contratos e Empresas</div>
                 <nav class="nav flex-column mb-3">
-                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratacoes' %}active{% endif %}" href="{% url 'contratos:dashboard_contratacoes' %}">
-                        <i class="bi bi-diagram-3"></i> Dashboard de Contratações
-                    </a>
-                    
                     <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratos' or request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'contratos:dashboard_contratos' %}">
                         <i class="bi bi-file-earmark-ruled"></i> Dashboard de Contratos
+                    </a>
+
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratacoes' %}active{% endif %}" href="{% url 'contratos:dashboard_contratacoes' %}">
+                        <i class="bi bi-diagram-3"></i> Dashboard de Contratações
                     </a>
                     
                     <a class="nav-sidebar-link {% if 'empresas' in request.path %}active{% endif %}" href="{% url 'empresas:dashboard_empresas' %}">
