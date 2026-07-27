@@ -209,10 +209,50 @@ if (selectElevadorParado) {
     selectElevadorParado.dispatchEvent(new Event('change'));
 }
 
+// Lógica do Sistema EMS (Múltiplos Elevadores)
+const selectElevadorCriar = document.getElementById('id_elevador');
+const containerElevadoresEms = document.getElementById('container-elevadores-ems');
+const select2Ems = $('#id_elevadores_ems');
+const emsHidden = document.getElementById('id_elevadores_ems_hidden');
+
+if (selectElevadorCriar) {
+    // Inicia select2 do EMS
+    select2Ems.select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#elev-create-os-modal'),
+        placeholder: 'Selecione os elevadores...',
+        allowClear: true
+    });
+
+    selectElevadorCriar.addEventListener('change', function() {
+        if (this.value === 'Sistema EMS') {
+            containerElevadoresEms.style.display = 'block';
+        } else {
+            containerElevadoresEms.style.display = 'none';
+        }
+    });
+
+    $('#btn-ems-select-all').on('click', () => {
+        const todosOpts = select2Ems.find('option').map(function() { return this.value }).get();
+        select2Ems.val(todosOpts).trigger('change');
+    });
+
+    $('#btn-ems-clear-all').on('click', () => {
+        select2Ems.val(null).trigger('change');
+    });
+}
+
 form_os_criar.addEventListener('submit', async function(evento_elev_criar_os) {
     evento_elev_criar_os.preventDefault();
 
     const urlElevCriarDestino = form_os_criar.action;
+    
+    // Antes de empacotar o form, salva os valores múltiplos no hidden input
+    if (selectElevadorCriar && selectElevadorCriar.value === 'Sistema EMS') {
+        const selecionados = select2Ems.val() || [];
+        emsHidden.value = selecionados.join(',');
+    }
+    
     const formDataElevCriar = new FormData(form_os_criar);
 
     console.log(`urlElevCriarDestino: ${urlElevCriarDestino}`)

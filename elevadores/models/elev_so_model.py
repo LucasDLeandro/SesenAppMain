@@ -99,6 +99,11 @@ class ElevOrderReg(models.Model):
             'max_length': "O protocolo excedeu o número máximo de caracteres permitidos (20).",
         }
     )
+    elevadores_afetados = models.JSONField(
+        null=True, 
+        blank=True, 
+        verbose_name="Elevadores Afetados (EMS/Geral)"
+    )
 
     tipo_chamado = models.CharField(
         max_length=20,

@@ -4,15 +4,25 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
 
-from ..models.model_contratos import Contratos, ProcessoLicitatorio, MedicaoMensal, Pagamento, TramitacaoSEI, CronogramaContratacao
+from ..models.model_contratos import (
+    Contratos, ProcessoLicitatorio, MedicaoMensal, Pagamento, 
+    TramitacaoSEI, CronogramaContratacao, TermoAditivo, PostoTrabalho,
+    ItemCustoExtra, Profissional, AlocacaoProfissional
+)
 from ..serializers import (
     ContratoSerializer, 
     ProcessoLicitatorioSerializer, 
     MedicaoMensalSerializer, 
     PagamentoSerializer,
     TramitacaoSEISerializer,
-    CronogramaContratacaoSerializer
+    CronogramaContratacaoSerializer,
+    TermoAditivoSerializer,
+    PostoTrabalhoSerializer,
+    ItemCustoExtraSerializer,
+    ProfissionalSerializer,
+    AlocacaoProfissionalSerializer
 )
 from ..services.comprasnet_service import ComprasNetService
 from empresas.models import Empresa
@@ -21,6 +31,64 @@ from rest_framework.decorators import action
 from datetime import date, timedelta
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import render, get_object_or_404
+
+class TermoAditivoViewSet(viewsets.ModelViewSet):
+    queryset = TermoAditivo.objects.all().order_by('-inicio_vigencia')
+    serializer_class = TermoAditivoSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        contrato_id = self.request.query_params.get('contrato', None)
+        if contrato_id:
+            queryset = queryset.filter(contrato_id=contrato_id)
+        return queryset
+
+class PostoTrabalhoViewSet(viewsets.ModelViewSet):
+    queryset = PostoTrabalho.objects.all().order_by('nome_cargo')
+    serializer_class = PostoTrabalhoSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        contrato_id = self.request.query_params.get('contrato', None)
+        if contrato_id:
+            queryset = queryset.filter(contrato_id=contrato_id)
+        return queryset
+
+class ItemCustoExtraViewSet(viewsets.ModelViewSet):
+    queryset = ItemCustoExtra.objects.all()
+    serializer_class = ItemCustoExtraSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        contrato_id = self.request.query_params.get('contrato', None)
+        if contrato_id:
+            queryset = queryset.filter(contrato_id=contrato_id)
+        return queryset
+
+class ProfissionalViewSet(viewsets.ModelViewSet):
+    queryset = Profissional.objects.all().order_by('nome')
+    serializer_class = ProfissionalSerializer
+    permission_classes = [IsAuthenticated]
+
+class AlocacaoProfissionalViewSet(viewsets.ModelViewSet):
+    queryset = AlocacaoProfissional.objects.all().order_by('-data_inicio')
+    serializer_class = AlocacaoProfissionalSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        posto_id = self.request.query_params.get('posto', None)
+        if posto_id:
+            queryset = queryset.filter(posto_id=posto_id)
+        contrato_id = self.request.query_params.get('contrato', None)
+        if contrato_id:
+            queryset = queryset.filter(posto__contrato_id=contrato_id)
+        return queryset
+
 
 class ProcessoLicitatorioViewSet(viewsets.ModelViewSet):
     queryset = ProcessoLicitatorio.objects.all().order_by('-created_at')
@@ -115,16 +183,42 @@ class ContratoViewSet(viewsets.ModelViewSet):
         qs = super().get_queryset()
         app_vinculado = self.request.query_params.get('app_vinculado')
         categoria = self.request.query_params.get('categoria')
+        mes = self.request.query_params.get('mes')
+        ano = self.request.query_params.get('ano')
+        
         if app_vinculado:
             qs = qs.filter(categoria__contains=app_vinculado) # Backward compatibility
         if categoria:
             qs = qs.filter(categoria__contains=categoria)
+            
+        if mes and ano:
+            competencia = f"{mes.zfill(2)}/{ano}"
+            # Filtra contratos que possuem medição naquela competência
+            qs = qs.filter(medicoes__competencia=competencia).distinct()
+            
         return qs
 
 class MedicaoMensalViewSet(viewsets.ModelViewSet):
     queryset = MedicaoMensal.objects.all().order_by('-created_at')
     serializer_class = MedicaoMensalSerializer
     permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        medicao = serializer.save(avaliador=self.request.user.username)
+        # Create the associated Pagamento based on request data
+        data = self.request.data
+        Pagamento.objects.create(
+            medicao=medicao,
+            protocolo_relatorio_mensal=data.get('protocolo_relatorio_mensal', ''),
+            protocolo_imr=data.get('protocolo_imr', ''),
+            protocolo_trd_trt=data.get('protocolo_trd_trt', ''),
+            protocolo_nf=data.get('protocolo_nf', ''),
+            protocolo_nota_tecnica=data.get('protocolo_nota_tecnica', ''),
+            valor_faturado=data.get('valor_faturado') or '0.00',
+            porcentagem_glosa=data.get('porcentagem_glosa') or '0.00',
+            porcentagem_multa=data.get('porcentagem_multa') or '0.00',
+            status='PENDENTE'
+        )
 
 class PagamentoViewSet(viewsets.ModelViewSet):
     queryset = Pagamento.objects.all().order_by('-created_at')
@@ -134,71 +228,94 @@ class PagamentoViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def dashboard_metrics(request):
-    # Quantidade de Contratos Ativos
-    total_ativos = Contratos.objects.filter(status='VIGENTE').count()
+    from datetime import date
     
-    # Valor Total Mensal Estimado (Contratos Ativos)
-    valor_estimado = Contratos.objects.filter(status='VIGENTE').aggregate(
-        total=Sum('valor_mensal_estimado')
-    )['total'] or 0
+    contrato_id = request.query_params.get('contrato_id')
+    mes = request.query_params.get('mes')
+    ano = request.query_params.get('ano')
+    
+    # Defaults se mes e ano não estiverem presentes (Mês atual)
+    hoje = date.today()
+    filtro_mes = mes if mes else str(hoje.month).zfill(2)
+    filtro_ano = ano if ano else str(hoje.year)
+    competencia = f"{filtro_mes.zfill(2)}/{filtro_ano}"
 
-    # Valor Total Medido no Mês Atual (vamos pegar as últimas medições)
-    # Para simplificar, pegamos o total de todas as medições ou podemos agrupar.
-    # Como não temos um filtro de mês exato aqui sem saber o formato de 'competencia', 
-    # vamos trazer o total geral medido.
-    total_medido = MedicaoMensal.objects.aggregate(total=Sum('valor_medido'))['total'] or 0
+    qs_contratos = Contratos.objects.filter(status='VIGENTE')
+    qs_pagamentos = Pagamento.objects.all()
+    
+    if contrato_id:
+        qs_contratos = qs_contratos.filter(id=contrato_id)
+        qs_pagamentos = qs_pagamentos.filter(medicao__contrato_id=contrato_id)
+        
+    # Valor Total dos Contratos (Global ou filtrado por contrato_id)
+    valor_total = qs_contratos.aggregate(total=Sum('valor'))['total'] or 0
+    
+    # Valor Mensal Estimado
+    valor_estimado = qs_contratos.aggregate(total=Sum('valor_mensal_estimado'))['total'] or 0
 
-    # Total de Glosas e Multas aplicadas
-    glosas_multas = Pagamento.objects.aggregate(
+    # Valor Pago no Mês (usando a competência)
+    qs_pagamentos_mes = qs_pagamentos.filter(medicao__competencia=competencia)
+    valor_pago = qs_pagamentos_mes.aggregate(total=Sum('valor_pago'))['total'] or 0
+
+    # Glosas e Multas no Mês
+    glosas_multas = qs_pagamentos_mes.aggregate(
         glosas=Sum('valor_glosa'),
         multas=Sum('valor_multa')
     )
-    total_glosas = glosas_multas['glosas'] or 0
-    total_multas = glosas_multas['multas'] or 0
+    total_descontos = (glosas_multas['glosas'] or 0) + (glosas_multas['multas'] or 0)
 
-    # Processos Licitatórios
-    processos = ProcessoLicitatorio.objects.values('fase').annotate(total=Count('id'))
-    
-    processos_dict = {
-        'PREVISTA': 0,
-        'EM_ANDAMENTO': 0,
-        'FINALIZADA': 0,
-        'SUSPENSA': 0,
-        'PLANEJAMENTO': 0,
-        'SELECAO': 0,
-        'CONCLUIDO': 0,
-        'CANCELADO': 0
-    }
-    for p in processos:
-        fase = p['fase']
-        if fase in processos_dict:
-            processos_dict[fase] = p['total']
-
-    # Próximos contratos a vencer (em 90 dias ou menos, mas vamos pegar os 5 próximos pela data de término)
-    from datetime import date
-    proximos_vencer = Contratos.objects.filter(
-        status='VIGENTE', 
-        termino_vigencia__gte=date.today()
+    # Próximos contratos a vencer
+    proximos_vencer = qs_contratos.filter(
+        termino_vigencia__gte=hoje
     ).order_by('termino_vigencia')[:5]
-
-    proximos_vencer_data = [
+    
+    vencimentos_lista = [
         {
+            'id': c.id,
             'num_contrato': c.num_contrato,
-            'empresa': c.empresa.nome_empresa,
-            'termino_vigencia': c.termino_vigencia.isoformat(),
-            'valor': c.valor
+            'empresa': c.empresa.nome_empresa if c.empresa else '',
+            'termino_vigencia': c.termino_vigencia.strftime('%Y-%m-%d') if c.termino_vigencia else None
         } for c in proximos_vencer
     ]
+    
+    # Gráfico Visão Geral (Últimos 6 meses)
+    # Pega o mês/ano filtrado e volta 5 meses.
+    mes_int = int(filtro_mes)
+    ano_int = int(filtro_ano)
+    
+    chart_categories = []
+    chart_estimado = []
+    chart_medido = []
+    
+    meses_nomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
+    
+    for i in range(5, -1, -1):
+        m = mes_int - i
+        a = ano_int
+        if m <= 0:
+            m += 12
+            a -= 1
+        comp = f"{str(m).zfill(2)}/{a}"
+        chart_categories.append(meses_nomes[m-1])
+        
+        # O valor estimado é constante para o gráfico se não houve aditivo, 
+        # mas vamos simplificar usando o valor estimado atual:
+        chart_estimado.append(float(valor_estimado))
+        
+        val_medido = qs_pagamentos.filter(medicao__competencia=comp).aggregate(total=Sum('valor_faturado'))['total'] or 0
+        chart_medido.append(float(val_medido))
 
     return Response({
-        'total_ativos': total_ativos,
+        'valor_total_contratos': valor_total,
         'valor_estimado': valor_estimado,
-        'total_medido': total_medido,
-        'total_glosas': total_glosas,
-        'total_multas': total_multas,
-        'processos_planejamento': processos_dict['PLANEJAMENTO'] + processos_dict['PREVISTA'],
-        'processos_selecao': processos_dict['SELECAO'] + processos_dict['EM_ANDAMENTO'],
-        'proximos_vencer': proximos_vencer_data
+        'valor_pago': valor_pago,
+        'total_glosas': total_descontos,
+        'proximos_vencer': vencimentos_lista,
+        'chart_data': {
+            'categories': chart_categories,
+            'estimado': chart_estimado,
+            'medido': chart_medido
+        }
     })
 
 @api_view(['GET'])
@@ -228,6 +345,10 @@ def dashboard_contratacoes_metrics(request):
 def home_contratos(request):
     return render(request, 'contratos/home_contratos.html')
 
+@login_required
+def pagamentos_view(request):
+    return render(request, 'contratos/pagamentos.html')
+
 def dashboard_contratos(request):
     empresas = Empresa.objects.all().order_by('nome_empresa')
     processos = ProcessoLicitatorio.objects.all().order_by('-created_at')
@@ -248,3 +369,10 @@ def buscar_contratos_comprasnet(request):
     """
     contratos = ComprasNetService.obter_contratos_ativos_ug()
     return Response(contratos)
+
+@login_required
+def visao_geral_contrato(request, pk):
+    contrato = get_object_or_404(Contratos, pk=pk)
+    return render(request, 'contratos/visao_geral_contrato.html', {
+        'contrato': contrato
+    })

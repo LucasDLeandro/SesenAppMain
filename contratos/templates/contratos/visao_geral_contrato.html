@@ -1,0 +1,603 @@
+{% extends "contratos/base_contratos.html" %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+    .contract-header {
+        background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+        color: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 20px rgba(59, 130, 246, 0.15);
+    }
+    
+    .metric-card {
+        background: var(--card-bg, #ffffff);
+        border: 1px solid var(--border-color, #e5e7eb);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        transition: transform 0.2s, box-shadow 0.2s;
+        height: 100%;
+    }
+    
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+    }
+
+    .metric-label {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #111827;
+    }
+    
+    .nav-tabs .nav-link {
+        color: #4b5563;
+        font-weight: 600;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: 12px 20px;
+        margin-right: 5px;
+    }
+    
+    .nav-tabs .nav-link.active {
+        color: #2563eb;
+        background: transparent;
+        border-bottom: 2px solid #2563eb;
+    }
+    
+    .nav-tabs .nav-link:hover {
+        border-bottom: 2px solid #93c5fd;
+    }
+
+    .table-modern {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 8px;
+    }
+    
+    .table-modern th {
+        background-color: transparent;
+        color: #6b7280;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        padding: 0 15px 8px 15px;
+        border: none;
+    }
+    
+    .table-modern td {
+        background-color: var(--card-bg, #ffffff);
+        padding: 15px;
+        vertical-align: middle;
+        border: none;
+    }
+    
+    .table-modern td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+    .table-modern td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+    
+    .table-modern tr {
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        transition: transform 0.1s;
+    }
+    .table-modern tr:hover {
+        transform: scale(1.01);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+</style>
+{% endblock %}
+
+{% block painel_contratos %}
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="contract-header d-flex justify-content-between align-items-center">
+        <div>
+            <h5 class="text-uppercase mb-1" style="color: #93c5fd;">Visão Geral do Contrato</h5>
+            <h2 class="mb-0 fw-bold">{{ contrato.num_contrato }} - {{ contrato.empresa.nome_empresa }}</h2>
+            <p class="mt-2 mb-0" style="color: #bfdbfe; max-width: 800px;">{{ contrato.objeto }}</p>
+        </div>
+        <div>
+            <span class="badge bg-light text-primary fs-6 py-2 px-3 rounded-pill">{{ contrato.status }}</span>
+        </div>
+    </div>
+
+    <!-- Metrics Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Valor Original</div>
+                <div class="metric-value" id="val_original">R$ {{ contrato.valor }}</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Valor Atual (Aditivado)</div>
+                <div class="metric-value text-primary" id="val_atual">Carregando...</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Postos de Trabalho</div>
+                <div class="metric-value" id="metric_postos">
+                    {% if contrato.contempla_postos_trabalho %} Carregando... {% else %} Não Aplicável {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="metric-card">
+                <div class="metric-label">Término de Vigência</div>
+                <div class="metric-value text-danger">{{ contrato.termino_vigencia|date:"d/m/Y" }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" id="contractTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="termos-tab" data-bs-toggle="tab" data-bs-target="#termos" type="button" role="tab">Histórico e Aditivos</button>
+        </li>
+        {% if contrato.contempla_postos_trabalho %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="postos-tab" data-bs-toggle="tab" data-bs-target="#postos" type="button" role="tab">Postos de Trabalho e Alocações</button>
+        </li>
+        {% endif %}
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="financeiro-tab" data-bs-toggle="tab" data-bs-target="#financeiro" type="button" role="tab">Evolução Financeira</button>
+        </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="contractTabsContent">
+        <!-- Termos Aditivos -->
+        <div class="tab-pane fade show active" id="termos" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-bold text-secondary">Termos Aditivos</h5>
+                <button class="btn btn-primary" onclick="abrirModalAditivo()">+ Novo Termo Aditivo</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table-modern" id="tableAditivos">
+                    <thead>
+                        <tr>
+                            <th>Número</th>
+                            <th>Objeto</th>
+                            <th>Valor Aditivado</th>
+                            <th>Novo Global</th>
+                            <th>Vigência</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="6" class="text-center">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Postos de Trabalho -->
+        {% if contrato.contempla_postos_trabalho %}
+        <div class="tab-pane fade" id="postos" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-bold text-secondary">Cargos / Postos</h5>
+                <button class="btn btn-primary" onclick="abrirModalPosto()">+ Novo Posto</button>
+            </div>
+            
+            <div class="row" id="containerPostos">
+                <div class="col-12 text-center text-muted py-5">Carregando postos...</div>
+            </div>
+            
+            <hr class="my-5">
+            
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-bold text-secondary">Alocação de Profissionais</h5>
+                <button class="btn btn-primary" onclick="abrirModalAlocacao()">+ Alocar Profissional</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table-modern" id="tableAlocacoes">
+                    <thead>
+                        <tr>
+                            <th>Profissional</th>
+                            <th>Posto</th>
+                            <th>Data Início</th>
+                            <th>Status</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" class="text-center">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Financeiro -->
+        <div class="tab-pane fade" id="financeiro" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-secondary mb-4">Evolução Mensal de Pagamentos</h5>
+                    <!-- Chart container -->
+                    <div id="chartPagamentos" style="height: 400px; display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding-bottom: 30px; border-bottom: 2px solid #e5e7eb; position: relative;">
+                        <!-- Bars will be injected via JS -->
+                        <div class="text-muted">Gráfico em construção.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modais serao injetados via JS para nao poluir o HTML inicial -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const CONTRATO_ID = {{ contrato.id }};
+    const VALOR_ORIGINAL = {{ contrato.valor|stringformat:"f" }};
+    
+    document.addEventListener("DOMContentLoaded", function() {
+        carregarTermosAditivos();
+        {% if contrato.contempla_postos_trabalho %}
+        carregarPostos();
+        carregarAlocacoes();
+        {% endif %}
+    });
+
+    const formatCurrency = (val) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+    const formatDate = (dateStr) => {
+        if(!dateStr) return '-';
+        const [y, m, d] = dateStr.split('-');
+        return `${d}/${m}/${y}`;
+    }
+
+    async function carregarTermosAditivos() {
+        try {
+            const res = await fetch(`/contratos/api/termos-aditivos/?contrato=${CONTRATO_ID}`);
+            if(!res.ok) throw new Error('Erro API');
+            const data = await res.json();
+            
+            const tbody = document.querySelector('#tableAditivos tbody');
+            tbody.innerHTML = '';
+            
+            let currentGlobal = parseFloat(VALOR_ORIGINAL);
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhum termo aditivo registrado.</td></tr>';
+            } else {
+                currentGlobal = parseFloat(data[0].novo_valor_global);
+                
+                data.forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="fw-bold">${item.numero}</td>
+                        <td>${item.objeto}</td>
+                        <td class="${parseFloat(item.valor_aditivado) < 0 ? 'text-danger' : 'text-success'} fw-bold">
+                            ${formatCurrency(item.valor_aditivado)}
+                        </td>
+                        <td class="fw-bold">${formatCurrency(item.novo_valor_global)}</td>
+                        <td>${formatDate(item.inicio_vigencia)} a ${formatDate(item.termino_vigencia)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-danger" onclick="excluirAditivo(${item.id})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            document.getElementById('val_atual').innerText = formatCurrency(currentGlobal);
+            
+        } catch(e) {
+            console.error(e);
+            Swal.fire('Erro', 'Não foi possível carregar os termos aditivos', 'error');
+        }
+    }
+
+    async function carregarPostos() {
+        try {
+            const res = await fetch(`/contratos/api/postos-trabalho/?contrato=${CONTRATO_ID}`);
+            const data = await res.json();
+            
+            const container = document.getElementById('containerPostos');
+            container.innerHTML = '';
+            
+            let totalExigido = 0;
+            
+            data.forEach(posto => {
+                totalExigido += parseInt(posto.quantidade_exigida);
+                const col = document.createElement('div');
+                col.className = 'col-md-4 mb-4';
+                col.innerHTML = `
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid #3b82f6 !important;">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-dark mb-1">${posto.nome_cargo}</h6>
+                            <span class="badge bg-light text-secondary mb-3">${posto.tipo} | ${posto.carga_horaria || '-'}</span>
+                            
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted small">Vagas (Qtd)</span>
+                                <span class="fw-bold fs-5">${posto.quantidade_exigida}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted small">Valor Unit.</span>
+                                <span class="fw-bold text-success">${formatCurrency(posto.valor_unitario)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(col);
+            });
+            
+            if(data.length === 0) container.innerHTML = '<div class="col-12 text-center text-muted">Nenhum posto cadastrado.</div>';
+            
+            const mPostos = document.getElementById('metric_postos');
+            if (mPostos) mPostos.innerText = `${totalExigido} Postos`;
+            
+        } catch(e) {
+            console.error(e);
+        }
+    }
+    
+    async function carregarAlocacoes() {
+        try {
+            const res = await fetch(`/contratos/api/alocacoes/?contrato=${CONTRATO_ID}`);
+            const data = await res.json();
+            const tbody = document.querySelector('#tableAlocacoes tbody');
+            tbody.innerHTML = '';
+            
+            data.forEach(aloc => {
+                const tr = document.createElement('tr');
+                const isAtivo = aloc.status === 'ATIVO';
+                tr.innerHTML = `
+                    <td class="fw-bold">${aloc.profissional_nome}</td>
+                    <td>${aloc.posto_nome}</td>
+                    <td>${formatDate(aloc.data_inicio)}</td>
+                    <td><span class="badge bg-${isAtivo ? 'success' : 'danger'} rounded-pill px-3">${aloc.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            if(data.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center">Nenhuma alocação registrada.</td></tr>';
+            
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    function abrirModalAditivo() {
+        Swal.fire({
+            title: 'Novo Termo Aditivo',
+            html: `
+                <input id="swal-numero" class="swal2-input" placeholder="Número (Ex: 1/2026)">
+                <input id="swal-objeto" class="swal2-input" placeholder="Objeto (Resumo da mudança)">
+                <input id="swal-val-aditivado" type="number" step="0.01" class="swal2-input" placeholder="Valor Aditivado (Use - para redução)">
+                <input id="swal-novo-global" type="number" step="0.01" class="swal2-input" placeholder="Novo Valor Global">
+                <input id="swal-inicio" type="date" class="swal2-input" placeholder="Início">
+                <input id="swal-fim" type="date" class="swal2-input" placeholder="Fim">
+            `,
+            confirmButtonText: 'Salvar',
+            showCancelButton: true,
+            preConfirm: () => {
+                return {
+                    contrato: CONTRATO_ID,
+                    numero: document.getElementById('swal-numero').value,
+                    objeto: document.getElementById('swal-objeto').value,
+                    valor_aditivado: document.getElementById('swal-val-aditivado').value || 0,
+                    novo_valor_global: document.getElementById('swal-novo-global').value || 0,
+                    inicio_vigencia: document.getElementById('swal-inicio').value,
+                    termino_vigencia: document.getElementById('swal-fim').value
+                }
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const csrftoken = getCookie('csrftoken');
+                try {
+                    const res = await fetch('/contratos/api/termos-aditivos/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(result.value)
+                    });
+                    if(res.ok) {
+                        Swal.fire('Sucesso!', 'Termo aditivo cadastrado.', 'success');
+                        carregarTermosAditivos();
+                    } else {
+                        const erro = await res.json();
+                        console.log(erro);
+                        Swal.fire('Erro', 'Falha ao salvar. Verifique os dados.', 'error');
+                    }
+                } catch(e) {
+                    Swal.fire('Erro', 'Erro de comunicação', 'error');
+                }
+            }
+        });
+    }
+    
+    function abrirModalPosto() {
+        Swal.fire({
+            title: 'Novo Posto de Trabalho',
+            html: `
+                <input id="swal-posto-nome" class="swal2-input" placeholder="Cargo (Ex: Engenheiro)">
+                <select id="swal-posto-tipo" class="swal2-select w-75 mx-auto d-block">
+                    <option value="MENSALISTA">Mensalista</option>
+                    <option value="PLANTONISTA">Plantonista</option>
+                </select>
+                <input id="swal-posto-carga" class="swal2-input" placeholder="Carga Horária (Ex: 44h)">
+                <input id="swal-posto-qtd" type="number" class="swal2-input" placeholder="Qtd. Exigida">
+                <input id="swal-posto-valor" type="number" step="0.01" class="swal2-input" placeholder="Valor Unitário">
+            `,
+            confirmButtonText: 'Salvar',
+            showCancelButton: true,
+            preConfirm: () => {
+                return {
+                    contrato: CONTRATO_ID,
+                    nome_cargo: document.getElementById('swal-posto-nome').value,
+                    tipo: document.getElementById('swal-posto-tipo').value,
+                    carga_horaria: document.getElementById('swal-posto-carga').value,
+                    quantidade_exigida: document.getElementById('swal-posto-qtd').value || 1,
+                    valor_unitario: document.getElementById('swal-posto-valor').value || 0
+                }
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const csrftoken = getCookie('csrftoken');
+                try {
+                    const res = await fetch('/contratos/api/postos-trabalho/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(result.value)
+                    });
+                    if(res.ok) {
+                        Swal.fire('Sucesso!', 'Posto de trabalho cadastrado.', 'success');
+                        carregarPostos();
+                    } else {
+                        Swal.fire('Erro', 'Falha ao salvar. Verifique os dados.', 'error');
+                    }
+                } catch(e) {
+                    Swal.fire('Erro', 'Erro de comunicação', 'error');
+                }
+            }
+        });
+    }
+    
+    async function abrirModalAlocacao() {
+        try {
+            const resPostos = await fetch(`/contratos/api/postos-trabalho/?contrato=${CONTRATO_ID}`);
+            const postos = await resPostos.json();
+            
+            if(postos.length === 0) {
+                Swal.fire('Aviso', 'Cadastre ao menos um posto de trabalho primeiro.', 'warning');
+                return;
+            }
+            
+            let options = postos.map(p => `<option value="${p.id}">${p.nome_cargo}</option>`).join('');
+            
+            Swal.fire({
+                title: 'Alocar Profissional',
+                html: `
+                    <h6 class="text-start mt-3 mb-1 text-muted small fw-bold text-uppercase">Dados do Profissional</h6>
+                    <input id="swal-prof-nome" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="Nome Completo">
+                    <input id="swal-prof-cpf" class="swal2-input w-75 mx-auto d-block mt-0" placeholder="CPF">
+                    
+                    <h6 class="text-start mt-4 mb-1 text-muted small fw-bold text-uppercase">Dados da Alocação</h6>
+                    <select id="swal-aloc-posto" class="swal2-select w-75 mx-auto d-block mt-0 mb-2">
+                        <option value="">Selecione o Posto...</option>
+                        ${options}
+                    </select>
+                    <input id="swal-aloc-data" type="date" class="swal2-input w-75 mx-auto d-block mt-0" placeholder="Data de Início">
+                `,
+                confirmButtonText: 'Salvar',
+                showCancelButton: true,
+                preConfirm: () => {
+                    return {
+                        nome: document.getElementById('swal-prof-nome').value,
+                        cpf: document.getElementById('swal-prof-cpf').value,
+                        posto: document.getElementById('swal-aloc-posto').value,
+                        data_inicio: document.getElementById('swal-aloc-data').value
+                    }
+                }
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    const data = result.value;
+                    if(!data.nome || !data.posto || !data.data_inicio) {
+                        Swal.fire('Erro', 'Preencha Nome, Posto e Data de Início!', 'error');
+                        return;
+                    }
+                    const csrftoken = getCookie('csrftoken');
+                    try {
+                        // 1. Criar Profissional
+                        const resProf = await fetch('/contratos/api/profissionais/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                            body: JSON.stringify({ nome: data.nome, cpf: data.cpf })
+                        });
+                        if(!resProf.ok) throw new Error('Erro ao criar profissional');
+                        const prof = await resProf.json();
+                        
+                        // 2. Criar Alocacao
+                        const resAloc = await fetch('/contratos/api/alocacoes/', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                            body: JSON.stringify({ 
+                                profissional: prof.id, 
+                                posto: data.posto, 
+                                data_inicio: data.data_inicio,
+                                status: 'ATIVO'
+                            })
+                        });
+                        
+                        if(resAloc.ok) {
+                            Swal.fire('Sucesso!', 'Profissional alocado com sucesso.', 'success');
+                            carregarAlocacoes();
+                        } else {
+                            Swal.fire('Erro', 'Falha ao salvar a alocação.', 'error');
+                        }
+                    } catch(e) {
+                        Swal.fire('Erro', 'Erro de comunicação', 'error');
+                    }
+                }
+            });
+        } catch(e) {
+            Swal.fire('Erro', 'Falha ao carregar postos', 'error');
+        }
+    }
+
+    function excluirAditivo(id) {
+        Swal.fire({
+            title: 'Excluir?',
+            text: "Esta ação não pode ser desfeita!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Sim, excluir'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const csrftoken = getCookie('csrftoken');
+                const res = await fetch(`/contratos/api/termos-aditivos/${id}/`, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRFToken': csrftoken }
+                });
+                if(res.ok) {
+                    Swal.fire('Excluído!', '', 'success');
+                    carregarTermosAditivos();
+                } else {
+                    Swal.fire('Erro', 'Falha ao excluir.', 'error');
+                }
+            }
+        });
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

@@ -4,6 +4,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 ELEVATOR_CHOICE = [
+    ('Geral, Elevadores 1 ao 14', 'Geral, Elevadores 1 ao 14'),
+    ('Sistema EMS', 'Sistema EMS'),
     ('Social 1 - M2674', 'Social 1 - M2674'),
     ('Social 2 - M2675', 'Social 2 - M2675'),
     ('Social 3 - M2676', 'Social 3 - M2676'),

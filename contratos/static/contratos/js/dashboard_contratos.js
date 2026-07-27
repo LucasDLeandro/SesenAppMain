@@ -101,6 +101,9 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return `
                         <div class="d-flex gap-1 flex-nowrap justify-content-end">
+                            <a href="/contratos/${row.id}/visao-geral/" class="btn btn-sm btn-outline-info" title="Visão Geral" target="_blank">
+                                <i class="bi bi-eye"></i>
+                            </a>
                             <button class="btn btn-sm btn-outline-primary" onclick="editarContrato(${row.id})" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </button>
@@ -232,6 +235,7 @@ function abrirModalNovoContrato() {
     $('#fiscal_tecnico_substituto').val('');
     $('#fiscal_admin_titular').val('');
     $('#fiscal_admin_substituto').val('');
+    $('#contempla_postos_trabalho').prop('checked', false);
     $('#modalContratoTitle').text('Novo Contrato');
     $('#modal-contrato').modal('show');
 }
@@ -283,6 +287,7 @@ function editarContrato(id) {
         $('#sei_edital').val(data.sei_edital);
         $('#sei_fiscais').val(data.sei_fiscais);
         $('#status').val(data.status);
+        $('#contempla_postos_trabalho').prop('checked', data.contempla_postos_trabalho || false);
         
         $('#modalContratoTitle').text('Editar Contrato');
         $('#modal-contrato').modal('show');
@@ -329,6 +334,7 @@ function salvarContrato() {
         sei_edital: $('#sei_edital').val(),
         sei_fiscais: $('#sei_fiscais').val(),
         status: $('#status').val(),
+        contempla_postos_trabalho: $('#contempla_postos_trabalho').is(':checked'),
     };
     
     const url = id ? `/contratos/api/contratos/${id}/` : '/contratos/api/contratos/';
@@ -970,7 +976,133 @@ function renderizarGraficoValores(processos) {
     }
 }
 
-// --- Detalhes do Processo (Modal) ---
+function abrirModalLista(tipo) {
+    const contrato_id = $('#filtro-global-contrato').val();
+    const mes = $('#filtro-global-mes').val();
+    const ano = $('#filtro-global-ano').val();
+    
+    const params = new URLSearchParams();
+    if (contrato_id) params.append('contrato_id', contrato_id);
+    if (mes) params.append('mes', mes);
+    if (ano) params.append('ano', ano);
+    
+    const modal = new bootstrap.Modal(document.getElementById('modal-lista'));
+    const thead = $('#thead-lista-modal');
+    const tbody = $('#tbody-lista-modal');
+    const title = $('#modal-lista-title');
+    
+    thead.empty();
+    tbody.empty();
+    tbody.append('<tr><td colspan="5" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Carregando...</td></tr>');
+    
+    modal.show();
+    
+    if (tipo === 'contratos' || tipo === 'estimados') {
+        title.html(`<i class="bi bi-file-earmark-check me-2"></i> ${tipo === 'contratos' ? 'Contratos Totais' : 'Contratos Estimados no Mês'}`);
+        thead.html(`
+            <tr>
+                <th>Nº Contrato</th>
+                <th>Empresa</th>
+                <th>Vigência</th>
+                <th>Valor Global</th>
+                <th>Valor Estimado Mês</th>
+            </tr>
+        `);
+        
+        let url = '/contratos/api/contratos/?' + params.toString();
+        if (contrato_id) url = `/contratos/api/contratos/?id=${contrato_id}`;
+        
+        $.get(url, function(res) {
+            const data = res.results || res; // Fix DRF pagination unpack
+            tbody.empty();
+            if(data.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center py-4 text-muted">Nenhum dado encontrado.</td></tr>');
+                return;
+            }
+            data.forEach(item => {
+                const tr = $(`
+                    <tr style="cursor:pointer;" class="table-row-hover">
+                        <td class="fw-bold text-primary">${item.num_contrato}</td>
+                        <td>${item.empresa_nome}</td>
+                        <td>${formatDateToLocal(item.inicio_vigencia)} a ${formatDateToLocal(item.termino_vigencia)}</td>
+                        <td>${parseFloat(item.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                        <td>${parseFloat(item.valor_mensal_estimado).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    </tr>
+                `);
+                tr.on('click', () => {
+                    bootstrap.Modal.getInstance(document.getElementById('modal-lista')).hide();
+                    abrirDetalhesContrato(item);
+                });
+                tbody.append(tr);
+            });
+        }).fail(() => tbody.html('<tr><td colspan="5" class="text-danger py-4 text-center">Erro ao carregar os dados.</td></tr>'));
+        
+    } else if (tipo === 'pagamentos' || tipo === 'glosas') {
+        title.html(`<i class="bi bi-cash-stack me-2"></i> ${tipo === 'pagamentos' ? 'Pagamentos' : 'Glosas e Multas Aplicadas'}`);
+        thead.html(`
+            <tr>
+                <th>Competência</th>
+                <th>Contrato</th>
+                <th>Valor Faturado</th>
+                <th>Glosas/Multas</th>
+                <th>Valor Pago</th>
+            </tr>
+        `);
+        
+        $.get('/contratos/api/pagamentos/', function(res) {
+            const data = res.results || res; // Fix DRF pagination unpack
+            tbody.empty();
+            
+            // Front-end filtering since backend is standard DRF ViewSet
+            let filtered = data;
+            if (contrato_id) {
+                filtered = filtered.filter(p => p.contrato_id == contrato_id || p.medicao?.contrato == contrato_id); 
+            }
+            if (mes && ano) {
+                const comp = `${mes}/${ano}`;
+                filtered = filtered.filter(p => p.competencia === comp);
+            }
+            
+            if(filtered.length === 0) {
+                tbody.append('<tr><td colspan="5" class="text-center py-4 text-muted">Nenhum dado encontrado para este filtro.</td></tr>');
+                return;
+            }
+            
+            filtered.forEach(item => {
+                const descontos = parseFloat(item.valor_glosa || 0) + parseFloat(item.valor_multa || 0);
+                const tr = $(`
+                    <tr style="cursor:pointer;" class="table-row-hover">
+                        <td class="fw-bold">${item.competencia || '-'}</td>
+                        <td class="text-primary">${item.contrato_num || item.contrato_numero || 'Contrato'}</td>
+                        <td>${parseFloat(item.valor_faturado || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                        <td class="text-danger">${descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                        <td class="text-success fw-bold">${parseFloat(item.valor_pago || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                    </tr>
+                `);
+                
+                tr.on('click', () => {
+                    Swal.fire({
+                        title: `Pagamento ${item.competencia || ''}`,
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Contrato:</strong> ${item.contrato_num || item.contrato_numero}</p>
+                                <p><strong>Valor Faturado:</strong> ${parseFloat(item.valor_faturado || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                <p><strong>Descontos:</strong> ${descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                <p><strong>Valor Final:</strong> ${parseFloat(item.valor_pago || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                                <p><strong>Status:</strong> ${item.status || 'PENDENTE'}</p>
+                                <p><strong>Ordem Pagamento:</strong> ${item.ordem_pagamento || 'Não informada'}</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Fechar'
+                    });
+                });
+                
+                tbody.append(tr);
+            });
+        }).fail(() => tbody.html('<tr><td colspan="5" class="text-danger py-4 text-center">Erro ao carregar os dados.</td></tr>'));
+    }
+}// --- Detalhes do Processo (Modal) ---
 function abrirModalDetalhesProcesso(id) {
     if (!window.processosGlobais) return;
     const proc = window.processosGlobais.find(p => p.id === id);
@@ -1081,3 +1213,222 @@ function abrirModalComprasnet() {
             document.getElementById('comprasnet-content').style.display = 'block';
         });
 }
+
+// ----------------------------------------------------
+// Pagamentos e Detalhes
+// ----------------------------------------------------
+
+$(document).ready(function() {
+    // Inicializar Select2 do Filtro Global
+    if ($('#filtro-global-contrato').length) {
+        $('#filtro-global-contrato').select2({ theme: 'bootstrap-5' });
+        
+        // Popular o Select de Contratos
+        $.get('/contratos/api/contratos/', function(data) {
+            const select = $('#filtro-global-contrato');
+            data.forEach(c => {
+                select.append(`<option value="${c.id}">${c.num_contrato} - ${c.empresa_nome || ''}</option>`);
+            });
+        });
+    }
+
+    // Filtros Globais do Dashboard
+    $('#btn-aplicar-filtros-globais').on('click', function() {
+        const contratoId = $('#filtro-global-contrato').val();
+        const mes = $('#filtro-global-mes').val();
+        const ano = $('#filtro-global-ano').val();
+        
+        let newUrl = '/contratos/api/contratos/?';
+        if (mes && ano) newUrl += `mes=${mes}&ano=${ano}&`;
+        if (contratoId) newUrl += `id=${contratoId}&`;
+        
+        // Atualizar tabela base (se necessário)
+        if(typeof tabelaContratos !== 'undefined') tabelaContratos.ajax.url(newUrl).load();
+        
+        // Atualizar Métricas e Gráfico Globais
+        if(typeof carregarMetricas === 'function') carregarMetricas();
+    });
+
+    $('#btn-limpar-filtros-globais').on('click', function() {
+        $('#filtro-global-contrato').val('').trigger('change');
+        $('#filtro-global-mes').val('');
+        $('#filtro-global-ano').val('');
+        
+        if(typeof tabelaContratos !== 'undefined') tabelaContratos.ajax.url('/contratos/api/contratos/').load();
+        if(typeof carregarMetricas === 'function') carregarMetricas();
+    });
+
+    // Detalhes do Contrato ao Clicar na Linha
+    $('#tabela-contratos tbody').on('click', 'tr', function(e) {
+        if ($(e.target).closest('button').length || $(e.target).closest('a').length) {
+            return; // ignorar se clicou nos botões de ação
+        }
+        
+        const data = tabelaContratos.row(this).data();
+        if (data) {
+            abrirDetalhesContrato(data);
+        }
+    });
+
+    // Setup Formatação Monetária no Form de Pagamento
+    const maskOptions = {
+        mask: Number,
+        scale: 2,
+        signed: false,
+        thousandsSeparator: '.',
+        padFractionalZeros: true,
+        normalizeZeros: true,
+        radix: ',',
+        mapToRadix: ['.']
+    };
+    
+    if (document.getElementById('calc_valor_faturado')) {
+        window.calcValorMask = IMask(document.getElementById('calc_valor_faturado'), maskOptions);
+        
+        // Calcular valor final
+        $('#calc_valor_faturado, #calc_glosa, #calc_multa').on('input', calcularValorFinal);
+    }
+});
+
+function calcularValorFinal() {
+    const valorStr = window.calcValorMask.unmaskedValue || "0";
+    const valorFaturado = parseFloat(valorStr);
+    const glosa = parseFloat($('#calc_glosa').val() || 0);
+    const multa = parseFloat($('#calc_multa').val() || 0);
+    
+    const valorGlosa = valorFaturado * (glosa / 100);
+    const valorMulta = valorFaturado * (multa / 100);
+    const valorFinal = valorFaturado - valorGlosa - valorMulta;
+    
+    $('#display_valor_final').text(valorFinal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+}
+
+function abrirModalPagamento() {
+    $('#form-pagamento')[0].reset();
+    if(window.calcValorMask) window.calcValorMask.value = '';
+    $('#display_valor_final').text('R$ 0,00');
+    
+    // Popular Select
+    $.get('/contratos/api/contratos/', function(data) {
+        const select = $('#pagamento_contrato_id');
+        select.empty().append('<option value="">Selecione um contrato...</option>');
+        data.forEach(c => {
+            select.append(`<option value="${c.id}">${c.num_contrato} - ${c.empresa_nome}</option>`);
+        });
+        
+        if (!select.hasClass('select2-hidden-accessible')) {
+            select.select2({
+                theme: 'bootstrap-5',
+                dropdownParent: $('#modal-pagamento')
+            });
+        }
+    });
+    
+    new bootstrap.Modal(document.getElementById('modal-pagamento')).show();
+}
+
+function salvarPagamento() {
+    const form = document.getElementById('form-pagamento');
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+    
+    // Convert Brazilian currency format to valid float strings
+    if (data.valor_faturado) {
+        data.valor_faturado = data.valor_faturado.replace(/\./g, '').replace(',', '.');
+    }
+    if (data.porcentagem_glosa) {
+        data.porcentagem_glosa = data.porcentagem_glosa.replace(/\./g, '').replace(',', '.');
+    }
+    if (data.porcentagem_multa) {
+        data.porcentagem_multa = data.porcentagem_multa.replace(/\./g, '').replace(',', '.');
+    }
+    
+    // Also include valor_medido for MedicaoMensal creation
+    data.valor_medido = data.valor_faturado || '0.00';
+    
+    // Convert form select value for contrato explicitly
+    data.contrato = document.getElementById('pagamento_contrato_id').value;
+
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch('/contratos/api/medicoes/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            Swal.fire('Sucesso!', 'Pagamento/Medição registrado com sucesso!', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modal-pagamento')).hide();
+            // Atualizar dashboard após pagar
+            if (typeof tabelaContratos !== 'undefined') {
+                tabelaContratos.ajax.reload();
+            }
+        } else {
+            Swal.fire('Erro!', 'Erro ao registrar pagamento.', 'error');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        Swal.fire('Erro!', 'Erro de rede.', 'error');
+    });
+}
+
+function abrirDetalhesContrato(contrato) {
+    const content = `
+        <div class="row g-4">
+            <div class="col-md-12">
+                <h4 class="fw-bold text-primary mb-1">${contrato.num_contrato}</h4>
+                <p class="text-muted"><i class="bi bi-building me-2"></i>${contrato.empresa_nome} (CNPJ: ${contrato.empresa_cnpj})</p>
+                <hr>
+                <h6 class="fw-bold">Objeto:</h6>
+                <p class="small text-muted bg-white p-3 rounded shadow-sm border">${contrato.objeto || 'Não informado'}</p>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-white rounded shadow-sm border h-100">
+                    <h6 class="fw-bold text-dark"><i class="bi bi-calendar-range me-2 text-warning"></i>Vigência</h6>
+                    <ul class="list-unstyled small mb-0 mt-3 text-muted">
+                        <li class="mb-2"><strong>Início:</strong> ${formatDate(contrato.inicio_vigencia)}</li>
+                        <li><strong>Término:</strong> ${formatDate(contrato.termino_vigencia)}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="p-3 bg-white rounded shadow-sm border h-100">
+                    <h6 class="fw-bold text-dark"><i class="bi bi-cash-stack me-2 text-success"></i>Valores</h6>
+                    <ul class="list-unstyled small mb-0 mt-3 text-muted">
+                        <li class="mb-2"><strong>Mensal Estimado:</strong> R$ ${parseFloat(contrato.valor_mensal_estimado).toLocaleString('pt-BR')}</li>
+                        <li><strong>Valor Global:</strong> R$ ${parseFloat(contrato.valor).toLocaleString('pt-BR')}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="p-3 bg-white rounded shadow-sm border">
+                    <h6 class="fw-bold text-dark"><i class="bi bi-people me-2 text-info"></i>Fiscais do Contrato (Lei 14.133)</h6>
+                    <div class="row mt-3 small text-muted">
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>Fiscal Técnico:</strong> ${contrato.fiscal_tecnico_titular || '-'}</p>
+                            <p class="mb-0"><strong>Substituto:</strong> ${contrato.fiscal_tecnico_substituto || '-'}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <p class="mb-1"><strong>Fiscal Administrativo:</strong> ${contrato.fiscal_admin_titular || '-'}</p>
+                            <p class="mb-0"><strong>Substituto:</strong> ${contrato.fiscal_admin_substituto || '-'}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    $('#detalhes-contrato-content').html(content);
+    new bootstrap.Modal(document.getElementById('modal-detalhes-contrato')).show();
+}
+

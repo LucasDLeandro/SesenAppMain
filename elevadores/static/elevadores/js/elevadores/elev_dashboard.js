@@ -218,7 +218,7 @@ async function dadosIndicadorTres() {
                 type: 'category',
                 categoryorder: 'array',
                 categoryarray: [...listaElevadores],
-                title: 'Quantidade de Ocorr├¬ncias',
+                title: 'Quantidade de Ocorrências',
                 tickmode: 'linear',
                 dtick: 0.1,
                 automargin: true,
@@ -226,7 +226,7 @@ async function dadosIndicadorTres() {
                 range: [-0.5, listaElevadores.length -0.5]
                 
             },
-            showlegend: false, // Ligamos a legenda para voc├¬ poder filtrar clicando
+            showlegend: false, // Ligamos a legenda para você poder filtrar clicando
             height: 500,
             margin: { l: 150, r: 20, t: 50, b: 50 }, // Margens mais limpas
             hovermode: 'closest' // O tooltip foca na bolha exata que o mouse encostar
@@ -372,9 +372,9 @@ async function dadosIndicadorQuatro() {
             hovertemplate: 
                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                'Hrs ├║teis no M├¬s Total: <b>%{customdata[2]}</b><br>' +
-                'Dias ├║teis no M├¬s Total: <b>%{customdata[3]}</b><br>' +
-                'Horas Dispon├¡veis: <b>%{customdata[4]}</b><br>' +
+                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
+                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
+                'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
                 'Disponibilidade: <b>%{y}%</b>' +
                 '<extra></extra>',
             textposition: 'auto',
@@ -779,13 +779,25 @@ async function dadosIndicadorDois() {
         const colors = [];
         const custom_data = [];
         
+        const globalRange = getGlobalDateRange();
+        const baseDataStr = globalRange.inicio || inicioMesAtual;
+        const anoAtual = parseInt(baseDataStr.substring(0, 4));
+        const mesAtual = parseInt(baseDataStr.substring(5, 7));
+        const ultimoDiaAtual = new Date(anoAtual, mesAtual, 0).getDate();
+
         if(dados_api.ind_dois) {
             dados_api.ind_dois.forEach(item => {
                 if(item.status === 'PARADO') {
-                    x_days.push(0);
+                    x_days.push(ultimoDiaAtual);
                     y_elevs.push(item.elevador);
                     text_status.push(item.status);
                     colors.push('#6c757d');
+                    custom_data.push(['-', '-']);
+                } else if(item.status === 'PENDENTE') {
+                    x_days.push(ultimoDiaAtual);
+                    y_elevs.push(item.elevador);
+                    text_status.push(item.status);
+                    colors.push('#f59e0b');
                     custom_data.push(['-', '-']);
                 } else if(item.data_execucao) {
                     const parts = item.data_execucao.split('/'); // DD/MM/YYYY
@@ -813,18 +825,14 @@ async function dadosIndicadorDois() {
             text: text_status,
             hovertemplate: 
                 '<b>Elevador:</b> %{y}<br>' +
-                '<b>Dia Execu├º├úo:</b> %{x}<br>' +
+                '<b>Dia Execução:</b> %{x}<br>' +
                 '<b>Status:</b> %{text}<br>' +
                 '<b>OS:</b> %{customdata[0]}<br>' +
-                '<b>T├®cnico:</b> %{customdata[1]}' +
+                '<b>Técnico:</b> %{customdata[1]}' +
                 '<extra></extra>'
         };
 
-        const globalRange = getGlobalDateRange();
-        const baseDataStr = globalRange.inicio || inicioMesAtual;
-        const anoAtual = parseInt(baseDataStr.substring(0, 4));
-        const mesAtual = parseInt(baseDataStr.substring(5, 7));
-        const ultimoDiaAtual = new Date(anoAtual, mesAtual, 0).getDate();
+        // Removed duplicate variables
 
         const tickvalsAtual = [];
         const ticktextAtual = [];
@@ -835,7 +843,7 @@ async function dadosIndicadorDois() {
 
         const layoutChartDois = {
             xaxis: {
-                title: 'Dia do M├¬s',
+                title: 'Dia do Mês',
                 range: [0, ultimoDiaAtual],
                 tickmode: 'array',
                 tickvals: tickvalsAtual,
@@ -844,7 +852,11 @@ async function dadosIndicadorDois() {
             },
             yaxis: {
                 type: 'category',
+                categoryorder: 'array',
+                categoryarray: [...listaElevadores].reverse(),
                 automargin: true,
+                autorange: false,
+                range: [-0.5, listaElevadores.length - 0.5]
             },
             height: 500,
             margin: { l: 150, r: 20, t: 30, b: 50 },

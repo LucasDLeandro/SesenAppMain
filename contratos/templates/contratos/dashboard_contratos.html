@@ -24,56 +24,103 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><a class="dropdown-item" href="#" onclick="abrirModalNovoContrato()"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Contrato</a></li>
+                    <li><a class="dropdown-item" href="#" onclick="abrirModalPagamento()"><i class="bi bi-cash-coin me-2 text-warning"></i>Registrar Pagamento</a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li><a class="dropdown-item" href="#" onclick="abrirModalComprasnet()"><i class="bi bi-cloud-arrow-down me-2 text-success"></i>Consultar Comprasnet</a></li>
                 </ul>
             </div>
         </div>
     </div>
+    
+    <!-- Filtros Globais -->
+    <div class="card border-0 shadow-sm mb-4 bg-white rounded-3">
+        <div class="card-body p-3 d-flex flex-wrap gap-3 align-items-end">
+            <div style="flex: 1; min-width: 200px;">
+                <label class="form-label small fw-bold text-muted mb-1">Contrato</label>
+                <select id="filtro-global-contrato" class="form-select form-select-sm select2-dashboard">
+                    <option value="">Todos os Contratos</option>
+                    <!-- Preenchido via JS -->
+                </select>
+            </div>
+            <div>
+                <label class="form-label small fw-bold text-muted mb-1">Mês</label>
+                <select id="filtro-global-mes" class="form-select form-select-sm" style="min-width: 120px;">
+                    <option value="">Selecione...</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Março</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label small fw-bold text-muted mb-1">Ano</label>
+                <select id="filtro-global-ano" class="form-select form-select-sm" style="min-width: 100px;">
+                    <option value="">Ano...</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                    <option value="2027">2027</option>
+                </select>
+            </div>
+            <div>
+                <button id="btn-aplicar-filtros-globais" class="btn btn-primary btn-sm px-4 fw-bold shadow-sm h-100">Aplicar</button>
+                <button id="btn-limpar-filtros-globais" class="btn btn-light btn-sm px-3 shadow-sm h-100 ms-1" title="Limpar Filtros"><i class="bi bi-eraser"></i></button>
+            </div>
+        </div>
+    </div>
 
-    <!-- Top Metrics (Transferido de home_contratos) -->
+    <!-- Top Metrics -->
     <div class="row g-4 mb-4">
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card metric-card h-100 p-4" style="cursor: pointer;" onclick="abrirModalLista('contratos')">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="metric-label">Contratos Ativos</div>
-                        <div class="metric-value" id="val-ativos">-</div>
+                        <div class="metric-label">Valor Total dos Contratos</div>
+                        <div class="metric-value text-primary" id="val-global">-</div>
                     </div>
                     <div class="metric-icon icon-primary shadow-sm"><i class="bi bi-file-earmark-check"></i></div>
                 </div>
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card metric-card h-100 p-4" style="cursor: pointer;" onclick="abrirModalLista('estimados')">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="metric-label">Val. Mensal Estimado</div>
-                        <div class="metric-value text-success" id="val-estimado">-</div>
+                        <div class="metric-label">Valor Estimado para o Mês</div>
+                        <div class="metric-value text-info" id="val-estimado">-</div>
                     </div>
-                    <div class="metric-icon icon-success shadow-sm"><i class="bi bi-currency-dollar"></i></div>
+                    <div class="metric-icon icon-info shadow-sm"><i class="bi bi-calculator"></i></div>
                 </div>
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card metric-card h-100 p-4" style="cursor: pointer;" onclick="abrirModalLista('pagamentos')">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
-                        <div class="metric-label">Glosas Aplicadas</div>
+                        <div class="metric-label">Valor Pago no Mês</div>
+                        <div class="metric-value text-success" id="val-pago">-</div>
+                    </div>
+                    <div class="metric-icon icon-success shadow-sm"><i class="bi bi-cash-stack"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card metric-card h-100 p-4" style="cursor: pointer;" onclick="abrirModalLista('glosas')">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <div class="metric-label">Glosas Aplicadas (Mês)</div>
                         <div class="metric-value text-danger" id="val-glosas">-</div>
                     </div>
                     <div class="metric-icon icon-danger shadow-sm"><i class="bi bi-graph-down-arrow"></i></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <div class="metric-label">Licitações Pendentes</div>
-                        <div class="metric-value text-info" id="val-processos">-</div>
-                    </div>
-                    <div class="metric-icon icon-info shadow-sm"><i class="bi bi-hammer"></i></div>
                 </div>
             </div>
         </div>
@@ -131,6 +178,9 @@
         <!-- Aba 1: Contratos Vigentes -->
         <div class="tab-pane fade show active" id="vigentes" role="tabpanel">
             <div class="card card-dashboard">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="mb-0 fw-bold" style="font-size: 1.1rem;"><i class="bi bi-list-check me-2 text-primary"></i>Lista de Contratos Filtrados</h5>
+                </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table id="tabela-contratos" class="table table-hover align-middle w-100">
@@ -318,6 +368,14 @@
                                         <option value="SUSPENSO">Suspenso</option>
                                     </select>
                                 </div>
+                                <div class="col-md-8 mt-4">
+                                    <div class="form-check form-switch mt-1">
+                                        <input class="form-check-input" type="checkbox" id="contempla_postos_trabalho" name="contempla_postos_trabalho">
+                                        <label class="form-check-label fw-bold text-primary" for="contempla_postos_trabalho">
+                                            Contrato contempla postos de trabalho (Terceirização)
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -477,6 +535,176 @@
         </div>
     </div>
 </div>
+<!-- Modal Detalhes do Contrato -->
+<div class="modal fade" id="modal-detalhes-contrato" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+                <h5 class="modal-title fw-bold text-white mb-0"><i class="bi bi-info-circle me-2"></i>Detalhes do Contrato</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div id="detalhes-contrato-content">
+                    <div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div></div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 py-3 bg-white">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Registrar Pagamento / Medição -->
+<div class="modal fade" id="modal-pagamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; backdrop-filter: blur(10px);">
+                        <i class="bi bi-cash-coin fs-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-white mb-0">Registrar Pagamento / Medição</h5>
+                        <small class="text-white-50">Controle de Faturamentos</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <form id="form-pagamento">
+                    {% csrf_token %}
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted small">Contrato <span class="text-danger">*</span></label>
+                            <select class="form-select select2-pagamento-contrato" id="pagamento_contrato_id" name="contrato" required style="width: 100%;">
+                                <option value="">Selecione...</option>
+                                <!-- Populate via JS -->
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-muted small">Tipo de Pagamento <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-3 mt-1">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tipo_faturamento" id="tipoMensal" value="MENSAL" checked>
+                                    <label class="form-check-label" for="tipoMensal">Mensal</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="tipo_faturamento" id="tipoReembolso" value="REEMBOLSO">
+                                    <label class="form-check-label" for="tipoReembolso">Reembolso</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white fw-bold"><i class="bi bi-folder2-open me-2 text-primary"></i>Números de Protocolos</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small">Relatório Mensal</label>
+                                    <input type="text" class="form-control form-control-sm" name="protocolo_relatorio_mensal" id="protocolo_relatorio_mensal">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small">IMR</label>
+                                    <input type="text" class="form-control form-control-sm" name="protocolo_imr" id="protocolo_imr">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small">TRD / TRT</label>
+                                    <input type="text" class="form-control form-control-sm" name="protocolo_trd_trt" id="protocolo_trd_trt">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Nota Fiscal (NF)</label>
+                                    <input type="text" class="form-control form-control-sm" name="protocolo_nf" id="protocolo_nf">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small">Nota Técnica de Atesto</label>
+                                    <input type="text" class="form-control form-control-sm" name="protocolo_nota_tecnica" id="protocolo_nota_tecnica">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white fw-bold"><i class="bi bi-calculator me-2 text-success"></i>Cálculo de Valores</div>
+                        <div class="card-body">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label small fw-bold">Valor Faturado (NF) <span class="text-danger">*</span></label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="text" class="form-control" name="valor_faturado" id="calc_valor_faturado" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small text-danger">Glosa (%)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" step="0.01" min="0" max="100" class="form-control" name="porcentagem_glosa" id="calc_glosa" value="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small text-danger">Multa (%)</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="number" step="0.01" min="0" max="100" class="form-control" name="porcentagem_multa" id="calc_multa" value="0">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-light border-0 py-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-muted">Valor Final a ser Pago:</span>
+                                <span class="fs-4 fw-bold text-success" id="display_valor_final">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label small">Mês/Ano Competência <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-sm" name="competencia" placeholder="MM/AAAA" required pattern="\d{2}/\d{4}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small">Data de Medição <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control form-control-sm" name="data_medicao" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0 px-4 py-3 bg-white">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning rounded-pill px-4 fw-bold text-white shadow-sm" onclick="salvarPagamento()">Salvar Pagamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Modal Lista Genérica -->
+<div class="modal fade" id="modal-lista" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);">
+                <h5 class="modal-title fw-bold text-white mb-0" id="modal-lista-title"><i class="bi bi-list-ul me-2"></i>Lista de Itens</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle w-100 bg-white" id="tabela-lista-modal">
+                        <thead class="table-light" id="thead-lista-modal">
+                            <!-- JS fill -->
+                        </thead>
+                        <tbody id="tbody-lista-modal">
+                            <!-- JS fill -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block extra_js %}

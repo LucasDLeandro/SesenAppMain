@@ -31,6 +31,10 @@
                     <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'dashboard_contratos' or request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'contratos:dashboard_contratos' %}">
                         <i class="bi bi-file-earmark-ruled"></i> Dashboard de Contratos
                     </a>
+
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'pagamentos_view' %}active{% endif %}" href="{% url 'contratos:pagamentos_view' %}">
+                        <i class="bi bi-cash-stack"></i> Pagamentos
+                    </a>
                     
                     <a class="nav-sidebar-link {% if 'empresas' in request.path %}active{% endif %}" href="{% url 'empresas:dashboard_empresas' %}">
                         <i class="bi bi-building"></i> Gestão de Empresas

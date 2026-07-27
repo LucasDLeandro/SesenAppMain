@@ -5,7 +5,12 @@ from .models.model_contratos import (
     MedicaoMensal, 
     Pagamento,
     TramitacaoSEI,
-    CronogramaContratacao
+    CronogramaContratacao,
+    TermoAditivo,
+    PostoTrabalho,
+    ItemCustoExtra,
+    Profissional,
+    AlocacaoProfissional
 )
 from empresas.models import Empresa
 
@@ -47,6 +52,10 @@ class ContratoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PagamentoSerializer(serializers.ModelSerializer):
+    competencia = serializers.CharField(source='medicao.competencia', read_only=True)
+    contrato_num = serializers.CharField(source='medicao.contrato.num_contrato', read_only=True)
+    empresa_nome = serializers.CharField(source='medicao.contrato.empresa.nome_empresa', read_only=True)
+    
     class Meta:
         model = Pagamento
         fields = '__all__'
@@ -56,4 +65,32 @@ class MedicaoMensalSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = MedicaoMensal
+        fields = '__all__'
+
+class TermoAditivoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TermoAditivo
+        fields = '__all__'
+
+class PostoTrabalhoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostoTrabalho
+        fields = '__all__'
+
+class ItemCustoExtraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ItemCustoExtra
+        fields = '__all__'
+
+class ProfissionalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profissional
+        fields = '__all__'
+
+class AlocacaoProfissionalSerializer(serializers.ModelSerializer):
+    profissional_nome = serializers.CharField(source='profissional.nome', read_only=True)
+    posto_nome = serializers.CharField(source='posto.nome_cargo', read_only=True)
+    
+    class Meta:
+        model = AlocacaoProfissional
         fields = '__all__'

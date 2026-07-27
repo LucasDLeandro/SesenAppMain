@@ -73,6 +73,30 @@
                                 <label for="{{ ordem.elevador.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.elevador.label }}</label>
                                 {{ ordem.elevador }}
                             </div>
+                            <div class="col-md-12" id="container-elevadores-ems" style="display: none;">
+                                <label class="form-label small fw-bold text-muted">Elevadores Afetados (EMS)</label>
+                                <select class="form-select select2-ems" id="id_elevadores_ems" name="elevadores_ems_select" multiple="multiple" style="width: 100%;">
+                                    <option value="Social 1 - M2674">Social 1 - M2674</option>
+                                    <option value="Social 2 - M2675">Social 2 - M2675</option>
+                                    <option value="Social 3 - M2676">Social 3 - M2676</option>
+                                    <option value="Social 4 - M2677">Social 4 - M2677</option>
+                                    <option value="Social 5 - M2678">Social 5 - M2678</option>
+                                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
+                                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
+                                    <option value="Social 8 - M2681">Social 8 - M2681</option>
+                                    <option value="Social 9 - M2682">Social 9 - M2682</option>
+                                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
+                                    <option value="Social 11 - M2684">Social 11 - M2684</option>
+                                    <option value="Social 12 - M2685">Social 12 - M2685</option>
+                                    <option value="Social 13 - M2686">Social 13 - M2686</option>
+                                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
+                                </select>
+                                <div class="mt-2">
+                                    <button type="button" class="btn btn-sm btn-outline-primary rounded-pill py-0 px-2" id="btn-ems-select-all" style="font-size: 0.75rem;">Selecionar Todos</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill py-0 px-2" id="btn-ems-clear-all" style="font-size: 0.75rem;">Limpar Seleção</button>
+                                </div>
+                                <input type="hidden" name="elevadores_ems" id="id_elevadores_ems_hidden">
+                            </div>
                             <div class="col-md-6">
                                 <label for="{{ ordem.elevador_parado.id_for_label }}" class="form-label small fw-bold text-muted">{{ ordem.elevador_parado.label }}</label>
                                 {{ ordem.elevador_parado }}

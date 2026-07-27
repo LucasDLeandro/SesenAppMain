@@ -79,12 +79,13 @@ window.fetch = async function(...args) {
             onRefreshed(newToken);
 
             // Repete a requisição original com o novo token
-            if (config && !config.headers) {
+            if (!config) {
+                config = {};
+            }
+            if (!config.headers) {
                 config.headers = {};
             }
-            if (config) {
-                config.headers['Authorization'] = `Bearer ${newToken}`;
-            }
+            config.headers['Authorization'] = `Bearer ${newToken}`;
             return originalFetch(resource, config);
         } else {
             isRefreshing = false;
@@ -94,12 +95,13 @@ window.fetch = async function(...args) {
         // Se já está refreshing, enfileira a requisição
         return new Promise(resolve => {
             addRefreshSubscriber(token => {
-                if (config && !config.headers) {
+                if (!config) {
+                    config = {};
+                }
+                if (!config.headers) {
                     config.headers = {};
                 }
-                if (config) {
-                    config.headers['Authorization'] = `Bearer ${token}`;
-                }
+                config.headers['Authorization'] = `Bearer ${token}`;
                 resolve(originalFetch(resource, config));
             });
         });

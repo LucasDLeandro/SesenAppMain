@@ -201,6 +201,9 @@ class Contratos(models.Model):
     sei_fiscais = models.CharField(max_length=50, default='', blank=True, null=True)
 
     status = models.CharField(max_length=20, null=True, blank=True, default='VIGENTE')
+    
+    # Novos campos para gestão avançada
+    contempla_postos_trabalho = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_At = models.DateTimeField(auto_now=True)
@@ -209,7 +212,12 @@ class Contratos(models.Model):
         return f"{self.num_contrato}"
 
 class MedicaoMensal(models.Model):
+    TIPO_CHOICES = [
+        ('MENSAL', 'Mensal'),
+        ('REEMBOLSO', 'Material/Serviço por Reembolso')
+    ]
     contrato = models.ForeignKey(Contratos, on_delete=models.CASCADE, related_name="medicoes")
+    tipo_faturamento = models.CharField(max_length=20, choices=TIPO_CHOICES, default='MENSAL')
     competencia = models.CharField(max_length=10) # Ex: 07/2026
     valor_medido = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     data_medicao = models.DateField()
@@ -222,14 +230,131 @@ class MedicaoMensal(models.Model):
 
 class Pagamento(models.Model):
     medicao = models.OneToOneField(MedicaoMensal, on_delete=models.CASCADE, related_name="pagamento")
+    
+    # Protocolos
+    protocolo_relatorio_mensal = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_imr = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_trd_trt = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_nf = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_nota_tecnica = models.CharField(max_length=50, blank=True, null=True, default="")
+
+    # Valores
+    valor_faturado = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    porcentagem_glosa = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    porcentagem_multa = models.DecimalField(max_digits=5, decimal_places=2, default=Decimal('0.00'))
+    
+    # Esse é o valor final calculado
     valor_pago = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    
+    # Campos que existiam para compatibilidade/histórico (mesma logica)
     valor_glosa = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     valor_multa = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     
     status = models.CharField(max_length=20, default='PENDENTE')
     data_pagamento = models.DateField(null=True, blank=True)
+    ordem_pagamento = models.CharField(max_length=50, blank=True, null=True, default="")
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        # Calculate calculated fields based on percentages and base value
+        if self.valor_faturado is not None:
+            v_faturado = Decimal(self.valor_faturado)
+            p_glosa = Decimal(self.porcentagem_glosa) if self.porcentagem_glosa else Decimal('0')
+            p_multa = Decimal(self.porcentagem_multa) if self.porcentagem_multa else Decimal('0')
+            
+            self.valor_glosa = v_faturado * (p_glosa / Decimal('100.0'))
+            self.valor_multa = v_faturado * (p_multa / Decimal('100.0'))
+            
+            self.valor_pago = v_faturado - self.valor_glosa - self.valor_multa
+            
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Pagamento - {self.medicao.competencia}"
+
+class TermoAditivo(models.Model):
+    contrato = models.ForeignKey(Contratos, on_delete=models.CASCADE, related_name="termos_aditivos")
+    numero = models.CharField(max_length=50, verbose_name="Número do Aditivo", help_text="Ex: 1/2026")
+    objeto = models.TextField(blank=True, null=True, verbose_name="Objeto da Repactuação")
+    
+    valor_aditivado = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Valor Aditivado (+ ou -)")
+    novo_valor_global = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Novo Valor Global")
+    
+    inicio_vigencia = models.DateField(verbose_name="Início da Vigência")
+    termino_vigencia = models.DateField(verbose_name="Término da Vigência")
+    
+    necessita_novo_termo = models.BooleanField(default=False, verbose_name="Necessita Novo Termo Aditivo")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Aditivo {self.numero} - {self.contrato.num_contrato}"
+
+class PostoTrabalho(models.Model):
+    TIPO_CHOICES = [
+        ('MENSALISTA', 'Mensalista'),
+        ('PLANTONISTA', 'Plantonista')
+    ]
+    contrato = models.ForeignKey(Contratos, on_delete=models.CASCADE, related_name="postos_trabalho")
+    nome_cargo = models.CharField(max_length=150, verbose_name="Posto de Trabalho (Cargo)")
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES, default='MENSALISTA')
+    carga_horaria = models.CharField(max_length=50, blank=True, null=True, verbose_name="Carga Horária (Ex: 44h)")
+    
+    quantidade_exigida = models.IntegerField(default=1, verbose_name="Quantidade de Postos Exigida")
+    valor_unitario = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def valor_total_mensal(self):
+        return self.valor_unitario * self.quantidade_exigida
+
+    def __str__(self):
+        return f"{self.nome_cargo} ({self.contrato.num_contrato})"
+
+class ItemCustoExtra(models.Model):
+    contrato = models.ForeignKey(Contratos, on_delete=models.CASCADE, related_name="custos_extras")
+    descricao = models.CharField(max_length=255, verbose_name="Descrição do Custo (Ex: Equipamentos, BDI)")
+    valor_mensal = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.descricao
+
+class Profissional(models.Model):
+    nome = models.CharField(max_length=255, verbose_name="Nome Completo")
+    cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF")
+    telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
+    email = models.EmailField(blank=True, null=True, verbose_name="E-mail")
+    
+    # Opcionalmente vincula a um técnico se for migrado para a equipe_tecnica futuramente
+    tecnico_vinculado = models.ForeignKey('equipe_tecnica.Tecnico', on_delete=models.SET_NULL, null=True, blank=True, related_name='profissional_contrato')
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.nome} - {self.cpf}"
+
+class AlocacaoProfissional(models.Model):
+    STATUS_CHOICES = [
+        ('ATIVO', 'Ativo'),
+        ('INATIVO', 'Inativo')
+    ]
+    posto = models.ForeignKey(PostoTrabalho, on_delete=models.CASCADE, related_name="alocacoes")
+    profissional = models.ForeignKey(Profissional, on_delete=models.CASCADE, related_name="alocacoes")
+    
+    data_inicio = models.DateField(verbose_name="Data de Início na Alocação")
+    data_fim = models.DateField(blank=True, null=True, verbose_name="Data de Fim (se inativo)")
+    
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='ATIVO')
+    observacoes = models.TextField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.profissional.nome} -> {self.posto.nome_cargo}"

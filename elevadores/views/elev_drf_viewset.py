@@ -45,23 +45,53 @@ class ElevadorViewSet(viewsets.ModelViewSet):
     def create(self, request):
         dados = request.data.copy()
         dados['status'] = 'ABERTA'
-
+        
+        elevador_selecionado = dados.get('elevador', '')
+        elevadores_alvo = []
+        
+        from ..models import ELEVATOR_CHOICE
+        elevadores_padrao = [c[0] for c in ELEVATOR_CHOICE if c[0] not in ('Geral, Elevadores 1 ao 14', 'Sistema EMS')]
+        
+        if elevador_selecionado == 'Geral, Elevadores 1 ao 14':
+            elevadores_alvo = elevadores_padrao
+        elif elevador_selecionado == 'Sistema EMS':
+            ems_list_str = dados.get('elevadores_ems', '')
+            if ems_list_str:
+                elevadores_alvo = [e.strip() for e in ems_list_str.split(',') if e.strip() in elevadores_padrao]
+            if not elevadores_alvo:
+                return Response({'sucesso': False, 'mensagem': 'Nenhum elevador foi selecionado no Sistema EMS.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Salvar a lista de elevadores afetados se for múltiplo
+        if elevador_selecionado in ('Geral, Elevadores 1 ao 14', 'Sistema EMS'):
+            dados['elevadores_afetados'] = elevadores_alvo
+            
         serializer = ElevRegistrarOsSerializer(data=dados)
-
         serializer.is_valid(raise_exception=True)
-
         os_salva = serializer.save()
 
+        # Tratamento de paradas
         if os_salva.elevador_parado == 'PARADO':
-            from ..models.elev_so_model import ElevadorStatus
-            try:
-                elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
-                if elev_status.status != 'PARADO':
-                    elev_status.status = 'PARADO'
-                    elev_status.data_hora_parada = os_salva.data_hora
-                    elev_status.save()
-            except ElevadorStatus.DoesNotExist:
-                pass
+            from ..models.elev_so_model import ElevadorStatus, ElevadorParadaHistorico
+            
+            # Se for uma OS de múltiplos elevadores, processamos cada um
+            alvos_parada = elevadores_alvo if elevadores_alvo else [os_salva.elevador]
+            
+            for elev in alvos_parada:
+                try:
+                    elev_status = ElevadorStatus.objects.get(elevador=elev)
+                    if elev_status.status != 'PARADO':
+                        elev_status.status = 'PARADO'
+                        elev_status.data_hora_parada = os_salva.data_hora
+                        elev_status.save()
+                        
+                        # Criar histórico
+                        ElevadorParadaHistorico.objects.create(
+                            elevador=elev,
+                            data_hora_parada=os_salva.data_hora,
+                            os_relacionada=os_salva
+                        )
+                except ElevadorStatus.DoesNotExist:
+                    pass
 
         self._disparar_notificacao(os_salva, 'os_elev_registro')
 
@@ -127,58 +157,61 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 )
 
         from ..models.elev_so_model import ElevadorStatus
-        try:
-            elev_status = ElevadorStatus.objects.get(elevador=os_salva.elevador)
-            
-            if os_salva.elevador_parado == 'ATIVO':
-                # Verifica se não há OUTRA OS aberta e parada
-                outras_paradas = ElevOrderReg.objects.filter(elevador=os_salva.elevador, status='ABERTA', elevador_parado='PARADO').exists()
-                if not outras_paradas:
-                    # Registra o histórico da parada total se houver data de início
-                    if elev_status.data_hora_parada:
-                        from elevadores.serializers import calc_hrs_uteis_parado
+        alvos_parada = os_salva.elevadores_afetados if os_salva.elevadores_afetados else [os_salva.elevador]
+        
+        for elev in alvos_parada:
+            try:
+                elev_status = ElevadorStatus.objects.get(elevador=elev)
+                
+                if os_salva.elevador_parado == 'ATIVO':
+                    # Verifica se não há OUTRA OS aberta e parada (precisamos incluir pesquisa em elevadores_afetados? Vamos simplificar: se for o mesmo elevador nas paradas)
+                    # Note: O django JSONField pode dificultar esse `.exists()`, mas vamos tratar OS singulares de parada.
+                    outras_paradas = ElevOrderReg.objects.filter(elevador=elev, status='ABERTA', elevador_parado='PARADO').exists()
+                    if not outras_paradas:
+                        # Registra o histórico da parada total se houver data de início
+                        if elev_status.data_hora_parada:
+                            from elevadores.serializers import calc_hrs_uteis_parado
+                            from ..models.elev_so_model import ElevadorParadaHistorico
+                            tmp_parado = calc_hrs_uteis_parado(elev_status.data_hora_parada, timezone.now())
+                            hist = ElevadorParadaHistorico.objects.filter(elevador=elev, data_hora_retorno__isnull=True).first()
+                            if hist:
+                                hist.data_hora_retorno = timezone.now()
+                                hist.tempo_parado = Decimal(str(tmp_parado))
+                                hist.os_relacionada = os_salva
+                                hist.save()
+                            else:
+                                ElevadorParadaHistorico.objects.create(
+                                    elevador=elev,
+                                    data_hora_parada=elev_status.data_hora_parada,
+                                    data_hora_retorno=timezone.now(),
+                                    tempo_parado=Decimal(str(tmp_parado)),
+                                    os_relacionada=os_salva
+                                )
+                        
+                        elev_status.status = 'ATIVO'
+                        elev_status.data_hora_parada = None
+                        elev_status.save()
+                        
+                elif os_salva.elevador_parado == 'PARADO':
+                    was_ativo = (elev_status.status != 'PARADO')
+                    elev_status.status = 'PARADO'
+                    
+                    if not elev_status.data_hora_parada:
+                        elev_status.data_hora_parada = os_salva.data_hora if os_salva.data_hora else timezone.now()
+                    
+                    elev_status.save()
+                    
+                    if was_ativo:
                         from ..models.elev_so_model import ElevadorParadaHistorico
-                        tmp_parado = calc_hrs_uteis_parado(elev_status.data_hora_parada, timezone.now())
-                        hist = ElevadorParadaHistorico.objects.filter(elevador=os_salva.elevador, data_hora_retorno__isnull=True).first()
-                        if hist:
-                            hist.data_hora_retorno = timezone.now()
-                            hist.tempo_parado = Decimal(str(tmp_parado))
-                            hist.os_relacionada = os_salva
-                            hist.save()
-                        else:
+                        hist_aberto = ElevadorParadaHistorico.objects.filter(elevador=elev, data_hora_retorno__isnull=True).exists()
+                        if not hist_aberto:
                             ElevadorParadaHistorico.objects.create(
-                                elevador=os_salva.elevador,
+                                elevador=elev,
                                 data_hora_parada=elev_status.data_hora_parada,
-                                data_hora_retorno=timezone.now(),
-                                tempo_parado=Decimal(str(tmp_parado)),
                                 os_relacionada=os_salva
                             )
-                    
-                    elev_status.status = 'ATIVO'
-                    elev_status.data_hora_parada = None
-                    elev_status.save()
-            elif os_salva.elevador_parado == 'PARADO':
-                was_ativo = (elev_status.status != 'PARADO')
-                elev_status.status = 'PARADO'
-                
-                # Se não tinha data_hora_parada anterior (estava ativo e ficou parado agora ou perdeu a data),
-                # define como agora (ou data da OS)
-                if not elev_status.data_hora_parada:
-                    elev_status.data_hora_parada = os_salva.data_hora if os_salva.data_hora else timezone.now()
-                
-                elev_status.save()
-                
-                if was_ativo:
-                    from ..models.elev_so_model import ElevadorParadaHistorico
-                    hist_aberto = ElevadorParadaHistorico.objects.filter(elevador=os_salva.elevador, data_hora_retorno__isnull=True).exists()
-                    if not hist_aberto:
-                        ElevadorParadaHistorico.objects.create(
-                            elevador=os_salva.elevador,
-                            data_hora_parada=elev_status.data_hora_parada,
-                            os_relacionada=os_salva
-                        )
-        except ElevadorStatus.DoesNotExist:
-            pass
+            except ElevadorStatus.DoesNotExist:
+                pass
 
         if os_salva.status == 'CONCLUIDA':
             if houve_peca in ['Sim_Imediata', 'Sim_Posterior']:
@@ -226,6 +259,9 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         # Só permite registrar se ainda não estiver concluída
         if os_existente.status in ['CONCLUIDA', 'CONCLUÍDA']:
             return Response({'sucesso': False, 'mensagem': 'OS já está concluída.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if os_existente.status == 'EM ANDAMENTO' and os_existente.data_hora_chegada is not None:
+            return Response({'sucesso': True, 'mensagem': 'Chegada já registrada anteriormente.'}, status=status.HTTP_200_OK)
         
         # Atualiza os dados
         tecnico = dados.get('tecnico', '')
@@ -329,15 +365,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             
         for os_i in qs_filtrado:
             min_chegada = int(os_i.tmp_chegada.total_seconds() / 60) if os_i.tmp_chegada else 0 # type: ignore
-            os_dict = {
-                'elevador': os_i.elevador,
-                'data_hora': os_i.data_hora.strftime('%d/%m/%Y %H:%M'),
-                'protocolo': os_i.protocolo,
-                'min_chegada': min_chegada,
-                'meta_pp': META_PP,
-                'meta_comum': META_COMUM 
-            }
-            indicador_um.append(os_dict)
+            
+            alvos = os_i.elevadores_afetados if os_i.elevadores_afetados else [os_i.elevador]
+            
+            for elev in alvos:
+                os_dict = {
+                    'elevador': elev,
+                    'data_hora': os_i.data_hora.strftime('%d/%m/%Y %H:%M'),
+                    'protocolo': os_i.protocolo,
+                    'min_chegada': min_chegada,
+                    'meta_pp': META_PP,
+                    'meta_comum': META_COMUM 
+                }
+                indicador_um.append(os_dict)
 
         return indicador_um
     
@@ -366,6 +406,9 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             
         indicador_dois = []
         for key, name in ELEVATOR_CHOICE:
+            if key in ('Geral, Elevadores 1 ao 14', 'Sistema EMS'):
+                continue
+                
             if key in elevadores_processados:
                 indicador_dois.append(elevadores_processados[key])
             else:
@@ -381,7 +424,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         return indicador_dois
     
     def api_indicador_tres(self, **kwargs):
-        indicador = self.get_queryset().filter(tipo_chamado='CORRETIVO', data_hora__range=(kwargs['inicio'], kwargs['fim'])).annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'data_truncada').annotate(ocorrencias=Count('id')).order_by('data_truncada')
+        indicador = self.get_queryset().filter(tipo_chamado='CORRETIVO', data_hora__range=(kwargs['inicio'], kwargs['fim'])).annotate(data_truncada=TruncDate('data_hora')).values('protocolo', 'elevador', 'elevadores_afetados', 'data_truncada').annotate(ocorrencias=Count('id')).order_by('data_truncada')
         listaElevadores = [
             "Social 1 - M2674",
             "Social 2 - M2675",
@@ -405,6 +448,14 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             # Montamos a estrutura vazia para não quebrar o front-end
             dados_vazios = [{'name': elev, 'x': [], 'y': [], 'z': [], 'protocolo': []} for elev in listaElevadores]
             return dados_vazios
+
+        # Expansão para múltiplos elevadores
+        df['elevador_efetivo'] = df.apply(
+            lambda row: row['elevadores_afetados'] if isinstance(row['elevadores_afetados'], list) and len(row['elevadores_afetados']) > 0 else [row['elevador']], 
+            axis=1
+        )
+        df = df.explode('elevador_efetivo')
+        df['elevador'] = df['elevador_efetivo']
 
         df['data_truncada'] = df['data_truncada'].astype(str)
         df['protocolo'] = df['protocolo'].fillna('-')
@@ -646,6 +697,11 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             data_os = timezone.localtime(os.data_hora).date()
             if data_os != hoje:
                 return
+                
+        elevador_texto = os.elevador
+        if getattr(os, 'elevadores_afetados', None):
+            if isinstance(os.elevadores_afetados, list) and len(os.elevadores_afetados) > 0:
+                elevador_texto += f" ({', '.join(os.elevadores_afetados)})"
 
         contatos_ativos = Contato.objects.filter(is_ativo=True)
         contato_queryset = []
@@ -665,7 +721,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     nome=contato.nome,
                     atendente=os.atendente or 'Não informado',
                     data_hora=os.data_hora.strftime("%d/%m/%Y às %H:%M") if os.data_hora else "",
-                    elevador=os.elevador,
+                    elevador=elevador_texto,
                     ocorrencia=os.ocorrencia,
                     protocolo=os.protocolo,
                     solicitante=os.solicitante,
@@ -693,7 +749,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     tecnico=os.tecnico or 'Não informado',
                     data_hora=os.data_hora_chegada.strftime("%d/%m/%Y às %H:%M") if os.data_hora_chegada else "",
                     protocolo=os.protocolo,
-                    elevador=os.elevador,
+                    elevador=elevador_texto,
                     acompanhante=os.acompanhante or "Não informado",
                     registrador_chegada=os.registrador_chegada or "Não informado",
                     atendente=os.atendente or 'Não informado',
@@ -717,7 +773,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     text = texto.format(
                         nome=contato.nome,
                         protocolo=os.protocolo,
-                        elevador=os.elevador,
+                        elevador=elevador_texto,
                         tecnico=os.tecnico or 'Não informado',
                         data_hora_saida=os.data_hora_conclusao.strftime("%d/%m/%Y às %H:%M") if os.data_hora_conclusao else "",
                         servico=os.servico or 'Não informado',
