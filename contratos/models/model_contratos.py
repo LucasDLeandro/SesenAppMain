@@ -303,7 +303,13 @@ class PostoTrabalho(models.Model):
     carga_horaria = models.CharField(max_length=50, blank=True, null=True, verbose_name="Carga Horária (Ex: 44h)")
     
     quantidade_exigida = models.IntegerField(default=1, verbose_name="Quantidade de Postos Exigida")
-    valor_unitario = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    
+    # Valores do posto
+    salario_bruto = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Salário Bruto")
+    valor_hora = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Valor da Hora")
+    hora_extra_50 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Hora Extra 50%")
+    hora_extra_100 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Hora Extra 100%")
+    valor_unitario = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), verbose_name="Valor Unitário para Empresa (Custo Total)")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

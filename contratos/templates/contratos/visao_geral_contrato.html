@@ -246,6 +246,7 @@
 
 {% block extra_js %}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/imask"></script>
 <script>
     const CONTRATO_ID = {{ contrato.id }};
     const VALOR_ORIGINAL = {{ contrato.valor|stringformat:"f" }};
@@ -486,29 +487,112 @@
         });
     }
     
+    function formatCurrencyHelper(val) {
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
+    }
+
     function abrirModalPosto() {
         Swal.fire({
             title: 'Novo Posto de Trabalho',
+            width: '700px',
             html: `
-                <input id="swal-posto-nome" class="swal2-input" placeholder="Cargo (Ex: Engenheiro)">
-                <select id="swal-posto-tipo" class="swal2-select w-75 mx-auto d-block">
-                    <option value="MENSALISTA">Mensalista</option>
-                    <option value="PLANTONISTA">Plantonista</option>
-                </select>
-                <input id="swal-posto-carga" class="swal2-input" placeholder="Carga Horária (Ex: 44h)">
-                <input id="swal-posto-qtd" type="number" class="swal2-input" placeholder="Qtd. Exigida">
-                <input id="swal-posto-valor" type="number" step="0.01" class="swal2-input" placeholder="Valor Unitário">
+                <div class="row text-start mt-2 px-3">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Cargo</label>
+                        <input id="swal-posto-nome" class="form-control rounded-pill" placeholder="Ex: Engenheiro">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Tipo</label>
+                        <select id="swal-posto-tipo" class="form-select rounded-pill">
+                            <option value="MENSALISTA">Mensalista</option>
+                            <option value="PLANTONISTA">Plantonista</option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Horas Mensais (Ex: 220)</label>
+                        <input id="swal-posto-horas" type="number" class="form-control rounded-pill" value="220" oninput="window.calcPosto()">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label small fw-bold text-muted">Qtd. Exigida</label>
+                        <input id="swal-posto-qtd" type="number" class="form-control rounded-pill" value="1">
+                    </div>
+                    
+                    <div class="col-12 mt-3 mb-2 border-bottom border-top py-2 bg-light rounded-3">
+                        <div class="row g-2">
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-bold text-primary">Salário Bruto (Base)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
+                                    <input id="swal-posto-salario" class="form-control border-start-0 rounded-end-pill fw-bold text-end" placeholder="0,00" oninput="window.calcPosto()">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-bold text-muted">Valor da Hora (Automático)</label>
+                                <input id="swal-posto-vhora" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-bold text-muted">Hora Extra 50%</label>
+                                <input id="swal-posto-he50" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label small fw-bold text-muted">Hora Extra 100%</label>
+                                <input id="swal-posto-he100" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-12 mt-2">
+                        <label class="form-label small fw-bold text-success">Valor Unitário para a Empresa (Custo Total)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-success border-success text-white border-end-0 rounded-start-pill">R$</span>
+                            <input id="swal-posto-unitario" class="form-control border-success border-start-0 rounded-end-pill fw-bold fs-5 text-success text-end" placeholder="0,00">
+                        </div>
+                    </div>
+                </div>
             `,
-            confirmButtonText: 'Salvar',
+            confirmButtonText: 'Salvar Posto',
             showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                confirmButton: 'btn btn-primary rounded-pill px-4',
+                cancelButton: 'btn btn-outline-secondary rounded-pill px-4 ms-2'
+            },
+            buttonsStyling: false,
+            didOpen: () => {
+                const maskOpts = { mask: Number, scale: 2, thousandsSeparator: '.', padFractionalZeros: true, normalizeZeros: true, radix: ',' };
+                window.maskSalario = IMask(document.getElementById('swal-posto-salario'), maskOpts);
+                window.maskUnitario = IMask(document.getElementById('swal-posto-unitario'), maskOpts);
+                
+                window.calcPosto = function() {
+                    let horas = parseFloat(document.getElementById('swal-posto-horas').value);
+                    if(isNaN(horas) || horas <= 0) horas = 1;
+                    
+                    const strSalario = window.maskSalario.unmaskedValue.replace(',', '.');
+                    const salario = parseFloat(strSalario) || 0;
+                    
+                    const vHora = salario / horas;
+                    document.getElementById('swal-posto-vhora').value = formatCurrencyHelper(vHora);
+                    document.getElementById('swal-posto-he50').value = formatCurrencyHelper(vHora * 1.5);
+                    document.getElementById('swal-posto-he100').value = formatCurrencyHelper(vHora * 2.0);
+                };
+            },
             preConfirm: () => {
+                const h = parseFloat(document.getElementById('swal-posto-horas').value) || 220;
+                const sal = parseFloat(window.maskSalario.unmaskedValue.replace(',', '.')) || 0;
+                const vHora = sal / h;
+                
                 return {
                     contrato: CONTRATO_ID,
                     nome_cargo: document.getElementById('swal-posto-nome').value,
                     tipo: document.getElementById('swal-posto-tipo').value,
-                    carga_horaria: document.getElementById('swal-posto-carga').value,
+                    carga_horaria: document.getElementById('swal-posto-horas').value + 'h',
                     quantidade_exigida: document.getElementById('swal-posto-qtd').value || 1,
-                    valor_unitario: document.getElementById('swal-posto-valor').value || 0
+                    salario_bruto: sal,
+                    valor_unitario: parseFloat(window.maskUnitario.unmaskedValue.replace(',', '.')) || 0,
+                    valor_hora: vHora,
+                    hora_extra_50: vHora * 1.5,
+                    hora_extra_100: vHora * 2.0
                 }
             }
         }).then(async (result) => {
@@ -527,6 +611,8 @@
                         Swal.fire('Sucesso!', 'Posto de trabalho cadastrado.', 'success');
                         carregarPostos();
                     } else {
+                        const errData = await res.json();
+                        console.error("Erro na API:", errData);
                         Swal.fire('Erro', 'Falha ao salvar. Verifique os dados.', 'error');
                     }
                 } catch(e) {
