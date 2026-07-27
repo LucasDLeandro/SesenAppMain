@@ -95,6 +95,15 @@
         transform: scale(1.01);
         box-shadow: 0 4px 8px rgba(0,0,0,0.05);
     }
+    
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    .status-pendente { background-color: #fef3c7; color: #d97706; }
+    .status-pago { background-color: #d1fae5; color: #059669; }
 </style>
 {% endblock %}
 
@@ -251,14 +260,17 @@
                     <thead>
                         <tr>
                             <th>Competência</th>
-                            <th>Nota Fiscal</th>
-                            <th>Emissão</th>
-                            <th>Valor Pago</th>
+                            <th>Valor Faturado</th>
+                            <th>Glosa</th>
+                            <th>Multa</th>
+                            <th>Valor a Pagar</th>
                             <th>Status</th>
+                            <th>Ordem Pag.</th>
+                            <th class="text-end">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td colspan="5" class="text-center">Carregando...</td></tr>
+                        <tr><td colspan="8" class="text-center">Carregando...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -266,7 +278,99 @@
     </div>
 </div>
 
-<!-- Modais serao injetados via JS para nao poluir o HTML inicial -->
+<!-- Modal Detalhes do Pagamento -->
+<div class="modal fade" id="modalDetalhesPagamento" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: var(--card-bg, #ffffff);">
+            <div class="modal-header border-bottom border-secondary">
+                <h5 class="modal-title" style="color: var(--text-main, #111827); font-weight: 600;">Detalhes do Pagamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-pagamento">
+                    <input type="hidden" id="pagamento_id">
+                    
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Contrato</p>
+                            <h5 id="modal_contrato" style="color: var(--text-main, #111827);"></h5>
+                            <p class="text-muted mb-1 mt-3">Empresa</p>
+                            <h6 id="modal_empresa" style="color: var(--text-main, #111827);"></h6>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="text-muted mb-1">Competência</p>
+                            <h4 id="modal_competencia" class="text-primary"></h4>
+                            <span id="modal_status_badge" class="status-badge mt-2 d-inline-block"></span>
+                        </div>
+                    </div>
+
+                    <h6 class="border-bottom border-secondary pb-2 mb-3 mt-4" style="color: var(--text-main, #111827);">Valores Financeiros</h6>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Faturado</label>
+                            <input type="text" class="form-control" id="modal_faturado" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Glosa (R$)</label>
+                            <input type="text" class="form-control text-danger" id="modal_glosa" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">Multa (R$)</label>
+                            <input type="text" class="form-control text-danger" id="modal_multa" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted">A Pagar</label>
+                            <input type="text" class="form-control text-success fw-bold" id="modal_pago" readonly>
+                        </div>
+                    </div>
+
+                    <h6 class="border-bottom border-secondary pb-2 mb-3" style="color: var(--text-main, #111827);">Protocolos e Documentos</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">Relatório Mensal</label>
+                            <input type="text" class="form-control" id="modal_prot_rel" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">IMR</label>
+                            <input type="text" class="form-control" id="modal_prot_imr" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label text-muted">TRD / TRT</label>
+                            <input type="text" class="form-control" id="modal_prot_trd" readonly>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label text-muted">Nota Fiscal</label>
+                            <input type="text" class="form-control" id="modal_prot_nf" readonly>
+                        </div>
+                        <div class="col-md-6 mt-3">
+                            <label class="form-label text-muted">Nota Técnica de Atesto</label>
+                            <input type="text" class="form-control" id="modal_prot_nt" readonly>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
+                        <div class="card-body">
+                            <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
+                            <div class="row g-3 mt-1">
+                                <div class="col-md-8">
+                                    <label class="form-label">Ordem de Pagamento (Doc. SEI, SIAFI, etc)</label>
+                                    <input type="text" class="form-control" id="input_ordem_pagamento" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Status</label>
+                                    <input type="text" class="form-control" id="input_status" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 
@@ -295,37 +399,83 @@
         return `${d}/${m}/${y}`;
     }
 
+    let listaPagamentosVisao = [];
+
     async function carregarPagamentosVisao() {
         try {
             const res = await fetch(`/contratos/api/pagamentos/?contrato=${CONTRATO_ID}`);
             if(!res.ok) throw new Error('Erro API pagamentos');
-            const data = await res.json();
+            let data = await res.json();
+            const results = data.results !== undefined ? data.results : (Array.isArray(data) ? data : []);
+            listaPagamentosVisao = results;
             
             const tbody = document.querySelector('#tablePagamentosVisao tbody');
             tbody.innerHTML = '';
             
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nenhum pagamento registrado.</td></tr>';
+            if (results.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">Nenhum pagamento registrado.</td></tr>';
                 return;
             }
             
-            data.forEach(p => {
-                let badgeClass = p.status === 'PAGO' ? 'bg-success' : (p.status === 'PENDENTE' ? 'bg-warning text-dark' : 'bg-secondary');
+            results.forEach(p => {
+                const statusClass = p.status === 'PAGO' ? 'status-pago' : 'status-pendente';
                 tbody.innerHTML += `
                     <tr>
                         <td class="fw-bold">${p.competencia || '-'}</td>
-                        <td>${p.num_nota_fiscal || '-'}</td>
-                        <td>${formatDate(p.data_emissao)}</td>
-                        <td class="fw-bold text-primary">${formatCurrency(p.valor_pago || 0)}</td>
-                        <td><span class="badge ${badgeClass}">${p.status || '-'}</span></td>
+                        <td>${formatCurrency(p.valor_faturado)}</td>
+                        <td class="text-danger">${formatCurrency(p.valor_glosa)}</td>
+                        <td class="text-danger">${formatCurrency(p.valor_multa)}</td>
+                        <td class="text-success fw-bold">${formatCurrency(p.valor_pago)}</td>
+                        <td><span class="status-badge ${statusClass}">${p.status || 'PENDENTE'}</span></td>
+                        <td>${p.ordem_pagamento || '<span class="text-muted">Não vinculada</span>'}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-primary rounded-pill shadow-sm" onclick="abrirModalDetalhesPagamento(${p.id})">
+                                <i class="bi bi-eye"></i> Detalhes
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
         } catch(e) {
             console.error(e);
-            document.querySelector('#tablePagamentosVisao tbody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Falha ao carregar pagamentos.</td></tr>';
+            document.querySelector('#tablePagamentosVisao tbody').innerHTML = '<tr><td colspan="8" class="text-center text-danger">Falha ao carregar pagamentos.</td></tr>';
         }
     }
+
+    let modalPagamentoInstanceVisao = null;
+    window.abrirModalDetalhesPagamento = function(id) {
+        if(!modalPagamentoInstanceVisao) {
+            modalPagamentoInstanceVisao = new bootstrap.Modal(document.getElementById('modalDetalhesPagamento'));
+        }
+        
+        const pag = listaPagamentosVisao.find(p => p.id === id);
+        if (!pag) return;
+
+        document.getElementById('pagamento_id').value = pag.id;
+        document.getElementById('modal_contrato').textContent = pag.contrato_num || '-';
+        document.getElementById('modal_empresa').textContent = pag.empresa_nome || '-';
+        document.getElementById('modal_competencia').textContent = pag.competencia || '-';
+        
+        const badge = document.getElementById('modal_status_badge');
+        badge.textContent = pag.status;
+        badge.className = 'status-badge ' + (pag.status === 'PAGO' ? 'status-pago' : 'status-pendente');
+
+        document.getElementById('modal_faturado').value = formatCurrency(pag.valor_faturado);
+        document.getElementById('modal_glosa').value = formatCurrency(pag.valor_glosa);
+        document.getElementById('modal_multa').value = formatCurrency(pag.valor_multa);
+        document.getElementById('modal_pago').value = formatCurrency(pag.valor_pago);
+
+        document.getElementById('modal_prot_rel').value = pag.protocolo_relatorio_mensal || '-';
+        document.getElementById('modal_prot_imr').value = pag.protocolo_imr || '-';
+        document.getElementById('modal_prot_trd').value = pag.protocolo_trd_trt || '-';
+        document.getElementById('modal_prot_nf').value = pag.protocolo_nf || '-';
+        document.getElementById('modal_prot_nt').value = pag.protocolo_nota_tecnica || '-';
+
+        document.getElementById('input_ordem_pagamento').value = pag.ordem_pagamento || '';
+        document.getElementById('input_status').value = pag.status;
+
+        modalPagamentoInstanceVisao.show();
+    };
 
     async function carregarTermosAditivos() {
         try {
