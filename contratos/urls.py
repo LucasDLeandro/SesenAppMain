@@ -11,7 +11,8 @@ from .views.contratos_view import (
     MedicaoMensalViewSet,
     PagamentoViewSet,
     TramitacaoSEIViewSet,
-    CronogramaContratacaoViewSet
+    CronogramaContratacaoViewSet,
+    buscar_contratos_comprasnet
 )
 
 app_name = 'contratos'
@@ -30,5 +31,6 @@ urlpatterns = [
     path('contratacoes/', dashboard_contratacoes, name='dashboard_contratacoes'),
     path('api/dashboard-metrics/', dashboard_metrics, name='dashboard_metrics'),
     path('api/dashboard-contratacoes-metrics/', dashboard_contratacoes_metrics, name='dashboard_contratacoes_metrics'),
+    path('api/comprasnet/contratos/', buscar_contratos_comprasnet, name='buscar_contratos_comprasnet'),
     path('api/', include(router.urls)),
 ]

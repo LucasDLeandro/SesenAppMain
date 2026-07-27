@@ -1040,3 +1040,44 @@ function abrirModalDetalhesProcesso(id) {
     // Mostrar Modal
     new bootstrap.Modal(document.getElementById('modalDetalhesProcesso')).show();
 }
+
+function abrirModalComprasnet() {
+    const modal = new bootstrap.Modal(document.getElementById('modal-comprasnet'));
+    modal.show();
+    
+    document.getElementById('comprasnet-loading').style.display = 'block';
+    document.getElementById('comprasnet-content').style.display = 'none';
+    
+    fetch('/contratos/api/comprasnet/contratos/')
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('lista-comprasnet');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Nenhum contrato ativo encontrado com os filtros aplicados.</td></tr>';
+            } else {
+                data.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="fw-bold">${c.numero || '-'}</td>
+                        <td>${c.fornecedor || '-'}</td>
+                        <td class="text-wrap" style="max-width: 300px; font-size: 0.85rem;">${c.objeto || '-'}</td>
+                        <td>${c.inicio_vigencia ? formatDate(c.inicio_vigencia) : '-'}</td>
+                        <td>${c.termino_vigencia ? formatDate(c.termino_vigencia) : '-'}</td>
+                        <td class="fw-semibold text-success">${c.valor_global ? parseFloat(c.valor_global).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '-'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            document.getElementById('comprasnet-loading').style.display = 'none';
+            document.getElementById('comprasnet-content').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Erro ao buscar contratos do Comprasnet:', error);
+            document.getElementById('comprasnet-loading').style.display = 'none';
+            document.getElementById('lista-comprasnet').innerHTML = '<tr><td colspan="6" class="text-center text-danger py-4">Erro ao buscar dados do Comprasnet. Verifique o token de acesso.</td></tr>';
+            document.getElementById('comprasnet-content').style.display = 'block';
+        });
+}

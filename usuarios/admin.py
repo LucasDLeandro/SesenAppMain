@@ -75,3 +75,16 @@ class UserAdmin(BaseUserAdmin):
 # Remove o UserAdmin padrão e registra o novo
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+from django.apps import apps
+from django.contrib import admin
+
+try:
+    app_models = apps.get_app_config('usuarios').get_models()
+    for model in app_models:
+        try:
+            admin.site.register(model)
+        except admin.sites.AlreadyRegistered:
+            pass
+except Exception:
+    pass

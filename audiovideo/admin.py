@@ -22,3 +22,16 @@ class OrdemServicoAVAdmin(admin.ModelAdmin):
     search_fields = ('protocolo', 'equipamento__nome', 'tecnico')
     list_filter = ('status', 'data_abertura')
     ordering = ('-data_abertura',)
+
+from django.apps import apps
+from django.contrib import admin
+
+try:
+    app_models = apps.get_app_config('audiovideo').get_models()
+    for model in app_models:
+        try:
+            admin.site.register(model)
+        except admin.sites.AlreadyRegistered:
+            pass
+except Exception:
+    pass

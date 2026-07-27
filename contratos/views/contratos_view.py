@@ -14,6 +14,7 @@ from ..serializers import (
     TramitacaoSEISerializer,
     CronogramaContratacaoSerializer
 )
+from ..services.comprasnet_service import ComprasNetService
 from empresas.models import Empresa
 
 from rest_framework.decorators import action
@@ -238,3 +239,12 @@ def dashboard_contratos(request):
 def dashboard_contratacoes(request):
     processos = ProcessoLicitatorio.objects.all().order_by('-created_at')
     return render(request, 'contratos/dashboard_contratacoes.html', {'processos': processos})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def buscar_contratos_comprasnet(request):
+    """
+    Busca os contratos ativos no Comprasnet (UG 070001).
+    """
+    contratos = ComprasNetService.obter_contratos_ativos_ug()
+    return Response(contratos)

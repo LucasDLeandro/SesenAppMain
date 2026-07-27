@@ -24,6 +24,8 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end shadow">
                     <li><a class="dropdown-item" href="#" onclick="abrirModalNovoContrato()"><i class="bi bi-file-earmark-plus me-2 text-primary"></i>Novo Contrato</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#" onclick="abrirModalComprasnet()"><i class="bi bi-cloud-arrow-down me-2 text-success"></i>Consultar Comprasnet</a></li>
                 </ul>
             </div>
         </div>
@@ -422,6 +424,55 @@
                 <button type="button" class="btn btn-primary rounded-pill px-4 shadow-sm" onclick="salvarContrato()" id="btnSalvarContrato" style="background: linear-gradient(135deg, #1a56db, #3b82f6); border: none;">
                     <i class="bi bi-check-lg me-1"></i> Salvar Contrato
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Comprasnet -->
+<div class="modal fade" id="modal-comprasnet" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+            <div class="modal-header border-0 py-3 px-4" style="background: linear-gradient(135deg, #10b981 0%, #34d399 100%);">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="bg-white bg-opacity-25 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; backdrop-filter: blur(10px);">
+                        <i class="bi bi-cloud-arrow-down fs-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold text-white mb-0">Contratos Ativos - Comprasnet</h5>
+                        <small class="text-white-50">UG 070001 - TSE | Filtro: Equipamentos e Sistemas de Engenharia</small>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-sm btn-light rounded-pill px-3 fw-semibold shadow-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i> Fechar
+                </button>
+            </div>
+            <div class="modal-body p-4" style="background: #f8fafc; min-height: 400px;">
+                <div id="comprasnet-loading" class="text-center py-5">
+                    <div class="spinner-border text-success" role="status"></div>
+                    <p class="mt-3 text-muted">Buscando contratos no Comprasnet...</p>
+                </div>
+                <div id="comprasnet-content" style="display: none;">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle w-100" id="tabela-comprasnet">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nº Contrato</th>
+                                    <th>Empresa (Fornecedor)</th>
+                                    <th>Objeto</th>
+                                    <th>Início Vigência</th>
+                                    <th>Término Vigência</th>
+                                    <th>Valor (R$)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-comprasnet">
+                                <!-- Data will be loaded here via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 py-3" style="background: #f1f5f9;">
+                <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>

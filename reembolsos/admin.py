@@ -20,3 +20,16 @@ class SolicitacaoReembolsoAdmin(admin.ModelAdmin):
     search_fields = ('servidor__nome', 'servidor__cpf')
     list_filter = ('status',)
     ordering = ('-criado_em',)
+
+from django.apps import apps
+from django.contrib import admin
+
+try:
+    app_models = apps.get_app_config('reembolsos').get_models()
+    for model in app_models:
+        try:
+            admin.site.register(model)
+        except admin.sites.AlreadyRegistered:
+            pass
+except Exception:
+    pass
