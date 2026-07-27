@@ -382,6 +382,59 @@
         }
     }
 
+    function editarConfiguracoesContrato() {
+        Swal.fire({
+            title: 'Configurações do Contrato',
+            html: `
+                <div class="form-group text-start mt-3">
+                    <label class="form-label small fw-bold text-muted">Status</label>
+                    <select id="swal-edit-status" class="swal2-select w-100 mx-0 mt-0 mb-3 d-block">
+                        <option value="VIGENTE" ${STATUS_ATUAL === 'VIGENTE' ? 'selected' : ''}>Vigente</option>
+                        <option value="ENCERRADO" ${STATUS_ATUAL === 'ENCERRADO' ? 'selected' : ''}>Encerrado</option>
+                        <option value="SUSPENSO" ${STATUS_ATUAL === 'SUSPENSO' ? 'selected' : ''}>Suspenso</option>
+                    </select>
+                </div>
+                <div class="form-check form-switch mt-3 text-start d-flex justify-content-center">
+                    <input class="form-check-input me-2" type="checkbox" id="swal-edit-postos" ${CONTEMPLA_POSTOS ? 'checked' : ''}>
+                    <label class="form-check-label fw-bold text-primary" for="swal-edit-postos">
+                        Contempla Postos de Trabalho (Terceirização)
+                    </label>
+                </div>
+            `,
+            confirmButtonText: 'Salvar',
+            showCancelButton: true,
+            preConfirm: () => {
+                return {
+                    status: document.getElementById('swal-edit-status').value,
+                    contempla_postos_trabalho: document.getElementById('swal-edit-postos').checked
+                }
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const csrftoken = getCookie('csrftoken');
+                try {
+                    const res = await fetch(`/contratos/api/contratos/${CONTRATO_ID}/`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(result.value)
+                    });
+                    if(res.ok) {
+                        Swal.fire('Sucesso!', 'Configurações atualizadas.', 'success').then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        Swal.fire('Erro', 'Falha ao salvar as configurações.', 'error');
+                    }
+                } catch(e) {
+                    Swal.fire('Erro', 'Erro de comunicação', 'error');
+                }
+            }
+        });
+    }
+
     function abrirModalAditivo() {
         Swal.fire({
             title: 'Novo Termo Aditivo',
