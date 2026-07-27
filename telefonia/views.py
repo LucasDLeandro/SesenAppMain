@@ -77,10 +77,14 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         solicitacao = serializer.save()
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_aparelho', is_ativo=True).first()
         if template:
-            tecnicos = User.objects.filter(groups__name__icontains='Telefonia')
+            tecnicos = User.objects.filter(groups__name__icontains='Telefonia').distinct()
+            enviados = set()
             for tecnico in tecnicos:
                 if tecnico.perfil and tecnico.perfil.telefone:
                     tel = tecnico.perfil.telefone
+                    if tel in enviados:
+                        continue
+                    enviados.add(tel)
                     texto = template.base_text
                     try:
                         text = texto.format(
@@ -210,10 +214,14 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
         senha = serializer.save(status='recebida')
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_senha', is_ativo=True).first()
         if template:
-            tecnicos = User.objects.filter(groups__name__icontains='Telefonia')
+            tecnicos = User.objects.filter(groups__name__icontains='Telefonia').distinct()
+            enviados = set()
             for tecnico in tecnicos:
                 if tecnico.perfil and tecnico.perfil.telefone:
                     tel = tecnico.perfil.telefone
+                    if tel in enviados:
+                        continue
+                    enviados.add(tel)
                     texto = template.base_text
                     try:
                         text = texto.format(
