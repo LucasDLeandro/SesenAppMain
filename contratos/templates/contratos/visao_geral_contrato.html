@@ -158,6 +158,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="financeiro-tab" data-bs-toggle="tab" data-bs-target="#financeiro" type="button" role="tab">Evolução Financeira</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pagamentos-tab" data-bs-toggle="tab" data-bs-target="#pagamentos" type="button" role="tab">Histórico de Pagamentos</button>
+        </li>
     </ul>
 
     <!-- Tab Contents -->
@@ -237,6 +240,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Histórico de Pagamentos -->
+        <div class="tab-pane fade" id="pagamentos" role="tabpanel">
+            <div class="d-flex justify-content-between mb-3">
+                <h5 class="fw-bold text-secondary">Histórico de Pagamentos</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table-modern" id="tablePagamentosVisao">
+                    <thead>
+                        <tr>
+                            <th>Competência</th>
+                            <th>Nota Fiscal</th>
+                            <th>Emissão</th>
+                            <th>Valor Pago</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="5" class="text-center">Carregando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -255,6 +281,7 @@
     
     document.addEventListener("DOMContentLoaded", function() {
         carregarTermosAditivos();
+        carregarPagamentosVisao();
         {% if contrato.contempla_postos_trabalho %}
         carregarPostos();
         carregarAlocacoes();
@@ -266,6 +293,38 @@
         if(!dateStr) return '-';
         const [y, m, d] = dateStr.split('-');
         return `${d}/${m}/${y}`;
+    }
+
+    async function carregarPagamentosVisao() {
+        try {
+            const res = await fetch(`/contratos/api/pagamentos/?contrato=${CONTRATO_ID}`);
+            if(!res.ok) throw new Error('Erro API pagamentos');
+            const data = await res.json();
+            
+            const tbody = document.querySelector('#tablePagamentosVisao tbody');
+            tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nenhum pagamento registrado.</td></tr>';
+                return;
+            }
+            
+            data.forEach(p => {
+                let badgeClass = p.status === 'PAGO' ? 'bg-success' : (p.status === 'PENDENTE' ? 'bg-warning text-dark' : 'bg-secondary');
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="fw-bold">${p.competencia || '-'}</td>
+                        <td>${p.num_nota_fiscal || '-'}</td>
+                        <td>${formatDate(p.data_emissao)}</td>
+                        <td class="fw-bold text-primary">${formatCurrency(p.valor_pago || 0)}</td>
+                        <td><span class="badge ${badgeClass}">${p.status || '-'}</span></td>
+                    </tr>
+                `;
+            });
+        } catch(e) {
+            console.error(e);
+            document.querySelector('#tablePagamentosVisao tbody').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Falha ao carregar pagamentos.</td></tr>';
+        }
     }
 
     async function carregarTermosAditivos() {
