@@ -439,49 +439,51 @@
     function abrirModalAditivo() {
         Swal.fire({
             title: 'Novo Termo Aditivo',
-            width: '700px',
+            width: '750px',
             html: `
-                <div class="row text-start mt-2 px-3">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Número (Ex: 1/2026)</label>
-                        <input id="swal-numero" class="form-control rounded-pill" placeholder="Número">
+                <div class="row text-start mt-3 px-4">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Número do Aditivo</label>
+                        <input id="swal-numero" class="form-control rounded-3 py-2" placeholder="Ex: 1/2026">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Objeto</label>
-                        <input id="swal-objeto" class="form-control rounded-pill" placeholder="Resumo da mudança">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Objeto (Resumo)</label>
+                        <input id="swal-objeto" class="form-control rounded-3 py-2" placeholder="Qual a mudança principal?">
                     </div>
                     
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Valor Aditivado (Use - para redução)</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
-                            <input id="swal-val-aditivado" type="text" class="form-control border-start-0 rounded-end-pill fw-bold text-end text-primary" placeholder="0,00">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Valor Aditivado</label>
+                        <div class="input-group shadow-sm rounded-3">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-currency-dollar"></i> R$</span>
+                            <input id="swal-val-aditivado" type="text" class="form-control border-start-0 py-2 fw-bold text-primary" placeholder="0,00">
                         </div>
+                        <small class="text-danger mt-1 d-block" style="font-size: 0.75rem;">Para redução, digite com sinal de menos (-)</small>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Novo Valor Global</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
-                            <input id="swal-novo-global" type="text" class="form-control border-start-0 rounded-end-pill fw-bold text-end text-success" placeholder="0,00">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Novo Valor Global</label>
+                        <div class="input-group shadow-sm rounded-3">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-currency-dollar"></i> R$</span>
+                            <input id="swal-novo-global" type="text" class="form-control border-start-0 py-2 fw-bold text-success" placeholder="0,00">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Início da Vigência</label>
-                        <input id="swal-inicio" type="date" class="form-control rounded-pill">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Início da Vigência</label>
+                        <input id="swal-inicio" type="date" class="form-control rounded-3 py-2 text-muted">
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Fim da Vigência</label>
-                        <input id="swal-fim" type="date" class="form-control rounded-pill">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Fim da Vigência</label>
+                        <input id="swal-fim" type="date" class="form-control rounded-3 py-2 text-muted">
                     </div>
                 </div>
             `,
-            confirmButtonText: 'Salvar',
+            confirmButtonText: '<i class="bi bi-check-circle me-2"></i>Salvar Aditivo',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             customClass: {
-                confirmButton: 'btn btn-primary rounded-pill px-4 me-2 shadow-sm',
-                cancelButton: 'btn btn-secondary rounded-pill px-4 shadow-sm'
+                title: 'fw-bold text-dark fs-4',
+                confirmButton: 'btn btn-primary rounded-3 px-4 py-2 me-2 shadow-sm fw-bold',
+                cancelButton: 'btn btn-light border rounded-3 px-4 py-2 fw-bold text-secondary shadow-sm'
             },
             buttonsStyling: false,
             didOpen: () => {
