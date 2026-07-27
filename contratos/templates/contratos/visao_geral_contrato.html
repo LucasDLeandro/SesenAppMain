@@ -559,69 +559,79 @@
     function abrirModalPosto() {
         Swal.fire({
             title: 'Novo Posto de Trabalho',
-            width: '700px',
+            width: '750px',
             html: `
-                <div class="row text-start mt-2 px-3">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Cargo</label>
-                        <input id="swal-posto-nome" class="form-control rounded-pill" placeholder="Ex: Engenheiro">
+                <div class="row text-start mt-3 px-4">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Cargo</label>
+                        <input id="swal-posto-nome" class="form-control rounded-3 py-2" placeholder="Ex: Engenheiro">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Tipo</label>
-                        <select id="swal-posto-tipo" class="form-select rounded-pill">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Tipo</label>
+                        <select id="swal-posto-tipo" class="form-select rounded-3 py-2">
                             <option value="MENSALISTA">Mensalista</option>
                             <option value="PLANTONISTA">Plantonista</option>
                         </select>
                     </div>
                     
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Horas Mensais (Ex: 220)</label>
-                        <input id="swal-posto-horas" type="number" class="form-control rounded-pill" value="220" oninput="window.calcPosto()">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Horas Mensais</label>
+                        <input id="swal-posto-horas" type="number" class="form-control rounded-3 py-2 text-muted" value="220" oninput="window.calcPosto()">
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label small fw-bold text-muted">Qtd. Exigida</label>
-                        <input id="swal-posto-qtd" type="number" class="form-control rounded-pill" value="1">
+                    <div class="col-md-6 mb-4">
+                        <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Qtd. Exigida</label>
+                        <input id="swal-posto-qtd" type="number" class="form-control rounded-3 py-2 text-muted" value="1">
                     </div>
                     
-                    <div class="col-12 mt-3 mb-2 border-bottom border-top py-2 bg-light rounded-3">
-                        <div class="row g-2">
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label small fw-bold text-primary">Salário Bruto (Base)</label>
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 rounded-start-pill text-muted">R$</span>
-                                    <input id="swal-posto-salario" class="form-control border-start-0 rounded-end-pill fw-bold text-end" placeholder="0,00" oninput="window.calcPosto()">
+                    <div class="col-12 mt-2 mb-4 p-3 bg-light rounded-3 shadow-sm border">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-primary" style="text-transform: uppercase; letter-spacing: 0.5px;">Salário Bruto (Base)</label>
+                                <div class="input-group shadow-sm rounded-3">
+                                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-currency-dollar"></i> R$</span>
+                                    <input id="swal-posto-salario" class="form-control border-start-0 py-2 fw-bold text-primary" placeholder="0,00" oninput="window.calcPosto()">
                                 </div>
                             </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label small fw-bold text-muted">Valor da Hora (Automático)</label>
-                                <input id="swal-posto-vhora" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Valor da Hora</label>
+                                <div class="input-group rounded-3">
+                                    <span class="input-group-text bg-light text-muted border-end-0">R$</span>
+                                    <input id="swal-posto-vhora" class="form-control border-start-0 text-muted" style="background-color: #f8f9fa;" readonly placeholder="0,00">
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label small fw-bold text-muted">Hora Extra 50%</label>
-                                <input id="swal-posto-he50" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Hora Extra 50%</label>
+                                <div class="input-group rounded-3">
+                                    <span class="input-group-text bg-light text-muted border-end-0">R$</span>
+                                    <input id="swal-posto-he50" class="form-control border-start-0 text-muted" style="background-color: #f8f9fa;" readonly placeholder="0,00">
+                                </div>
                             </div>
-                            <div class="col-md-6 mb-2">
-                                <label class="form-label small fw-bold text-muted">Hora Extra 100%</label>
-                                <input id="swal-posto-he100" class="form-control rounded-pill text-end" style="background-color: #f3f4f6;" readonly placeholder="R$ 0,00">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted" style="text-transform: uppercase; letter-spacing: 0.5px;">Hora Extra 100%</label>
+                                <div class="input-group rounded-3">
+                                    <span class="input-group-text bg-light text-muted border-end-0">R$</span>
+                                    <input id="swal-posto-he100" class="form-control border-start-0 text-muted" style="background-color: #f8f9fa;" readonly placeholder="0,00">
+                                </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="col-12 mt-2">
-                        <label class="form-label small fw-bold text-success">Valor Unitário para a Empresa (Custo Total)</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-success border-success text-white border-end-0 rounded-start-pill">R$</span>
-                            <input id="swal-posto-unitario" class="form-control border-success border-start-0 rounded-end-pill fw-bold fs-5 text-success text-end" placeholder="0,00">
+                    <div class="col-12 mt-1 mb-2">
+                        <label class="form-label small fw-bold text-success" style="text-transform: uppercase; letter-spacing: 0.5px;">Custo Total p/ Empresa</label>
+                        <div class="input-group shadow-sm rounded-3">
+                            <span class="input-group-text bg-success border-success text-white border-end-0"><i class="bi bi-currency-dollar"></i> R$</span>
+                            <input id="swal-posto-unitario" class="form-control border-success border-start-0 py-2 fw-bold text-success fs-5" placeholder="0,00">
                         </div>
                     </div>
                 </div>
             `,
-            confirmButtonText: 'Salvar Posto',
+            confirmButtonText: '<i class="bi bi-check-circle me-2"></i>Salvar Posto',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
             customClass: {
-                confirmButton: 'btn btn-primary rounded-pill px-4',
-                cancelButton: 'btn btn-outline-secondary rounded-pill px-4 ms-2'
+                title: 'fw-bold text-dark fs-4',
+                confirmButton: 'btn btn-primary rounded-3 px-4 py-2 me-2 shadow-sm fw-bold',
+                cancelButton: 'btn btn-light border rounded-3 px-4 py-2 fw-bold text-secondary shadow-sm'
             },
             buttonsStyling: false,
             didOpen: () => {
@@ -637,9 +647,12 @@
                     const salario = parseFloat(strSalario) || 0;
                     
                     const vHora = salario / horas;
-                    document.getElementById('swal-posto-vhora').value = formatCurrencyHelper(vHora);
-                    document.getElementById('swal-posto-he50').value = formatCurrencyHelper(vHora * 1.5);
-                    document.getElementById('swal-posto-he100').value = formatCurrencyHelper(vHora * 2.0);
+                    
+                    const numFormat = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    
+                    document.getElementById('swal-posto-vhora').value = numFormat.format(vHora);
+                    document.getElementById('swal-posto-he50').value = numFormat.format(vHora * 1.5);
+                    document.getElementById('swal-posto-he100').value = numFormat.format(vHora * 2.0);
                 };
             },
             preConfirm: () => {
