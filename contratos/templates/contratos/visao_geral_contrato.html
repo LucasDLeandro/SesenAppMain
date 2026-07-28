@@ -987,20 +987,26 @@
                         block.remove();
                     });
                     
-                    // Auto-fill ao digitar CPF
-                    const cpfInput = block.querySelector('.swal-cpf');
-                    cpfInput.addEventListener('blur', async function() {
-                        const cpf = this.value.replace(/\D/g, '');
-                        if (cpf.length === 11) {
+                    // Auto-fill ao digitar CPF, Nome ou E-mail
+                    const autoFillHandler = async function() {
+                        const val = this.value.trim();
+                        if (val.length >= 3) {
                             try {
-                                const res = await fetch(`/usuarios/api/pessoas/buscar-cpf/?cpf=${this.value}`);
+                                const res = await fetch(`/usuarios/api/pessoas/buscar-dados/?q=${encodeURIComponent(val)}`);
                                 if (res.ok) {
                                     const data = await res.json();
                                     if (data.encontrado) {
-                                        block.querySelector('.swal-nome').value = data.nome || '';
-                                        block.querySelector('.swal-sobrenome').value = data.sobrenome || '';
-                                        block.querySelector('.swal-email').value = data.email || '';
-                                        block.querySelector('.swal-telefone').value = data.telefone || '';
+                                        const nomeInput = block.querySelector('.swal-nome');
+                                        const sobrenomeInput = block.querySelector('.swal-sobrenome');
+                                        const emailInput = block.querySelector('.swal-email');
+                                        const telefoneInput = block.querySelector('.swal-telefone');
+                                        const cpfInput = block.querySelector('.swal-cpf');
+
+                                        if(!nomeInput.value) nomeInput.value = data.nome || '';
+                                        if(!sobrenomeInput.value) sobrenomeInput.value = data.sobrenome || '';
+                                        if(!emailInput.value) emailInput.value = data.email || '';
+                                        if(!telefoneInput.value) telefoneInput.value = data.telefone || '';
+                                        if(!cpfInput.value && data.cpf) cpfInput.value = data.cpf || '';
                                         
                                         // Feedback visual leve
                                         const originalBorder = this.style.borderColor;
@@ -1009,10 +1015,14 @@
                                     }
                                 }
                             } catch(e) {
-                                console.error('Erro ao buscar CPF', e);
+                                console.error('Erro ao buscar dados', e);
                             }
                         }
-                    });
+                    };
+
+                    block.querySelector('.swal-cpf').addEventListener('blur', autoFillHandler);
+                    block.querySelector('.swal-nome').addEventListener('blur', autoFillHandler);
+                    block.querySelector('.swal-email').addEventListener('blur', autoFillHandler);
                 };
                 
                 // Add initial block

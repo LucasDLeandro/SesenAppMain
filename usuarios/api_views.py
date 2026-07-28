@@ -85,18 +85,63 @@ def global_contacts_search_api(request):
 
 from .models import Pessoa
 
-def buscar_pessoa_por_cpf(request):
-    cpf = request.GET.get('cpf', '').strip()
-    if not cpf:
-        return JsonResponse({'error': 'CPF não fornecido'}, status=400)
+def buscar_dados_pessoa_api(request):
+    q = request.GET.get('q', '').strip()
+    if not q or len(q) < 3:
+        return JsonResponse({'encontrado': False, 'error': 'Busca muito curta'})
     
-    pessoa = Pessoa.objects.filter(cpf=cpf).first()
+    # 1. Tentar Pessoa
+    pessoa = Pessoa.objects.filter(Q(cpf=q) | Q(nome__icontains=q) | Q(email__iexact=q)).first()
     if pessoa:
         return JsonResponse({
             'encontrado': True,
             'nome': pessoa.nome,
             'sobrenome': pessoa.sobrenome or '',
+            'cpf': pessoa.cpf or '',
             'email': pessoa.email or '',
             'telefone': pessoa.telefone or ''
         })
+        
+    # 2. Tentar ContatoEmpresa
+    contato_emp = ContatoEmpresa.objects.filter(Q(nome_contato__icontains=q) | Q(email__iexact=q) | Q(whatsapp__icontains=q)).first()
+    if contato_emp:
+        parts = contato_emp.nome_contato.split(' ', 1)
+        nome = parts[0]
+        sobrenome = parts[1] if len(parts) > 1 else ''
+        return JsonResponse({
+            'encontrado': True,
+            'nome': nome,
+            'sobrenome': sobrenome,
+            'cpf': '',
+            'email': contato_emp.email or '',
+            'telefone': contato_emp.whatsapp or contato_emp.telefone or ''
+        })
+        
+    # 3. Tentar User
+    user = User.objects.filter(Q(first_name__icontains=q) | Q(email__iexact=q) | Q(username__iexact=q)).first()
+    if user:
+        return JsonResponse({
+            'encontrado': True,
+            'nome': user.first_name or user.username,
+            'sobrenome': user.last_name or '',
+            'cpf': '',
+            'email': user.email or '',
+            'telefone': getattr(user, 'perfil', None) and user.perfil.telefone or ''
+        })
+        
+    # 4. Tentar Contato Notificacoes
+    contato_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q)).first()
+    if contato_notif:
+        parts = contato_notif.nome.split(' ', 1)
+        nome = parts[0]
+        sobrenome = parts[1] if len(parts) > 1 else ''
+        return JsonResponse({
+            'encontrado': True,
+            'nome': nome,
+            'sobrenome': sobrenome,
+            'cpf': '',
+            'email': contato_notif.email or '',
+            'telefone': contato_notif.telefone or ''
+        })
+
     return JsonResponse({'encontrado': False})
