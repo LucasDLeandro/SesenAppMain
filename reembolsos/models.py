@@ -10,6 +10,7 @@ class LimiteReembolso(models.Model):
         return f"{self.indice} - {self.cargo} (R$ {self.valor})"
 
 class ServidorReembolso(models.Model):
+    pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name="servidores_reembolso")
     nome = models.CharField(max_length=200, help_text="Nome completo do servidor")
     cpf = models.CharField(max_length=20, unique=True)
     

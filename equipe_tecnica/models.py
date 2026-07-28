@@ -2,6 +2,7 @@ from django.db import models
 from empresas.models import Empresa
 
 class Tecnico(models.Model):
+    pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name="tecnicos")
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="tecnicos")
     nome = models.CharField(max_length=255, verbose_name="Nome do Técnico")
     cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF")

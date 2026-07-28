@@ -1,6 +1,7 @@
 from notificacoes.models import *
 
 class Contato(models.Model):
+    pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name="contatos_notificacao")
     nome=models.CharField(
         max_length=100,
     )
