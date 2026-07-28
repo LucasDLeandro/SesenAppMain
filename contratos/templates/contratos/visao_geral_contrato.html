@@ -986,6 +986,33 @@
                     block.querySelector('.btn-remove-pessoa').addEventListener('click', () => {
                         block.remove();
                     });
+                    
+                    // Auto-fill ao digitar CPF
+                    const cpfInput = block.querySelector('.swal-cpf');
+                    cpfInput.addEventListener('blur', async function() {
+                        const cpf = this.value.replace(/\D/g, '');
+                        if (cpf.length === 11) {
+                            try {
+                                const res = await fetch(`/usuarios/api/pessoas/buscar-cpf/?cpf=${this.value}`);
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    if (data.encontrado) {
+                                        block.querySelector('.swal-nome').value = data.nome || '';
+                                        block.querySelector('.swal-sobrenome').value = data.sobrenome || '';
+                                        block.querySelector('.swal-email').value = data.email || '';
+                                        block.querySelector('.swal-telefone').value = data.telefone || '';
+                                        
+                                        // Feedback visual leve
+                                        const originalBorder = this.style.borderColor;
+                                        this.style.borderColor = '#10b981';
+                                        setTimeout(() => { this.style.borderColor = originalBorder; }, 1500);
+                                    }
+                                }
+                            } catch(e) {
+                                console.error('Erro ao buscar CPF', e);
+                            }
+                        }
+                    });
                 };
                 
                 // Add initial block

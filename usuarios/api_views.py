@@ -82,3 +82,21 @@ def global_contacts_search_api(request):
         r['text'] = f"{r['nome']} ({r['source']}){detail_str}"
 
     return JsonResponse({'results': results})
+
+from .models import Pessoa
+
+def buscar_pessoa_por_cpf(request):
+    cpf = request.GET.get('cpf', '').strip()
+    if not cpf:
+        return JsonResponse({'error': 'CPF não fornecido'}, status=400)
+    
+    pessoa = Pessoa.objects.filter(cpf=cpf).first()
+    if pessoa:
+        return JsonResponse({
+            'encontrado': True,
+            'nome': pessoa.nome,
+            'sobrenome': pessoa.sobrenome or '',
+            'email': pessoa.email or '',
+            'telefone': pessoa.telefone or ''
+        })
+    return JsonResponse({'encontrado': False})
