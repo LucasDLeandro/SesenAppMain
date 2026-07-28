@@ -987,46 +987,95 @@
                         block.remove();
                     });
                     
-                    // Auto-fill ao digitar CPF, Nome ou E-mail (com debounce)
+                    // Autocomplete com dropdown
+                    const nomeInput = block.querySelector('.swal-nome');
+                    
+                    // Container para o dropdown
+                    const dropdown = document.createElement('ul');
+                    dropdown.className = 'list-group position-absolute w-100 shadow-sm';
+                    dropdown.style.zIndex = '1000';
+                    dropdown.style.display = 'none';
+                    dropdown.style.maxHeight = '200px';
+                    dropdown.style.overflowY = 'auto';
+                    dropdown.style.marginTop = '2px';
+                    
+                    // Envolver input com container relativo e adicionar dropdown
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'position-relative';
+                    nomeInput.parentNode.insertBefore(wrapper, nomeInput);
+                    wrapper.appendChild(nomeInput);
+                    wrapper.appendChild(dropdown);
+
                     let debounceTimer;
                     const autoFillHandler = function() {
                         clearTimeout(debounceTimer);
-                        debounceTimer = setTimeout(async () => {
-                            const val = this.value.trim();
-                            if (val.length >= 3) {
-                                try {
-                                    const res = await fetch(`/usuarios/api/pessoas/buscar-dados/?q=${encodeURIComponent(val)}`);
-                                    if (res.ok) {
-                                        const data = await res.json();
-                                        if (data.encontrado) {
-                                            const nomeInput = block.querySelector('.swal-nome');
-                                            const sobrenomeInput = block.querySelector('.swal-sobrenome');
-                                            const emailInput = block.querySelector('.swal-email');
-                                            const telefoneInput = block.querySelector('.swal-telefone');
-                                            const cpfInput = block.querySelector('.swal-cpf');
+                        const val = this.value.trim();
+                        
+                        if (val.length < 3) {
+                            dropdown.style.display = 'none';
+                            return;
+                        }
 
-                                            if(!nomeInput.value) nomeInput.value = data.nome || '';
-                                            if(!sobrenomeInput.value) sobrenomeInput.value = data.sobrenome || '';
-                                            if(!emailInput.value) emailInput.value = data.email || '';
-                                            if(!telefoneInput.value) telefoneInput.value = data.telefone || '';
-                                            if(!cpfInput.value && data.cpf) cpfInput.value = data.cpf || '';
+                        debounceTimer = setTimeout(async () => {
+                            try {
+                                const res = await fetch(`/usuarios/api/pessoas/buscar-dados/?q=${encodeURIComponent(val)}`);
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    dropdown.innerHTML = ''; // Limpa resultados anteriores
+                                    
+                                    if (data.resultados && data.resultados.length > 0) {
+                                        data.resultados.forEach(item => {
+                                            const li = document.createElement('li');
+                                            li.className = 'list-group-item list-group-item-action py-2 px-2';
+                                            li.style.cursor = 'pointer';
+                                            li.style.fontSize = '0.9rem';
                                             
-                                            // Feedback visual leve
-                                            const originalBorder = this.style.borderColor;
-                                            this.style.borderColor = '#10b981';
-                                            setTimeout(() => { this.style.borderColor = originalBorder; }, 1500);
-                                        }
+                                            const fullname = item.sobrenome ? `${item.nome} ${item.sobrenome}` : item.nome;
+                                            const extraInfo = item.email ? ` <small class="text-muted">(${item.email})</small>` : '';
+                                            const sourceBadge = `<span class="badge bg-secondary ms-1 float-end" style="font-size: 0.6rem;">${item.source}</span>`;
+                                            
+                                            li.innerHTML = `<span class="fw-bold">${fullname}</span>${sourceBadge}<br>${extraInfo}`;
+                                            
+                                            li.addEventListener('click', () => {
+                                                const sobrenomeInput = block.querySelector('.swal-sobrenome');
+                                                const emailInput = block.querySelector('.swal-email');
+                                                const telefoneInput = block.querySelector('.swal-telefone');
+                                                const cpfInput = block.querySelector('.swal-cpf');
+
+                                                nomeInput.value = item.nome || '';
+                                                sobrenomeInput.value = item.sobrenome || '';
+                                                emailInput.value = item.email || '';
+                                                telefoneInput.value = item.telefone || '';
+                                                cpfInput.value = item.cpf || '';
+                                                
+                                                dropdown.style.display = 'none';
+                                                
+                                                // Feedback visual leve
+                                                const originalBorder = block.style.borderColor;
+                                                block.style.borderColor = '#10b981';
+                                                setTimeout(() => { block.style.borderColor = originalBorder; }, 1500);
+                                            });
+                                            dropdown.appendChild(li);
+                                        });
+                                        dropdown.style.display = 'block';
+                                    } else {
+                                        dropdown.style.display = 'none';
                                     }
-                                } catch(e) {
-                                    console.error('Erro ao buscar dados', e);
                                 }
+                            } catch(e) {
+                                console.error('Erro ao buscar dados', e);
                             }
-                        }, 800); // 800ms de espera após o último caractere digitado
+                        }, 500); // 500ms debounce
                     };
 
-                    block.querySelector('.swal-cpf').addEventListener('input', autoFillHandler);
-                    block.querySelector('.swal-nome').addEventListener('input', autoFillHandler);
-                    block.querySelector('.swal-email').addEventListener('input', autoFillHandler);
+                    nomeInput.addEventListener('input', autoFillHandler);
+                    
+                    // Esconder dropdown ao clicar fora
+                    document.addEventListener('click', (e) => {
+                        if (!wrapper.contains(e.target)) {
+                            dropdown.style.display = 'none';
+                        }
+                    });
                 };
                 
                 // Add initial block

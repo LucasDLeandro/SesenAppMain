@@ -90,29 +90,26 @@ from .models import Pessoa
 def buscar_dados_pessoa_api(request):
     q = request.GET.get('q', '').strip()
     if not q or len(q) < 3:
-        return JsonResponse({'encontrado': False, 'error': 'Busca muito curta'})
+        return JsonResponse({'resultados': []})
+    
+    resultados = []
     
     # 1. Tentar Pessoa
-    pessoa = Pessoa.objects.filter(Q(cpf=q) | Q(nome__icontains=q) | Q(email__iexact=q)).first()
-    if pessoa:
-        return JsonResponse({
-            'encontrado': True,
+    pessoas = Pessoa.objects.filter(Q(cpf=q) | Q(nome__icontains=q) | Q(email__iexact=q))[:5]
+    for pessoa in pessoas:
+        resultados.append({
+            'id': f"pessoa_{pessoa.id}",
             'nome': pessoa.nome,
             'sobrenome': pessoa.sobrenome or '',
             'cpf': pessoa.cpf or '',
             'email': pessoa.email or '',
-            'telefone': pessoa.telefone or ''
+            'telefone': pessoa.telefone or '',
+            'source': 'Pessoa'
         })
         
-    # 2. Tentar ContatoEmpresa
-    # Como ContatoEmpresa agora aponta para Pessoa, basta procurar por Pessoa diretamente.
-    # Mas se precisarmos, podemos procurar por `pessoa__nome__icontains=q`.
-    # Como o passo 1 já varre Pessoa, ContatoEmpresa não adiciona novas pessoas que não estejam em Pessoa.
-    # Podemos pular a busca por ContatoEmpresa, já que os dados estão em Pessoa!
-        
-    # 3. Tentar User
-    user = User.objects.filter(Q(first_name__icontains=q) | Q(email__iexact=q) | Q(username__iexact=q)).first()
-    if user:
+    # 2. Tentar User
+    users = User.objects.filter(Q(first_name__icontains=q) | Q(email__iexact=q) | Q(username__iexact=q))[:5]
+    for user in users:
         telefone = ''
         try:
             if hasattr(user, 'perfil'):
@@ -120,32 +117,33 @@ def buscar_dados_pessoa_api(request):
         except Exception:
             pass
             
-        return JsonResponse({
-            'encontrado': True,
+        resultados.append({
+            'id': f"user_{user.id}",
             'nome': user.first_name or user.username,
             'sobrenome': user.last_name or '',
             'cpf': '',
             'email': user.email or '',
-            'telefone': telefone
+            'telefone': telefone,
+            'source': 'Usuário'
         })
         
-    # 4. Tentar Contato Notificacoes
-    # O app de notificacoes ainda pode ter um modelo Contato independente, vamos testar de forma segura
+    # 3. Tentar Contato Notificacoes
     try:
-        contato_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q)).first()
-        if contato_notif:
+        contatos_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q))[:5]
+        for contato_notif in contatos_notif:
             parts = contato_notif.nome.split(' ', 1)
             nome = parts[0]
             sobrenome = parts[1] if len(parts) > 1 else ''
-            return JsonResponse({
-                'encontrado': True,
+            resultados.append({
+                'id': f"notif_{contato_notif.id}",
                 'nome': nome,
                 'sobrenome': sobrenome,
                 'cpf': '',
                 'email': contato_notif.email or '',
-                'telefone': contato_notif.telefone or ''
+                'telefone': contato_notif.telefone or '',
+                'source': 'Contato'
             })
     except Exception:
         pass
 
-    return JsonResponse({'encontrado': False})
+    return JsonResponse({'resultados': resultados})
