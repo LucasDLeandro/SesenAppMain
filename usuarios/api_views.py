@@ -59,21 +59,26 @@ def global_contacts_search_api(request):
         pass
 
     # 3. Search Contatos Notificacoes
-    contatos_notif = Contato.objects.filter(
-        Q(nome__icontains=query) |
-        Q(telefone__icontains=query)
-    )[:10]
-    
-    for c in contatos_notif:
-        results.append({
-            'id': f"notif_{c.id}",
-            'source': 'Diretório de Contatos',
-            'nome': c.nome,
-            'email': '',
-            'telefone': c.telefone or '',
-            'cargo': c.role or '',
-            'empresa': ''
-        })
+    try:
+        contatos_notif = Contato.objects.filter(
+            Q(pessoa__nome__icontains=query) |
+            Q(pessoa__telefone__icontains=query)
+        ).select_related('pessoa')[:10]
+        
+        for c in contatos_notif:
+            if not c.pessoa: continue
+            nome_completo = c.pessoa.nome + (f" {c.pessoa.sobrenome}" if c.pessoa.sobrenome else "")
+            results.append({
+                'id': f"notif_{c.id}",
+                'source': 'Diretório de Contatos',
+                'nome': nome_completo,
+                'email': c.pessoa.email or '',
+                'telefone': c.pessoa.telefone or '',
+                'cargo': c.role or '',
+                'empresa': ''
+            })
+    except Exception:
+        pass
 
     # Format for Select2
     # Select2 expects { id: ..., text: ... } or we can format it in JS.
@@ -97,50 +102,97 @@ def buscar_dados_pessoa_api(request):
     # 1. Tentar Pessoa
     pessoas = Pessoa.objects.filter(Q(cpf=q) | Q(nome__icontains=q) | Q(email__iexact=q))[:5]
     for pessoa in pessoas:
+        nome = pessoa.nome
+        sobrenome = pessoa.sobrenome or ''
+        email = pessoa.email or ''
+        telefone = pessoa.telefone or ''
+        cpf = pessoa.cpf or ''
+        
+        if getattr(pessoa, 'user', None):
+            if not email: email = pessoa.user.email or ''
+            if not sobrenome: sobrenome = pessoa.user.last_name or ''
+            if not telefone and hasattr(pessoa.user, 'perfil'):
+                telefone = getattr(pessoa.user.perfil, 'telefone', '') or ''
+                
+        if not sobrenome and ' ' in nome:
+            parts = nome.split(' ', 1)
+            nome = parts[0]
+            sobrenome = parts[1]
+            
         resultados.append({
             'id': f"pessoa_{pessoa.id}",
-            'nome': pessoa.nome,
-            'sobrenome': pessoa.sobrenome or '',
-            'cpf': pessoa.cpf or '',
-            'email': pessoa.email or '',
-            'telefone': pessoa.telefone or '',
+            'nome': nome,
+            'sobrenome': sobrenome,
+            'cpf': cpf,
+            'email': email,
+            'telefone': telefone,
             'source': 'Pessoa'
         })
         
     # 2. Tentar User
     users = User.objects.filter(Q(first_name__icontains=q) | Q(email__iexact=q) | Q(username__iexact=q))[:5]
     for user in users:
+        nome = user.first_name or user.username
+        sobrenome = user.last_name or ''
+        email = user.email or ''
         telefone = ''
-        try:
-            if hasattr(user, 'perfil'):
-                telefone = user.perfil.telefone or ''
-        except Exception:
-            pass
+        cpf = ''
+        
+        if hasattr(user, 'perfil'):
+            telefone = getattr(user.perfil, 'telefone', '') or ''
+            
+        if hasattr(user, 'pessoa_vinculada') and user.pessoa_vinculada:
+            pessoa = user.pessoa_vinculada
+            if not telefone: telefone = pessoa.telefone or ''
+            if not cpf: cpf = pessoa.cpf or ''
+            if not sobrenome: sobrenome = pessoa.sobrenome or ''
+            if not email: email = pessoa.email or ''
+            if not nome: nome = pessoa.nome
+            
+        if not sobrenome and ' ' in nome:
+            parts = nome.split(' ', 1)
+            nome = parts[0]
+            sobrenome = parts[1]
             
         resultados.append({
             'id': f"user_{user.id}",
-            'nome': user.first_name or user.username,
-            'sobrenome': user.last_name or '',
-            'cpf': '',
-            'email': user.email or '',
+            'nome': nome,
+            'sobrenome': sobrenome,
+            'cpf': cpf,
+            'email': email,
             'telefone': telefone,
             'source': 'Usuário'
         })
         
     # 3. Tentar Contato Notificacoes
     try:
-        contatos_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q))[:5]
+        contatos_notif = Contato.objects.filter(Q(pessoa__nome__icontains=q) | Q(pessoa__email__iexact=q) | Q(pessoa__telefone__icontains=q))[:5]
         for contato_notif in contatos_notif:
-            parts = contato_notif.nome.split(' ', 1)
-            nome = parts[0]
-            sobrenome = parts[1] if len(parts) > 1 else ''
+            pessoa = contato_notif.pessoa
+            if not pessoa: continue
+            
+            nome = pessoa.nome
+            sobrenome = pessoa.sobrenome or ''
+            email = pessoa.email or ''
+            telefone = pessoa.telefone or ''
+            cpf = pessoa.cpf or ''
+            
+            if getattr(pessoa, 'user', None):
+                if not email: email = pessoa.user.email or ''
+                if not sobrenome: sobrenome = pessoa.user.last_name or ''
+            
+            if not sobrenome and ' ' in nome:
+                parts = nome.split(' ', 1)
+                nome = parts[0]
+                sobrenome = parts[1]
+                
             resultados.append({
                 'id': f"notif_{contato_notif.id}",
                 'nome': nome,
                 'sobrenome': sobrenome,
-                'cpf': '',
-                'email': contato_notif.email or '',
-                'telefone': contato_notif.telefone or '',
+                'cpf': cpf,
+                'email': email,
+                'telefone': telefone,
                 'source': 'Contato'
             })
     except Exception:
