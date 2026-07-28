@@ -242,7 +242,9 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         for contato in contatos:
             cargo = (contato.cargo or '').lower()
             if any(term in cargo for term in ['tecnico', 'tcnico', 'técnico', 't\u00e9cnico', 'tǸcnico']):
-                tecnicos.append(contato.nome_contato)
+                if contato.pessoa:
+                    nome_completo = f"{contato.pessoa.nome} {contato.pessoa.sobrenome or ''}".strip()
+                    tecnicos.append(nome_completo)
         return Response(list(set(tecnicos)))
 
     @action(detail=False, methods=['get'], url_path='tecnicos_acompanhamento')
@@ -295,11 +297,13 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             contrato = Contratos.objects.filter(categoria__contains='ELEVADORES').first()
             if contrato and contrato.empresa:
                 otis = contrato.empresa
-                contato_existe = otis.contatos.filter(nome_contato__iexact=tecnico.strip()).exists()
+                contato_existe = otis.contatos.filter(pessoa__nome__icontains=tecnico.strip()).exists()
                 if not contato_existe:
+                    from usuarios.models import Pessoa
+                    pessoa_tec, _ = Pessoa.objects.get_or_create(nome=tecnico.strip())
                     ContatoEmpresa.objects.create(
                         empresa=otis,
-                        nome_contato=tecnico.strip(),
+                        pessoa=pessoa_tec,
                         cargo='Técnico'
                     )
 

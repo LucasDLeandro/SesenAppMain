@@ -2055,3 +2055,25 @@ Traceback (most recent call last):
   File "C:\Users\lucas.leandro.adml\AppData\Local\Programs\Python\Python313\Lib\site-packages\django\http\request.py", line 202, in get_host
     raise DisallowedHost(msg)
 django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: 'testserver'. You may need to add 'testserver' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
+Traceback (most recent call last):
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\utils\deprecation.py", line 308, in __call__
+    response = self.process_request(request)
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\middleware\common.py", line 48, in process_request
+    host = request.get_host()
+  File "C:\Lucas\SesenAppMain\env\Lib\site-packages\django\http\request.py", line 205, in get_host
+    raise DisallowedHost(msg)
+django.core.exceptions.DisallowedHost: Invalid HTTP_HOST header: '10.30.24.124:8090'. You may need to add '10.30.24.124' to ALLOWED_HOSTS.
