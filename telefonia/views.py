@@ -1,4 +1,6 @@
 import datetime
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from io import BytesIO
 
 from django.shortcuts import render
@@ -108,7 +110,18 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         # Pega os outros campos
         solicitacao.tecnico_responsavel = request.data.get('tecnico_responsavel', solicitacao.tecnico_responsavel)
         solicitacao.relatorio = request.data.get('relatorio', solicitacao.relatorio)
-        solicitacao.data_instalacao = request.data.get('data_instalacao', solicitacao.data_instalacao)
+        
+        if 'data_instalacao' in request.data:
+            data_inst_str = request.data.get('data_instalacao')
+            if data_inst_str:
+                dt = parse_datetime(data_inst_str)
+                if dt:
+                    if timezone.is_naive(dt):
+                        dt = timezone.make_aware(dt)
+                    solicitacao.data_instalacao = dt
+            else:
+                solicitacao.data_instalacao = None
+                
         solicitacao.termo_transferencia_interna = request.data.get('termo_transferencia_interna', solicitacao.termo_transferencia_interna)
         
         instalacoes = request.data.get('instalacoes', [])
