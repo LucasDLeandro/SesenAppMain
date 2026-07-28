@@ -38,23 +38,25 @@ def global_contacts_search_api(request):
         })
 
     # 2. Search Contatos Empresa
-    contatos_empresa = ContatoEmpresa.objects.filter(
-        Q(nome_contato__icontains=query) |
-        Q(email__icontains=query) |
-        Q(telefone__icontains=query) |
-        Q(whatsapp__icontains=query)
-    ).select_related('empresa')[:10]
-    
-    for c in contatos_empresa:
-        results.append({
-            'id': f"emp_{c.id}",
-            'source': 'Contato de Empresa',
-            'nome': c.nome_contato,
-            'email': c.email or '',
-            'telefone': c.whatsapp or c.telefone or '',
-            'cargo': c.cargo or '',
-            'empresa': c.empresa.nome_empresa if c.empresa else ''
-        })
+    try:
+        contatos_empresa = ContatoEmpresa.objects.filter(
+            Q(pessoa__nome__icontains=query) |
+            Q(pessoa__email__icontains=query) |
+            Q(pessoa__telefone__icontains=query)
+        ).select_related('empresa', 'pessoa')[:10]
+        
+        for c in contatos_empresa:
+            results.append({
+                'id': f"emp_{c.id}",
+                'source': 'Contato de Empresa',
+                'nome': c.pessoa.nome + (f" {c.pessoa.sobrenome}" if c.pessoa.sobrenome else ""),
+                'email': c.pessoa.email or '',
+                'telefone': c.pessoa.telefone or '',
+                'cargo': c.cargo or '',
+                'empresa': c.empresa.nome_empresa if c.empresa else ''
+            })
+    except Exception:
+        pass
 
     # 3. Search Contatos Notificacoes
     contatos_notif = Contato.objects.filter(
@@ -103,45 +105,47 @@ def buscar_dados_pessoa_api(request):
         })
         
     # 2. Tentar ContatoEmpresa
-    contato_emp = ContatoEmpresa.objects.filter(Q(nome_contato__icontains=q) | Q(email__iexact=q) | Q(whatsapp__icontains=q)).first()
-    if contato_emp:
-        parts = contato_emp.nome_contato.split(' ', 1)
-        nome = parts[0]
-        sobrenome = parts[1] if len(parts) > 1 else ''
-        return JsonResponse({
-            'encontrado': True,
-            'nome': nome,
-            'sobrenome': sobrenome,
-            'cpf': '',
-            'email': contato_emp.email or '',
-            'telefone': contato_emp.whatsapp or contato_emp.telefone or ''
-        })
+    # Como ContatoEmpresa agora aponta para Pessoa, basta procurar por Pessoa diretamente.
+    # Mas se precisarmos, podemos procurar por `pessoa__nome__icontains=q`.
+    # Como o passo 1 já varre Pessoa, ContatoEmpresa não adiciona novas pessoas que não estejam em Pessoa.
+    # Podemos pular a busca por ContatoEmpresa, já que os dados estão em Pessoa!
         
     # 3. Tentar User
     user = User.objects.filter(Q(first_name__icontains=q) | Q(email__iexact=q) | Q(username__iexact=q)).first()
     if user:
+        telefone = ''
+        try:
+            if hasattr(user, 'perfil'):
+                telefone = user.perfil.telefone or ''
+        except Exception:
+            pass
+            
         return JsonResponse({
             'encontrado': True,
             'nome': user.first_name or user.username,
             'sobrenome': user.last_name or '',
             'cpf': '',
             'email': user.email or '',
-            'telefone': getattr(user, 'perfil', None) and user.perfil.telefone or ''
+            'telefone': telefone
         })
         
     # 4. Tentar Contato Notificacoes
-    contato_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q)).first()
-    if contato_notif:
-        parts = contato_notif.nome.split(' ', 1)
-        nome = parts[0]
-        sobrenome = parts[1] if len(parts) > 1 else ''
-        return JsonResponse({
-            'encontrado': True,
-            'nome': nome,
-            'sobrenome': sobrenome,
-            'cpf': '',
-            'email': contato_notif.email or '',
-            'telefone': contato_notif.telefone or ''
-        })
+    # O app de notificacoes ainda pode ter um modelo Contato independente, vamos testar de forma segura
+    try:
+        contato_notif = Contato.objects.filter(Q(nome__icontains=q) | Q(email__iexact=q) | Q(telefone__icontains=q)).first()
+        if contato_notif:
+            parts = contato_notif.nome.split(' ', 1)
+            nome = parts[0]
+            sobrenome = parts[1] if len(parts) > 1 else ''
+            return JsonResponse({
+                'encontrado': True,
+                'nome': nome,
+                'sobrenome': sobrenome,
+                'cpf': '',
+                'email': contato_notif.email or '',
+                'telefone': contato_notif.telefone or ''
+            })
+    except Exception:
+        pass
 
     return JsonResponse({'encontrado': False})
