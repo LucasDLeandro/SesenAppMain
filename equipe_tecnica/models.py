@@ -4,13 +4,22 @@ from empresas.models import Empresa
 class Tecnico(models.Model):
     pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name="tecnicos")
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="tecnicos")
-    nome = models.CharField(max_length=255, verbose_name="Nome do Técnico")
-    cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF")
     rg = models.CharField(max_length=20, blank=True, null=True, verbose_name="RG")
-    telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    @property
+    def nome(self):
+        return self.pessoa.nome if self.pessoa else ''
+
+    @property
+    def cpf(self):
+        return self.pessoa.cpf if self.pessoa else ''
+
+    @property
+    def telefone(self):
+        return self.pessoa.telefone if self.pessoa else ''
 
     def __str__(self):
         return f"{self.nome} ({self.cpf})"

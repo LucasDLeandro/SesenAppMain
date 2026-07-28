@@ -22,7 +22,7 @@ class LimiteReembolsoViewSet(viewsets.ModelViewSet):
     serializer_class = LimiteReembolsoSerializer
 
 class ServidorReembolsoViewSet(viewsets.ModelViewSet):
-    queryset = ServidorReembolso.objects.all().order_by('nome')
+    queryset = ServidorReembolso.objects.all().order_by('pessoa__nome')
     serializer_class = ServidorReembolsoSerializer
 
 from .models import FaturaReembolso

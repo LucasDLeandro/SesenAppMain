@@ -14,6 +14,9 @@ class LimiteReembolsoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ServidorReembolsoSerializer(serializers.ModelSerializer):
+    nome = serializers.CharField(source='pessoa.nome', required=False)
+    cpf = serializers.CharField(source='pessoa.cpf', required=False)
+    
     class Meta:
         model = ServidorReembolso
         fields = '__all__'
@@ -23,6 +26,27 @@ class ServidorReembolsoSerializer(serializers.ModelSerializer):
             import re
             value = re.sub(r'\D', '', value)
         return value
+
+    def create(self, validated_data):
+        pessoa_data = validated_data.pop('pessoa', {})
+        from usuarios.models import Pessoa
+        pessoa, _ = Pessoa.objects.get_or_create(
+            cpf=pessoa_data.get('cpf'),
+            defaults={'nome': pessoa_data.get('nome')}
+        )
+        validated_data['pessoa'] = pessoa
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        pessoa_data = validated_data.pop('pessoa', {})
+        if pessoa_data:
+            if instance.pessoa:
+                if 'nome' in pessoa_data:
+                    instance.pessoa.nome = pessoa_data['nome']
+                if 'cpf' in pessoa_data:
+                    instance.pessoa.cpf = pessoa_data['cpf']
+                instance.pessoa.save()
+        return super().update(instance, validated_data)
 
     def validate_telefone_linha(self, value):
         if value:

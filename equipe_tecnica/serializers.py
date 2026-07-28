@@ -4,6 +4,9 @@ from empresas.serializers import EmpresaSerializer
 
 class TecnicoSerializer(serializers.ModelSerializer):
     empresa_nome = serializers.CharField(source='empresa.nome_empresa', read_only=True)
+    nome = serializers.CharField(source='pessoa.nome', read_only=True)
+    cpf = serializers.CharField(source='pessoa.cpf', read_only=True)
+    telefone = serializers.CharField(source='pessoa.telefone', read_only=True)
 
     class Meta:
         model = Tecnico
@@ -27,23 +30,30 @@ class SolicitacaoAcessoSerializer(serializers.ModelSerializer):
 
     def _process_tecnicos(self, instance, tecnicos_data):
         if tecnicos_data is not None:
+            from usuarios.models import Pessoa
             tecnico_objs = []
             for t_data in tecnicos_data:
                 # Busca por CPF ou cria
-                tecnico, created = Tecnico.objects.get_or_create(
+                pessoa, _ = Pessoa.objects.get_or_create(
                     cpf=t_data.get('cpf'),
                     defaults={
-                        'nome': t_data.get('nome'),
+                        'nome': t_data.get('nome', ''),
+                        'telefone': t_data.get('telefone', '')
+                    }
+                )
+                tecnico, created = Tecnico.objects.get_or_create(
+                    pessoa=pessoa,
+                    defaults={
                         'rg': t_data.get('rg', ''),
-                        'telefone': t_data.get('telefone', ''),
                         'empresa': instance.empresa
                     }
                 )
                 if not created:
                     # Atualiza os dados
-                    tecnico.nome = t_data.get('nome', tecnico.nome)
+                    pessoa.nome = t_data.get('nome', pessoa.nome)
+                    pessoa.telefone = t_data.get('telefone', pessoa.telefone)
+                    pessoa.save()
                     tecnico.rg = t_data.get('rg', tecnico.rg)
-                    tecnico.telefone = t_data.get('telefone', tecnico.telefone)
                     tecnico.empresa = instance.empresa
                     tecnico.save()
                 tecnico_objs.append(tecnico)

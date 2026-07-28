@@ -9,15 +9,15 @@ class LimiteReembolsoAdmin(admin.ModelAdmin):
 
 @admin.register(ServidorReembolso)
 class ServidorReembolsoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'cpf', 'cargo_limite', 'telefone_linha', 'banco', 'criado_em')
-    search_fields = ('nome', 'cpf')
+    list_display = ('pessoa', 'cargo_limite', 'telefone_linha', 'banco', 'criado_em')
+    search_fields = ('pessoa__nome', 'pessoa__cpf')
     list_filter = ('cargo_limite',)
-    ordering = ('nome',)
+    ordering = ('pessoa__nome',)
 
 @admin.register(SolicitacaoReembolso)
 class SolicitacaoReembolsoAdmin(admin.ModelAdmin):
     list_display = ('id', 'servidor', 'periodo_inicio', 'periodo_fim', 'valor_ressarcido', 'status')
-    search_fields = ('servidor__nome', 'servidor__cpf')
+    search_fields = ('servidor__pessoa__nome', 'servidor__pessoa__cpf')
     list_filter = ('status',)
     ordering = ('-criado_em',)
 

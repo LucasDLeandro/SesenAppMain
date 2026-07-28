@@ -2,15 +2,14 @@ from notificacoes.models import *
 
 class Contato(models.Model):
     pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name="contatos_notificacao")
-    nome=models.CharField(
-        max_length=100,
-    )
     
-    telefone=models.CharField(
-        max_length=13,
-        #null=False,  - Não é necessário definir (COMPORTAMENTO PADRÃO)
-        #blank=False  - Não é necessário definir (COMPORTAMENTO PADRÃO)
-    )
+    @property
+    def nome(self):
+        return self.pessoa.nome if self.pessoa else ''
+
+    @property
+    def telefone(self):
+        return self.pessoa.telefone if self.pessoa else ''
     role=models.CharField(
         max_length = 100,
         default='Geral'

@@ -6,8 +6,8 @@ from .models.template_notificacao import TemplateMessage
 
 @admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'telefone', 'is_ativo')
-    search_fields = ('nome', 'telefone')
+    list_display = ('pessoa', 'is_ativo')
+    search_fields = ('pessoa__nome', 'pessoa__telefone')
     list_filter = ('is_ativo',)
 
 @admin.register(TemplateMessage)
