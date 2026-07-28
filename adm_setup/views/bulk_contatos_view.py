@@ -26,37 +26,50 @@ def bulk_contatos_view(request):
 
         # 2. Update
         updates = data.get('update', [])
+        from usuarios.models import Pessoa
         for item in updates:
             c_id = item.get('id')
             if c_id:
                 try:
                     contato = Contato.objects.get(id=c_id)
-                    contato.nome = item.get('nome', contato.nome)
-                    contato.telefone = item.get('telefone', contato.telefone)
-                    contato.role = item.get('role', contato.role)
-                    # Handle boolean conversion correctly if passed as string 'true'/'false'
-                    is_ativo_raw = item.get('is_ativo', contato.is_ativo)
-                    contato.is_ativo = is_ativo_raw if isinstance(is_ativo_raw, bool) else (str(is_ativo_raw).lower() == 'true')
+                    
+                    if contato.pessoa:
+                        if 'nome' in item: contato.pessoa.nome = item['nome']
+                        if 'telefone' in item: contato.pessoa.telefone = item['telefone']
+                        contato.pessoa.save()
+                    elif 'nome' in item:
+                        pessoa, _ = Pessoa.objects.get_or_create(nome=item['nome'])
+                        if 'telefone' in item: 
+                            pessoa.telefone = item['telefone']
+                            pessoa.save()
+                        contato.pessoa = pessoa
+                    
+                    if 'role' in item: contato.role = item['role']
+                    
+                    if 'is_ativo' in item:
+                        is_ativo_raw = item['is_ativo']
+                        contato.is_ativo = is_ativo_raw if isinstance(is_ativo_raw, bool) else (str(is_ativo_raw).lower() == 'true')
                     contato.save()
                 except Contato.DoesNotExist:
                     pass
 
         # 3. Create
         creates = data.get('create', [])
-        new_contatos = []
         for item in creates:
             if item.get('nome'): # Basic validation
                 is_ativo_raw = item.get('is_ativo', True)
                 is_ativo = is_ativo_raw if isinstance(is_ativo_raw, bool) else (str(is_ativo_raw).lower() == 'true')
-                new_contatos.append(Contato(
-                    nome=item.get('nome'),
-                    telefone=item.get('telefone', ''),
+                
+                pessoa, _ = Pessoa.objects.get_or_create(nome=item['nome'])
+                if item.get('telefone') and not pessoa.telefone:
+                    pessoa.telefone = item['telefone']
+                    pessoa.save()
+                    
+                Contato.objects.create(
+                    pessoa=pessoa,
                     role=item.get('role', 'Geral'),
                     is_ativo=is_ativo
-                ))
-                
-        if new_contatos:
-            Contato.objects.bulk_create(new_contatos)
+                )
 
         return JsonResponse({'status': 'success', 'message': 'Contatos salvos com sucesso!'})
 
