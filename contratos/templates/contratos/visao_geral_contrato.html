@@ -987,42 +987,46 @@
                         block.remove();
                     });
                     
-                    // Auto-fill ao digitar CPF, Nome ou E-mail
-                    const autoFillHandler = async function() {
-                        const val = this.value.trim();
-                        if (val.length >= 3) {
-                            try {
-                                const res = await fetch(`/usuarios/api/pessoas/buscar-dados/?q=${encodeURIComponent(val)}`);
-                                if (res.ok) {
-                                    const data = await res.json();
-                                    if (data.encontrado) {
-                                        const nomeInput = block.querySelector('.swal-nome');
-                                        const sobrenomeInput = block.querySelector('.swal-sobrenome');
-                                        const emailInput = block.querySelector('.swal-email');
-                                        const telefoneInput = block.querySelector('.swal-telefone');
-                                        const cpfInput = block.querySelector('.swal-cpf');
+                    // Auto-fill ao digitar CPF, Nome ou E-mail (com debounce)
+                    let debounceTimer;
+                    const autoFillHandler = function() {
+                        clearTimeout(debounceTimer);
+                        debounceTimer = setTimeout(async () => {
+                            const val = this.value.trim();
+                            if (val.length >= 3) {
+                                try {
+                                    const res = await fetch(`/usuarios/api/pessoas/buscar-dados/?q=${encodeURIComponent(val)}`);
+                                    if (res.ok) {
+                                        const data = await res.json();
+                                        if (data.encontrado) {
+                                            const nomeInput = block.querySelector('.swal-nome');
+                                            const sobrenomeInput = block.querySelector('.swal-sobrenome');
+                                            const emailInput = block.querySelector('.swal-email');
+                                            const telefoneInput = block.querySelector('.swal-telefone');
+                                            const cpfInput = block.querySelector('.swal-cpf');
 
-                                        if(!nomeInput.value) nomeInput.value = data.nome || '';
-                                        if(!sobrenomeInput.value) sobrenomeInput.value = data.sobrenome || '';
-                                        if(!emailInput.value) emailInput.value = data.email || '';
-                                        if(!telefoneInput.value) telefoneInput.value = data.telefone || '';
-                                        if(!cpfInput.value && data.cpf) cpfInput.value = data.cpf || '';
-                                        
-                                        // Feedback visual leve
-                                        const originalBorder = this.style.borderColor;
-                                        this.style.borderColor = '#10b981';
-                                        setTimeout(() => { this.style.borderColor = originalBorder; }, 1500);
+                                            if(!nomeInput.value) nomeInput.value = data.nome || '';
+                                            if(!sobrenomeInput.value) sobrenomeInput.value = data.sobrenome || '';
+                                            if(!emailInput.value) emailInput.value = data.email || '';
+                                            if(!telefoneInput.value) telefoneInput.value = data.telefone || '';
+                                            if(!cpfInput.value && data.cpf) cpfInput.value = data.cpf || '';
+                                            
+                                            // Feedback visual leve
+                                            const originalBorder = this.style.borderColor;
+                                            this.style.borderColor = '#10b981';
+                                            setTimeout(() => { this.style.borderColor = originalBorder; }, 1500);
+                                        }
                                     }
+                                } catch(e) {
+                                    console.error('Erro ao buscar dados', e);
                                 }
-                            } catch(e) {
-                                console.error('Erro ao buscar dados', e);
                             }
-                        }
+                        }, 800); // 800ms de espera após o último caractere digitado
                     };
 
-                    block.querySelector('.swal-cpf').addEventListener('blur', autoFillHandler);
-                    block.querySelector('.swal-nome').addEventListener('blur', autoFillHandler);
-                    block.querySelector('.swal-email').addEventListener('blur', autoFillHandler);
+                    block.querySelector('.swal-cpf').addEventListener('input', autoFillHandler);
+                    block.querySelector('.swal-nome').addEventListener('input', autoFillHandler);
+                    block.querySelector('.swal-email').addEventListener('input', autoFillHandler);
                 };
                 
                 // Add initial block
