@@ -934,22 +934,61 @@
                 title: 'Alocar Profissional',
                 html: `
                     <h6 class="text-start mt-3 mb-1 text-muted small fw-bold text-uppercase">Dados do Profissional</h6>
-                    <input id="swal-prof-nome" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="Nome Completo">
-                    <input id="swal-prof-cpf" class="swal2-input w-75 mx-auto d-block mt-0" placeholder="CPF">
+                    <input id="swal-prof-nome" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="Nome" style="height: 2.2rem; font-size: 0.9rem;">
+                    <input id="swal-prof-sobrenome" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="Sobrenome" style="height: 2.2rem; font-size: 0.9rem;">
+                    <input id="swal-prof-cpf" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="CPF" style="height: 2.2rem; font-size: 0.9rem;">
+                    <input id="swal-prof-email" type="email" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="E-mail" style="height: 2.2rem; font-size: 0.9rem;">
+                    <input id="swal-prof-telefone" class="swal2-input w-75 mx-auto d-block mt-0 mb-2" placeholder="Telefone" style="height: 2.2rem; font-size: 0.9rem;">
                     
+                    <h6 class="text-start mt-3 mb-1 text-muted small fw-bold text-uppercase">Formações Profissionais</h6>
+                    <div id="formacoes-container" class="w-75 mx-auto">
+                        <div class="d-flex mb-2 formacao-item">
+                            <input class="form-control form-control-sm me-2 swal-prof-formacao" placeholder="Título da formação">
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
+                        </div>
+                    </div>
+                    <button type="button" id="btn-add-formacao" class="btn btn-sm btn-outline-secondary mb-3 w-75 mx-auto d-block">+ Adicionar Formação</button>
+
                     <h6 class="text-start mt-4 mb-1 text-muted small fw-bold text-uppercase">Dados da Alocação</h6>
-                    <select id="swal-aloc-posto" class="swal2-select w-75 mx-auto d-block mt-0 mb-2">
+                    <select id="swal-aloc-posto" class="swal2-select w-75 mx-auto d-block mt-0 mb-2" style="font-size: 0.9rem; padding: 0.375rem 2.25rem 0.375rem 0.75rem;">
                         <option value="">Selecione o Posto...</option>
                         ${options}
                     </select>
-                    <input id="swal-aloc-data" type="date" class="swal2-input w-75 mx-auto d-block mt-0" placeholder="Data de Início">
+                    <input id="swal-aloc-data" type="date" class="swal2-input w-75 mx-auto d-block mt-0" placeholder="Data de Início" style="height: 2.2rem; font-size: 0.9rem;">
                 `,
                 confirmButtonText: 'Salvar',
                 showCancelButton: true,
+                didOpen: () => {
+                    document.getElementById('btn-add-formacao').addEventListener('click', () => {
+                        const container = document.getElementById('formacoes-container');
+                        const div = document.createElement('div');
+                        div.className = 'd-flex mb-2 formacao-item';
+                        div.innerHTML = `
+                            <input class="form-control form-control-sm me-2 swal-prof-formacao" placeholder="Título da formação">
+                            <button type="button" class="btn btn-sm btn-outline-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
+                        `;
+                        container.appendChild(div);
+                        
+                        div.querySelector('.btn-remover-formacao').addEventListener('click', function() {
+                            this.parentElement.remove();
+                        });
+                    });
+                    
+                    document.querySelector('.btn-remover-formacao').addEventListener('click', function() {
+                        this.parentElement.remove();
+                    });
+                },
                 preConfirm: () => {
+                    const formacoes = Array.from(document.querySelectorAll('.swal-prof-formacao'))
+                                            .map(i => i.value)
+                                            .filter(v => v.trim() !== '');
                     return {
                         nome: document.getElementById('swal-prof-nome').value,
+                        sobrenome: document.getElementById('swal-prof-sobrenome').value,
                         cpf: document.getElementById('swal-prof-cpf').value,
+                        email: document.getElementById('swal-prof-email').value,
+                        telefone: document.getElementById('swal-prof-telefone').value,
+                        formacoes: formacoes,
                         posto: document.getElementById('swal-aloc-posto').value,
                         data_inicio: document.getElementById('swal-aloc-data').value
                     }
@@ -967,9 +1006,22 @@
                         const resProf = await fetch('/contratos/api/profissionais/', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-                            body: JSON.stringify({ nome: data.nome, cpf: data.cpf })
+                            body: JSON.stringify({ 
+                                nome: data.nome, 
+                                sobrenome: data.sobrenome,
+                                cpf: data.cpf,
+                                email: data.email,
+                                telefone: data.telefone,
+                                formacoes: data.formacoes
+                            })
                         });
-                        if(!resProf.ok) throw new Error('Erro ao criar profissional');
+                        
+                        if(!resProf.ok) {
+                            const errData = await resProf.json();
+                            const errMsg = errData ? Object.values(errData).flat()[0] : 'Erro na API';
+                            Swal.fire('Erro', 'Erro ao salvar profissional: ' + errMsg, 'error');
+                            return;
+                        }
                         const prof = await resProf.json();
                         
                         // 2. Criar Alocacao
@@ -988,7 +1040,9 @@
                             Swal.fire('Sucesso!', 'Profissional alocado com sucesso.', 'success');
                             carregarAlocacoes();
                         } else {
-                            Swal.fire('Erro', 'Falha ao salvar a alocação.', 'error');
+                            const errData = await resAloc.json();
+                            const errMsg = errData ? Object.values(errData).flat()[0] : 'Erro na API';
+                            Swal.fire('Erro', 'Falha ao salvar a alocação: ' + errMsg, 'error');
                         }
                     } catch(e) {
                         Swal.fire('Erro', 'Erro de comunicação', 'error');

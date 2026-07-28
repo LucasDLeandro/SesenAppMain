@@ -163,10 +163,19 @@
                             <form id="form-novo-contato">
                                 {% csrf_token %}
                                 <div class="row g-2">
-                                    <div class="col-md-5">
-                                        <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome do Contato *" required>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome *" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control format-text" id="contato_sobrenome" placeholder="Sobrenome">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="email" class="form-control" id="contato_email" placeholder="E-mail">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control mask-telefone" id="contato_telefone" placeholder="Telefone">
+                                    </div>
+                                    <div class="col-md-8">
                                         <select class="form-select" id="contato_cargo" required>
                                             <option value="" disabled selected>Cargo na Empresa *</option>
                                             <option value="Gerência">Gerência</option>
@@ -175,15 +184,6 @@
                                             <option value="Preposto">Preposto</option>
                                             <option value="Técnico">Técnico</option>
                                         </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input type="email" class="form-control" id="contato_email" placeholder="E-mail">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control mask-telefone" id="contato_telefone" placeholder="Telefone">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <input type="text" class="form-control mask-telefone" id="contato_whatsapp" placeholder="WhatsApp">
                                     </div>
                                     <div class="col-md-4 d-grid">
                                         <button type="button" class="btn btn-success" onclick="adicionarContato()">

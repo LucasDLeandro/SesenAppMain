@@ -70,7 +70,7 @@ class ItemCustoExtraViewSet(viewsets.ModelViewSet):
         return queryset
 
 class ProfissionalViewSet(viewsets.ModelViewSet):
-    queryset = Profissional.objects.all().order_by('nome')
+    queryset = Profissional.objects.all().order_by('pessoa__nome')
     serializer_class = ProfissionalSerializer
     permission_classes = [IsAuthenticated]
 

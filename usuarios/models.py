@@ -57,3 +57,27 @@ class Perfil(models.Model):
         return self.tipo == TiposUsuario.VISUALIZACAO
 
 
+class Pessoa(models.Model):
+    user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='pessoa_vinculada')
+    nome = models.CharField(max_length=255, verbose_name="Nome")
+    sobrenome = models.CharField(max_length=255, blank=True, null=True, verbose_name="Sobrenome")
+    cpf = models.CharField(max_length=14, unique=True, null=True, blank=True, verbose_name="CPF")
+    email = models.EmailField(blank=True, null=True, verbose_name="E-mail")
+    telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        if self.sobrenome:
+            return f"{self.nome} {self.sobrenome}"
+        return self.nome
+
+class FormacaoProfissional(models.Model):
+    pessoa = models.ForeignKey(Pessoa, on_delete=models.CASCADE, related_name='formacoes')
+    titulo = models.CharField(max_length=255, verbose_name="Formação/Título")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titulo

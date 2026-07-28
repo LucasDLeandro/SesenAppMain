@@ -250,12 +250,11 @@ function renderizarContatos(contatos) {
         const card = `
             <div class="contato-card d-flex justify-content-between align-items-start" id="contato-${contato.id}">
                 <div class="flex-grow-1">
-                    <div class="fw-bold text-dark"><i class="bi bi-person me-1"></i>${contato.nome_contato}</div>
+                    <div class="fw-bold text-dark"><i class="bi bi-person me-1"></i>${contato.nome_contato} ${contato.sobrenome || ''}</div>
                     ${contato.cargo ? `<div class="small text-primary"><i class="bi bi-briefcase me-1"></i>${contato.cargo}</div>` : ''}
                     <div class="small text-muted mt-1">
                         ${contato.email ? `<span class="me-3"><i class="bi bi-envelope me-1"></i>${contato.email}</span>` : ''}
-                        ${contato.telefone ? `<span class="me-3"><i class="bi bi-telephone me-1"></i>${contato.telefone}</span>` : ''}
-                        ${contato.whatsapp ? `<span><i class="bi bi-whatsapp me-1 text-success"></i>${contato.whatsapp}</span>` : ''}
+                        ${contato.telefone ? `<span><i class="bi bi-telephone me-1"></i>${contato.telefone}</span>` : ''}
                     </div>
                 </div>
                 <div class="d-flex gap-1">
@@ -284,10 +283,10 @@ function adicionarContato() {
     const data = {
         empresa: empresaId,
         nome_contato: nome,
+        sobrenome: $('#contato_sobrenome').val().trim(),
         cargo: $('#contato_cargo').val().trim(),
         email: $('#contato_email').val().trim(),
         telefone: $('#contato_telefone').val().replace(/\D/g, ''),
-        whatsapp: $('#contato_whatsapp').val().replace(/\D/g, ''),
     };
 
     $.ajax({
@@ -330,9 +329,15 @@ function editarContato(contatoId) {
             title: 'Editar Contato',
             html: `
                 <div class="text-start">
-                    <div class="mb-2">
-                        <label class="form-label fw-bold small">Nome *</label>
-                        <input type="text" id="swal-nome" class="form-control" value="${data.nome_contato}">
+                    <div class="row g-2 mb-2">
+                        <div class="col-6">
+                            <label class="form-label fw-bold small">Nome *</label>
+                            <input type="text" id="swal-nome" class="form-control" value="${data.nome_contato}">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-bold small">Sobrenome</label>
+                            <input type="text" id="swal-sobrenome" class="form-control" value="${data.sobrenome || ''}">
+                        </div>
                     </div>
                     <div class="mb-2">
                         <label class="form-label fw-bold small">Cargo *</label>
@@ -352,10 +357,6 @@ function editarContato(contatoId) {
                         <label class="form-label fw-bold small">Telefone</label>
                         <input type="text" id="swal-telefone" class="form-control" value="${data.telefone || ''}">
                     </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold small">WhatsApp</label>
-                        <input type="text" id="swal-whatsapp" class="form-control" value="${data.whatsapp || ''}">
-                    </div>
                 </div>
             `,
             showCancelButton: true,
@@ -369,10 +370,10 @@ function editarContato(contatoId) {
                 }
                 return {
                     nome_contato: nome,
+                    sobrenome: document.getElementById('swal-sobrenome').value.trim(),
                     cargo: document.getElementById('swal-cargo').value.trim(),
                     email: document.getElementById('swal-email').value.trim(),
                     telefone: document.getElementById('swal-telefone').value.replace(/\D/g, ''),
-                    whatsapp: document.getElementById('swal-whatsapp').value.replace(/\D/g, ''),
                     empresa: data.empresa
                 };
             }

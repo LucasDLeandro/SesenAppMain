@@ -25,15 +25,14 @@ class Empresa(models.Model):
         return f"{self.nome_empresa} ({self.cnpj})"
 
 class ContatoEmpresa(models.Model):
+    pessoa = models.ForeignKey('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name='contato_empresas')
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, related_name="contatos")
-    nome_contato = models.CharField(max_length=255, verbose_name="Nome do Contato")
     cargo = models.CharField(max_length=150, blank=True, null=True, verbose_name="Cargo")
-    email = models.EmailField(blank=True, null=True, verbose_name="E-mail")
-    telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
-    whatsapp = models.CharField(max_length=20, blank=True, null=True, verbose_name="WhatsApp")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.nome_contato} - {self.empresa.nome_empresa}"
+        if self.pessoa:
+            return f"{self.pessoa.nome} - {self.empresa.nome_empresa}"
+        return f"Contato Sem Pessoa - {self.empresa.nome_empresa}"

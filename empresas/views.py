@@ -39,11 +39,11 @@ def get_contatos_por_app(request):
     # Return list of dicts with nome, cargo, empresa e email
     data = [
         {
-            'nome': c.nome_contato,
+            'nome': c.pessoa.nome if c.pessoa else 'Sem Pessoa',
             'cargo': c.cargo or '',
             'empresa': c.empresa.nome_empresa,
-            'email': c.email or '',
-            'telefone': c.telefone or '',
+            'email': c.pessoa.email if c.pessoa else '',
+            'telefone': c.pessoa.telefone if c.pessoa else '',
         }
         for c in contatos
     ]

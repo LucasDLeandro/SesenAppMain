@@ -331,10 +331,7 @@ class ItemCustoExtra(models.Model):
         return self.descricao
 
 class Profissional(models.Model):
-    nome = models.CharField(max_length=255, verbose_name="Nome Completo")
-    cpf = models.CharField(max_length=14, unique=True, verbose_name="CPF")
-    telefone = models.CharField(max_length=20, blank=True, null=True, verbose_name="Telefone")
-    email = models.EmailField(blank=True, null=True, verbose_name="E-mail")
+    pessoa = models.OneToOneField('usuarios.Pessoa', on_delete=models.CASCADE, null=True, blank=True, related_name='profissional')
     
     # Opcionalmente vincula a um técnico se for migrado para a equipe_tecnica futuramente
     tecnico_vinculado = models.ForeignKey('equipe_tecnica.Tecnico', on_delete=models.SET_NULL, null=True, blank=True, related_name='profissional_contrato')
@@ -343,7 +340,9 @@ class Profissional(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.nome} - {self.cpf}"
+        if self.pessoa:
+            return f"{self.pessoa.nome} - {self.pessoa.cpf or 'Sem CPF'}"
+        return "Profissional Sem Pessoa"
 
 class AlocacaoProfissional(models.Model):
     STATUS_CHOICES = [
