@@ -215,7 +215,7 @@
             
             <div class="d-flex justify-content-between mb-3">
                 <h5 class="fw-bold text-secondary">Alocação de Profissionais</h5>
-                <button class="btn btn-primary" onclick="abrirModalAlocacao()">+ Alocar Profissional</button>
+                <button class="btn btn-primary" onclick="abrirModalCadastroEmLote()">+ Cadastrar Pessoas em Lote</button>
             </div>
             <div class="table-responsive">
                 <table class="table-modern" id="tableAlocacoes">
@@ -531,22 +531,36 @@
             
             data.forEach(posto => {
                 totalExigido += parseInt(posto.quantidade_exigida);
+                const qtdExigida = parseInt(posto.quantidade_exigida);
+                const qtdAlocados = parseInt(posto.alocados_count || 0);
+                const vagasLivres = qtdExigida - qtdAlocados;
+                const isLotado = vagasLivres <= 0;
+                
+                const cardBorderColor = isLotado ? '#10b981' : '#3b82f6';
+                const badgeStatus = isLotado ? '<span class="badge bg-success float-end mt-1">Lotado</span>' : `<span class="badge bg-primary float-end mt-1">${vagasLivres} vaga(s) livre(s)</span>`;
+
                 const col = document.createElement('div');
                 col.className = 'col-md-4 mb-4';
                 col.innerHTML = `
-                    <div class="card border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid #3b82f6 !important;">
+                    <div class="card border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid ${cardBorderColor} !important;">
                         <div class="card-body">
+                            ${badgeStatus}
                             <h6 class="fw-bold text-dark mb-1">${posto.nome_cargo}</h6>
                             <span class="badge bg-light text-secondary mb-3">${posto.tipo} | ${posto.carga_horaria || '-'}</span>
                             
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="text-muted small">Vagas (Qtd)</span>
-                                <span class="fw-bold fs-5">${posto.quantidade_exigida}</span>
+                                <span class="text-muted small">Lotado / Vagas</span>
+                                <span class="fw-bold fs-5">${qtdAlocados} / ${qtdExigida}</span>
                             </div>
-                            <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
                                 <span class="text-muted small">Valor Unit.</span>
                                 <span class="fw-bold text-success">${formatCurrency(posto.valor_unitario)}</span>
                             </div>
+                            <button class="btn btn-sm ${isLotado ? 'btn-outline-secondary' : 'btn-primary'} w-100" 
+                                    onclick="abrirModalAlocacaoPosto(${posto.id}, '${posto.nome_cargo}', ${vagasLivres})" 
+                                    ${isLotado ? 'disabled title="Não há mais vagas neste cargo"' : ''}>
+                                <i class="bi bi-person-plus"></i> Alocar Pessoa
+                            </button>
                         </div>
                     </div>
                 `;
@@ -918,157 +932,190 @@
         });
     }
     
-    async function abrirModalAlocacao() {
+    async function abrirModalCadastroEmLote() {
+        Swal.fire({
+            title: 'Cadastrar Pessoas em Lote',
+            width: '800px',
+            html: `
+                <div id="lote-container" class="container-fluid px-1 text-start">
+                    <!-- Blocos serão injetados aqui -->
+                </div>
+                <button type="button" id="btn-add-pessoa" class="btn btn-sm btn-outline-secondary mt-3 w-100">+ Adicionar Pessoa</button>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Salvar Todos',
+            cancelButtonText: 'Cancelar',
+            customClass: {
+                confirmButton: 'btn btn-primary px-4 me-2',
+                cancelButton: 'btn btn-secondary px-4'
+            },
+            buttonsStyling: false,
+            didOpen: () => {
+                let pessoaCount = 0;
+                const container = document.getElementById('lote-container');
+                
+                const addPessoaBlock = () => {
+                    pessoaCount++;
+                    const blockId = `pessoa-block-${pessoaCount}`;
+                    const block = document.createElement('div');
+                    block.className = 'pessoa-block mb-4 p-3 border rounded bg-light position-relative';
+                    block.id = blockId;
+                    block.innerHTML = `
+                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 mt-2 me-2 btn-remove-pessoa" title="Remover Pessoa"><i class="bi bi-x"></i></button>
+                        <h6 class="text-muted small fw-bold text-uppercase mb-3">Pessoa ${pessoaCount}</h6>
+                        <div class="row g-2 mb-2">
+                            <div class="col-md-6">
+                                <input class="form-control form-control-sm swal-nome" placeholder="Nome *" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input class="form-control form-control-sm swal-sobrenome" placeholder="Sobrenome">
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control form-control-sm swal-cpf" placeholder="CPF">
+                            </div>
+                            <div class="col-md-4">
+                                <input class="form-control form-control-sm swal-telefone" placeholder="Telefone">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="email" class="form-control form-control-sm swal-email" placeholder="E-mail">
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(block);
+                    
+                    block.querySelector('.btn-remove-pessoa').addEventListener('click', () => {
+                        block.remove();
+                    });
+                };
+                
+                // Add initial block
+                addPessoaBlock();
+                
+                document.getElementById('btn-add-pessoa').addEventListener('click', addPessoaBlock);
+            },
+            preConfirm: () => {
+                const blocks = document.querySelectorAll('.pessoa-block');
+                if (blocks.length === 0) {
+                    Swal.showValidationMessage('Adicione ao menos uma pessoa.');
+                    return false;
+                }
+                
+                const pessoas = [];
+                for (let block of blocks) {
+                    const nome = block.querySelector('.swal-nome').value.trim();
+                    if (!nome) {
+                        Swal.showValidationMessage('Todas as pessoas devem ter o Nome preenchido.');
+                        return false;
+                    }
+                    pessoas.push({
+                        nome: nome,
+                        sobrenome: block.querySelector('.swal-sobrenome').value.trim(),
+                        cpf: block.querySelector('.swal-cpf').value.trim(),
+                        telefone: block.querySelector('.swal-telefone').value.trim(),
+                        email: block.querySelector('.swal-email').value.trim()
+                    });
+                }
+                return pessoas;
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const csrftoken = getCookie('csrftoken');
+                try {
+                    const res = await fetch('/contratos/api/profissionais/', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                        body: JSON.stringify(result.value) // Array de objetos
+                    });
+                    if (res.ok) {
+                        Swal.fire('Sucesso!', 'Pessoas cadastradas com sucesso.', 'success');
+                    } else {
+                        const errData = await res.json();
+                        const errMsg = errData ? Object.values(errData).flat()[0] : 'Erro na API';
+                        Swal.fire('Erro', 'Erro ao salvar pessoas: ' + errMsg, 'error');
+                    }
+                } catch(e) {
+                    Swal.fire('Erro', 'Erro de comunicação', 'error');
+                }
+            }
+        });
+    }
+
+    async function abrirModalAlocacaoPosto(posto_id, nome_cargo, vagas_livres) {
         try {
-            const resPostos = await fetch(`/contratos/api/postos-trabalho/?contrato=${CONTRATO_ID}`);
-            const postos = await resPostos.json();
+            // Buscar todas as pessoas cadastradas para selecionar
+            const res = await fetch('/contratos/api/profissionais/');
+            const profissionais = await res.json();
             
-            if(postos.length === 0) {
-                Swal.fire('Aviso', 'Cadastre ao menos um posto de trabalho primeiro.', 'warning');
+            if (profissionais.length === 0) {
+                Swal.fire('Aviso', 'Nenhuma pessoa cadastrada no sistema. Cadastre primeiro.', 'warning');
                 return;
             }
             
-            let options = postos.map(p => `<option value="${p.id}">${p.nome_cargo}</option>`).join('');
-            
+            const options = profissionais.map(p => {
+                const nomeCompleto = [p.nome, p.sobrenome].filter(Boolean).join(' ');
+                const cpfLabel = p.cpf ? ` (CPF: ${p.cpf})` : '';
+                return `<option value="${p.id}">${nomeCompleto}${cpfLabel}</option>`;
+            }).join('');
+
             Swal.fire({
-                title: 'Alocar Profissional',
+                title: 'Alocar em: ' + nome_cargo,
                 html: `
                     <div class="container-fluid px-1 text-start">
-                        <h6 class="mt-3 mb-2 text-muted small fw-bold text-uppercase border-bottom pb-1">Dados do Profissional</h6>
-                        <div class="row g-2 mb-3">
-                            <div class="col-md-6">
-                                <input id="swal-prof-nome" class="form-control form-control-sm" placeholder="Nome *">
-                            </div>
-                            <div class="col-md-6">
-                                <input id="swal-prof-sobrenome" class="form-control form-control-sm" placeholder="Sobrenome">
-                            </div>
-                            <div class="col-md-6">
-                                <input id="swal-prof-cpf" class="form-control form-control-sm" placeholder="CPF">
-                            </div>
-                            <div class="col-md-6">
-                                <input id="swal-prof-telefone" class="form-control form-control-sm" placeholder="Telefone">
-                            </div>
-                            <div class="col-12">
-                                <input id="swal-prof-email" type="email" class="form-control form-control-sm" placeholder="E-mail">
-                            </div>
+                        <div class="alert alert-info py-2 small mb-3">Vagas Restantes: <strong>${vagas_livres}</strong></div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Selecione a Pessoa</label>
+                            <select id="swal-aloc-prof" class="form-select form-select-sm">
+                                <option value="">-- Escolha uma pessoa --</option>
+                                ${options}
+                            </select>
                         </div>
-                        
-                        <h6 class="mt-3 mb-2 text-muted small fw-bold text-uppercase border-bottom pb-1">Formações Profissionais</h6>
-                        <div id="formacoes-container" class="mb-2">
-                            <div class="d-flex mb-2 formacao-item">
-                                <input class="form-control form-control-sm me-2 swal-prof-formacao" placeholder="Título da formação">
-                                <button type="button" class="btn btn-sm btn-outline-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
-                            </div>
-                        </div>
-                        <button type="button" id="btn-add-formacao" class="btn btn-sm btn-outline-secondary mb-4 w-100">+ Adicionar Formação</button>
-
-                        <h6 class="mt-4 mb-2 text-muted small fw-bold text-uppercase border-bottom pb-1">Dados da Alocação</h6>
-                        <div class="row g-2">
-                            <div class="col-md-7">
-                                <select id="swal-aloc-posto" class="form-select form-select-sm">
-                                    <option value="">Selecione o Posto *</option>
-                                    ${options}
-                                </select>
-                            </div>
-                            <div class="col-md-5">
-                                <input id="swal-aloc-data" type="date" class="form-control form-control-sm" title="Data de Início *">
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Data de Início</label>
+                            <input id="swal-aloc-data" type="date" class="form-control form-control-sm">
                         </div>
                     </div>
                 `,
-                confirmButtonText: 'Salvar',
                 showCancelButton: true,
+                confirmButtonText: 'Alocar',
                 cancelButtonText: 'Cancelar',
                 customClass: {
                     confirmButton: 'btn btn-primary px-4 me-2',
                     cancelButton: 'btn btn-secondary px-4'
                 },
                 buttonsStyling: false,
-                didOpen: () => {
-                    document.getElementById('btn-add-formacao').addEventListener('click', () => {
-                        const container = document.getElementById('formacoes-container');
-                        const div = document.createElement('div');
-                        div.className = 'd-flex mb-2 formacao-item';
-                        div.innerHTML = `
-                            <input class="form-control form-control-sm me-2 swal-prof-formacao" placeholder="Título da formação">
-                            <button type="button" class="btn btn-sm btn-outline-danger btn-remover-formacao"><i class="bi bi-trash"></i></button>
-                        `;
-                        container.appendChild(div);
-                        
-                        div.querySelector('.btn-remover-formacao').addEventListener('click', function() {
-                            this.parentElement.remove();
-                        });
-                    });
-                    
-                    document.querySelector('.btn-remover-formacao').addEventListener('click', function() {
-                        this.parentElement.remove();
-                    });
-                },
                 preConfirm: () => {
-                    const formacoes = Array.from(document.querySelectorAll('.swal-prof-formacao'))
-                                            .map(i => i.value)
-                                            .filter(v => v.trim() !== '');
-                    return {
-                        nome: document.getElementById('swal-prof-nome').value,
-                        sobrenome: document.getElementById('swal-prof-sobrenome').value,
-                        cpf: document.getElementById('swal-prof-cpf').value,
-                        email: document.getElementById('swal-prof-email').value,
-                        telefone: document.getElementById('swal-prof-telefone').value,
-                        formacoes: formacoes,
-                        posto: document.getElementById('swal-aloc-posto').value,
-                        data_inicio: document.getElementById('swal-aloc-data').value
+                    const profId = document.getElementById('swal-aloc-prof').value;
+                    const dataInicio = document.getElementById('swal-aloc-data').value;
+                    if (!profId || !dataInicio) {
+                        Swal.showValidationMessage('Selecione a pessoa e a data de início!');
+                        return false;
                     }
+                    return { profissional: profId, data_inicio: dataInicio };
                 }
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     const data = result.value;
-                    if(!data.nome || !data.posto || !data.data_inicio) {
-                        Swal.fire('Erro', 'Preencha Nome, Posto e Data de Início!', 'error');
-                        return;
-                    }
                     const csrftoken = getCookie('csrftoken');
                     try {
-                        // 1. Criar Profissional
-                        const resProf = await fetch('/contratos/api/profissionais/', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
-                            body: JSON.stringify({ 
-                                nome: data.nome, 
-                                sobrenome: data.sobrenome,
-                                cpf: data.cpf,
-                                email: data.email,
-                                telefone: data.telefone,
-                                formacoes: data.formacoes
-                            })
-                        });
-                        
-                        if(!resProf.ok) {
-                            const errData = await resProf.json();
-                            const errMsg = errData ? Object.values(errData).flat()[0] : 'Erro na API';
-                            Swal.fire('Erro', 'Erro ao salvar profissional: ' + errMsg, 'error');
-                            return;
-                        }
-                        const prof = await resProf.json();
-                        
-                        // 2. Criar Alocacao
                         const resAloc = await fetch('/contratos/api/alocacoes/', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
                             body: JSON.stringify({ 
-                                profissional: prof.id, 
-                                posto: data.posto, 
+                                profissional: data.profissional, 
+                                posto: posto_id, 
                                 data_inicio: data.data_inicio,
                                 status: 'ATIVO'
                             })
                         });
                         
-                        if(resAloc.ok) {
-                            Swal.fire('Sucesso!', 'Profissional alocado com sucesso.', 'success');
+                        if (resAloc.ok) {
+                            Swal.fire('Sucesso!', 'Pessoa alocada com sucesso.', 'success');
                             carregarAlocacoes();
+                            carregarPostos(); // Atualiza o count
                         } else {
                             const errData = await resAloc.json();
                             const errMsg = errData ? Object.values(errData).flat()[0] : 'Erro na API';
-                            Swal.fire('Erro', 'Falha ao salvar a alocação: ' + errMsg, 'error');
+                            Swal.fire('Erro', 'Falha ao alocar: ' + errMsg, 'error');
                         }
                     } catch(e) {
                         Swal.fire('Erro', 'Erro de comunicação', 'error');
@@ -1076,7 +1123,7 @@
                 }
             });
         } catch(e) {
-            Swal.fire('Erro', 'Falha ao carregar postos', 'error');
+            Swal.fire('Erro', 'Falha ao buscar profissionais', 'error');
         }
     }
 

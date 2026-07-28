@@ -4,6 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from django.db.models import Sum, Count
+from rest_framework import status
 from django.contrib.auth.decorators import login_required
 
 from ..models.model_contratos import (
@@ -73,6 +74,17 @@ class ProfissionalViewSet(viewsets.ModelViewSet):
     queryset = Profissional.objects.all().order_by('pessoa__nome')
     serializer_class = ProfissionalSerializer
     permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        is_many = isinstance(request.data, list)
+        if not is_many:
+            return super(ProfissionalViewSet, self).create(request, *args, **kwargs)
+        else:
+            serializer = self.get_serializer(data=request.data, many=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 class AlocacaoProfissionalViewSet(viewsets.ModelViewSet):
     queryset = AlocacaoProfissional.objects.all().order_by('-data_inicio')

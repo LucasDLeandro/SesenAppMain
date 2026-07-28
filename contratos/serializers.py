@@ -142,9 +142,15 @@ class TermoAditivoSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PostoTrabalhoSerializer(serializers.ModelSerializer):
+    alocados_count = serializers.SerializerMethodField()
+
     class Meta:
         model = PostoTrabalho
         fields = '__all__'
+        
+    def get_alocados_count(self, obj):
+        # Assumindo que a relação inversa é alocacoes e tem um campo status
+        return obj.alocacoes.filter(status='ATIVO').count()
 
 class ItemCustoExtraSerializer(serializers.ModelSerializer):
     class Meta:
