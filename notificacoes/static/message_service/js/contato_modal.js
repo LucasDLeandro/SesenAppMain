@@ -191,11 +191,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                 inputNome.value = p.nome;
                                 
                                 var inputEmail = document.getElementById('id_email');
-                                if (inputEmail && p.email) inputEmail.value = p.email;
+                                if (inputEmail) inputEmail.value = p.email || '';
                                 
                                 var inputTelefone = document.getElementById('id_telefone');
-                                if (inputTelefone && p.telefone) {
-                                    inputTelefone.value = p.telefone;
+                                if (inputTelefone) {
+                                    inputTelefone.value = p.telefone || '';
                                     // Se estiver usando IMask e quiser atualizar, tentamos
                                     if (typeof IMask !== 'undefined' && inputTelefone.maskRef) {
                                         inputTelefone.maskRef.updateValue();

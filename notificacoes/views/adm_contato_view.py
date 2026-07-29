@@ -58,17 +58,33 @@ def api_deletar_contato(request, id_contato):
 def api_buscar_pessoas(request):
     """Retorna JSON com as pessoas correspondentes à busca para autocomplete."""
     from usuarios.models import Pessoa
+    from django.contrib.auth.models import User
     q = request.GET.get('q', '').strip()
     if not q or len(q) < 2:
         return JsonResponse({'pessoas': []})
     
     pessoas = Pessoa.objects.filter(nome__icontains=q)[:10]
     resultados = []
+    
     for p in pessoas:
+        email = p.email
+        if not email and p.user:
+            email = p.user.email
+            
         resultados.append({
             'nome': str(p),
-            'email': p.email or '',
+            'email': email or '',
             'telefone': p.telefone or ''
         })
         
+    usuarios = User.objects.filter(first_name__icontains=q) | User.objects.filter(username__icontains=q)
+    for u in usuarios[:5]:
+        nome = f"{u.first_name} {u.last_name}".strip() or u.username
+        if not any(r['nome'] == nome for r in resultados):
+            resultados.append({
+                'nome': nome,
+                'email': u.email or '',
+                'telefone': ''
+            })
+            
     return JsonResponse({'pessoas': resultados})
