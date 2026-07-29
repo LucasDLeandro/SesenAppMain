@@ -36,3 +36,18 @@ class ContatoEmpresa(models.Model):
         if self.pessoa:
             return f"{self.pessoa.nome} - {self.empresa.nome_empresa}"
         return f"Contato Sem Pessoa - {self.empresa.nome_empresa}"
+
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=ContatoEmpresa)
+def sincronizar_contato_profissional(sender, instance, created, **kwargs):
+    """
+    Ao criar ou atualizar um ContatoEmpresa, se houver uma pessoa vinculada,
+    garante que essa mesma pessoa possua um registro em Profissional para
+    poder ser alocada em Contratos.
+    """
+    if instance.pessoa:
+        from contratos.models import Profissional
+        Profissional.objects.get_or_create(pessoa=instance.pessoa)
+

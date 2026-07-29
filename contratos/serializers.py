@@ -168,10 +168,11 @@ class ProfissionalSerializer(serializers.ModelSerializer):
     formacoes = serializers.ListField(
         child=serializers.CharField(max_length=255), required=False, allow_empty=True
     )
+    contrato_id = serializers.IntegerField(write_only=True, required=False)
 
     class Meta:
         model = Profissional
-        fields = ['id', 'pessoa', 'nome', 'sobrenome', 'cpf', 'telefone', 'email', 'formacoes', 'created_at', 'updated_at', 'tecnico_vinculado']
+        fields = ['id', 'pessoa', 'nome', 'sobrenome', 'cpf', 'telefone', 'email', 'formacoes', 'created_at', 'updated_at', 'tecnico_vinculado', 'contrato_id']
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
@@ -191,6 +192,7 @@ class ProfissionalSerializer(serializers.ModelSerializer):
         email = validated_data.pop('email', None)
         telefone = validated_data.pop('telefone', None)
         formacoes = validated_data.pop('formacoes', [])
+        contrato_id = validated_data.pop('contrato_id', None)
         
         pessoa = None
         if cpf:
@@ -201,22 +203,37 @@ class ProfissionalSerializer(serializers.ModelSerializer):
         if pessoa:
             if nome and not pessoa.nome: pessoa.nome = nome
             if sobrenome and not pessoa.sobrenome: pessoa.sobrenome = sobrenome
-            if not pessoa.telefone and telefone: pessoa.telefone = telefone
             if not pessoa.cpf and cpf: pessoa.cpf = cpf
+            if not pessoa.email and email: pessoa.email = email
+            if not pessoa.telefone and telefone: pessoa.telefone = telefone
             pessoa.save()
         else:
             if nome:
                 pessoa = Pessoa.objects.create(
                     nome=nome, sobrenome=sobrenome, cpf=cpf, email=email, telefone=telefone
                 )
-        
+                
         if pessoa:
             for titulo in formacoes:
                 if titulo.strip():
                     FormacaoProfissional.objects.get_or_create(pessoa=pessoa, titulo=titulo.strip())
-                    
+        
         validated_data['pessoa'] = pessoa
-        return super().create(validated_data)
+        profissional = super().create(validated_data)
+        
+        # Sincronização com ContatoEmpresa se contrato_id foi fornecido
+        if contrato_id and pessoa:
+            from contratos.models import Contrato
+            from empresas.models import ContatoEmpresa
+            contrato = Contrato.objects.filter(id=contrato_id).first()
+            if contrato and contrato.empresa:
+                ContatoEmpresa.objects.get_or_create(
+                    empresa=contrato.empresa,
+                    pessoa=pessoa,
+                    defaults={'cargo': 'Alocado via Contrato'}
+                )
+                
+        return profissional
 
     def update(self, instance, validated_data):
         nome = validated_data.pop('nome', None)

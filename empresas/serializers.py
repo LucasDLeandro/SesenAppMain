@@ -20,6 +20,9 @@ class ContatoEmpresaSerializer(serializers.ModelSerializer):
             ret['sobrenome'] = instance.pessoa.sobrenome or ''
             ret['email'] = instance.pessoa.email or ''
             ret['telefone'] = instance.pessoa.telefone or ''
+        else:
+            ret['nome_contato'] = 'Contato Sem Pessoa (Erro de Migração)'
+            ret['sobrenome'] = ''
         return ret
 
     def create(self, validated_data):
