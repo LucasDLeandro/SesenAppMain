@@ -68,23 +68,34 @@ def api_buscar_pessoas(request):
     
     for p in pessoas:
         email = p.email
-        if not email and p.user:
-            email = p.user.email
+        telefone = p.telefone
+        
+        if p.user:
+            if not email:
+                email = p.user.email
+            if not telefone and hasattr(p.user, 'perfil') and p.user.perfil.telefone:
+                telefone = p.user.perfil.telefone
             
         resultados.append({
             'nome': str(p),
             'email': email or '',
-            'telefone': p.telefone or ''
+            'telefone': telefone or ''
         })
         
+    # Também buscar usuários que possam não ter Pessoa criada ainda, apenas como sugestão
     usuarios = User.objects.filter(first_name__icontains=q) | User.objects.filter(username__icontains=q)
     for u in usuarios[:5]:
         nome = f"{u.first_name} {u.last_name}".strip() or u.username
+        # Evitar duplicados se já estiver na lista
         if not any(r['nome'] == nome for r in resultados):
+            telefone = ''
+            if hasattr(u, 'perfil') and u.perfil.telefone:
+                telefone = u.perfil.telefone
+                
             resultados.append({
                 'nome': nome,
                 'email': u.email or '',
-                'telefone': ''
+                'telefone': telefone or ''
             })
             
     return JsonResponse({'pessoas': resultados})
