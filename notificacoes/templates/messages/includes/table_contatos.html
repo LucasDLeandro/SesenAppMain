@@ -1,0 +1,72 @@
+
+<div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Nome do Contato</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Contatos (Zap / E-mail)</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Canais</th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Cargo / Função</th>
+                        <th class="text-center text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Status</th>
+                        <th class="text-center pe-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for contato in list_contato %}
+                    <tr>
+                        <td class="ps-4 fw-medium text-dark py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            <i class="bi bi-person-circle text-muted me-2"></i> {{ contato.nome }}
+                        </td>
+                        <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex flex-column">
+                                <span class="format-telefone mb-1"><i class="bi bi-whatsapp text-success me-1"></i> {{ contato.telefone }}</span>
+                                {% if contato.pessoa.email %}
+                                <span class="small" style="font-size: 0.8rem;"><i class="bi bi-envelope text-primary me-1"></i> {{ contato.pessoa.email }}</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            <div class="d-flex flex-wrap gap-1">
+                                {% if contato.receber_whatsapp %}
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 ms-1" title="WhatsApp"><i class="bi bi-whatsapp"></i> Zap</span>
+                                {% endif %}
+                                {% if contato.receber_email %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25" title="E-mail"><i class="bi bi-envelope-at"></i> E-mail</span>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">{{ contato.role|default:"-" }}</td>
+                        <td class="text-center py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            {% if contato.is_ativo %}
+                                <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Ativo</span>
+                            {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Inativo</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-center pe-4 py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            <button class="btn btn-sm btn-outline-primary" onclick="abrirModalContatoUpdate('{{ contato.id }}', '{{ contato.nome|escapejs }}', '{{ contato.telefone|escapejs }}', '{{ contato.pessoa.email|escapejs|default:'' }}', '{{ contato.role|escapejs }}', '{{ contato.notifica_elevadores }}', '{{ contato.notifica_telefonia }}', '{{ contato.receber_whatsapp }}', '{{ contato.receber_email }}', '{{ contato.is_ativo }}')" title="Editar Contato">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger btn-deletar-contato" data-url-del-contato="{% url 'notificacoes:api_deletar_contato' 0 %}" data-del-contato-id="{{ contato.id }}" title="Excluir Contato">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
+                                <i class="bi bi-inbox fs-3 text-secondary"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark">Nenhum contato cadastrado</h6>
+                            <p class="small mb-0">Clique em "Adicionar Contato" para começar.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

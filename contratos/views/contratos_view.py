@@ -259,8 +259,11 @@ def dashboard_metrics(request):
         qs_contratos = qs_contratos.filter(id=contrato_id)
         qs_pagamentos = qs_pagamentos.filter(medicao__contrato_id=contrato_id)
         
-    # Valor Total dos Contratos (Global ou filtrado por contrato_id)
-    valor_total = qs_contratos.aggregate(total=Sum('valor'))['total'] or 0
+    # Valor Total dos Contratos (Global atualizado)
+    valor_total = sum(c.valor_global_atual for c in qs_contratos)
+    total_empenhado = sum(c.valor_total_empenhado for c in qs_contratos)
+    saldo_a_empenhar = sum(c.saldo_a_empenhar for c in qs_contratos)
+
     
     # Valor Mensal Estimado
     valor_estimado = qs_contratos.aggregate(total=Sum('valor_mensal_estimado'))['total'] or 0
@@ -289,6 +292,37 @@ def dashboard_metrics(request):
             'termino_vigencia': c.termino_vigencia.strftime('%Y-%m-%d') if c.termino_vigencia else None
         } for c in proximos_vencer
     ]
+    
+    # Status do Ciclo de Pagamentos (Mês Atual)
+    ciclo_pagamentos = []
+    for c in qs_contratos:
+        from ..models.model_contratos import MedicaoMensal
+        medicao = MedicaoMensal.objects.filter(contrato=c, competencia=competencia).first()
+        if medicao and hasattr(medicao, 'pagamento'):
+            pag = medicao.pagamento
+            
+            # Logica basica de atraso baseada nos novos campos
+            atrasado = False
+            if pag.fase_atual != 'CONCLUIDO':
+                if hoje.day > c.dia_limite_pagamento:
+                    atrasado = True
+                    
+            ciclo_pagamentos.append({
+                'id': c.id,
+                'num_contrato': c.num_contrato,
+                'fase_atual': pag.fase_atual,
+                'fase_display': dict(pag.FASE_CHOICES).get(pag.fase_atual, pag.fase_atual),
+                'atrasado': atrasado
+            })
+        else:
+            ciclo_pagamentos.append({
+                'id': c.id,
+                'num_contrato': c.num_contrato,
+                'fase_atual': 'NAO_INICIADO',
+                'fase_display': 'Pendente de Medição',
+                'atrasado': hoje.day > 5 # Exemplo: medição deve ocorrer até 5o dia util
+            })
+
     
     # Gráfico Visão Geral (Últimos 6 meses)
     # Pega o mês/ano filtrado e volta 5 meses.
@@ -319,10 +353,13 @@ def dashboard_metrics(request):
 
     return Response({
         'valor_total_contratos': valor_total,
+        'total_empenhado': total_empenhado,
+        'saldo_a_empenhar': saldo_a_empenhar,
         'valor_estimado': valor_estimado,
         'valor_pago': valor_pago,
         'total_glosas': total_descontos,
         'proximos_vencer': vencimentos_lista,
+        'ciclo_pagamentos': ciclo_pagamentos,
         'chart_data': {
             'categories': chart_categories,
             'estimado': chart_estimado,

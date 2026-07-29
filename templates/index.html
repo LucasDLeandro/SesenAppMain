@@ -114,11 +114,13 @@
 
 <script src="{% static 'js/theme_toggle.js' %}?v=1.0"></script>
 
-{% block extra_js %}{% endblock %}
+{% block root_modals %}{% endblock %}
 
 {% if user.is_authenticated %}
     {% include 'usuarios/includes/modal_perfil.html' %}
 {% endif %}
+
+{% block extra_js %}{% endblock %}
 
 </body>
 </html>

@@ -7,258 +7,188 @@
     <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_contato_modal.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_template_modal.css' %}">
-    
-    <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 {% endblock %}
-
 
     <!-- Cabeçalho da Página -->
     <div class="mb-4">
         <div class="d-flex align-items-center mb-2">
             <i class="bi bi-megaphone-fill" style="font-size: 32px; color: #106EBE;"></i>
-            <h2 class="ms-3 fw-bold m-0 text-body">Gestão de Notificações via WhatsApp</h2>
+            <h2 class="ms-3 fw-bold m-0 text-body">Gestão de Notificações</h2>
         </div>
-        <p class="text-muted" style="margin-left: 44px;">Gerencie Templates de Mensagens e Diretório de Contatos</p>
+        <p class="text-muted" style="margin-left: 44px;">Gerencie Templates de Mensagens e Diretório de Contatos por Módulo</p>
     </div>
 
-    <!-- Navegação em Abas -->
-    <ul class="nav nav-tabs msg-nav-tabs mb-4" id="notificationTabs" role="tablist">
+    <!-- Navegação em Abas Principais (Módulos) -->
+    <ul class="nav nav-tabs msg-nav-tabs mb-4" id="moduleTabs" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active msg-tab-btn" id="templates-tab" data-bs-toggle="tab" data-bs-target="#templates-content" type="button" role="tab" aria-controls="templates-content" aria-selected="true">
-                <i class="bi bi-chat-square-text"></i> Templates de Mensagens
+            <button class="nav-link active msg-tab-btn" id="elevadores-tab" data-bs-toggle="tab" data-bs-target="#elevadores-content" type="button" role="tab" aria-controls="elevadores-content" aria-selected="true">
+                <i class="bi bi-building-up"></i> Elevadores
             </button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link msg-tab-btn" id="contacts-tab" data-bs-toggle="tab" data-bs-target="#contacts-content" type="button" role="tab" aria-controls="contacts-content" aria-selected="false">
-                <i class="bi bi-person-lines-fill"></i> Diretório de Contatos
+            <button class="nav-link msg-tab-btn" id="telefonia-tab" data-bs-toggle="tab" data-bs-target="#telefonia-content" type="button" role="tab" aria-controls="telefonia-content" aria-selected="false">
+                <i class="bi bi-telephone"></i> Telefonia
             </button>
         </li>
     </ul>
 
-    <!-- Conteúdo das Abas -->
-    <div class="tab-content" id="notificationTabsContent">
+    <!-- Conteúdo das Abas de Módulo -->
+    <div class="tab-content" id="moduleTabsContent">
         
-        <!-- Aba 1: Templates de Mensagens -->
-        <div class="tab-pane fade show active" id="templates-content" role="tabpanel" aria-labelledby="templates-tab">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold m-0 text-body">Templates Disponíveis</h4>
-                <button class="btn btn-primary shadow-sm" id="btn-novo-template">
-                    <i class="bi bi-plus-lg me-2"></i>Novo Template
-                </button>
-            </div>
+        <!-- Aba Módulo: Elevadores -->
+        <div class="tab-pane fade show active" id="elevadores-content" role="tabpanel" aria-labelledby="elevadores-tab">
+            
+            <ul class="nav nav-pills mb-4" id="elevadoresSubTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="elev-templates-tab" data-bs-toggle="pill" data-bs-target="#elev-templates-content" type="button" role="tab">Templates de Mensagens</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="elev-contatos-tab" data-bs-toggle="pill" data-bs-target="#elev-contatos-content" type="button" role="tab">Diretório de Contatos</button>
+                </li>
+            </ul>
 
-            <!-- Grid de Cards de Templates -->
-            <div class="row g-4">
-                <!-- Card Template 1 -->
-                {% for mensagem in list_template %}
-                    <div class="col-md-6 col-lg-4" id="card-template-{{ mensagem.id }}">
-                        <div class="msg-card-template shadow-sm">
-                            <div class="msg-card-header">
-                                <h6 class="m-0">{{ mensagem.id_template }}</h6>
-                                {% if mensagem.is_ativo %}
-                                    <span class="badge bg-success">Ativa</span>
-                                {% else %}
-                                    <span class="badge bg-warning">Inativa</span>
-                                {% endif %}
-                            </div>
-                            <div class="msg-card-body">
-                                <p class="text-muted small mb-3">{{ mensagem.get_tipo_evento_display }}</p>
-                                <div class="msg-preview">
-                                    <small><strong>Prévia:</strong> "{{ mensagem.base_text|linebreaksbr }}"</small>
-                                </div>
-                            </div>
-                            <div class="msg-card-footer">
-                                <button class="btn btn-sm btn-outline-primary" onclick="abrirModalTemplateUpdate('{{ mensagem.id }}', '{{ mensagem.id_template }}', '{{ mensagem.base_text|escapejs }}', '{{ mensagem.is_ativo }}', '{{ mensagem.tipo_evento }}')" title="EditarTemplate">
-                                    <i class="bi bi-pencil"></i> Editar
-                                </button>
-                                <button
-                                    type="button"
-                                    class="btn-deletar-template btn btn-sm btn-outline-danger" 
-                                    title="DeletarTemplate"
-                                    data-url-del-template="{% url 'notificacoes:api_deletar_template' 0 %}"
-                                    data-del-template-id="{{ mensagem.id }}"
-                                    >
-                                    <i class="bi bi-trash"></i> Deletar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-
-
-        <!-- Aba 2: Diretório de Contatos -->
-        <div class="tab-pane fade" id="contacts-content" role="tabpanel" aria-labelledby="contacts-tab">
-            <link rel="stylesheet" href="{% static 'notificacoes/css/gerenciar_contatos.css' %}?v=1.0">
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <div>
-                    <h4 class="fw-bold m-0 text-body">Diretório de Contatos</h4>
-                    <p class="text-muted small m-0 mt-1">Veja os contatos cadastrados no sistema.</p>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-primary shadow-sm fw-bold" data-bs-toggle="modal" data-bs-target="#modal-editar-contatos" style="border-radius: 8px;">
-                        <i class="bi bi-pencil-square me-2"></i> Editar Contatos
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tabela de Visualização (Read-Only) -->
-            <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px; overflow: hidden;">
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Nome do Contato</th>
-                                    <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Telefone / WhatsApp</th>
-                                    <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Cargo / Função</th>
-                                    <th class="text-center pe-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for contato in list_contato %}
-                                <tr>
-                                    <td class="ps-4 fw-medium text-dark py-3" style="border-bottom: 1px solid #f1f5f9;">
-                                        <i class="bi bi-person-circle text-muted me-2"></i> {{ contato.nome }}
-                                    </td>
-                                    <td class="text-muted format-telefone py-3" style="border-bottom: 1px solid #f1f5f9;">{{ contato.telefone }}</td>
-                                    <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">{{ contato.role|default:"-" }}</td>
-                                    <td class="text-center pe-4 py-3" style="border-bottom: 1px solid #f1f5f9;">
-                                        {% if contato.is_ativo %}
-                                            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Ativo</span>
-                                        {% else %}
-                                            <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-3">Inativo</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted">
-                                        <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
-                                            <i class="bi bi-inbox fs-3 text-secondary"></i>
-                                        </div>
-                                        <h6 class="fw-bold text-dark">Nenhum contato cadastrado</h6>
-                                        <p class="small mb-0">Clique em "Editar Contatos" para adicionar.</p>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Modal: Editar Contatos em Lote -->
-    <div class="modal fade" id="modal-editar-contatos" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content shadow" style="border-radius: 16px; border: none;">
-                <div class="modal-header border-bottom-0 pb-0 pt-4 px-4">
-                    <div>
-                        <h5 class="modal-title fw-bold text-dark"><i class="bi bi-people-fill text-primary me-2"></i> Edição de Contatos</h5>
-                        <p class="text-muted small m-0 mt-1">Adicione, altere ou exclua contatos em formato de planilha.</p>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4">
-                    <div class="d-flex justify-content-end mb-3">
-                        <div class="d-flex gap-2 w-100 justify-content-end">
-                            <button type="button" class="btn btn-outline-primary text-nowrap shadow-sm" id="btn-add-contato-row" style="border-radius: 8px;">
-                                <i class="bi bi-plus-lg me-1"></i> Linha Vazia
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="border rounded-3 overflow-hidden mb-2">
-                        <div class="table-responsive" style="max-height: 50vh;">
-                            <table class="table table-borderless table-contacts-premium mb-0" id="tabela-contatos-grid">
-                                <thead>
-                                    <tr>
-                                        <th width="30%" class="ps-4">Nome do Contato</th>
-                                        <th width="20%">Telefone / WhatsApp</th>
-                                        <th width="25%">Cargo / Função</th>
-                                        <th width="15%" class="text-center">Status</th>
-                                        <th width="10%" class="text-center pe-4">Ações</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="grid-contatos-body">
-                                    {% for contato in list_contato %}
-                                    <tr data-contato-id="{{ contato.id }}" class="contato-row existing-row">
-                                        <td class="ps-4">
-                                            <div class="input-group input-group-borderless" style="border-radius: 6px;">
-                                                <span class="input-group-text border-end-0 pe-1"><i class="bi bi-person-fill text-muted opacity-50"></i></span>
-                                                <select class="form-select input-borderless border-start-0 ps-1 input-nome fw-medium text-dark select2-nome" style="width: calc(100% - 40px);">
-                                                    <option value="{{ contato.nome }}" selected="selected">{{ contato.nome }}</option>
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control input-borderless input-telefone format-telefone text-muted" value="{{ contato.telefone }}" placeholder="(00) 00000-0000">
-                                        </td>
-                                        <td>
-                                            <input type="text" class="form-control input-borderless input-role text-muted" value="{{ contato.role }}" placeholder="Cargo/Função">
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-check form-switch d-inline-block">
-                                                <input class="form-check-input input-ativo fs-5 m-0" type="checkbox" role="switch" style="cursor: pointer;" {% if contato.is_ativo %}checked{% endif %}>
-                                            </div>
-                                        </td>
-                                        <td class="text-center pe-4">
-                                            <button type="button" class="btn btn-sm btn-remove-row-subtle btn-remove-row fs-5" title="Remover"><i class="bi bi-trash3"></i></button>
-                                        </td>
-                                    </tr>
-                                    {% empty %}
-                                    <tr id="empty-row-message">
-                                        <td colspan="5" class="text-center py-5 text-muted">
-                                            <div class="d-flex flex-column align-items-center justify-content-center">
-                                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
-                                                    <i class="bi bi-person-lines-fill fs-3 text-secondary"></i>
-                                                </div>
-                                                <h6 class="fw-bold text-dark">Nenhum contato cadastrado</h6>
-                                                <p class="small mb-0">Use a busca global acima ou adicione uma linha vazia para começar.</p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer border-top bg-light p-4 d-flex justify-content-between align-items-center" style="border-radius: 0 0 16px 16px;">
-                    <span class="text-muted small"><i class="bi bi-info-circle me-1"></i> As alterações feitas na tabela só serão aplicadas ao salvar.</span>
-                    <div>
-                        <button type="button" class="btn btn-secondary me-2 fw-bold shadow-sm" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
-                        <button type="button" class="btn btn-success px-4 shadow-sm fw-bold" id="btn-save-all-contatos" style="border-radius: 8px;">
-                            <i class="bi bi-save me-2"></i> Salvar Alterações
+            <div class="tab-content" id="elevadoresSubTabsContent">
+                <!-- Elevadores: Templates -->
+                <div class="tab-pane fade show active" id="elev-templates-content" role="tabpanel" aria-labelledby="elev-templates-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0 text-body">Templates - Elevadores</h4>
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="elevadores" data-bs-toggle="modal" data-bs-target="#templateModal">
+                            <i class="bi bi-file-earmark-plus-fill me-2"></i> Novo Template
                         </button>
                     </div>
+                    {% include 'messages/includes/grid_templates.html' with list_template=list_template_elev modulo='elevadores' %}
+                </div>
+                
+                <!-- Elevadores: Contatos -->
+                <div class="tab-pane fade" id="elev-contatos-content" role="tabpanel" aria-labelledby="elev-contatos-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0 text-body">Contatos - Elevadores</h4>
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="elevadores" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                            <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
+                        </button>
+                    </div>
+                    {% include 'messages/includes/table_contatos.html' with list_contato=list_contato_elev modulo='elevadores' %}
                 </div>
             </div>
+            
         </div>
+
+        <!-- Aba Módulo: Telefonia -->
+        <div class="tab-pane fade" id="telefonia-content" role="tabpanel" aria-labelledby="telefonia-tab">
+            
+            <ul class="nav nav-pills mb-4" id="telefoniaSubTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tel-templates-tab" data-bs-toggle="pill" data-bs-target="#tel-templates-content" type="button" role="tab">Templates de Mensagens</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tel-contatos-tab" data-bs-toggle="pill" data-bs-target="#tel-contatos-content" type="button" role="tab">Diretório de Contatos</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="telefoniaSubTabsContent">
+                <!-- Telefonia: Templates -->
+                <div class="tab-pane fade show active" id="tel-templates-content" role="tabpanel" aria-labelledby="tel-templates-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0 text-body">Templates - Telefonia</h4>
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="telefonia" data-bs-toggle="modal" data-bs-target="#templateModal">
+                            <i class="bi bi-file-earmark-plus-fill me-2"></i> Novo Template
+                        </button>
+                    </div>
+                    {% include 'messages/includes/grid_templates.html' with list_template=list_template_tel modulo='telefonia' %}
+                </div>
+                
+                <!-- Telefonia: Contatos -->
+                <div class="tab-pane fade" id="tel-contatos-content" role="tabpanel" aria-labelledby="tel-contatos-tab">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold m-0 text-body">Contatos - Telefonia</h4>
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="telefonia" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                            <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
+                        </button>
+                    </div>
+                    {% include 'messages/includes/table_contatos.html' with list_contato=list_contato_tel modulo='telefonia' %}
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
-    {% include 'messages/includes/form_template_modal.html' %}
-    
-
-
-
-   
 {% endblock %}
+
+{% block extra_modals %}
+    <!-- Modais Individuais -->
+    {% include 'messages/includes/form_template_modal.html' %}
+    {% include 'messages/includes/form_contato_modal.html' %}
+{% endblock %}
+
 {% block extra_js %}
-    <!-- jQuery (Required for Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://unpkg.com/imask"></script>
     <script src="{% static 'message_service/js/template_modal.js' %}"></script>
+    <script src="{% static 'message_service/js/contato_modal.js' %}"></script>
     <script>
-        window.URL_BULK_CONTATOS = "{% url 'sys_config:bulk_contatos' %}";
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lógica para abrir o modal de contato já pré-marcando as opções do módulo correto
+            document.querySelectorAll('.btn-add-contato').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modulo = this.dataset.modulo;
+                    
+                    // Reseta formulário via função global se existir
+                    if (typeof resetFormContato === 'function') resetFormContato();
+                    
+                    // Pega o form e checkbox
+                    const form = document.getElementById('contato-form');
+                    if (form) {
+                        form.reset();
+                        // Reset the action URL to Create
+                        form.action = "{% url 'notificacoes:api_criar_contato' %}";
+                        document.getElementById('id_oculto_contato').value = '';
+                    }
+
+                    const checkElev = document.getElementById('{{ criarContato.notifica_elevadores.id_for_label }}');
+                    const checkTel = document.getElementById('{{ criarContato.notifica_telefonia.id_for_label }}');
+                    
+                    if (checkElev && checkTel) {
+                        if (modulo === 'elevadores') {
+                            checkElev.checked = true;
+                            checkTel.checked = false;
+                        } else if (modulo === 'telefonia') {
+                            checkElev.checked = false;
+                            checkTel.checked = true;
+                        }
+                    }
+                    
+                    // O Bootstrap exibirá o modal automaticamente via data-bs-toggle
+                });
+            });
+        });
+        
+            // Lógica para o modal de template
+            document.querySelectorAll('.btn-add-template').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modulo = this.dataset.modulo;
+                    
+                    if (typeof resetFormTemplate === 'function') resetFormTemplate();
+                    
+                    const form = document.getElementById('template-form');
+                    if (form) {
+                        form.reset();
+                        form.action = "{% url 'notificacoes:api_criar_template' %}";
+                        document.getElementById('id_oculto_template').value = '';
+                        
+                        // Pré-selecionar tipo de evento correspondente ao módulo
+                        const tipoSelect = document.getElementById('{{ criarTemplate.tipo_evento.id_for_label }}');
+                        if (tipoSelect) {
+                            const defaultType = (modulo === 'elevadores') ? 'os_elev_registro' : 'tel_solicitacao_aparelho';
+                            for(let i=0; i<tipoSelect.options.length; i++) {
+                                if(tipoSelect.options[i].value === defaultType) {
+                                    tipoSelect.selectedIndex = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            });
     </script>
-    <script src="{% static 'notificacoes/js/gerenciar_contatos.js' %}?v=1.0"></script>
 {% endblock %}

@@ -205,11 +205,28 @@ class Contratos(models.Model):
     # Novos campos para gestão avançada
     contempla_postos_trabalho = models.BooleanField(default=False)
 
+    # Configuração de Prazos de Pagamento
+    dias_para_atesto = models.IntegerField(default=5, help_text="Prazo em dias para atesto da NF após a medição")
+    dia_limite_pagamento = models.IntegerField(default=10, help_text="Dia limite no mês subsequente para liquidação/pagamento")
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_At = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.num_contrato}"
+
+    @property
+    def valor_global_atual(self):
+        soma_aditivos = sum([aditivo.valor_aditivado for aditivo in self.termos_aditivos.all()])
+        return self.valor + soma_aditivos
+
+    @property
+    def valor_total_empenhado(self):
+        return sum([ne.valor_atual for ne in self.notas_empenho.all() if ne.status != 'ANULADO_TOTALMENTE'])
+
+    @property
+    def saldo_a_empenhar(self):
+        return self.valor_global_atual - self.valor_total_empenhado
 
 class MedicaoMensal(models.Model):
     TIPO_CHOICES = [
@@ -237,6 +254,9 @@ class Pagamento(models.Model):
     protocolo_trd_trt = models.CharField(max_length=50, blank=True, null=True, default="")
     protocolo_nf = models.CharField(max_length=50, blank=True, null=True, default="")
     protocolo_nota_tecnica = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_nota_liquidacao = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_nota_sistema = models.CharField(max_length=50, blank=True, null=True, default="")
+    protocolo_ordem_bancaria = models.CharField(max_length=50, blank=True, null=True, default="")
 
     # Valores
     valor_faturado = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
@@ -251,6 +271,20 @@ class Pagamento(models.Model):
     valor_multa = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     
     status = models.CharField(max_length=20, default='PENDENTE')
+    
+    FASE_CHOICES = [
+        ('MEDICAO', 'Fase 1: Medição'),
+        ('ATESTO', 'Fase 2: Atesto'),
+        ('LIQUIDACAO', 'Fase 3: Liquidação'),
+        ('PAGAMENTO', 'Fase 4: Pagamento (OB)'),
+        ('CONCLUIDO', 'Concluído')
+    ]
+    fase_atual = models.CharField(max_length=20, choices=FASE_CHOICES, default='MEDICAO')
+    
+    data_conclusao_medicao = models.DateField(null=True, blank=True)
+    data_conclusao_atesto = models.DateField(null=True, blank=True)
+    data_conclusao_liquidacao = models.DateField(null=True, blank=True)
+    
     data_pagamento = models.DateField(null=True, blank=True)
     ordem_pagamento = models.CharField(max_length=50, blank=True, null=True, default="")
 
@@ -363,3 +397,29 @@ class AlocacaoProfissional(models.Model):
 
     def __str__(self):
         return f"{self.profissional.nome} -> {self.posto.nome_cargo}"
+
+class NotaEmpenho(models.Model):
+    STATUS_CHOICES = [
+        ('ATIVO', 'Ativo'),
+        ('ANULADO_PARCIALMENTE', 'Anulado Parcialmente'),
+        ('ANULADO_TOTALMENTE', 'Anulado Totalmente')
+    ]
+    contrato = models.ForeignKey(Contratos, on_delete=models.CASCADE, related_name="notas_empenho")
+    numero_ne = models.CharField(max_length=50, verbose_name="Número da Nota de Empenho (Ex: 2026NE000123)")
+    
+    valor_original = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    valor_atual = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'), help_text="Valor atualizado após possíveis anulações ou reforços")
+    valor_anulado = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
+    
+    data_emissao = models.DateField(blank=True, null=True)
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='ATIVO')
+    
+    atualizado_via_api = models.BooleanField(default=False, help_text="Indica se os dados vieram do SIAFI")
+    ultima_sincronizacao = models.DateTimeField(null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.numero_ne} - {self.contrato.num_contrato}"
+

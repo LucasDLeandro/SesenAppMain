@@ -1,0 +1,11 @@
+
+    <html>
+    <head>
+        <title>Visualização de PDF</title>
+        <style>body,html{margin:0;padding:0;height:100%;}iframe{border:none;width:100vw;height:100vh;}</style>
+    </head>
+    <body>
+        <iframe src='https://cdn.tesouro.gov.br/sistemas-internos/apex/producao/sistemas/thot/arquivos/publicacoes/35130_1932021/anexos/15346_536469/SIAFIWeb-PIE-ORC-WebServices 1.pdf'></iframe>
+    </body>
+    </html>
+    

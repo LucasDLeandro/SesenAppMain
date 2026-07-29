@@ -82,6 +82,13 @@ class TelefoneSolicitacao(models.Model):
         default=StatusSolicitacao.RECEBIDA,
     )
 
+    midia = models.FileField(
+        upload_to='telefonia/midia/solicitacoes/',
+        null=True,
+        blank=True,
+        help_text="Anexo ou mídia para a solicitação"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

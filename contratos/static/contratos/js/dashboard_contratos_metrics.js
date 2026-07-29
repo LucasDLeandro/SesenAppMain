@@ -26,28 +26,46 @@
 
             // Populate Top Metrics
             document.getElementById('val-global').innerText = formatBRL(data.valor_total_contratos);
-            document.getElementById('val-estimado').innerText = formatBRL(data.valor_estimado);
+            document.getElementById('val-empenhado').innerText = formatBRL(data.total_empenhado || 0);
+            document.getElementById('val-saldo-empenhar').innerText = formatBRL(data.saldo_a_empenhar || 0);
             document.getElementById('val-pago').innerText = formatBRL(data.valor_pago);
-            document.getElementById('val-glosas').innerText = formatBRL(data.total_glosas);
             
             // Populate Upcoming Expirations
             const tbody = document.getElementById('lista-vencimentos');
-            if (tbody) {
-                tbody.innerHTML = '';
-                if (data.proximos_vencer && data.proximos_vencer.length > 0) {
-                    data.proximos_vencer.forEach(c => {
-                        tbody.innerHTML += `
-                            <tr>
-                                <td class="ps-4">
-                                    <div class="fw-bold text-dark">${c.num_contrato}</div>
-                                    <div class="small text-muted text-truncate" style="max-width: 150px;">${c.empresa}</div>
-                                </td>
-                                <td><span class="badge bg-warning text-dark px-2 py-1 rounded-pill">${formatDateBR(c.termino_vigencia)}</span></td>
-                            </tr>
+            tbody.innerHTML = '';
+            if (data.proximos_vencer && data.proximos_vencer.length > 0) {
+                data.proximos_vencer.forEach(c => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="ps-4"><div class="fw-bold text-dark">${c.num_contrato}</div><div class="small text-muted">${c.empresa}</div></td>
+                        <td><span class="badge bg-warning text-dark px-2 py-1 rounded-3"><i class="bi bi-calendar-event me-1"></i>${c.termino_vigencia}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum contrato a vencer</td></tr>';
+            }
+            
+            // Populate Ciclo de Pagamentos
+            const tbodyCiclo = document.getElementById('lista-ciclo-pagamentos');
+            if (tbodyCiclo) {
+                tbodyCiclo.innerHTML = '';
+                if (data.ciclo_pagamentos && data.ciclo_pagamentos.length > 0) {
+                    data.ciclo_pagamentos.forEach(c => {
+                        let badgeClass = "bg-primary";
+                        if (c.atrasado) badgeClass = "bg-danger";
+                        else if (c.fase_atual === 'CONCLUIDO') badgeClass = "bg-success";
+                        else if (c.fase_atual === 'NAO_INICIADO') badgeClass = "bg-secondary";
+                        
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td class="ps-4"><div class="fw-bold text-dark text-nowrap">${c.num_contrato}</div></td>
+                            <td><span class="badge ${badgeClass} px-2 py-1 rounded-3 w-100 text-start" style="font-size:0.75rem;"><i class="bi bi-circle-fill me-1 small"></i>${c.fase_display}</span></td>
                         `;
+                        tbodyCiclo.appendChild(tr);
                     });
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum contrato próximo ao vencimento.</td></tr>';
+                    tbodyCiclo.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum dado do ciclo</td></tr>';
                 }
             }
 

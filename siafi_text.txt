@@ -1,0 +1,1561 @@
+STN
+Coordenação-Geral de Sistemas e 
+Tecnologia de Informação
+Documentação de Serviços de 
+Interoperabilidade
+Orçamentário
+Versão [1.11]
+Sistema Integrado de Administração  
+Financeira do Governo Federal
+SIAFI
+Secretaria do Tesouro Nacional
+STN
+STN
+Coordenação-Geral de Sistemas e 
+Tecnologia de Informação
+Índice
+ 1  Órgão........................................................................................................................................5
+ 1.1  Sigla do Órgão....................................................................................................................5
+ 1.2  Razão Social.......................................................................................................................5
+ 1.3  Código SIORG....................................................................................................................5
+ 1.4  Suporte................................................................................................................................5
+ 2  Serviço - informações gerais.................................................................................................6
+ 2.1  Nome...................................................................................................................................6
+ 2.2  Data de inicio de operação.................................................................................................6
+ 2.3  Contexto..............................................................................................................................6
+ 2.4  Objetivo...............................................................................................................................6
+ 2.5  Tipo de recurso...................................................................................................................6
+ 2.6  Classificação do Serviço.....................................................................................................7
+ 2.6.1  Base de dados oficial...................................................................................................7
+ 2.6.2  Acesso público.............................................................................................................7
+ 2.6.3  Tecnologias em uso......................................................................................................7
+ 3  Web Services - informações detalhadas...............................................................................8
+ 3.1  Nome do serviço na interface.............................................................................................8
+ 3.2  Endereço do arquivo WSDL...............................................................................................8
+ 3.3  Requisitos e orientações para o acesso.............................................................................8
+ 3.4  ANS (Acordo de Nível de Serviço) proposto......................................................................9
+ 3.5  Tabela de Erros...................................................................................................................9
+ 3.6  Considerações gerais sobre parâmetros de entrada e/ou saída..................................... 10
+ 3.6.1  Atributo “Nome da classe”..........................................................................................10
+ 3.6.2  Atributo “Parâmetro”...................................................................................................10
+ 3.6.3  Atributo “Tipo”.............................................................................................................10
+ 3.6.4  Atributo “Ocorrência”..................................................................................................11
+ 3.6.5  Atributo “Restrição”.....................................................................................................11
+ 3.6.6  Atributo “Observação”.................................................................................................11
+ 3.6.7  Cabeçalho SOAP.......................................................................................................11
+ 3.6.7.1  Cabeçalho de entrada.........................................................................................11
+ 3.6.7.2  Cabeçalho de saída.............................................................................................12
+ 3.7  Operações do Orçamentário............................................................................................13
+ 3.7.1  Incluir Empenho.........................................................................................................13
+ 3.7.2  Alterar Empenho.........................................................................................................14
+ 3.7.3  Detalhar Empenho.....................................................................................................14
+ 3.7.4  Consultar Relatório PDF do Empenho.......................................................................15
+ 3.7.5  Incluir Pré-empenho...................................................................................................15
+ 3.7.6  Alterar Pré-empenho..................................................................................................15
+ 3.7.7  Detalhar Pré-empenho...............................................................................................16
+ 3.7.8  Incluir Amparo Legal...................................................................................................16
+ 3.7.9  Alterar Amparo Legal..................................................................................................16
+ 3.7.10  Excluir Amparo Legal...............................................................................................17
+STN
+Coordenação-Geral de Sistemas e 
+Tecnologia de Informação
+ 3.7.11  Reincluir Amparo Legal............................................................................................17
+ 3.7.12  Consultar baixa de saldo STN de Empenhos do Exercício anterior........................18
+ 3.7.13  Incluir Nota de Crédito de Detalhamento.................................................................18
+ 3.7.14  Incluir Nota de Crédito de Descentralização............................................................18
+ 3.7.15  Incluir Nota de Crédito de Devolução de Descentralização.................................... 19
+ 3.7.16  Incluir Nota de Crédito de Anulação de Descentralização...................................... 19
+ 3.7.17  Cancelar Nota de Crédito.........................................................................................19
+ 3.7.18  Detalhar Nota de Crédito.........................................................................................20
+ 4  Estrutura dos Parâmetros....................................................................................................20
+ 4.1  Restrições de tipos...........................................................................................................20
+ 4.2  Tipos de dados do Orçamentário......................................................................................23
+ 4.3  Tipos de dados do Orçamentário na Consulta e Extração de dados...............................30
+Histórico de Alterações
+Data Versão Descrição
+04/01/2021 1.0
+Versão 7.6 do Sistema:
+Especificação das operações “Incluir Empenho” e “Alterar Empenho” disponíveis no  
+Subsistema Orçamentário.
+26/03/2021 1.1
+Versão 7.10.00 do Sistema:
+– Incluída a seção 3.7.3 com a especificação da nova operação “Detalhar Empenho”  
+no Subsistema Orçamentário.
+16/04/2021 1.2
+Versão 7.10.01 do Sistema:
+– Incluídas  as  operações  “Incluir  Amparo  Legal”,  “Alterar  Amparo  Legal”,  “Excluir 
+Amparo Legal” e “Reincluir Amparo Legal” no Subsistema Orçamentário. Para uso  
+EXCLUSIVO do COMPRASNET.
+27/05/2021 1.3
+Versão 7.13.01 do Sistema:
+– Alterada a seção 4.3 para incluir as assinaturas do empenho nos dados retornados  
+pela operação “Detalhar Empenho”.
+22/09/2021 1.4
+Versão 7.16 do Sistema:
+– Alterada a seção 4.2 para adicionar o parâmetro “preEmpenho” a ser utilizado na  
+operação “Incluir Empenho”.
+– Alterada  a  seção  4.3  para  adicionar  o  parâmetro  pré-empenho  nos  dados 
+retornados pela operação “Detalhar Empenho”.
+– Incluídas as operações “Incluir Pré-empenho”, “Alterar Pré-empenho” e “Detalhar  
+Pré-empenho”  no  Subsistema  Orçamentário  com  os  respectivos  dados  dos  
+parâmetros.
+04/11/2021 1.5
+Versão 7.xx do Sistema:
+– Incluída  a  operação  “Consultar  relatório  PDF  do  empenho”  no  Subsistema 
+Orçamentário. 
+02/09/2022 1.6 - Incluído o código do Iduso no ptres decodificado
+27/11/2023 1.7 -  Incluída  a  operação  “Consultar  baixa  de  saldo  STN  de  empenhos  do  exercício 
+anterior”
+08/05/2025 1.8 Alteração da seção 1.4 com orientações para suporte técnico e de negócio.
+26/08/2025 1.9 - Incluído as operações da NC
+16/10/2025 1.10
+Alterações da seção 4.1:
+–  Inclusão  das  operações  de  Revalidação  de  RPNP  (LC  215/2025)  no  
+"TipoOperacaoItemEmpenho" e inclusão das restrições "ValorUnitarioItemEmpIncZero"  
+e "QtdItemEmpIncZero" em virtude da possibilidade de valores iguais a zero nessas  
+operações.
+Alterações da seção 4.3:
+– Alteração das restrições dos parâmetros quantidade, "vlrUnitario" e "vlrOperacao"  
+para,  respectivamente,  "ValorIncZero",  "ValorUnitarioItemEmpIncZero"  e  
+"QtdItemEmpIncZero" em virtude da possibilidade de valores e quantidades iguais a  
+zero na "OperacaoItemEmpenho".
+– Alteração da restrição do parâmetro "vlrTotal" para "ValorIncZero" em virtude da  
+possibilidade de valores iguais a zero na OperacaoBaixaSaldo.
+01/12/2025 1.11 Alteração da seção 3.6.7.1 indicando que o campo password não é validado.
+4 1  Órgão 
+Secretaria do Tesouro Nacional
+ 1.1 Sigla do Órgão
+STN
+ 1.2 Razão Social
+Secretaria do Tesouro Nacional
+ 1.3 Código SIORG
+001696
+ 1.4 Suporte
+Para dúvidas técnicas ou feedback acesse o link E-SERVIÇOS.
+Para dúvidas de negócio acesse o COMUNICA (funcionalidade disponível no sistema 
+SIAFI).
+5 2  Serviço - informações gerais
+ 2.1 Nome
+Orçamentário 
+ 2.2 Data de inicio de operação
+04 de janeiro de 2021
+ 2.3 Contexto
+A construção do SIAFIWeb foi motivada pela necessidade de modernizar o SIAFI em uma  
+plataforma mais flexível e econômica, superando as limitações apresentadas no sistema  
+atual quanto à escalabilidade, interface, manutenibilidade e rastreabilidade. 
+Neste sentido, uma importante atualização tecnológica é a disponibilização de serviços –  
+Web Services – que oferecem uma maneira mais eficiente para as Unidades Gestoras do  
+Governo Federal realizarem suas receitas e despesas, com maior aderência às normas  
+vigentes e maior controle sobre as fases de execução e sobre os saldos disponíveis, de  
+forma integrada ao SIAFIWeb.
+Neste  documento  é  descrito  o  serviço  do  Módulo  Orçamentárioe  suas  respectivas 
+operações.
+ 2.4 Objetivo
+Permitir  a  integração  das  diversas  Unidades  Gestoras  do  Governo  Federal  com  o 
+SIAFIWeb através de uma interface lógica, programável que torna compatíveis entre si os  
+mais diferentes aplicativos, independentemente do sistema operacional, possibilitando a  
+comunicação e intercâmbio de dados entre diferentes redes.
+ 2.5 Tipo de recurso
+[X] Web Service  
+[  ] Download de dados (FTP, download, etc) 
+[  ] Protocolo de comunicação Computador <=> Computador que não seja Web service
+[  ] Correio, telefone ou outro tipo de não atendimento presencial
+[  ] Atendimento presencial
+6 2.6 Classificação do Serviço
+ 2.6.1  Base de dados oficial 
+[  ] SIM, contém informações comprobatórias de pessoas físicas.
+[X] NÃO contém informações comprobatórias de pessoas físicas.
+ 2.6.2  Acesso público
+[  ] Acesso público não identificado. 
+[  ] Acesso público identificado (requer cadastramento e senha). 
+[X] Acesso restrito a órgãos da administração federal. 
+[  ] Acesso restrito a situações específicas. 
+ 2.6.3  Tecnologias em uso
+As respostas abaixo se referem apenas a recepção do serviço, não a sua geração. 
+[X] O serviço usa apenas padrões abertos e independente de software escolhido (Web 
+Service, por exemplo). 
+[   ] O serviço necessita de um software livre específico. 
+[   ] O serviço necessita de um software proprietário. 
+[   ] Outra situação sem software proprietário. 
+7 3  Web Services - informações detalhadas 
+ 3.1 Nome do serviço na interface
+manterOrcamentario
+ 3.2 Endereço do arquivo WSDL
+Homologação Externa:
+https://homextservicos-siafi.tesouro.gov.br/siafi<ano>he/services/orcamentario/
+manterOrcamentario?wsdl
+Produção:
+https://servicos-siafi.tesouro.gov.br/siafi<ano>/services/orcamentario/
+manterOrcamentario?wsdl
+onde:
+<ano> é o ano do exercício. Ex: 2020.
+ 3.3 Requisitos e orientações para o acesso
+O  canal  de  comunicação  para  transmissão  de  pacotes  SOAP  utiliza  o  HTTP  sobre 
+Transport Layer Security  (TLS 1.2). Necessário certificado digital de máquina do lado  
+cliente para estabelecimento de HTTPS com autenticação mútua. Enviar seu certificado  
+digital de máquina para uso no “Trust Store” do SIAFIWeb.
+Os serviços do SIAFIWeb são compatíveis com o WS-I Basic Profile1 Versão 1.1 e com o  
+WS-I Basic Security Profile2 Versão 1.0.
+O WS-I ( Web Services-Interoperability) Basic Profile é um conjunto de especificações de  
+serviços da Web, não-proprietários, que promovem a interoperabilidade. 
+A ferramenta utilizada para testes de conformidade com  WS-I Basic Profile  foi o “ WS-I 
+Testing Tools V1.1” 3 
+O  mecanismo  de  autenticação  de  usuários  será  feito  com  o  protocolo  WS-Security4, 
+utilizando o “User Name Token” para transmissão da identificação do usuário.
+1 Especificação “Basic Profile Version 1.1 ” em http://www.ws-i.org/profiles/basicprofile-1.1.html 
+2 Especificação “Basic Security Profile Version 1.0 ” em http://www.ws-i.org/profiles/basicsecurityprofile-1.0.html
+3 Seção “Interoperability Testing Tools 1.1” 
+disponível em: http://www.ws-i.org/deliverables/workinggroup.aspx?wg=testingtools
+4 Especificação “Web Services Security: SOAP Message Security 1.1” em http://www.oasis-open.org/committees/download.php/16790/wss-v1.1-spec-os-
+SOAPMessageSecurity.pdf
+8Para autenticar no sistema, informar no campo “ Username”, do cabeçalho de segurança,  
+o CPF do usuário habilitado a operar no SIAFIWeb e no campo “ Password” a senha no  
+formato “PasswordText”.
+Veja na seção 3.6.7 a descrição completa do cabeçalho de segurança.
+Contato para solicitar acesso:
+Nome E-mail Telefone
+Suporte de TI da STN ti.stn@fazenda.gov.br (61) 3412-1419
+ 3.4 ANS (Acordo de Nível de Serviço) proposto
+Não há garantias de nível de serviço.
+ 3.5 Tabela de Erros
+Código Descrição Indicação de uso
+EWS0001 Cabeçalho do SIAFI ausente. Informar o cabeçalho SIAFI.
+EWS0003 Sistema consumidor não identificado ou não cadastrado. Necessário cadastrar o sistema 
+e a máquina de origem que 
+acessa o SIAFI.
+EWS0004 Obrigatório informar o campo “nonce” no cabeçalho de 
+entrada para executar operações que alteram a base.
+Operações, cuja classificação 
+alteram a base, necessitam que 
+o campo “nonce” seja informado 
+pelos consumidores do serviço.
+EWS0005 Tamanho do campo “nonce” do cabeçalho de entrada 
+excede 64 caracteres.
+Tamanho do nonce está limitado 
+a 64 posições.
+EWS0006 Já existe uma requisição com o mesmo identificador 
+NONCE sendo processada. Aguarde 10 minutos e tente 
+novamente.
+Durante o processamento de 
+uma requisição, outra com 
+mesmo NONCE e mesma 
+operação não pode ser enviada.
+EWS0007 Obrigatório informar o campo “ug” no cabeçalho SIAFI. Obrigatório preenchimento 
+deste campo com a UG primária 
+ou uma das UG's secundárias 
+do operador.
+EWS0008 Nome do Sistema deve ser igual ao informado na URL. O nome do sistema, quando 
+informado, deve estar de acordo 
+com a URL.
+EWS0009 Erro de Negócio capturado pelo bilhetador: <mensagem> Quando ocorrer um erro de 
+negócio durante a bilhetagem 
+da requisição será apresentada 
+esta mensagem de erro, sendo 
+que a palavra “<mensagem>” 
+9será substituída pela 
+mensagem de erro original.
+EWS0010 Existe uma requisição já processada com o mesmo 
+NONCE e sem mensagem de resposta, verifique se as 
+informações desta requisição já foram gravadas no 
+SIAFIWebou entre em contato com o administrador do 
+sistema.
+Ocorre quando existir uma 
+requisição sem resposta por 
+mais de 10 minutos e o sistema 
+externo refizer a requisição 
+utilizando o mesmo NONCE.
+EWS0011 A requisição foi processada, porém não é possível 
+identificar se foi efetivada. Aguarde 20 minutos e verifique 
+o estado da requisição no SIAFIWeb.
+Quando o sistema conclui o 
+processamento da requisição, 
+porém ocorre algum problema 
+de infraestrutura, o SIAFIWeb 
+tenta recuperar e processar os 
+dados internamente. É 
+necessário então aguardar para 
+verificar se o processamento da 
+requisição foi efetivado.
+ 3.6 Considerações gerais sobre parâmetros de entrada e/ou saída
+A descrição dos parâmetros deste serviço seguem o padrão definido no seguinte 
+exemplo:
+Nome da classe
+Parâmetro Tipo Ocorrência Restrição Observação
+propriedade1 int [1..1] XYZ Propriedade numero 1 de exemplo, neste caso 
+um tipo simples do XML
+propriedade2 ClasseX [0..n] - Propriedade numero 2 de exemplo, neste caso 
+um tipo complexo definido pela ClasseX.
+A seguir detalhamos os atributos para descrição de tipos complexos.
+ 3.6.1  Atributo “Nome da classe”
+É o identificador único de uma classe do serviço de Manter Orçamentário assim como 
+esta é apresentada no wsdl deste serviço.
+ 3.6.2  Atributo “Parâmetro”
+É o nome da propriedade de uma classe. Pode ser um tipo complexo ou um tipo 
+primitivo.
+ 3.6.3  Atributo “Tipo”
+Os parâmetros são definidos por tipos que podem ser tipos complexos, como uma 
+classe, ou um dos tipos primitivos do XML.
+Um tipo complexo é destacado em negrito e está descrito neste documento na seção 4, 
+estrutura dos parâmetros.
+10Os tipos primitivos estão definidos no documento “XML Schema Part 2: Datatypes Se-
+cond Edition” do W3C disponível em http://www.w3.org/TR/xmlschema-2/#built-in-primi-
+tive-datatypes
+ 3.6.4  Atributo “Ocorrência”
+Representa a quantidade mínima e máxima da ocorrência do parâmetro. 
+Valores possíveis podem ser resumidos na seguinte tabela:
+Ocorrência Descrição
+1..1 Parâmetro obrigatório
+0..1 Parâmetro opcional.
+0..x ou 1..x Parâmetro de repetição definida. Sendo x um número inteiro maior 
+que 1, representa o tamanho máximo de uma lista.
+ 0..n ou 1..n Parâmetro de repetição indefinida. Uma lista de repetição não determi-
+nada.
+ 3.6.5  Atributo “Restrição”
+Representa uma restrição aplicada a um tipo primitivo de dados. Pode ser limitação de 
+quantidade máxima e mínima (não confundir com ocorrência), restrição de máscaras 
+aplicáveis ou de domínio. Note que uma restrição nunca é aplicada ao um tipo comple-
+xo de dados, somente a tipos primitivos.
+O atributo restrição não está presente na descrição dos parâmetros de entrada e saída 
+das operações pois tais parâmetros são sempre tipos complexos.
+ 3.6.6  Atributo “Observação”
+Campo de texto livre e opcional. A observação é utilizada para descrever alertas, 
+detalhamentos, regras e restrições de negócio quando aplicáveis.
+ 3.6.7  Cabeçalho SOAP
+ 3.6.7.1  Cabeçalho de entrada
+Na requisição de qualquer operação do serviço, deve estar presente o cabeçalho da  
+mensagem SOAP. 
+O cabeçalho é definido a seguir:
+Header 5
+Parâmetro Tipo Ocorrência Observação
+security wsse:Security [1..1] Cabeçalho de segurança, conforme 
+especificado no protocolo WS-Security 
+5 Cabeçalho SOAP implementado via tag XML <soapenv:Header>
+111.1.
+cabecalhoSIAFI CabecalhoSIAFI [1..1] Cabeçalho com informações 
+específicas do SIAFIWeb.
+Security6
+Parâmetro Tipo Ocorrência Observação
+usernameToken wsse:UsernameTokenType [1..1] Para implementação do método de 
+autenticação utilizando “User Name 
+Token”
+UsernameTokenType 7
+Parâmetro Tipo Ocorrência Observação
+username string [1..1] Identificador do usuário, informar um 
+CPF habilitado para autenticação no 
+SIAFIWeb.
+password string [1..1] Senha deve ser informada em texto 
+plano e deve ser informado o atributo 
+Type="http://docs.oasis-open.org/wss/
+2004/01/oasis-200401-wss-username-
+token-profile-1.0#PasswordText"
+O valor deve ser informado, mas não 
+será validado. 
+nonce anyURI [0..1] Opcional e não utilizado no SIAFI
+created wsu:AttributedDateTime [0..1] Opcional e não utilizado no SIAFI
+CabecalhoSIAFI
+Parâmetro Tipo Ocorrência Restrição Observação
+nomeSistemaSIAFI string [0..1] NomeSistSIAFI Nome do sistema SIAFI para acesso.
+(Em desuso: Será retirada em versões 
+futuras)
+ug int [1..1] UG Informar ou número da Unidade Gestora 
+primária ou uma das secundárias do operador.
+bilhetador Bilhetador [0..1] - Informações para bilhetagem das requisições 
+SOAP repetidas.
+•Obrigatório para operações cuja classificação 
+alteram a base.
+•Ignorado para operações que não alteram a 
+base (não há tratamento de requisições 
+repetidas para estas operações).
+Bilhetador
+Parâmetro Tipo Ocorrência Restrição Observação
+nonce string [0..1] NONCE “Number used once”. Utilizado para identificação 
+e controle da requisição. O algoritmo de geração 
+é livre devendo garantir unicidade dentro de 
+determinado período de tempo.
+ 3.6.7.2  Cabeçalho de saída
+As mensagens SOAP de resposta contém um cabeçalho informando se uma operação  
+foi efetivada com sucesso, falha ou indeterminada. O mesmo cabeçalho pode conter  
+também informações sobre o tratamento de requisições repetidas.
+6 Cabeçalho de segurança padrão ws-security implementado via tag XML <wsse:Security>
+7  Especificação “Web Services Security UsernameToken Profile 1.1”  em:  http://docs.oasis-open.org/wss/v1.1/wss-v1.1-spec-os-
+UsernameTokenProfile.pdf
+12Definimos uma requisição repetida como:
+1. Uma requisição SOAP que foi processada e persistida em banco pelo SIAFIWeb.
+2. O consumidor do serviço não recebeu resposta sobre o processamento.
+3. A requisição foi reenviada dentro de um período de 6 meses e com o mesmo identificador no ca-
+beçalho (mesmo “nonce” do passo 1).
+O tipo “RequisicaoRepetidaResposta”, presente no cabeçalho de saída, contém infor -
+mações sobre o reenvio da requisição.
+Header
+Parâmetro Tipo Ocorrência Restrição Observação
+efetivacaoOperacao EfetivacaoOperacao [1..1] - Contém informações sobre a 
+efetivação da requisição.
+requisicaoRepetidaResposta RequisicaoRepetidaResposta [0..1] - Contém informações sobre uma 
+requisição repetida.
+EfetivacaoOperacao
+Parâmetro Tipo Ocorrência Restrição Observação
+resultado enum [1..1] EfetivacaoOp Indica se a operação solicitada foi 
+efetivada no sistema.
+Caso seja “SUCESSO”, a 
+requisição atingiu seu objetivo. 
+Caso seja “FALHA”, a requisição 
+não atingiu seu objetivo por algum 
+motivo de negócio ou não. 
+Caso seja “INDEFINIDO” a 
+requisição pode ou não ter atingido 
+seu objetivo, sendo um cenário de 
+exceção que requer atenção a 
+mensagem de erro retornada.
+Para serviços do tipo consulta, 
+somente será “FALHA” se houver 
+erros com os parâmetros da 
+consulta.
+RequisicaoRepetidaResposta
+Parâmetro Tipo Ocorrência Observação
+nonceOriginal string [1..1] Nonce original gerado pelo 
+consumidor do serviço.
+mensagem string [1..1] Mensagem com a informação de que 
+a requisição foi recuperada da base e 
+foi considerada repetida.
+dataProcessamento dateTime [1..1] Data e hora do processamento da 
+requisição original.
+ 3.7 Operações do Orçamentário
+ 3.7.1  Incluir Empenho
+Incluir um novo empenho.
+O usuário da requisição deve ter acesso à transação INCNE no seu perfil.
+13Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcEmpenhoDados OrcEmpenhoDados [1..1]
+Nome da resposta da operação na interface do serviço
+orcIncluirEmpenhoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcEmpenhoResposta OrcEmpenhoResposta [1..1]
+ 3.7.2  Alterar Empenho
+Alterar um empenho.
+O usuário da requisição deve ter acesso à transação CONNE_ALT no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcAlterarEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcEmpenhoDadosAlt OrcEmpenhoDadosAlt [1..1]
+Nome da resposta da operação na interface do serviço
+orcAlterarEmpenhoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcEmpenhoResposta OrcEmpenhoResposta [1..1]
+ 3.7.3  Detalhar Empenho
+Recupera os dados do empenho consultado.
+O usuário da requisição deve ter acesso à transação CONNE no seu perfil.
+Classificação
+Operação que não altera a base.
+Nome da operação na interface do serviço
+orcDetalharEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcDetalharEmpenhoEntrada OrcDetalharEmpenhoEntrada [1..1]
+Nome da resposta da operação na interface do serviço
+orcDetalharEmpenhoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcDetalharEmpenhoResposta OrcDetalharEmpenhoResposta [1..1]
+14 3.7.4  Consultar Relatório PDF do Empenho
+Recupera o relatório PDF (última versão do Empenho) codificado através do método Base64.
+O usuário da requisição deve ter acesso à transação CONNE no seu perfil.
+Classificação
+Operação que não altera a base.
+Nome da operação na interface do serviço
+orcConsultarRelatorioEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcConsultarRelatorioEmpenhoEntrada OrcConsultarRelatorioEmpenhoEntrada [1..1]
+Nome da resposta da operação na interface do serviço
+orcConsultarRelatorioEmpenhoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcConsultarRelatorioEmpenhoResposta OrcConsultarRelatorioEmpenhoResposta [1..1]
+ 3.7.5  Incluir Pré-empenho
+Incluir um novo pré-empenho.
+O usuário da requisição deve ter acesso à transação INCPE no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirPreEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcPreEmpenhoDados OrcPreEmpenhoDados [1..1]
+Nome da resposta da operação na interface do serviço
+orcPreEmpenhoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcPreEmpenhoResposta OrcPreEmpenhoResposta [1..1]
+ 3.7.6  Alterar Pré-empenho
+Alterar um pré-empenho.
+O usuário da requisição deve ter acesso à transação CONPE_ALT no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcAlterarPreEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcPreEmpenhoDadosAlt OrcPreEmpenhoDadosAlt [1..1]
+Nome da resposta da operação na interface do serviço
+orcPreEmpenhoResponse
+15Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcPreEmpenhoResposta OrcPreEmpenhoResposta [1..1]
+ 3.7.7  Detalhar Pré-empenho
+Recupera os dados do pré-empenho consultado.
+O usuário da requisição deve ter acesso à transação CONPE no seu perfil.
+Classificação
+Operação que não altera a base.
+Nome da operação na interface do serviço
+orcDetalharPreEmpenho
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcDetalharPreEmpenhoEntrada OrcDetalharPreEmpenhoEntrada [1..1]
+Nome da resposta da operação na interface do serviço
+orcPreEmpenhoDetalharResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcDetalharPreEmpenhoResposta OrcDetalharPreEmpenhoResposta [1..1]
+ 3.7.8  Incluir Amparo Legal
+Incluir um novo Amparo Legal.
+O usuário da requisição deve ter acesso à transação INCAMPARO no seu perfil. 
+Serviço de uso EXCLUSIVO do Sistema COMPRASNET.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirAmparoLegal
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalDadosIncluir OrcAmparoLegalDadosIncluir [1..1]
+Nome da resposta da operação na interface do serviço
+orcAmparoLegalResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalResposta OrcAmparoLegalResposta [1..1]
+ 3.7.9  Alterar Amparo Legal
+Alterar um Amparo Legal existente na base de dados.
+O usuário da requisição deve ter acesso à transação CONAMPARO_ALT no seu perfil. 
+Serviço de uso EXCLUSIVO do Sistema COMPRASNET.
+Classificação
+Operação que altera a base.
+16Nome da operação na interface do serviço
+orcAlterarAmparoLegal
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalDadosAlterar OrcAmparoLegalDadosAlterar [1..1]
+Nome da resposta da operação na interface do serviço
+orcAmparoLegalResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalResposta OrcAmparoLegalResposta [1..1]
+ 3.7.10  Excluir Amparo Legal
+Exclui um Amparo Legal existente na base de dados.
+O usuário da requisição deve ter acesso à transação CONAMPARO_ALT no seu perfil. 
+Serviço de uso EXCLUSIVO do Sistema COMPRASNET.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcExcluirAmparoLegal
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalDadosExcluir OrcAmparoLegalDadosExcluir [1..1]
+Nome da resposta da operação na interface do serviço
+orcAmparoLegalResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalResposta OrcAmparoLegalResposta [1..1]
+ 3.7.11  Reincluir Amparo Legal
+Reincluir um Amparo Legal que se encontra excluído.
+O usuário da requisição deve ter acesso à transação CONAMPARO_ALT no seu perfil. 
+Serviço de uso EXCLUSIVO do Sistema COMPRASNET.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcReincluirAmparoLegal
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalDadosReincluir OrcAmparoLegalDadosAlterar [1..1]
+Nome da resposta da operação na interface do serviço
+orcAmparoLegalResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcAmparoLegalResposta OrcAmparoLegalResposta [1..1]
+17 3.7.12  Consultar baixa de saldo STN de Empenhos do Exercício anterior
+Recupera os dados do empenho consultado, no sistema do exercício imediatamente anterior.
+O usuário da requisição deve ter acesso à transação CONNE no seu perfil.
+Classificação
+Operação que não altera a base.
+Nome da operação na interface do serviço
+orcConsultarBaixaSaldoEmpenhoExercAnterior
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcConsultarBaixaSaldoEmpenhoE-
+xercAnteriorEntrada
+OrcConsultarBaixaSaldoEmpenho-
+ExercAnteriorEntrada
+[1..1]
+Nome da resposta da operação na interface do serviço
+orcConsultaBaixaSaldoEmpenhoExercAnteriorResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcConsultarBaixaSaldoEmpenhoE-
+xercAnteriorResposta
+OrcConsultarBaixaSaldoEmpenho-
+ExercAnteriorResposta
+[1..1]
+ 3.7.13  Incluir Nota de Crédito de Detalhamento
+Incluir uma nova nota de crédito de detalhamento.
+O usuário da requisição deve ter acesso à transação INCNC no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirNCDetalhamento
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcNCDetalhamentoDados OrcNCDetalhamentoDados [1..1]
+Nome da resposta da operação na interface do serviço
+orcIncluirNotaCreditoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcNotaCreditoResposta OrcNotaCreditoResposta [1..1]
+ 3.7.14  Incluir Nota de Crédito de Descentralização
+Incluir uma nova nota de crédito de descentralização.
+O usuário da requisição deve ter acesso à transação INCNC no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirNCDescentralizacao
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcNCDescentralizacaoDados OrcNCDescentralizacaoDados [1..1]
+18Nome da resposta da operação na interface do serviço
+orcIncluirNotaCreditoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcNotaCreditoResposta OrcNotaCreditoResposta [1..1]
+ 3.7.15  Incluir Nota de Crédito de Devolução de Descentralização
+Incluir uma nova nota de crédito de devolução de descentralização.
+O usuário da requisição deve ter acesso à transação INCNC no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirNCDevolucaoDescentralizacao
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcNCDevolucaoDescentralizacaoDa-
+dos
+OrcNCDevolucaoDescentralizacao-
+Dados
+[1..1]
+Nome da resposta da operação na interface do serviço
+orcIncluirNotaCreditoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcNotaCreditoResposta OrcNotaCreditoResposta [1..1]
+ 3.7.16  Incluir Nota de Crédito de Anulação de Descentralização
+Incluir uma nova nota de crédito de anulação de descentralização.
+O usuário da requisição deve ter acesso à transação INCNC no seu perfil.
+Classificação
+Operação que altera a base.
+Nome da operação na interface do serviço
+orcIncluirNCAnulacaoDescentralizacao
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcNCAnulacaoDescentralizacaoDa-
+dos
+OrcNCAnulacaoDescentralizacao-
+Dados
+[1..1]
+Nome da resposta da operação na interface do serviço
+orcIncluirNotaCreditoResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcNotaCreditoResposta OrcNotaCreditoResposta [1..1]
+ 3.7.17  Cancelar Nota de Crédito
+Cancelar uma nota de crédito.
+O usuário da requisição deve ter acesso à transação CONNC_ALT no seu perfil.
+Classificação
+Operação que altera a base.
+19Nome da operação na interface do serviço
+orcCancelarNC
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcNCDadosCancelar OrcNCDadosCancelar [1..1]
+Nome da resposta da operação na interface do serviço
+orcCancelarNCResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcNotaCreditoResposta OrcNotaCreditoResposta [1..1]
+ 3.7.18  Detalhar Nota de Crédito
+Recupera os dados da nota de crédito consultada.
+O usuário da requisição deve ter acesso à transação CONNC no seu perfil.
+Classificação
+Operação que não altera a base.
+Nome da operação na interface do serviço
+orcDetalharNC
+Parâmetro(s) de entrada
+Parâmetro Tipo Ocorrência Observação
+orcDetalharNCEntrada OrcDetalharNCEntrada [1..1]
+Nome da resposta da operação na interface do serviço
+orcDetalharNCResponse
+Parâmetro(s) de saída
+Parâmetro Tipo Ocorrência Observação
+orcDetalharNCResposta OrcDetalharNCResposta [1..1]
+ 4  Estrutura dos Parâmetros
+ 4.1 Restrições de tipos
+Nome Tipo XML[1] Tamanho
+mín./máx.
+Observação
+Alinea string 0 4 Alinea do Ato Normativo.
+AmparoLegal int 1 3 Representa o código do Amparo Legal
+Ano int 4 4 Ano com 4 dígitos.
+Artigo string 0 4 Artigo do Ato Normativo.
+AtoNormativo string 0 30 Descrição do Ato Normativo.
+AutorEmenda string 1 12 Identifica do Autor/Emenda do Programa de Trabalho.
+CodigoProgramaTrabalho string 17 17 Código do Programa de Trabalho, conforme tabela específica.
+ContaContabil string 9 9 Código da Conta Contábil, conforme tabela específica.
+20Nome Tipo XML[1] Tamanho
+mín./máx.
+Observação
+ContaCorrenteContabil string 1 78 Identifica o conta corrente da conta contábil no saldo contábil.
+CodModalidadeLicitacao int 1 2 Código da Modalidade de Licitação, conforme tabela específica.
+CodMsg string 0 6 Código da mensagem de retorno.
+CodTransf string 6 6 Código da Transferência Voluntária.
+CPF string 11 11 Código da pessoa no Cadastro de Pessoa Física.
+DescricaoDocumento string 3 468 Permite valores alfanuméricos.
+DescricaoEmpenho string 1 468 Permite valores alfanuméricos.
+DescricaoItemEmpenho string 1 1248 Representa a descrição do item do empenho.
+DescricaoPreEmpenho string 1 468 Permite valores alfanuméricos.
+EsferaOrcamentaria int 1 1 Representa o tipo de Esfera Orçamentária . Enum com os seguin-
+tes valores possíveis:
+1 - Orçamento Fiscal
+2 - Orçamento de Seguridade Social
+3 - Orçamento de investimento das empresas não dependentes
+4 - Orçamento próprio das empresas não dependentes
+Favorecido string 6 14 Identifica o Favorecido, podendo ser CPF, CNPJ, UG ou Inscrição 
+Genérica.
+FonteRecurso string 10 10 Identificação da Fonte de Recurso, conforme tabela específica.
+Iduso string 1 1 Código do Iduso do Programa de Trabalho Resumido.
+Inciso string 0 10 Inciso do Ato Normativo.
+InformacaoComplementar string 1 100 Representa uma informação complementar que o usuário ou o Sis-
+tema de Origem queiram associar ao empenho.
+LocalEntrega string 1 250 Representa informações sobre o local de entrega.
+Memorando string 1 4000 Texto de memorando.
+Motivo string 1 1024 Representa o motivo que levou o usuário a efetuar a operação.
+NaturezaDespesa int 6 6 Identifica a Natureza de Despesa, conforme tabela específica.
+NC string 12 12 Identificação da nota de crédito na UG, com formato 
+‘AAAANC999999’.
+NE string 12 12 Identificação do empenho na UG, com formato 
+‘AAAANE999999’.
+NomeUsuario string 1 80 Nome do Usuário no cadastro de usuários do Senha-Siafi.
+NumDoc int 1 6 Número do documento
+NumNE int 1 6 Número do empenho
+NumPE int 1 6 Número do pré-empenho
+NumSeq long 1 3 Número sequencial gerado pelo consumidor do serviço. Deve inici-
+ar com o valor 1 e ser único para o grupo de elementos do qual faz 
+parte.
+Paragrafo string 0 10 Parágrafo do Ato Normativo.
+PE string 12 12 Identificação do pré-empenho na UG, com formato
+‘AAAAPE999999’.
+PlanoInterno string 1 11 Identifica o Plano interno, conforme tabela específica.
+PlanoOrcamentario string 1 4 Identifica o Plano Orçamentário do Programa de Trabalho.
+Processo string 1 20 Identifica o processo que deu origem ou que está associado ao em-
+penho.
+ProgramaTrabalhoResumido int 1 6 Codigo do PTRES (Programa de Trabalho Resumido), conforme ta-
+bela específica.
+QtdItemEmp decimal 1 15 Admite somente valores maiores que zero. Sendo 5 dígitos deci-
+21Nome Tipo XML[1] Tamanho
+mín./máx.
+Observação
+mais e 10 inteiros.
+QtdItemEmpIncZero decimal 1 15 Admite somente valores maiores ou iguais a zero. Sendo 5 dígitos 
+decimais e 10 inteiros.
+ResultadoLei string 1 1 Código do Resultado Lei do Programa de Trabalho.
+RO string 12 12 Identifica o documento contábil Registro Orçamentário na UG, com 
+formato ‘AAAARO999999’.
+SiglaSistemaOrigem string 1 40 Composição da Sigla do Sistema e Sigla do Órgão.
+SubElemento int 1 2 Código do Subelemento da Natureza da Despesa, conforme tabela 
+específica.
+TaxaCambio decimal 1 10 Taxa de Câmbio. Sendo 6 dígitos inteiros e 4 decimais.
+TipoAmparoLegalRestricao string 1 30 Representa o tipo de restrição do Amparo Legal. Valores possíveis:
+TIPO_ADMINISTRACAO_EMITENTE
+ORGAO_UG_EMITENTE
+ORGAO_UG_FAVORECIDA
+AGENCIA_EXECUTIVA
+NATUREZA_DESPESA
+TipoAmparoLegalRegraRestr
+icao
+string 1 10 Representa o tipo de regra a ser aplicada no tipo de restrição do 
+Amparo Legal. Valores possíveis:
+SOMENTE
+EXCETO
+TipoCargoAssinatura string 1 20 Representa o cargo da assinatura. Enum com os seguintes valores 
+possíveis:
+ORDENADOR_DESPESA
+GESTOR_FINANCEIRO
+RESPONSAVEL_EMPENHO
+TipoCredito string 1 1 Identifica o Tipo de Crédito do Programa de Trabalho.
+TipoDescentralizacao string 1 8 Representa os tipos de descentralização da Nota de Crédito. Enum 
+com os seguintes valores possíveis:
+PROVISAO
+DESTAQUE
+TipoEmpenho int 1 1 Representa os tipos de empenhos. Enum com os seguintes valores 
+possíveis:
+1 - Ordinário
+3 - Estimativo
+5 - Global
+TipoOperacaoPreEmpenho-
+Alterar
+string 1 20 Representa o tipo de operação aplicada na alteração de pré- empe-
+nho. Enum com os seguintes valores possíveis:
+REFORCO
+ANULACAO
+TipoOperacaoItemEmpenho string 1 40 Representa o tipo de operação aplicada num item de empenho. 
+Enum com os seguintes valores possíveis:
+INCLUSAO
+REFORCO
+ANULACAO
+CANCELAMENTO
+TRANSFERENCIA_CONCEDIDA
+ESTORNO_TRANSFERENCIA_CONCEDIDA
+TRANSFERENCIA_RECEBIDA
+ESTORNO_TRANSFERENCIA_RECEBIDA
+INSCRICAO_RP
+REINSCRICAO_RP
+ANULACAO_BAIXA_STN
+ANULACAO_BAIXA_EM_LIQUIDACAO_STN
+CANCELAMENTO_BAIXA_STN
+CANCELAMENTO_BAIXA_EM_LIQUIDACAO_STN
+CANCELAMENTO_BAIXA_BLOQUEADO_STN
+CANCELAMENTO_BAIXA_EM_LIQUIDACAO_BLOQUEADO_STN
+ANULACAO_BAIXA
+22Nome Tipo XML[1] Tamanho
+mín./máx.
+Observação
+CANCELAMENTO_BAIXA
+ESTORNO_ANULACAO_BAIXA_STN
+ESTORNO_ANULACAO_BAIXA_EM_LIQUIDACAO_STN
+ESTORNO_CANCELAMENTO_BAIXA_STN
+ESTORNO_CANCELAMENTO_BAIXA_EM_LIQUIDACAO_STN
+ESTORNO_CANCELAMENTO_BAIXA_BLOQUEADO_STN
+ESTORNO_CANCELAMENTO_BAIXA_EM_LIQUIDACAO_BLO-
+QUEADO_STN
+REVALIDACAO_LC215_25
+REINSCRICAO_RPNP_REVALIDACAO_LC215_25
+TipoOperacaoNotaCredito string 1 26 Representa os tipos de operações da Nota de Crédito. Enum com 
+os seguintes valores possíveis:
+DETALHAMENTO
+DESCENTRALIZACAO
+DEVOLUCAO_DESCENTRALIZACAO
+ANULACAO_DESCENTRALIZACAO
+TipoOperacaoPreEmpenho string 1 20 Representa o tipo de operação do pré- empenho. Enum com os se-
+guintes valores possíveis:
+INCLUSAO
+REFORCO
+ANULACAO
+TipoOperacaoTransferencia string 1 20 Representa a operação de transferência entre empenhos. Enum 
+com os seguintes valores possíveis:
+ESTORNO
+TRANSFERENCIA
+TipoStatusAssinaturaCargo string 1 20 Representa o status da assinatura para o cargo. Enum com os se-
+guintes valores possíveis:
+ASSINADA
+PENDENTE_RATIFICACAO
+TipoStatusAssinaturaEmpe-
+nho
+string 1 20 Representa o status da assinatura o empenho. Enum com os se-
+guintes valores possíveis:
+PENDENTE_ASSINATURA
+ASSINADA
+TipoTransferencia int 1 3 Código do tipo de Transferência Voluntária.
+UG int 1 6 Código da unidade gestora, conforme tabela específica.
+UO int 1 5 Código da unidade orçamentária, conforme tabela específica.
+Valor decimal 1 17 Admite somente valores maiores que zero. Sendo 2 dígitos deci-
+mais e 15 inteiros.
+ValorIncZero decimal 1 17 Admite valores maiores ou igual a zero. Sendo 2 dígitos decimais e 
+15 inteiros.
+ValorRestricaoAmparoLegal string 0 6 Representa o dado que deve ser considerado como restrição de 
+uso no Amparo Legal.
+ValorUnitarioItemEmp decimal 1 19 Admite somente valores maiores que zero. Sendo 4 dígitos deci-
+mais e 15 inteiros.
+ValorUnitarioItemEmpIncZe-
+ro
+decimal 1 19 Admite valores maiores ou iguais a zero. Sendo 4 dígitos decimais 
+e 15 inteiros.
+[1] A descrição de tipos primitivos de dados segue a definição do XML Schema descrito em http://www.w3.org/TR/xmlschema-0/#CreatDt
+ 4.2 Tipos de dados do Orçamentário
+Os tipos de dados abaixo listados são utilizados nos webservices do Subsitema Orçamentário, como também na Carga de Dados via  
+Submissão Batch.
+OrcEmpenhoDados
+23Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoEmpenho int [1..1] Ano
+numEmpenho int [0..1] NumNE Caso a UG Emitente esteja 
+configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número do Empenho.
+preEmpenho string [0..1] PE
+Para inclusão de empenho a partir de 
+um pré-empenho, informar o número 
+do PE.
+tipoEmpenho int [1..1] TipoEmpenho
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtProcesso string [0..1] Processo
+vlrTaxaCambio decimal [0..1] TaxaCambio
+vlrEmpenho decimal [0..1] Valor
+codFavorecido string [1..1] Favorecido
+codAmparoLegal int [1..1] AmparoLegal Conforme  amparos  cadastrados  na 
+transação CONAMPARO.
+txtInfoCompl string [0..1] InformacaoComplement
+ar
+Para o Sistema PORTALCONV, deve  
+ser  preenchido  com  o  Número  da 
+Transferência.
+Para  os  demais  Sistemas,  é  um 
+campo  opcional.  Pode  ser  enviado 
+qualquer dado ou conjunto de dados  
+que  o  Sistema  de  Origem  queira 
+associar ao empenho original.
+codTipoTransf int [0..1] TipoTransferencia Campo de uso obrigatório e exclusivo  
+do Sistema PORTALCONV.
+txtLocalEntrega string [0..1] LocalEntrega
+txtDescricao string [1..1] DescricaoEmpenho Representa a descrição do empenho  
+e irá compor o documento RO.
+passivoAnterior PassivoAnterior [0..1] - Deve  ser  enviado  caso  o  Empenho 
+tenha passivo anterior.
+ItemEmpenho ItemEmpenho  [1..n] -
+OrcEmpenhoDadosAlt
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoEmpenho int [1..1] Ano
+numEmpenho int [1..1] NumNE
+txtLocalEntrega string [0..1] LocalEntrega
+txtDescricao string [0..1] DescricaoEmpenho Representa a descrição do empenho.
+passivoAnterior PassivoAnterior [0..1] - Deve  ser  enviado  caso  o  Empenho 
+tenha passivo anterior.
+itemEmpenho ItemEmpenho  [0..n] -
+registroAlteracao RegistroAlteracao [1..1] -
+CelulaOrcamentaria
+Parâmetro Tipo Ocorrência Restrição Observação
+esfera string [1..1] EsferaOrcamentaria
+codPTRES string [0..1] ProgramaTrabalhoResu
+mido
+Parâmetro mutuamente exclusivo com 
+‘ptresDecodificado’.
+ptresDecodificado PTRESDecodificado [0..1] -
+Parâmetro mutuamente exclusivo com 
+‘codPTRES’ .
+Representa o conjunto de dados 
+necessário para que o SIAFI consiga  
+identificar o PTRES.
+codFonteRec string [1..1] FonteRecurso
+codNatDesp int [1..1] NaturezaDespesa
+ugResponsavel int [0..1] UG
+codPlanoInterno string [0..1] PlanoInterno
+24PTRESDecodificado
+Parâmetro Tipo Ocorrência Restrição Observação
+codUO int [1..1] UO
+codPT string
+[1..1] CodigoProgramaTrabal
+ho
+indrResultLei string [1..1] ResultadoLei
+indrTipoCredito string [1..1] TipoCredito
+codPlanoOrc string [1..1] PlanoOrcamentario
+codAutorEmenda string [1..1] AutorEmenda
+codIduso string [1..1] Iduso
+PassivoAnterior
+Parâmetro Tipo Ocorrência Restrição Observação
+codContaContabil string
+[0..1] ContaContabil Somente  deve  ser  informado  na  
+inclusão de empenho.
+passivoPermanente PassivoPermanente [0..n] -
+PassivoPermanente
+Parâmetro Tipo Ocorrência Restrição Observação
+contaCorrente string [1..1] ContaCorrenteContabil
+vlrRelacionado decimal [1..1] Valor
+ItemEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+numSeqItem int [1..1] NumSeq
+codSubElemento int
+[0..1] SubElemento Obrigatório quando informado novos 
+itens de empenho.
+descricao string
+[0..1] DescricaoItemEmpenhoObrigatório quando informado novos 
+itens de empenho.
+operacaoItemEmpenho
+OperacaoItemEmpe
+nho
+[0..1] -
+OperacaoItemEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+tipoOperacaoItemEmpenho string [1..1] TipoOperacaoItemEmpe
+nho
+INCLUSAO, somente quando for  uma 
+inclusão de empenho. 
+REFORCO, para novos itens e itens 
+já existentes na alteração de 
+empenho de exercício corrente.
+ANULACAO, somente para itens já 
+existentes na alteração de empenho 
+de exercício corrente.
+CANCELAMENTO, somente para 
+itens já existentes na alteração de 
+empenho de exercícios anteriores.
+quantidade decimal [1..1] QtdItemEmp
+vlrUnitario decimal [1..1] ValorUnitarioItemEmp
+vlrOperacao decimal [0..1] Valor Quando informado, será calculado e 
+validado multiplicando quantidade e  
+vlrUnitario e usando a regra de 
+arredondamento numérico.
+RegistroAlteracao
+Parâmetro Tipo Ocorrência Restrição Observação
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtMotivo string [1..1] Observacao Informação irá para o histórico e caso  
+a  operação  gere  contabilização  a 
+informação  também  irá  compor  o 
+documento RO.
+indrIndispCaixa boolean [0..1] - Esta tag somente se aplica quando o  
+RegistroAlteracao é enviado numa 
+25requisição do Alterar Empenho.
+Caso não seja informada, será 
+preenchido como Falso.
+OrcEmpenhoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [0..1] UG UG Emitente do Empenho.
+empenho string [0..1] NE Empenho original envolvido na 
+operação.
+numRO string [0..1] RO Documento contábil gerado na 
+operação.
+mensagem Mensagem [0..n] - Lista de mensagens de erro/alerta.
+OrcConsultarRelatorioEmpenhoEntrada
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+Código da UG Emitente do Empenho 
+que se deseja recuperar o relatório 
+PDF.
+anoEmpenho int [1..1] Ano Ano do Empenho  que se deseja 
+recuperar o relatório PDF
+numEmpenho int [1..1] NumNE Número do Empenho que se deseja 
+recuperar o relatório PDF
+OrcConsultarRelatorioEmpenhoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+dadosRelatorio DadosRelatorioEmp
+enho [0..1] -
+mensagem Mensagem [0..n] -
+Mensagem(ns)  de  erro  retornada(s) 
+caso o empenho não esteja disponível 
+para impressão PDF ou o empenho  
+não  exista  na  base  de  dados  ou 
+qualquer  outro  erro  de  negócio  que 
+impossibilite  a  impressão  PDF  da 
+versão atual do empenho informado.
+DadosRelatorioEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoEmpenho int [1..1] Ano
+numEmpenho int [1..1] NumNE
+relatorioBase64 base64Binary [1..1] -
+O relatório retornado nesta tag refere-
+se à última versão do empenho.
+O  conteúdo  desta  tag  é  codificado 
+através do método Base64. 
+https://docs.oracle.com/javase/8/
+docs/api/java/util/Base64.html
+O  Sistema  consumidor  do  serviço 
+deve decodificar o conteúdo desta tag 
+de Base64 para o formato PDF.
+Mensagem
+Parâmetro Tipo Ocorrência Restrição Observação
+codMsg string [0..1]
+-
+Código da mensagem, há situações 
+onde o código pode não ser 
+apresentado por não estar definido 
+no contexto da mensagem.
+txtMsg Memorando [1..1] -
+OrcPreEmpenhoDados
+26Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoPreEmpenho int [1..1] Ano
+numPreEmpenho int [0..1] NumPE Caso a UG Emitente esteja 
+configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número do Pré-empenho.
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtProcesso string [0..1] Processo
+vlrTaxaCambio decimal [0..1] TaxaCambio
+vlrPreEmpenho decimal [1..1] Valor
+codFavorecido string [0..1] Favorecido
+txtDescricao string [1..1] DescricaoPreEmpenho
+Representa  a  descrição  do  pré-
+empenho e  irá compor o documento  
+RO
+OrcPreEmpenhoDadosAlt
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoPreEmpenho int [1..1] Ano
+numPreEmpenho int [1..1] NumPE
+codFavorecido string [0..1] Favorecido
+operacao OperacaoPreEmpen
+ho [0..1] -
+registroAlteracao RegistroAlteracao [1..1] -
+OperacaoPreEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+tipoOperacao string [1..1] TipoOperacaoPreEmpe
+nhoAlterar
+vlrOperacao int [1..1] Valor
+OrcPreEmpenhoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [0..1] UG UG Emitente do Pré-empenho.
+preEmpenho string [0..1] PE Pré-empenho original envolvido na 
+operação.
+numRO string [0..1] RO Documento contábil gerado na 
+operação.
+mensagem Mensagem [0..n] - Lista de mensagens de erro/alerta.
+OrcAmparoLegalDadosIncluir
+Parâmetro Tipo Ocorrência Restrição Observação
+orcAmparoLegalDados OrcAmparoLegalD
+ados
+[1..1] - Informar os dados do Amparo Legal a 
+ser incluído.
+motivo string [1..1] Motivo
+OrcAmparoLegalDadosAlterar
+Parâmetro Tipo Ocorrência Restrição Observação
+codAmparoLegal int [1..1] AmparoLegal Informar o código do  Amparo Legal  
+no qual deseja efetuar a operação.
+orcAmparoLegalDados OrcAmparoLegalD
+ados
+[1..1] - O SIAFIWeb substituirá os dados do  
+Amparo Legal pelos que estão sendo  
+enviados na operação.
+Todos os parâmetros que possuírem  
+dados devem ser enviados, mesmo  
+que  somente  alguns  deles  tenham 
+sidos alterados.
+No caso de parâmetro opcional, caso  
+27não  seja  enviado  ou  enviado  com 
+conteúdo  vazio,  o  SIAFIWeb  
+entenderá que o respectivo campo no  
+Amparo Legal deve ficar vazio após  
+executar a operação.
+motivo string [1..1] Motivo
+OrcAmparoLegalDadosExcluir
+Parâmetro Tipo Ocorrência Restrição Observação
+codAmparoLegal int [1..1] AmparoLegal Informar o código do Amparo Legal no 
+qual deseja efetuar a operação.
+motivo string [1..1] Motivo
+OrcAmparoLegalDados
+Parâmetro Tipo Ocorrência Restrição Observação
+codModalidadeLicitacao int [1..1] CodModalidadeLicitaca
+o
+atoNormativo string [0..1] AtoNormativo
+artigo string [0..1] Artigo
+paragrafo string [0..1] Paragrafo
+inciso string [0..1] Inciso
+alinea string [0..1] Alinea
+restricao RestricaoAmparoL
+egal
+ [0..5] - Restrições de uso do Amparo Legal.
+É  permitido  informar  no  máximo  1 
+restrição de uso de cada tipo.
+RestricaoAmparoLegal
+Parâmetro Tipo Ocorrência Restrição Observação
+tipoRestricao string  [1..1] TipoAmparoLegalRestri
+cao
+regra string [1..1] TipoAmparoLegalRegra
+Restricao
+valor string [0..n] ValorRestricaoAmparoL
+egal
+Valores permitidos ou não permitidos  
+para o Amparo Legal, conforme o tipo  
+de restrição e regra informados.
+O parâmetro não deve ser informado  
+para  o  tipo  de  restrição  
+AGENCIA_EXECUTIVA.
+O parâmetro deve ser informado para  
+os  tipos  de  restrição  diferentes  de 
+AGENCIA_EXECUTIVA.
+OrcAmparoLegalResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+codAmparoLegal int [0..1] - Somente  retornado  na  resposta  
+quando o resultado for SUCESSO.
+Na operação de inclusão, é o novo  
+código do Amparo Legal gerado pelo  
+SIAFIWeb. 
+Nos  demais  casos,  é  o  código  do 
+Amparo Legal envolvido na operação. 
+mensagem Mensagem [0..n] - Lista de mensagens de erro/alerta.
+OrcNCDetalhamentoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNotaCredito int [1..1] Ano
+numNotaCredito int [0..1] NumDoc Caso a UG Emitente esteja 
+28configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número da Nota de Crédito.
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+vlrTaxaCambio decimal [0..1] TaxaCambio
+txtDescricao string [1..1] DescricaoDocumento Representa  a  descrição  da  nota  de 
+crédito e irá compor o documento RO.
+itemDetalhamento ItemDetalhamento  [1..n] -
+OrcNCDescentralizacaoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNotaCredito int [1..1] Ano
+numNotaCredito int [0..1] NumDoc
+Caso a UG Emitente esteja 
+configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número da Nota de Crédito.
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+vlrTaxaCambio decimal [0..1] TaxaCambio
+codTransf string [0..1] CodTransf
+txtDescricao string [1..1] DescricaoDocumento
+Representa a descrição da nota de  
+crédito  e  irá  compor  o  documento 
+RO.
+itemDescentralizacao
+ItemDescentralizac
+ao  [1..n] -
+OrcNCDadosCancelar
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNotaCredito int [1..1] Ano
+numNotaCredito int [0..1] NumDoc Número da NC a ser cancelada.
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtDescricao string [1..1] DescricaoDocumento
+Representa o motivo da alteração no  
+histórico  da  nota  de  crédito  e  irá 
+compor o documento RO.
+OrcNCAnulacaoDescentralizacaoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNotaCredito int [1..1] Ano
+numNotaCredito int [0..1] NumDoc
+Caso a UG Emitente esteja 
+configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número da Nota de Crédito.
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+vlrTaxaCambio decimal [0..1] TaxaCambio
+codTransf string [0..1] CodTransf
+txtDescricao string [1..1] DescricaoDocumento
+Representa a descrição da nota de  
+crédito  e  irá  compor  o  documento 
+RO.
+itemDescentralizacao
+ItemDescentralizac
+ao  [1..n] -
+29OrcNCDevolucaoDescentralizacaoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNotaCredito int [1..1] Ano
+numNotaCredito int [0..1] NumDoc
+Caso a UG Emitente esteja 
+configurada para utilizar numeração 
+manual, é obrigatório informar o 
+número da Nota de Crédito.
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+vlrTaxaCambio decimal [0..1] TaxaCambio
+codTransf string [0..1] CodTransf
+txtDescricao string [1..1] DescricaoDocumento
+Representa a descrição da nota de  
+crédito  e  irá  compor  o  documento 
+RO.
+itemDescentralizacao
+ItemDescentralizac
+ao  [1..n] -
+ItemDetalhamento
+Parâmetro Tipo Ocorrência Restrição Observação
+origemCredito Celula [1..n] -
+destinoCredito Celula [1..n] -
+ItemDescentralizacao
+Parâmetro Tipo Ocorrência Restrição Observação
+ugFavorecida int [1..1] UG
+comDetalhamento boolean
+[0..1] - Caso não seja informado, será 
+preenchido como Falso
+origemCredito Celula [1..n] -
+destinoCredito Celula
+[0..n] - Este parâmetro só deve ser 
+informado caso o parâmetro 
+comDetalhamento seja preenchido 
+como Verdadeiro
+Celula
+Parâmetro Tipo Ocorrência Restrição Observação
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+vlrCredito decimal [1..1] Valor
+OrcNotaCreditoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [0..1] UG UG Emitente da Nota de Crédito.
+notaCredito string [0..1] NC Nota de Crédito original envolvida na 
+operação.
+numRO string [1..n] RO Documento contábil gerado na 
+operação.
+mensagem Mensagem [0..n] - Lista de mensagens de erro/alerta.
+ 4.3 Tipos de dados do Orçamentário na Consulta e Extração de dados
+Os tipos de dados abaixo listados são utilizados nos webservices de consulta de dados e na Extração de Dados via Submissão Batch.
+OrcDetalharEmpenhoEntrada
+30Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG Código da UG Emitente do Empenho 
+que se deseja detalhar.
+anoEmpenho int [1..1] Ano Ano do Empenho que se deseja 
+detalhar.
+numEmpenho int [1..1] NumNE Número do Empenho que se deseja 
+detalhar.
+OrcDetalharEmpenhoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+empenho OrcEmpenhoDados [0..1] - Dados do Empenho.
+mensagem Mensagem [0..n] -
+OrcEmpenhoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoEmpenho int [1..1] Ano
+numEmpenho int [1..1] NumNE
+preEmpenho string [0..1] PE Caso o empenho tenha sido criado a 
+partir de um pré-empenho.
+transferencia Transferencia [0..n] -
+Lista  de  Transferências  em  que  o 
+Empenho  tenha  sido  origem  ou  
+destino.
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+tipoEmpenho int [1..1] TipoEmpenho
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtProcesso string [0..1] Processo
+vlrTaxaCambio decimal [0..1] TaxaCambio
+vlrEmpenho decimal [1..1] ValorIncZero
+codFavorecido string [1..1] Favorecido
+codAmparoLegal int [1..1] AmparoLegal Conforme  tabela  de  amparos  legais 
+descrita no ANEXO A.
+txtInfoCompl string [0..1] InformacaoComplement
+ar
+codTipoTransf int [0..1] TipoTransferencia Campo de uso exclusivo do Sistema  
+PORTALCONV.
+txtLocalEntrega string [0..1] LocalEntrega
+txtDescricao string [1..1] DescricaoEmpenho
+sistemaOrigem string [1..1] SiglaSistemaOrigem Formato: 
+<sigla-sistema>-<sigla-orgao>
+passivoAnterior PassivoAnterior [0..1] - Dados  de  passivo  anterior,  caso  o 
+empenho possua.
+itemEmpenho ItemEmpenho  [1..n] - Lista de itens do empenho.
+assinaturas DadosAssinaturas [1..1] -
+registroAlteracao RegistroAlteracao [0..1] -
+Caso o empenho tenha sido alterado, 
+o parâmetro representa o último 
+registro de alteração.
+Transferencia
+Parâmetro Tipo Ocorrência Restrição Observação
+dtOperacao date [1..1] - Formato: AAAA-MM-DD
+operacao string [1..1] TipoOperacaoTransfere
+ncia
+origem string [1..1] - Formato:
+<ug>/<aaaaNEnnnnnn>
+destino string [1..1] - Formato:
+<ug>/<aaaaNEnnnnnn>
+CelulaOrcamentaria
+Parâmetro Tipo Ocorrência Restrição Observação
+esfera string [1..1] EsferaOrcamentaria
+codPTRES string [1..1] ProgramaTrabalhoResu
+mido
+codFonteRec string [1..1] FonteRecurso
+codNatDesp int [1..1] NaturezaDespesa
+31ugResponsavel int [0..1] UG
+codPlanoInterno string [0..1] PlanoInterno
+PassivoAnterior
+Parâmetro Tipo Ocorrência Restrição Observação
+codContaContabil string [1..1] ContaContabil
+passivoRelacionamento
+PassivoRelacioname
+nto
+[1..n] -
+PassivoRelacionamento
+Parâmetro Tipo Ocorrência Restrição Observação
+contaCorrenteF string
+[1..1] ContaCorrenteContabil Conta Corrente Contábil de Passivo 
+Financeiro.
+contaCorrenteP string
+[1..1] ContaCorrenteContabil Conta Corrente Contábil de Passivo 
+Permanente.
+vlrRelacionado decimal
+[1..1] ValorIncZero Valor do empenho que está 
+relacionado com o par de contas 
+(Financeiro e Permanente).
+ItemEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+numSeqItem int [1..1] NumSeq
+codSubElemento int [1..1] SubElemento
+descricao string [1..1] DescricaoItemEmpenho
+vlrItemEmpenho decimal [1..1] ValorIncZero
+operacaoItemEmpenho
+OperacaoItemEmpen
+ho
+[1..n] - Lista de operações realizadas no item 
+de empenho.
+OperacaoItemEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+dataOperacao date [1..1] - Formato: AAAA-MM-DD
+tipoOperacaoItemEmpenho string [1..1] TipoOperacaoItemEmpe
+nho
+quantidade decimal [1..1] QtdItemEmpIncZero
+vlrUnitario decimal [1..1] ValorUnitarioItemEmpIn
+cZero
+vlrOperacao decimal [1..1] ValorIncZero
+DadosAssinaturas
+Parâmetro Tipo Ocorrência Restrição Observação
+statusAssinaturaEmpenho string [1..1] TipoStatusAssinaturaE
+mpenho Formato: AAAA-MM-DD
+assinatura Assinatura [0..3] -
+Assinatura
+Parâmetro Tipo Ocorrência Restrição Observação
+tipoCargoAssinatura string [1..1] TipoCargoAssinatura
+cpf string [1..1] CPF
+nome string [1..1] NomeUsuario
+data dateTime [1..1] - Data e hora da assinatura.
+Formato: AAAA-MM-DD HH:MM:SS
+statusAssinatura string [1..1] TipoStatusAssinaturaCa
+rgo Status da assinatura do cargo.
+RegistroAlteracao
+Parâmetro Tipo Ocorrência Restrição Observação
+dtEmis date [1..1] - Data de emissão informada no último 
+registro de alteração.
+Formato: AAAA-MM-DD
+txtMotivo string [1..1] Observacao Motivo informado no último registro de 
+alteração.
+32OrcDetalharPreEmpenhoEntrada
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG Código da UG Emitente do Pré-
+empenho que se deseja detalhar.
+anoPreEmpenho int [1..1] Ano Ano do Pré-empenho que se deseja 
+detalhar.
+numPreEmpenho int [1..1] NumPE Número do Pré-empenho que se 
+deseja detalhar.
+OrcDetalharPreEmpenhoResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+preEmpenho OrcPreEmpenhoDad
+os
+[0..1] - Dados do Pré-empenho.
+mensagem Mensagem [0..n] -
+OrcPreEmpenhoDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoPreEmpenho int [1..1] Ano
+numPreEmpenho int [1..1] NumPE
+empenhoRelacionado string [0..n] NE
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+txtProcesso string [0..1] Processo
+vlrTaxaCambio decimal [0..1] TaxaCambio
+vlrPreEmpenho decimal [1..1] Valor
+codFavorecido string [0..1] Favorecido
+txtDescricao string [1..1] DescricaoPreEmpenho
+sistemaOrigem string [1..1] SiglaSistemaOrigem Formato: 
+<sigla-sistema>-<sigla-orgao>
+operacao OperacaoPreEmpen
+ho
+[1..n] -
+registroAlteracao RegistroAlteracao [0..n] - Caso o pré-empenho tenha sido 
+alterado, o parâmetro representa o 
+último registro de alteração.
+OperacaoPreEmpenho
+Parâmetro Tipo Ocorrência Restrição Observação
+dataOperacao date [1..1] - Formato: AAAA-MM-DD
+tipoOperacao string [1..1] TipoOperacaoPreEmpe
+nho
+vlrOperacao decimal [1..1] Valor
+OrcConsultarBaixaSaldoEmpenhoExercAnteriorEntrada
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG Código da UG Emitente do Empenho 
+que se deseja detalhar.
+anoEmpenho int [1..1] Ano Ano do Empenho que se deseja 
+detalhar.
+numEmpenho int [1..1] NumNE Número do Empenho que se deseja 
+detalhar.
+OrcConsultarBaixaSaldoEmpenhoExercAnteriorResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+baixaSaldo OrcBaixaSaldoEmpe
+nhoExercAnteriorDa
+dos
+[0..1] - Dados da Baixa de Saldo STN do 
+exercício imediatamente anterior.
+mensagem Mensagem [0..n] -
+33OrcBaixaSaldoEmpenhoExercAnteriorDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoEmpenho int [1..1] Ano
+numEmpenho int [1..1] NumNE
+txtInfoCompl string [0..1] InformacaoComplement
+ar
+sistemaOrigem string [1..1] SiglaSistemaOrigem Formato: 
+<sigla-sistema>-<sigla-orgao>
+operacaoBaixaSaldo OperacaoBaixaSaldo  [1..n] - Lista de operações de Baixa de Saldo 
+STN e seus estornos
+OperacaoBaixaSaldo
+Parâmetro Tipo Ocorrência Restrição Observação
+dataOperacao date [1..1] - Formato: AAAA-MM-DD
+tipoOperacaoItemEmpenho string [1..1] TipoOperacaoItemEmpe
+nho
+Tipos de operações de Baixa de 
+Saldo STN e seus estornos
+vlrTotal decimal [1..1] ValorIncZero Somatório dos valores de todas as 
+operações do dia com o mesmo 
+tipoOperacaoItemEmpenho
+OrcDetalharNCEntrada
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG Código da UG Emitente da NC que se 
+deseja detalhar.
+anoNC int [1..1] Ano Ano da NC que se deseja detalhar.
+numNC int [1..1] NumDoc Número da NC que se deseja 
+detalhar.
+OrcDetalharNCResposta
+Parâmetro Tipo Ocorrência Restrição Observação
+notaCredito OrcNCDados [0..1] - Dados da Nota de Crédito.
+mensagem Mensagem [0..n] -
+OrcNCDados
+Parâmetro Tipo Ocorrência Restrição Observação
+ugEmitente int [1..1] UG
+anoNC int [1..1] Ano
+numNC int [1..1] NumDoc
+operacaoNC string [1..1] TipoOperacaoNotaCre-
+dito
+dtEmis date [1..1] - Formato: AAAA-MM-DD
+vlrTaxaCambio decimal [0..1] TaxaCambio
+vlrNC decimal [1..1] Valor
+codTransf string [0..1] CodTransf
+txtDescricao string [1..1] DescricaoDocumento
+sistemaOrigem string [1..1] SiglaSistemaOrigem Formato: 
+<sigla-sistema>-<sigla-orgao>
+tipoDescentralizacao string [0..1] TipoDescentralizacao
+Será  informado  quando  a  
+operacaoNC  for  
+DESCENTRALIZACAO, 
+DEVOLUCAO_DESCENTRALIZACA
+O  ou  
+ANULACAO_DESCENTRALIZACAO
+itemNC ItemNC  [1..n] - Lista de itens da NC
+registroAlteracao RegistroAlteracao [0..1] -
+Caso a NC tenha sido alterada, o 
+parâmetro representa o último registro 
+de alteração.
+34ItemNC
+Parâmetro Tipo Ocorrência Restrição Observação
+ugFavorecida item [0..1] UG
+comDetalhamento boolean [0..1] DescricaoItemEmpenh
+o
+origemCredito Celula [1..n] -
+destinoCredito Celula [1..n] -
+Celula
+Parâmetro Tipo Ocorrência Restrição Observação
+celulaOrcamentaria CelulaOrcamentaria [1..1] -
+vlrCredito decimal [1..1] Valor
+35

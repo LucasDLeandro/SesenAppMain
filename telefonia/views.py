@@ -79,29 +79,35 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         solicitacao = serializer.save()
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_aparelho', is_ativo=True).first()
         if template:
-            tecnicos = User.objects.filter(groups__name__icontains='Telefonia').distinct()
+            from notificacoes.models.contato_notificacao import Contato
+            from notificacoes.services import disparar_notificacao_contato
+            
+            contatos = Contato.objects.filter(is_ativo=True, notifica_telefonia=True)
             enviados = set()
-            for tecnico in tecnicos:
-                if tecnico.perfil and tecnico.perfil.telefone:
-                    tel = tecnico.perfil.telefone
-                    if tel in enviados:
+            for contato in contatos:
+                # Verificação de duplicidade por telefone ou e-mail
+                chave_duplicidade = getattr(contato, '_telefone_sanitizado', contato.telefone) or (contato.pessoa.email if contato.pessoa else None)
+                if chave_duplicidade:
+                    if chave_duplicidade in enviados:
                         continue
-                    enviados.add(tel)
-                    texto = template.base_text
-                    try:
-                        text = texto.format(
-                            tecnico=tecnico.get_full_name() or tecnico.username,
-                            protocolo=solicitacao.protocolo or 'N/A',
-                            unidade=solicitacao.unidade or 'N/A',
-                            sigla_unidade=solicitacao.sigla_unidade or 'N/A',
-                            ramal=solicitacao.ramal or 'N/A',
-                            local=solicitacao.local or 'N/A',
-                            qnt_solicitada=solicitacao.qnt_solicitada or 0,
-                            solicitante=solicitacao.solicitante or 'N/A',
-                        )
-                        auto_message(tel, text)
-                    except Exception as e:
-                        print(f"Erro ao formatar/enviar mensagem: {e}")
+                    enviados.add(chave_duplicidade)
+                
+                texto = template.base_text
+                try:
+                    text = texto.format(
+                        tecnico=contato.nome,
+                        protocolo=solicitacao.protocolo or 'N/A',
+                        unidade=solicitacao.unidade or 'N/A',
+                        sigla_unidade=solicitacao.sigla_unidade or 'N/A',
+                        ramal=solicitacao.ramal or 'N/A',
+                        local=solicitacao.local or 'N/A',
+                        qnt_solicitada=solicitacao.qnt_solicitada or 0,
+                        solicitante=solicitacao.solicitante or 'N/A',
+                    )
+                    assunto = f"Nova Solicitação de Aparelho - {solicitacao.protocolo or 'N/A'}"
+                    disparar_notificacao_contato(contato, text, text, assunto)
+                except Exception as e:
+                    print(f"Erro ao formatar/enviar mensagem: {e}")
 
     @action(detail=True, methods=['patch'])
     def concluir(self, request, pk=None):
@@ -227,28 +233,34 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
         senha = serializer.save(status='recebida')
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_senha', is_ativo=True).first()
         if template:
-            tecnicos = User.objects.filter(groups__name__icontains='Telefonia').distinct()
+            from notificacoes.models.contato_notificacao import Contato
+            from notificacoes.services import disparar_notificacao_contato
+            
+            contatos = Contato.objects.filter(is_ativo=True, notifica_telefonia=True)
             enviados = set()
-            for tecnico in tecnicos:
-                if tecnico.perfil and tecnico.perfil.telefone:
-                    tel = tecnico.perfil.telefone
-                    if tel in enviados:
+            for contato in contatos:
+                # Verificação de duplicidade por telefone ou e-mail
+                chave_duplicidade = getattr(contato, '_telefone_sanitizado', contato.telefone) or (contato.pessoa.email if contato.pessoa else None)
+                if chave_duplicidade:
+                    if chave_duplicidade in enviados:
                         continue
-                    enviados.add(tel)
-                    texto = template.base_text
-                    try:
-                        text = texto.format(
-                            tecnico=tecnico.get_full_name() or tecnico.username,
-                            protocolo=senha.protocolo or 'N/A',
-                            unidade=senha.unidade or 'N/A',
-                            sigla_unidade=senha.sigla_unidade or 'N/A',
-                            ramal=senha.ramal or 'N/A',
-                            usuario=senha.usuario or 'N/A',
-                            solicitante=senha.solicitante or 'N/A',
-                        )
-                        auto_message(tel, text)
-                    except Exception as e:
-                        print(f"Erro ao formatar/enviar mensagem: {e}")
+                    enviados.add(chave_duplicidade)
+                
+                texto = template.base_text
+                try:
+                    text = texto.format(
+                        tecnico=contato.nome,
+                        protocolo=senha.protocolo or 'N/A',
+                        unidade=senha.unidade or 'N/A',
+                        sigla_unidade=senha.sigla_unidade or 'N/A',
+                        ramal=senha.ramal or 'N/A',
+                        usuario=senha.usuario or 'N/A',
+                        solicitante=senha.solicitante or 'N/A',
+                    )
+                    assunto = f"Nova Solicitação de Senha - {senha.protocolo or 'N/A'}"
+                    disparar_notificacao_contato(contato, text, text, assunto)
+                except Exception as e:
+                    print(f"Erro ao formatar/enviar mensagem: {e}")
 
     def perform_update(self, serializer):
         instance = serializer.save()

@@ -12,11 +12,33 @@ class Contato(models.Model):
         return self.pessoa.telefone if self.pessoa else ''
     role=models.CharField(
         max_length = 100,
-        default='Geral'
+        default='Geral',
+        verbose_name='Tipo de Contato'
+    )
+
+    notifica_elevadores = models.BooleanField(
+        default=True,
+        verbose_name='Recebe de Elevadores'
+    )
+    
+    notifica_telefonia = models.BooleanField(
+        default=False,
+        verbose_name='Recebe de Telefonia'
+    )
+    
+    receber_whatsapp = models.BooleanField(
+        default=True,
+        verbose_name='Receber via WhatsApp'
+    )
+    
+    receber_email = models.BooleanField(
+        default=False,
+        verbose_name='Receber via E-mail'
     )
 
     is_ativo=models.BooleanField(
-        default=True
+        default=True,
+        verbose_name='Ativo'
     )
 
     created_at=models.DateTimeField(

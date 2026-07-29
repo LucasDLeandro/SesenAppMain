@@ -708,26 +708,25 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 elevador_texto += f" ({', '.join(os.elevadores_afetados)})"
 
         import re
-        contatos_ativos = Contato.objects.filter(is_ativo=True)
+        from notificacoes.services import disparar_notificacao_contato
+        
+        contatos_ativos = Contato.objects.filter(is_ativo=True, notifica_elevadores=True)
         contato_queryset = []
         telefones_vistos = set()
         for c in contatos_ativos:
-            if c.telefone:
-                tel_limpo = re.sub(r'\D', '', c.telefone)
-                if len(tel_limpo) in (10, 11) and not tel_limpo.startswith('55'):
-                    tel_limpo = f"55{tel_limpo}"
-                
-                if tel_limpo and tel_limpo not in telefones_vistos:
-                    telefones_vistos.add(tel_limpo)
-                    c._telefone_sanitizado = tel_limpo
-                    contato_queryset.append(c)
+            # Check for duplicity by phone or email
+            chave_duplicidade = getattr(c, '_telefone_sanitizado', c.telefone) or (c.pessoa.email if c.pessoa else None)
+            if chave_duplicidade:
+                if chave_duplicidade in telefones_vistos:
+                    continue
+                telefones_vistos.add(chave_duplicidade)
+                contato_queryset.append(c)
         if evento == 'os_elev_registro':
             template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
             if not template:
                 return
             texto = template.base_text
             for contato in contato_queryset:
-                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 text = texto.format(
                     nome=contato.nome,
                     atendente=os.atendente or 'Não informado',
@@ -743,9 +742,10 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     funcionando=os.elevador_parado or 'Não informado',
                 )
                 try:
-                    auto_message(tel, text)
+                    assunto = f"Nova OS - {os.protocolo} ({elevador_texto})"
+                    disparar_notificacao_contato(contato, text, text, assunto)
                 except Exception as e:
-                    print(f"Erro na Evolution API: {e}")
+                    print(f"Erro ao disparar OS Registro: {e}")
         elif evento == 'os_elev_andamento':
             try:
                 template = get_object_or_404(TemplateMessage, tipo_evento=evento, is_ativo=True)
@@ -754,7 +754,6 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 texto = "Olá {nome},\nO técnico {tecnico} chegou às {data_hora} para atender a OS {protocolo} do {elevador}.\nAcompanhante: {acompanhante}\nRegistrado por: {registrador_chegada}"
 
             for contato in contato_queryset:
-                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 text = texto.format(
                     nome=contato.nome,
                     tecnico=os.tecnico or 'Não informado',
@@ -770,16 +769,16 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                     funcionando=os.elevador_parado or 'Não informado',
                 )
                 try:
-                    auto_message(tel, text)
+                    assunto = f"OS em Andamento - {os.protocolo} ({elevador_texto})"
+                    disparar_notificacao_contato(contato, text, text, assunto)
                 except Exception as e:
-                    print(f"Erro na Evolution API: {e}")
+                    print(f"Erro ao disparar OS Andamento: {e}")
         elif evento in ['os_elev_conclusao', 'os_elev_conclusao_peca', 'os_elev_aguardando_peca_parado', 'os_elev_aguardando_peca_ativo']:
             template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
             if not template:
                 return
             texto = template.base_text
             for contato in contato_queryset:
-                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 try: 
                     text = texto.format(
                         nome=contato.nome,
@@ -797,9 +796,10 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                         peca=peca or 'Não informado',
                     )
                     
-                    auto_message(tel, text)   
+                    assunto = f"OS Concluída / Status Peça - {os.protocolo} ({elevador_texto})"
+                    disparar_notificacao_contato(contato, text, text, assunto)
                 except Exception as e:
-                    print(f"Erro na Evolution API: {e}")
+                    print(f"Erro ao disparar OS Conclusão: {e}")
         
     
     @action(detail=False, methods=['get'], url_path='dashboard')

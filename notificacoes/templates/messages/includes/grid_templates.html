@@ -1,0 +1,39 @@
+
+<div class="row g-4">
+    {% for mensagem in list_template %}
+        <div class="col-md-6 col-lg-4" id="card-template-{{ mensagem.id }}">
+            <div class="msg-card-template shadow-sm">
+                <div class="msg-card-header">
+                    <h6 class="m-0">{{ mensagem.id_template }}</h6>
+                    {% if mensagem.is_ativo %}
+                        <span class="badge bg-success">Ativa</span>
+                    {% else %}
+                        <span class="badge bg-warning">Inativa</span>
+                    {% endif %}
+                </div>
+                <div class="msg-card-body">
+                    <p class="text-muted small mb-3">{{ mensagem.get_tipo_evento_display }}</p>
+                    <div class="msg-preview">
+                        <small><strong>Prévia:</strong> "{{ mensagem.base_text|linebreaksbr }}"</small>
+                    </div>
+                </div>
+                <div class="msg-card-footer">
+                    <button class="btn btn-sm btn-outline-primary" onclick="abrirModalTemplateUpdate('{{ mensagem.id }}', '{{ mensagem.id_template }}', '{{ mensagem.base_text|escapejs }}', '{{ mensagem.is_ativo }}', '{{ mensagem.tipo_evento }}')" title="EditarTemplate">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-deletar-template btn btn-sm btn-outline-danger" 
+                        title="DeletarTemplate"
+                        data-url-del-template="{% url 'notificacoes:api_deletar_template' 0 %}"
+                        data-del-template-id="{{ mensagem.id }}"
+                        >
+                        <i class="bi bi-trash"></i> Deletar
+                    </button>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12 text-center py-4 text-muted">Nenhum template cadastrado para este módulo.</div>
+    {% endfor %}
+</div>

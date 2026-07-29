@@ -30,7 +30,14 @@ window.openGenericFileViewer = function(fileUrl, fileName) {
         `;
     } else if (['pdf'].includes(ext)) {
         // PDF
-        container.innerHTML = `<iframe src="${fileUrl}" width="100%" height="600px" style="border: none;"></iframe>`;
+        // Adiciona um timestamp na URL para evitar cache do header X-Frame-Options antigo
+        const timestampUrl = fileUrl.includes('?') ? `${fileUrl}&t=${new Date().getTime()}` : `${fileUrl}?t=${new Date().getTime()}`;
+        
+        container.innerHTML = `<object data="${timestampUrl}" type="application/pdf" width="100%" height="600px" style="border: none;">
+            <iframe src="${timestampUrl}" width="100%" height="600px" style="border: none;">
+                <p>Seu navegador não suporta a visualização de PDFs. <a href="${fileUrl}">Clique aqui para baixar</a></p>
+            </iframe>
+        </object>`;
     } else {
         // Outros arquivos (Word, Excel, etc)
         container.innerHTML = `

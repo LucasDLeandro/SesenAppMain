@@ -79,7 +79,8 @@ from .models.model_contratos import (
     PostoTrabalho,
     ItemCustoExtra,
     Profissional,
-    AlocacaoProfissional
+    AlocacaoProfissional,
+    NotaEmpenho
 )
 from empresas.models import Empresa
 
@@ -115,9 +116,20 @@ class ContratoSerializer(serializers.ModelSerializer):
     empresa_nome = serializers.CharField(source='empresa.nome_empresa', read_only=True)
     empresa_cnpj = serializers.CharField(source='empresa.cnpj', read_only=True)
     processo_numero = serializers.CharField(source='processo_licitatorio.numero_processo', read_only=True)
+    
+    valor_global_atual = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
+    valor_total_empenhado = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
+    saldo_a_empenhar = serializers.DecimalField(max_digits=15, decimal_places=2, read_only=True)
 
     class Meta:
         model = Contratos
+        fields = '__all__'
+
+class NotaEmpenhoSerializer(serializers.ModelSerializer):
+    contrato_num = serializers.CharField(source='contrato.num_contrato', read_only=True)
+
+    class Meta:
+        model = NotaEmpenho
         fields = '__all__'
 
 class PagamentoSerializer(serializers.ModelSerializer):

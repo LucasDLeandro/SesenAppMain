@@ -32,9 +32,8 @@
 
                 <div class="sidebar-heading border-top border-secondary pt-3 mx-3">Módulos</div>
                 <nav class="nav flex-column mb-4">
-                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'config_notificacao_whats' %}active{% endif %}" href="{% url 'adm_setup:config_notificacao_whats' %}">
-                        <i class="bi bi-building-up"></i> Elevadores
-                    </a>
+                    <!-- Link removido de "Elevadores" para evitar duplicação confusa, já que a gestão de Notificações é global agora -->
+                    
                     <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'configuracao_telefonia' %}active{% endif %}" href="{% url 'adm_setup:configuracao_telefonia' %}">
                         <i class="bi bi-telephone"></i> Telefonia
                     </a>
@@ -47,8 +46,8 @@
                     <a class="nav-sidebar-link" href="#">
                         <i class="bi bi-briefcase"></i> Clientes
                     </a>
-                    <a class="nav-sidebar-link" href="#">
-                        <i class="bi bi-chat-left-dots"></i> Notificações (Zap)
+                    <a class="nav-sidebar-link {% if request.resolver_match.url_name == 'config_notificacao_whats' %}active{% endif %}" href="{% url 'adm_setup:config_notificacao_whats' %}">
+                        <i class="bi bi-chat-left-dots"></i> Notificações (Zap / E-mail)
                     </a>
                 </nav>
             </div>
@@ -61,6 +60,12 @@
         {% endblock %}
     </section>
 </div>
+{% endblock %}
+
+{% block root_modals %}
+    <!-- Espaço reservado para Modais, fora do overflow-y -->
+    {% block extra_modals %}
+    {% endblock %}
 {% endblock %}
 
 {% block extra_js %}

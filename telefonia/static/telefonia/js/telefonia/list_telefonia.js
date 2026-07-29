@@ -726,6 +726,52 @@ window.visualizarSolicitacao = async function(id) {
             
             document.getElementById('vis_relatorio').textContent = dados.relatorio || 'Sem observações/relatório.';
             
+            const midiaSecao = document.getElementById('vis-tele-secao-midia');
+            const previewBox = document.getElementById('vis-tele-midia-preview-box');
+            const downloadBtn = document.getElementById('vis-tele-midia-download-btn');
+            const filenameEl = document.getElementById('vis-tele-midia-filename');
+            const typeEl = document.getElementById('vis-tele-midia-type');
+            const iconEl = document.getElementById('vis-tele-midia-icon');
+
+            if (dados.midia) {
+                midiaSecao.classList.remove('d-none');
+                downloadBtn.href = dados.midia;
+                
+                const fileName = dados.midia.split('/').pop().split('?')[0];
+                filenameEl.innerText = fileName;
+                
+                const ext = fileName.split('.').pop().toLowerCase();
+                let iconClass = 'bi-file-earmark';
+                let typeName = 'Arquivo';
+                
+                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                    iconClass = 'bi-file-earmark-image';
+                    typeName = 'Imagem';
+                } else if (['pdf'].includes(ext)) {
+                    iconClass = 'bi-file-earmark-pdf';
+                    typeName = 'Documento PDF';
+                } else if (['doc', 'docx'].includes(ext)) {
+                    iconClass = 'bi-file-earmark-word';
+                    typeName = 'Documento Word';
+                } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
+                    iconClass = 'bi-file-earmark-play';
+                    typeName = 'Vídeo';
+                }
+                
+                iconEl.innerHTML = `<i class="bi ${iconClass}"></i>`;
+                typeEl.innerText = typeName;
+                
+                previewBox.onclick = function() {
+                    if (typeof window.openGenericFileViewer === 'function') {
+                        window.openGenericFileViewer(dados.midia, fileName);
+                    } else {
+                        window.open(dados.midia, '_blank');
+                    }
+                };
+            } else {
+                midiaSecao.classList.add('d-none');
+            }
+            
             document.getElementById('vis-ramal').textContent = dados.ramal || '-';
             document.getElementById('vis-local-instalacao').textContent = dados.local || '-';
             
@@ -793,6 +839,18 @@ window.abrirEdicaoSolicitacao = async function(id) {
             document.getElementById('edit-data_instalacao').value = dados.data_instalacao ? dados.data_instalacao.substring(0, 16) : '';
             document.getElementById('edit-relatorio').value = dados.relatorio || '';
 
+            const midiaContainer = document.getElementById('midia-atual-container');
+            const linkMidia = document.getElementById('link-midia-atual');
+            if (dados.midia) {
+                midiaContainer.style.display = 'block';
+                linkMidia.href = dados.midia;
+            } else {
+                midiaContainer.style.display = 'none';
+                linkMidia.href = '#';
+            }
+            // Reset input file
+            document.getElementById('edit-midia').value = '';
+
             const secaoAparelhosEmpty = document.getElementById('edit-secao-aparelhos-empty');
             const tbodyAparelhos = document.getElementById('edit-tbody-aparelhos');
             
@@ -825,34 +883,43 @@ window.abrirEdicaoSolicitacao = async function(id) {
 
 window.salvarEdicaoSolicitacao = async function() {
     const id = document.getElementById('edit-solicitacao-id').value;
-    const payload = {
-        unidade: document.getElementById('edit-unidade').value,
-        sigla_unidade: document.getElementById('edit-sigla').value,
-        local: document.getElementById('edit-local').value,
-        termo_transferencia_interna: document.getElementById('edit-termo').value,
-        status: document.getElementById('edit-status').value,
-        qnt_solicitada: document.getElementById('edit-quantidade').value,
-        solicitante: document.getElementById('edit-solicitante').value,
-        ramal: document.getElementById('edit-ramal').value,
-        tecnico_responsavel: document.getElementById('edit-tecnico_responsavel').value,
-        data_instalacao: document.getElementById('edit-data_instalacao').value || null,
-        relatorio: document.getElementById('edit-relatorio').value
-    };
+    
+    const formData = new FormData();
+    formData.append('unidade', document.getElementById('edit-unidade').value);
+    formData.append('sigla_unidade', document.getElementById('edit-sigla').value);
+    formData.append('local', document.getElementById('edit-local').value);
+    formData.append('termo_transferencia_interna', document.getElementById('edit-termo').value);
+    formData.append('status', document.getElementById('edit-status').value);
+    formData.append('qnt_solicitada', document.getElementById('edit-quantidade').value);
+    formData.append('solicitante', document.getElementById('edit-solicitante').value);
+    formData.append('ramal', document.getElementById('edit-ramal').value);
+    formData.append('tecnico_responsavel', document.getElementById('edit-tecnico_responsavel').value);
+    
+    const dataInstal = document.getElementById('edit-data_instalacao').value;
+    if (dataInstal) {
+        formData.append('data_instalacao', dataInstal);
+    }
+    
+    formData.append('relatorio', document.getElementById('edit-relatorio').value);
+
+    const midiaInput = document.getElementById('edit-midia');
+    if (midiaInput && midiaInput.files.length > 0) {
+        formData.append('midia', midiaInput.files[0]);
+    }
 
     try {
         const res = await fetch(`/telefonia/api/solicitacoes/${id}/`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify(payload)
+            body: formData
         });
 
         if (res.ok) {
             bootstrap.Modal.getInstance(document.getElementById('modal-editar-solicitacao')).hide();
             $('#tabela-solicitacoes').DataTable().ajax.reload(null, false);
-            atualizarContadoresSolicitacoes();
+            // atualizarContadoresSolicitacoes(); // Removido por nao estar definido
             Swal.fire("Sucesso!", "Solicitação atualizada com sucesso.", "success");
         } else {
             console.error(await res.text());
