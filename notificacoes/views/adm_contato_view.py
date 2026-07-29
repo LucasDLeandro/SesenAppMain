@@ -54,5 +54,21 @@ def api_deletar_contato(request, id_contato):
         'sucesso': True,
         'mensagem': f"O contato foi excluido com sucesso!"
     })
-   
+
+def api_buscar_pessoas(request):
+    """Retorna JSON com as pessoas correspondentes à busca para autocomplete."""
+    from usuarios.models import Pessoa
+    q = request.GET.get('q', '').strip()
+    if not q or len(q) < 2:
+        return JsonResponse({'pessoas': []})
     
+    pessoas = Pessoa.objects.filter(nome__icontains=q)[:10]
+    resultados = []
+    for p in pessoas:
+        resultados.append({
+            'nome': str(p),
+            'email': p.email or '',
+            'telefone': p.telefone or ''
+        })
+        
+    return JsonResponse({'pessoas': resultados})

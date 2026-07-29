@@ -146,9 +146,81 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // ── Autocomplete para o Nome ──
+    var inputNome = document.getElementById('id_nome');
+    var listaAutocomplete = document.getElementById('autocomplete-resultados');
+    var timerBusca = null;
+
+    if (inputNome && listaAutocomplete) {
+        // Fechar a lista ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (e.target !== inputNome && !listaAutocomplete.contains(e.target)) {
+                listaAutocomplete.style.display = 'none';
+            }
+        });
+
+        inputNome.addEventListener('input', function() {
+            var query = this.value.trim();
+            
+            // Limpa o timer anterior
+            clearTimeout(timerBusca);
+            
+            if (query.length < 2) {
+                listaAutocomplete.style.display = 'none';
+                listaAutocomplete.innerHTML = '';
+                return;
+            }
+            
+            // Delay de 300ms (debounce)
+            timerBusca = setTimeout(async function() {
+                try {
+                    var resposta = await fetch(`/notificacoes/api/pessoas/buscar/?q=${encodeURIComponent(query)}`);
+                    var dados = await resposta.json();
+                    
+                    listaAutocomplete.innerHTML = '';
+                    
+                    if (dados.pessoas && dados.pessoas.length > 0) {
+                        dados.pessoas.forEach(function(p) {
+                            var li = document.createElement('li');
+                            li.className = 'list-group-item list-group-item-action py-2 px-3'
+                            li.style.cursor = 'pointer';
+                            li.innerHTML = `<i class="bi bi-person me-2 text-primary"></i><strong>${p.nome}</strong><br>
+                                          <small class="text-muted"><i class="bi bi-telephone ms-1 me-1"></i>${p.telefone || '-'} <i class="bi bi-envelope ms-2 me-1"></i>${p.email || '-'}</small>`;
+                            
+                            li.addEventListener('click', function() {
+                                inputNome.value = p.nome;
+                                
+                                var inputEmail = document.getElementById('id_email');
+                                if (inputEmail && p.email) inputEmail.value = p.email;
+                                
+                                var inputTelefone = document.getElementById('id_telefone');
+                                if (inputTelefone && p.telefone) {
+                                    inputTelefone.value = p.telefone;
+                                    // Se estiver usando IMask e quiser atualizar, tentamos
+                                    if (typeof IMask !== 'undefined' && inputTelefone.maskRef) {
+                                        inputTelefone.maskRef.updateValue();
+                                    }
+                                }
+                                
+                                listaAutocomplete.style.display = 'none';
+                            });
+                            
+                            listaAutocomplete.appendChild(li);
+                        });
+                        listaAutocomplete.style.display = 'block';
+                    } else {
+                        listaAutocomplete.style.display = 'none';
+                    }
+                } catch(e) {
+                    console.error("Erro na busca de autocomplete:", e);
+                }
+            }, 300);
+        });
+    }
+
     // ── Máscara de telefone ──
     var telInput = document.getElementById('id_telefone');
     if (telInput && typeof IMask !== 'undefined') {
-        IMask(telInput, { mask: '(00) 0 0000-0000' });
+        telInput.maskRef = IMask(telInput, { mask: '(00) 0 0000-0000' });
     }
 });

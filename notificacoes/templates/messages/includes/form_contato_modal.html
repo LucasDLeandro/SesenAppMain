@@ -35,11 +35,15 @@
             <input type="hidden" id="id_oculto_contato" name="id_oculto_contato">
 
             <!-- Campo: Nome -->
-            <div class="mb-4">
+            <div class="mb-4 position-relative">
                 <label for="{{ criarContato.nome.id_for_label }}" class="form-label form-label">
                     <i class="bi bi-person text-secondary me-1"></i> Nome Completo
                 </label>
-                {{ criarContato.nome|add_class:"form-control"|attr:"placeholder:Ex: Samuel Craveiro" }}
+                {{ criarContato.nome|add_class:"form-control"|attr:"placeholder:Ex: Samuel Craveiro"|attr:"autocomplete:off" }}
+                
+                <!-- Autocomplete Dropdown -->
+                <ul id="autocomplete-resultados" class="list-group position-absolute w-100 shadow-sm" style="z-index: 1060; display: none; max-height: 200px; overflow-y: auto;">
+                </ul>
             </div>
 
             <!-- Campo: Telefone -->
