@@ -707,20 +707,27 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             if isinstance(os.elevadores_afetados, list) and len(os.elevadores_afetados) > 0:
                 elevador_texto += f" ({', '.join(os.elevadores_afetados)})"
 
+        import re
         contatos_ativos = Contato.objects.filter(is_ativo=True)
         contato_queryset = []
         telefones_vistos = set()
         for c in contatos_ativos:
-            if c.telefone and c.telefone not in telefones_vistos:
-                telefones_vistos.add(c.telefone)
-                contato_queryset.append(c)
+            if c.telefone:
+                tel_limpo = re.sub(r'\D', '', c.telefone)
+                if len(tel_limpo) in (10, 11) and not tel_limpo.startswith('55'):
+                    tel_limpo = f"55{tel_limpo}"
+                
+                if tel_limpo and tel_limpo not in telefones_vistos:
+                    telefones_vistos.add(tel_limpo)
+                    c._telefone_sanitizado = tel_limpo
+                    contato_queryset.append(c)
         if evento == 'os_elev_registro':
             template = TemplateMessage.objects.filter(tipo_evento=evento, is_ativo=True).first()
             if not template:
                 return
             texto = template.base_text
             for contato in contato_queryset:
-                tel = contato.telefone
+                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 text = texto.format(
                     nome=contato.nome,
                     atendente=os.atendente or 'Não informado',
@@ -747,7 +754,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 texto = "Olá {nome},\nO técnico {tecnico} chegou às {data_hora} para atender a OS {protocolo} do {elevador}.\nAcompanhante: {acompanhante}\nRegistrado por: {registrador_chegada}"
 
             for contato in contato_queryset:
-                tel = contato.telefone
+                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 text = texto.format(
                     nome=contato.nome,
                     tecnico=os.tecnico or 'Não informado',
@@ -772,7 +779,7 @@ class ElevadorViewSet(viewsets.ModelViewSet):
                 return
             texto = template.base_text
             for contato in contato_queryset:
-                tel = contato.telefone
+                tel = getattr(contato, '_telefone_sanitizado', contato.telefone)
                 try: 
                     text = texto.format(
                         nome=contato.nome,
