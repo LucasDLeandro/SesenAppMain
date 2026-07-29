@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'gestao_patrimonio',
     'empresas',
     'equipe_tecnica',
+    'monitoramento_sei',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"

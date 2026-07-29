@@ -35,6 +35,10 @@
                     <a class="nav-sidebar-link {% if 'empresas' in request.path %}active{% endif %}" href="{% url 'empresas:dashboard_empresas' %}">
                         <i class="bi bi-building"></i> Gestão de Empresas
                     </a>
+
+                    <a class="nav-sidebar-link {% if 'monitoramento-sei' in request.path %}active{% endif %}" href="{% url 'monitoramento_sei:dashboard' %}">
+                        <i class="bi bi-activity"></i> Monitoramento SEI
+                    </a>
                 </nav>
             </div>
         </div>

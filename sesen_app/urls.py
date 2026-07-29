@@ -43,6 +43,7 @@ urlpatterns = [
     path('gestao_patrimonio/', include('gestao_patrimonio.urls', namespace='gestao_patrimonio')),
     path('empresas/', include('empresas.urls', namespace='empresas')),
     path('equipe_tecnica/', include('equipe_tecnica.urls', namespace='equipe_tecnica')),
+    path('monitoramento-sei/', include('monitoramento_sei.urls', namespace='monitoramento_sei')),
 
     path('hub_servicos/', TemplateView.as_view(template_name='hub_servicos.html'), name='hub_servicos'),
 

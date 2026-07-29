@@ -1,0 +1,224 @@
+{% extends 'contratos/base_contratos.html' %}
+{% load static %}
+
+{% block painel_contratos %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark mb-0">Monitoramento SEI</h2>
+        <div>
+            <button class="btn btn-outline-primary me-2" onclick="sincronizarTudo()">
+                <i class="bi bi-arrow-repeat"></i> Sincronizar Tudo
+            </button>
+            <button class="btn btn-primary" onclick="abrirModalAdd()">
+                <i class="bi bi-plus-lg"></i> Adicionar Processo
+            </button>
+        </div>
+    </div>
+
+    <!-- Navegação em Abas -->
+    <ul class="nav nav-pills mb-4 gap-2" id="seiTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active px-4 py-2 fw-bold" id="prioritarios-tab" data-bs-toggle="tab" data-bs-target="#prioritarios" type="button" role="tab">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Prioritários
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 fw-bold" id="tramite-tab" data-bs-toggle="tab" data-bs-target="#tramite" type="button" role="tab">
+                <i class="bi bi-arrow-left-right text-warning me-2"></i>Em Trâmite
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link px-4 py-2 fw-bold" id="concluidos-tab" data-bs-toggle="tab" data-bs-target="#concluidos" type="button" role="tab">
+                <i class="bi bi-check-circle-fill text-success me-2"></i>Concluídos
+            </button>
+        </li>
+    </ul>
+
+    <!-- Conteúdo das Abas -->
+    <div class="tab-content" id="seiTabsContent">
+        <!-- Tabela 1: Prioritários -->
+        <div class="tab-pane fade show active" id="prioritarios" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-secondary mb-4">Processos Prioritários</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sei">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Processo SEI</th>
+                                    <th>Data Recebimento</th>
+                                    <th>Dias Parado</th>
+                                    <th>Objeto</th>
+                                    <th>Tratativa (Último Andamento)</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proc in prioritarios %}
+                                <tr>
+                                    <td class="fw-bold text-primary">{{ proc.numero_processo }}</td>
+                                    <td>{{ proc.data_autuacao|date:"d/m/Y"|default:"-" }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if proc.tempo_tramitacao > 15 %}danger{% elif proc.tempo_tramitacao > 5 %}warning text-dark{% else %}success{% endif %} rounded-pill px-3">
+                                            {{ proc.tempo_tramitacao }} dias
+                                        </span>
+                                    </td>
+                                    <td>{{ proc.objeto|default:"-" }}</td>
+                                    <td class="small text-muted">{{ proc.situacao_atual|default:"Sem andamento registrado." }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-light border text-secondary" title="Sincronizar" onclick="sincronizarProcesso({{ proc.id }})"><i class="bi bi-arrow-repeat"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela 2: Em Trâmite -->
+        <div class="tab-pane fade" id="tramite" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-secondary mb-4">Processos em Trâmite</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sei">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Processo SEI</th>
+                                    <th>Data Recebimento</th>
+                                    <th>Tempo</th>
+                                    <th>Objeto</th>
+                                    <th>Situação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proc in em_tramite %}
+                                <tr>
+                                    <td class="fw-bold text-primary">{{ proc.numero_processo }}</td>
+                                    <td>{{ proc.data_autuacao|date:"d/m/Y"|default:"-" }}</td>
+                                    <td>{{ proc.tempo_tramitacao }} dias</td>
+                                    <td>{{ proc.objeto|default:"-" }}</td>
+                                    <td class="small text-muted">{{ proc.situacao_atual|default:"-" }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-light border text-secondary" title="Sincronizar" onclick="sincronizarProcesso({{ proc.id }})"><i class="bi bi-arrow-repeat"></i></button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela 3: Concluídos -->
+        <div class="tab-pane fade" id="concluidos" role="tabpanel">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-secondary mb-4">Processos Concluídos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle table-sei">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Processo SEI</th>
+                                    <th>Objeto</th>
+                                    <th>Resolução</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for proc in concluidos %}
+                                <tr>
+                                    <td class="fw-bold text-secondary">{{ proc.numero_processo }}</td>
+                                    <td>{{ proc.objeto|default:"-" }}</td>
+                                    <td class="small text-muted">{{ proc.situacao_atual|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $(document).ready(function() {
+        $('.table-sei').DataTable({
+            language: { url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/pt-BR.json' },
+            order: []
+        });
+    });
+
+    function sincronizarProcesso(id) {
+        Swal.fire({
+            title: 'Sincronizando...',
+            text: 'Buscando informações no SEI.',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        
+        fetch(`/monitoramento-sei/api/processos/${id}/sincronizar/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/json'
+            }
+        }).then(res => res.json()).then(data => {
+            Swal.fire('Pronto!', data.mensagem, 'success').then(() => location.reload());
+        }).catch(err => {
+            Swal.fire('Erro', 'Ocorreu um erro ao comunicar com a API.', 'error');
+        });
+    }
+
+    function sincronizarTudo() {
+        // Futuramente pode chamar um endpoint bulk sync ou apenas avisar
+        Swal.fire('Agendamento', 'A sincronização total acontece em background a cada hora (via cron/celery).', 'info');
+    }
+
+    function abrirModalAdd() {
+        Swal.fire({
+            title: 'Monitorar Novo Processo',
+            html: `
+                <input id="swal-sei" class="form-control mb-3" placeholder="Nº SEI (Ex: 2026.00.000008768-5)">
+                <select id="swal-tipo" class="form-select mb-3">
+                    <option value="PRIORITARIO">Prioritário</option>
+                    <option value="TRAMITE">Em Trâmite</option>
+                    <option value="CONCLUIDO">Concluído</option>
+                </select>
+                <textarea id="swal-objeto" class="form-control" rows="3" placeholder="Objeto (Opcional - preenchido via API)"></textarea>
+            `,
+            showCancelButton: true,
+            confirmButtonText: 'Salvar',
+            preConfirm: () => {
+                return {
+                    numero_processo: document.getElementById('swal-sei').value,
+                    tipo: document.getElementById('swal-tipo').value,
+                    objeto: document.getElementById('swal-objeto').value
+                }
+            }
+        }).then((result) => {
+            if(result.isConfirmed) {
+                fetch('/monitoramento-sei/api/processos/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': '{{ csrf_token }}' },
+                    body: JSON.stringify(result.value)
+                }).then(res => {
+                    if(res.ok) {
+                        Swal.fire('Sucesso!', 'Processo adicionado ao monitoramento.', 'success').then(() => location.reload());
+                    } else {
+                        Swal.fire('Erro', 'Falha ao salvar processo.', 'error');
+                    }
+                });
+            }
+        });
+    }
+</script>
+{% endblock %}
