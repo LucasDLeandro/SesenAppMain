@@ -113,17 +113,14 @@
 
     </div>
 
-{% endblock %}
-
-{% block extra_modals %}
-    <!-- Modais Individuais -->
+    <!-- Modais Individuais (position: fixed pelo Bootstrap, funciona dentro de qualquer container) -->
     {% include 'messages/includes/form_template_modal.html' %}
     {% include 'messages/includes/form_contato_modal.html' %}
+
 {% endblock %}
 
 {% block extra_js %}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://unpkg.com/imask"></script>
     <script src="{% static 'message_service/js/template_modal.js' %}"></script>
     <script src="{% static 'message_service/js/contato_modal.js' %}"></script>
     <script>
@@ -133,14 +130,9 @@
                 btn.addEventListener('click', function() {
                     const modulo = this.dataset.modulo;
                     
-                    // Reseta formulário via função global se existir
-                    if (typeof resetFormContato === 'function') resetFormContato();
-                    
-                    // Pega o form e checkbox
                     const form = document.getElementById('contato-form');
                     if (form) {
                         form.reset();
-                        // Reset the action URL to Create
                         form.action = "{% url 'notificacoes:api_criar_contato' %}";
                         document.getElementById('id_oculto_contato').value = '';
                     }
@@ -157,18 +149,13 @@
                             checkTel.checked = true;
                         }
                     }
-                    
-                    // O Bootstrap exibirá o modal automaticamente via data-bs-toggle
                 });
             });
-        });
         
             // Lógica para o modal de template
             document.querySelectorAll('.btn-add-template').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const modulo = this.dataset.modulo;
-                    
-                    if (typeof resetFormTemplate === 'function') resetFormTemplate();
                     
                     const form = document.getElementById('template-form');
                     if (form) {
@@ -176,7 +163,6 @@
                         form.action = "{% url 'notificacoes:api_criar_template' %}";
                         document.getElementById('id_oculto_template').value = '';
                         
-                        // Pré-selecionar tipo de evento correspondente ao módulo
                         const tipoSelect = document.getElementById('{{ criarTemplate.tipo_evento.id_for_label }}');
                         if (tipoSelect) {
                             const defaultType = (modulo === 'elevadores') ? 'os_elev_registro' : 'tel_solicitacao_aparelho';
@@ -190,5 +176,6 @@
                     }
                 });
             });
+        });
     </script>
 {% endblock %}
