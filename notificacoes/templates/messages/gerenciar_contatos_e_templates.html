@@ -1,13 +1,17 @@
 {% extends "setups/base_setup.html" %}
-{% block app_content %}
 {% load static %}
+{% load widget_tweaks %}
+
 {% block title %}Notificações{% endblock %}
+
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'adm_setup/css/whats_message.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/messages.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_contato_modal.css' %}">
     <link rel="stylesheet" href="{% static 'notificacoes/css/form_template_modal.css' %}">
 {% endblock %}
+
+{% block app_content %}
 
     <!-- Cabeçalho da Página -->
     <div class="mb-4">
@@ -52,7 +56,7 @@
                 <div class="tab-pane fade show active" id="elev-templates-content" role="tabpanel" aria-labelledby="elev-templates-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Templates - Elevadores</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="elevadores" data-bs-toggle="modal" data-bs-target="#templateModal">
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="elevadores" data-default-type="os_elev_registro">
                             <i class="bi bi-file-earmark-plus-fill me-2"></i> Novo Template
                         </button>
                     </div>
@@ -63,7 +67,7 @@
                 <div class="tab-pane fade" id="elev-contatos-content" role="tabpanel" aria-labelledby="elev-contatos-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Contatos - Elevadores</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="elevadores" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="elevadores">
                             <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
                         </button>
                     </div>
@@ -90,7 +94,7 @@
                 <div class="tab-pane fade show active" id="tel-templates-content" role="tabpanel" aria-labelledby="tel-templates-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Templates - Telefonia</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="telefonia" data-bs-toggle="modal" data-bs-target="#templateModal">
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-template" data-modulo="telefonia" data-default-type="tel_solicitacao_aparelho">
                             <i class="bi bi-file-earmark-plus-fill me-2"></i> Novo Template
                         </button>
                     </div>
@@ -101,7 +105,7 @@
                 <div class="tab-pane fade" id="tel-contatos-content" role="tabpanel" aria-labelledby="tel-contatos-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Contatos - Telefonia</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="telefonia" data-bs-toggle="modal" data-bs-target="#contatoModal">
+                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="telefonia">
                             <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
                         </button>
                     </div>
@@ -113,69 +117,13 @@
 
     </div>
 
-    <!-- Modais Individuais (position: fixed pelo Bootstrap, funciona dentro de qualquer container) -->
+    <!-- Modais -->
     {% include 'messages/includes/form_template_modal.html' %}
     {% include 'messages/includes/form_contato_modal.html' %}
 
 {% endblock %}
 
 {% block extra_js %}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{% static 'message_service/js/template_modal.js' %}"></script>
-    <script src="{% static 'message_service/js/contato_modal.js' %}"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Lógica para abrir o modal de contato já pré-marcando as opções do módulo correto
-            document.querySelectorAll('.btn-add-contato').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const modulo = this.dataset.modulo;
-                    
-                    const form = document.getElementById('contato-form');
-                    if (form) {
-                        form.reset();
-                        form.action = "{% url 'notificacoes:api_criar_contato' %}";
-                        document.getElementById('id_oculto_contato').value = '';
-                    }
-
-                    const checkElev = document.getElementById('{{ criarContato.notifica_elevadores.id_for_label }}');
-                    const checkTel = document.getElementById('{{ criarContato.notifica_telefonia.id_for_label }}');
-                    
-                    if (checkElev && checkTel) {
-                        if (modulo === 'elevadores') {
-                            checkElev.checked = true;
-                            checkTel.checked = false;
-                        } else if (modulo === 'telefonia') {
-                            checkElev.checked = false;
-                            checkTel.checked = true;
-                        }
-                    }
-                });
-            });
-        
-            // Lógica para o modal de template
-            document.querySelectorAll('.btn-add-template').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const modulo = this.dataset.modulo;
-                    
-                    const form = document.getElementById('template-form');
-                    if (form) {
-                        form.reset();
-                        form.action = "{% url 'notificacoes:api_criar_template' %}";
-                        document.getElementById('id_oculto_template').value = '';
-                        
-                        const tipoSelect = document.getElementById('{{ criarTemplate.tipo_evento.id_for_label }}');
-                        if (tipoSelect) {
-                            const defaultType = (modulo === 'elevadores') ? 'os_elev_registro' : 'tel_solicitacao_aparelho';
-                            for(let i=0; i<tipoSelect.options.length; i++) {
-                                if(tipoSelect.options[i].value === defaultType) {
-                                    tipoSelect.selectedIndex = i;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="{% static 'message_service/js/template_modal.js' %}?v=20260729b"></script>
+    <script src="{% static 'message_service/js/contato_modal.js' %}?v=20260729b"></script>
 {% endblock %}

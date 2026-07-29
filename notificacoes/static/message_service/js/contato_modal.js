@@ -1,123 +1,144 @@
-// FORMULÁRIO CONTATO MODAL
-// Envolvido em DOMContentLoaded para garantir que os elementos do modal já existam no DOM
-document.addEventListener('DOMContentLoaded', function() {
-    const form_contato = document.getElementById('contato-form');
-    if (!form_contato) return; // Página não possui este modal
+/**
+ * contato_modal.js
+ * Gerencia o modal de criação/edição/exclusão de Contatos de Notificação.
+ * Toda a lógica é executada apenas após o DOM estar pronto.
+ */
+document.addEventListener('DOMContentLoaded', function () {
 
-    //URLs 
-    const urlCriarContato = form_contato.getAttribute('data-url-criar-contato');
-    const urlEditarContatoBase = form_contato.getAttribute('data-url-editar-contato');
+    // ── Elementos ──
+    var modalEl = document.getElementById('contatoModal');
+    var formEl  = document.getElementById('contato-form');
 
-    // Expor função de update globalmente para ser chamada via onclick nos cards de contato
-    window.abrirModalContatoUpdate = function(id, nome, telefone, email, role, notif_elevadores, notif_telefonia, rec_whatsapp, rec_email, status) {
-        document.getElementById('id_oculto_contato').value = id;
-        document.getElementById('id_nome').value = nome;
-        document.getElementById('id_telefone').value = telefone;
-        if(document.getElementById('id_email')) document.getElementById('id_email').value = email;
-        document.getElementById('id_role').value = role;
-        
+    // Se a página não possui este modal, abortar silenciosamente
+    if (!modalEl || !formEl) return;
+
+    var modal          = new bootstrap.Modal(modalEl);
+    var urlCriar       = formEl.getAttribute('data-url-criar-contato');
+    var urlEditarBase  = formEl.getAttribute('data-url-editar-contato');
+    var hiddenId       = document.getElementById('id_oculto_contato');
+
+    // ── Botões "Adicionar Contato" ──
+    document.querySelectorAll('.btn-add-contato').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            formEl.reset();
+            if (hiddenId) hiddenId.value = '';
+            formEl.action = urlCriar;
+
+            // Pré-marcar checkbox do módulo correspondente
+            var modulo    = btn.getAttribute('data-modulo');
+            var checkElev = document.getElementById('id_notifica_elevadores');
+            var checkTel  = document.getElementById('id_notifica_telefonia');
+
+            if (checkElev && checkTel) {
+                checkElev.checked = (modulo === 'elevadores');
+                checkTel.checked  = (modulo === 'telefonia');
+            }
+
+            modal.show();
+        });
+    });
+
+    // ── Abrir para edição (chamado via onclick na tabela) ──
+    window.abrirModalContatoUpdate = function (id, nome, telefone, email, role, notif_elevadores, notif_telefonia, rec_whatsapp, rec_email, status) {
+        if (hiddenId) hiddenId.value = id;
+
+        var elNome     = document.getElementById('id_nome');
+        var elTelefone = document.getElementById('id_telefone');
+        var elEmail    = document.getElementById('id_email');
+        var elRole     = document.getElementById('id_role');
+
+        if (elNome)     elNome.value     = nome;
+        if (elTelefone) elTelefone.value = telefone;
+        if (elEmail)    elEmail.value    = email || '';
+        if (elRole)     elRole.value     = role;
+
         // Checkboxes booleanos
-        document.getElementById('id_notifica_elevadores').checked = (notif_elevadores === "True");
-        document.getElementById('id_notifica_telefonia').checked = (notif_telefonia === "True");
-        document.getElementById('id_receber_whatsapp').checked = (rec_whatsapp === "True");
-        document.getElementById('id_receber_email').checked = (rec_email === "True");
-        document.getElementById('id_contato_is_ativo').checked = (status === "True");
+        var setCheck = function (elId, val) {
+            var el = document.getElementById(elId);
+            if (el) el.checked = (val === 'True');
+        };
+        setCheck('id_notifica_elevadores', notif_elevadores);
+        setCheck('id_notifica_telefonia', notif_telefonia);
+        setCheck('id_receber_whatsapp', rec_whatsapp);
+        setCheck('id_receber_email', rec_email);
+        setCheck('id_contato_is_ativo', status);
 
-        const urlEditarContatoReal = urlEditarContatoBase.replace('/0/', `/${id}/`);
-        form_contato.action = urlEditarContatoReal;
+        formEl.action = urlEditarBase.replace('/0/', '/' + id + '/');
+        modal.show();
+    };
 
-        const modalInst = bootstrap.Modal.getOrCreateInstance(document.getElementById('contatoModal'));
-        modalInst.show();
-    }
-
-    // Submit do formulário de contato
-    form_contato.addEventListener('submit', async function(evento) {
-        evento.preventDefault();
-
-        const urlDestino = form_contato.action;
-        const formData = new FormData(form_contato);
+    // ── Submit do formulário ──
+    formEl.addEventListener('submit', async function (e) {
+        e.preventDefault();
 
         try {
-            const resposta = await fetch(urlDestino, {
+            var resposta = await fetch(formEl.action, {
                 method: 'POST',
-                body: formData
+                body: new FormData(formEl)
             });
+            var dados = await resposta.json();
 
-            const dados = await resposta.json();
             if (resposta.ok && dados.sucesso) {
                 await Swal.fire({
-                    title: "Ótima Notícia!",
-                    text: "O contato foi salvo com sucesso!",
-                    icon: "success",
-                    iconColor: "#3bfd00",
-                    confirmButtonColor: "#0065fd"
-                })
-                const inst = bootstrap.Modal.getInstance(document.getElementById('contatoModal'));
-                if (inst) inst.hide();
+                    title: 'Ótima Notícia!',
+                    text: 'O contato foi salvo com sucesso!',
+                    icon: 'success',
+                    iconColor: '#3bfd00',
+                    confirmButtonColor: '#0065fd'
+                });
+                modal.hide();
                 window.location.reload();
             } else {
-                console.log(`Erros encontrados no formulário: ${dados.erros}`)
-                Swal.fire("Erro!", "Há um problema com o formulário, verifique os dados.", "error")
+                Swal.fire('Erro!', 'Há um problema com o formulário, verifique os dados.', 'error');
             }
         } catch (erro) {
-            console.error("Erro crítico na conexão:", erro)
-            Swal.fire("Falha!", "Erro ao conectar com o servidor. Tente novamente mais tarde.", "error")
+            console.error('Erro na conexão:', erro);
+            Swal.fire('Falha!', 'Erro ao conectar com o servidor.', 'error');
         }
     });
 
-    // Botões de deletar contato
-    const botoesDeletarContato = document.querySelectorAll('.btn-deletar-contato')
-    botoesDeletarContato.forEach(botao => {
-        botao.addEventListener('click', async function() {
-            const id_contato = botao.getAttribute('data-del-contato-id')
-            const urlDestinoBase = botao.getAttribute('data-url-del-contato')
-            const urlDestinoFinal = urlDestinoBase.replace('/0/', `/${id_contato}/`)
-            
-            const result = await Swal.fire({
-                title: "Você tem certeza?",
-                text: "Você não conseguirá reverter essa ação depois!",
-                icon: "warning",
+    // ── Botões de deletar contato ──
+    document.querySelectorAll('.btn-deletar-contato').forEach(function (botao) {
+        botao.addEventListener('click', async function () {
+            var id  = botao.getAttribute('data-del-contato-id');
+            var url = botao.getAttribute('data-url-del-contato').replace('/0/', '/' + id + '/');
+
+            var result = await Swal.fire({
+                title: 'Você tem certeza?',
+                text: 'Você não conseguirá reverter essa ação depois!',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Sim, deletar!",
-                cancelButtonText: "Cancelar"
-            })
-            
-            if (result.isConfirmed){
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, deletar!',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
                 try {
-                    const resposta = await fetch(urlDestinoFinal, {
+                    var resposta = await fetch(url, {
                         method: 'POST',
-                        headers: {
-                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                        }
-                    })
-                    const dados = await resposta.json()
+                        headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value }
+                    });
+                    var dados = await resposta.json();
 
                     if (resposta.ok && dados.sucesso) {
-                        await Swal.fire({
-                            title: "Deletado!",
-                            text: "O contato foi deletado!",
-                            icon: "success"
-                        })
+                        await Swal.fire({ title: 'Deletado!', text: 'O contato foi deletado!', icon: 'success' });
                         window.location.reload();
                     } else {
-                        Swal.fire("Erro!", "Não foi possível deletar o contato no servidor.", "error")
+                        Swal.fire('Erro!', 'Não foi possível deletar o contato.', 'error');
                     }
-
                 } catch (erro) {
-                    console.error("Erro crítico na conexão:", erro)
-                    Swal.fire("Falha!", "Erro ao conectar com o servidor. Tente novamente mais tarde.", "error")
+                    console.error('Erro na conexão:', erro);
+                    Swal.fire('Falha!', 'Erro ao conectar com o servidor.', 'error');
                 }
             }
-        })
-    })
-
-    // Máscara de telefone
-    const telInput = document.getElementById('id_telefone');
-    if (telInput && typeof IMask !== 'undefined') {
-        IMask(telInput, {
-            mask: '(00) 0 0000-0000'
         });
+    });
+
+    // ── Máscara de telefone ──
+    var telInput = document.getElementById('id_telefone');
+    if (telInput && typeof IMask !== 'undefined') {
+        IMask(telInput, { mask: '(00) 0 0000-0000' });
     }
 });
