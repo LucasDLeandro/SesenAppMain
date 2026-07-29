@@ -121,9 +121,7 @@
     {% include 'messages/includes/form_template_modal.html' %}
     {% include 'messages/includes/form_contato_modal.html' %}
 
+    <script src="{% static 'message_service/js/template_modal.js' %}?v=20260729c"></script>
+    <script src="{% static 'message_service/js/contato_modal.js' %}?v=20260729c"></script>
 {% endblock %}
 
-{% block extra_js %}
-    <script src="{% static 'message_service/js/template_modal.js' %}?v=20260729b"></script>
-    <script src="{% static 'message_service/js/contato_modal.js' %}?v=20260729b"></script>
-{% endblock %}

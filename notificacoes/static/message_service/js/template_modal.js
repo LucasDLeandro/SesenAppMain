@@ -4,13 +4,22 @@
  * Toda a lógica é executada apenas após o DOM estar pronto.
  */
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("TEMPLATE_MODAL.JS - Iniciando script...");
 
     // ── Elementos ──
     const modalEl = document.getElementById('templateModal');
     const formEl  = document.getElementById('template-form');
 
+    console.log("TEMPLATE_MODAL.JS - modalEl:", modalEl, "formEl:", formEl);
+
     // Se a página não possui este modal, abortar silenciosamente
-    if (!modalEl || !formEl) return;
+    if (!modalEl || !formEl) {
+        console.warn("TEMPLATE_MODAL.JS - Elementos não encontrados. Abortando.");
+        return;
+    }
+
+    // Move o modal para a raiz do body para evitar bugs de z-index e CSS overflow clipping
+    document.body.appendChild(modalEl);
 
     const modal            = new bootstrap.Modal(modalEl);
     const urlCriar         = formEl.getAttribute('data-url-criar-template');
@@ -20,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Botões "Novo Template" ──
     document.querySelectorAll('.btn-add-template').forEach(function (btn) {
         btn.addEventListener('click', function () {
+            console.log("TEMPLATE_MODAL.JS - Botão Novo Template clicado!", btn);
             formEl.reset();
             if (hiddenId) hiddenId.value = '';
             formEl.action = urlCriar;

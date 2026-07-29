@@ -4,13 +4,22 @@
  * Toda a lógica é executada apenas após o DOM estar pronto.
  */
 document.addEventListener('DOMContentLoaded', function () {
+    console.log("CONTATO_MODAL.JS - Iniciando script...");
 
     // ── Elementos ──
     var modalEl = document.getElementById('contatoModal');
     var formEl  = document.getElementById('contato-form');
 
+    console.log("CONTATO_MODAL.JS - modalEl:", modalEl, "formEl:", formEl);
+
     // Se a página não possui este modal, abortar silenciosamente
-    if (!modalEl || !formEl) return;
+    if (!modalEl || !formEl) {
+        console.warn("CONTATO_MODAL.JS - Elementos não encontrados. Abortando.");
+        return;
+    }
+
+    // Move o modal para a raiz do body para evitar bugs de z-index e CSS overflow clipping
+    document.body.appendChild(modalEl);
 
     var modal          = new bootstrap.Modal(modalEl);
     var urlCriar       = formEl.getAttribute('data-url-criar-contato');
@@ -20,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ── Botões "Adicionar Contato" ──
     document.querySelectorAll('.btn-add-contato').forEach(function (btn) {
         btn.addEventListener('click', function () {
+            console.log("CONTATO_MODAL.JS - Botão Adicionar Contato clicado!", btn);
             formEl.reset();
             if (hiddenId) hiddenId.value = '';
             formEl.action = urlCriar;
