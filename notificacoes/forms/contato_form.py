@@ -4,7 +4,7 @@ from ..models.contato_notificacao import Contato
 
 class CriarContatoForm(forms.ModelForm):
     nome = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '100'}), label='Nome')
-    telefone = forms.CharField(max_length=13, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '13'}), label='Telefone - nº WhatsApp', required=False)
+    telefone = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'type': 'text', 'class': 'form-control', 'maxlength': '20'}), label='Telefone - nº WhatsApp', required=False)
     email = forms.EmailField(max_length=150, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ex: email@dominio.com'}), label='E-mail', required=False)
 
     class Meta:

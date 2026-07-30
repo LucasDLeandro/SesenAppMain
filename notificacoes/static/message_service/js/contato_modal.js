@@ -58,9 +58,20 @@ document.addEventListener('DOMContentLoaded', function () {
         var elRole     = document.getElementById('id_role');
 
         if (elNome)     elNome.value     = nome;
-        if (elTelefone) elTelefone.value = telefone;
         if (elEmail)    elEmail.value    = email || '';
         if (elRole)     elRole.value     = role;
+        
+        if (elTelefone) {
+            // Remove o "55" inicial se tiver 13 ou 12 dígitos para o IMask não quebrar (IMask só aceita 11 dígitos nativos)
+            var numLimpo = (telefone || '').replace(/\D/g, '');
+            if ((numLimpo.length === 13 || numLimpo.length === 12) && numLimpo.startsWith('55')) {
+                numLimpo = numLimpo.substring(2);
+            }
+            elTelefone.value = numLimpo;
+            if (typeof IMask !== 'undefined' && elTelefone.maskRef) {
+                elTelefone.maskRef.updateValue();
+            }
+        }
 
         // Checkboxes booleanos
         var setCheck = function (elId, val) {
@@ -195,7 +206,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                 
                                 var inputTelefone = document.getElementById('id_telefone');
                                 if (inputTelefone) {
-                                    inputTelefone.value = p.telefone || '';
+                                    var numLimpoAuto = (p.telefone || '').replace(/\D/g, '');
+                                    if ((numLimpoAuto.length === 13 || numLimpoAuto.length === 12) && numLimpoAuto.startsWith('55')) {
+                                        numLimpoAuto = numLimpoAuto.substring(2);
+                                    }
+                                    inputTelefone.value = numLimpoAuto;
                                     // Se estiver usando IMask e quiser atualizar, tentamos
                                     if (typeof IMask !== 'undefined' && inputTelefone.maskRef) {
                                         inputTelefone.maskRef.updateValue();
