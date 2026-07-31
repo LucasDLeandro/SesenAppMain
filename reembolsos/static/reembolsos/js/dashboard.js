@@ -816,10 +816,26 @@ async function salvarSolicitacao() {
             body: JSON.stringify(payload)
         });
         if(res.ok) {
-            $('#modal-solicitacao').modal('hide');
-            $('#tabela-solicitacoes').DataTable().ajax.reload();
+            // Fecha o modal de solicitação
+            const modalEl = document.getElementById('modal-solicitacao');
+            bootstrap.Modal.getInstance(modalEl)?.hide();
+
+            // Recarrega a tabela de solicitações
+            if ($.fn.DataTable.isDataTable('#tabela-solicitacoes')) {
+                $('#tabela-solicitacoes').DataTable().ajax.reload(null, false);
+            }
+
+            // Atualiza métricas e o widget de pendências
             carregarMétricas();
-            Swal.fire("Sucesso", "Solicitação salva com sucesso!", "success");
+            carregarWidgetPendencias();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: 'Solicitação salva com sucesso!',
+                timer: 2000,
+                showConfirmButton: false
+            });
         } else {
             const err = await res.json();
             console.error(err);
