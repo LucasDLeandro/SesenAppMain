@@ -24,3 +24,12 @@ class ConfiguracaoGeral(models.Model):
     class Meta:
         verbose_name = "Configuração Geral"
         verbose_name_plural = "Configurações Gerais"
+
+class AgendamentoTask(models.Model):
+    task_id = models.CharField(max_length=100, unique=True, verbose_name="ID da Tarefa")
+    nome_amigavel = models.CharField(max_length=150, verbose_name="Nome da Rotina")
+    intervalo_minutos = models.IntegerField(default=60, verbose_name="Intervalo em Minutos")
+    ativo = models.BooleanField(default=True, verbose_name="Status (Ativo/Inativo)")
+
+    def __str__(self):
+        return f"{self.nome_amigavel} ({self.intervalo_minutos} min)"
