@@ -5,7 +5,7 @@
 <link href="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
-<link rel="stylesheet" href="{% static 'reembolsos/css/dashboard_reembolsos.css' %}?v=2.0">
+<link rel="stylesheet" href="{% static 'reembolsos/css/dashboard_reembolsos.css' %}?v=3.0">
 
 <div class="container-fluid py-4">
     <!-- Header -->
@@ -25,111 +25,120 @@
         </div>
     </div>
 
-    <!-- Cards de Métricas (Linha 1) -->
-    <div class="row mb-3">
-        <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-icon blue"><i class="bi bi-people-fill"></i></div>
-                <h6 class="text-muted fw-bold mb-1">Servidores Ativos (Ano)</h6>
-                <h3 class="fw-bold mb-0" id="metric-servidores">0</h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-icon green"><i class="bi bi-check-circle-fill"></i></div>
-                <h6 class="text-muted fw-bold mb-1">Solicitações Atendidas</h6>
-                <h3 class="fw-bold mb-0" id="metric-atendidas">0</h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="metric-card">
-                <div class="metric-icon orange"><i class="bi bi-currency-dollar"></i></div>
-                <h6 class="text-muted fw-bold mb-1">Total Reembolsado (Ano)</h6>
-                <h3 class="fw-bold mb-0" id="metric-ano">R$ 0,00</h3>
-            </div>
-        </div>
-    </div>
+    <!-- Navegação por Abas (Tabs) -->
+    <ul class="nav nav-tabs custom-tabs mb-3" id="reembolsosTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard-pane" type="button" role="tab">
+                <i class="bi bi-bar-chart-steps"></i> Dashboard
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-pane" type="button" role="tab">
+                <i class="bi bi-list-check"></i> Solicitações
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="servidores-tab" data-bs-toggle="tab" data-bs-target="#servidores-pane" type="button" role="tab">
+                <i class="bi bi-person-lines-fill"></i> Servidores Elegíveis
+            </button>
+        </li>
+    </ul>
 
-    <!-- Cards de Métricas (Linha 2) -->
-    <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="metric-card d-flex flex-column justify-content-between h-100">
-                <div class="d-flex justify-content-between align-items-start mb-2">
-                    <div class="metric-icon text-info bg-info bg-opacity-10"><i class="bi bi-calendar-check"></i></div>
-                    <div class="w-50">
-                        <input type="month" class="form-control form-control-sm" id="filtro-mes" onchange="carregarMétricas()">
+    <div class="tab-content" id="reembolsosTabsContent" style="padding-bottom: 20px;">
+
+        <!-- ABA 1: DASHBOARD -->
+        <div class="tab-pane fade show active" id="dashboard-pane" role="tabpanel" tabindex="0">
+
+            <!-- Cards de Métricas (Linha 1) -->
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon blue"><i class="bi bi-people-fill"></i></div>
+                        <h6 class="text-muted fw-bold mb-1">Servidores Ativos (Ano)</h6>
+                        <h3 class="fw-bold mb-0" id="metric-servidores">0</h3>
                     </div>
                 </div>
-                <div>
-                    <h6 class="text-muted fw-bold mb-1">Valor Reembolsado (Mês)</h6>
-                    <h3 class="fw-bold mb-0" id="metric-mes">R$ 0,00</h3>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon green"><i class="bi bi-check-circle-fill"></i></div>
+                        <h6 class="text-muted fw-bold mb-1">Solicitações Atendidas</h6>
+                        <h3 class="fw-bold mb-0" id="metric-atendidas">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card">
+                        <div class="metric-icon orange"><i class="bi bi-currency-dollar"></i></div>
+                        <h6 class="text-muted fw-bold mb-1">Total Reembolsado (Ano)</h6>
+                        <h3 class="fw-bold mb-0" id="metric-ano">R$ 0,00</h3>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="metric-card h-100">
-                <div class="metric-icon text-primary bg-primary bg-opacity-10"><i class="bi bi-wallet2"></i></div>
-                <h6 class="text-muted fw-bold mb-1">Total Empenhado (Ano)</h6>
-                <h3 class="fw-bold mb-0" id="metric-empenhado">R$ 0,00</h3>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="metric-card h-100">
-                <div class="metric-icon text-purple bg-purple bg-opacity-10" style="background: rgba(111, 66, 193, 0.1); color: #6f42c1;"><i class="bi bi-safe2"></i></div>
-                <h6 class="text-muted fw-bold mb-1">Saldo Disponível (Ano)</h6>
-                <h3 class="fw-bold mb-0" id="metric-saldo">R$ 0,00</h3>
-            </div>
-        </div>
-    </div>
 
-    <!-- Alerta de Demandas Pendentes -->
-    <div class="row g-3 mb-4">
-        <div class="col-12">
-            <div class="card shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="document.getElementById('solicitacoes-tab').click(); window.scrollTo(0, document.body.scrollHeight);">
-                <div class="card-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
-                    <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
-                        <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes
-                    </h6>
-                    <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
-                </div>
-                <div class="card-body pt-0 pb-2">
-                    <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
-                        <div class="text-center text-muted py-2">
-                            <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
-                            Carregando solicitações pendentes...
+            <!-- Cards de Métricas (Linha 2) -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="metric-card d-flex flex-column justify-content-between h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="metric-icon text-info bg-info bg-opacity-10"><i class="bi bi-calendar-check"></i></div>
+                            <div class="w-50">
+                                <input type="month" class="form-control form-control-sm" id="filtro-mes" onchange="carregarMétricas()">
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="text-muted fw-bold mb-1">Valor Reembolsado (Mês)</h6>
+                            <h3 class="fw-bold mb-0" id="metric-mes">R$ 0,00</h3>
                         </div>
                     </div>
-                    <div class="text-center" id="rodape-widget-recebidas" style="display: none;">
-                        <button class="btn btn-danger w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
-                            <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
-                        </button>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div class="metric-icon text-primary bg-primary bg-opacity-10"><i class="bi bi-wallet2"></i></div>
+                        <h6 class="text-muted fw-bold mb-1">Total Empenhado (Ano)</h6>
+                        <h3 class="fw-bold mb-0" id="metric-empenhado">R$ 0,00</h3>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="metric-card h-100">
+                        <div class="metric-icon" style="background: rgba(111, 66, 193, 0.1); color: #6f42c1;"><i class="bi bi-safe2"></i></div>
+                        <h6 class="text-muted fw-bold mb-1">Saldo Disponível (Ano)</h6>
+                        <h3 class="fw-bold mb-0" id="metric-saldo">R$ 0,00</h3>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Abas -->
-    <div class="card border-0 shadow-sm rounded-3 mb-4">
-        <div class="card-header bg-white border-bottom-0 pt-3 pb-0 px-4">
-            <ul class="nav nav-tabs border-bottom-0" id="reembolsosTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-bold text-primary" id="solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes" type="button" role="tab">
-                        <i class="bi bi-list-check me-1"></i> Solicitações
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link fw-bold text-secondary" id="servidores-tab" data-bs-toggle="tab" data-bs-target="#servidores" type="button" role="tab">
-                        <i class="bi bi-person-lines-fill me-1"></i> Servidores Elegíveis
-                    </button>
-                </li>
-            </ul>
-        </div>
-        <div class="card-body p-4 bg-light rounded-bottom">
-            <div class="tab-content" id="reembolsosTabContent">
-                
-                <!-- ABA: Solicitações -->
-                <div class="tab-pane fade show active" id="solicitacoes" role="tabpanel">
+            <!-- Widget de Demandas Pendentes -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirModalPendencias()">
+                        <div class="card-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
+                            <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
+                                <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes
+                            </h6>
+                            <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
+                        </div>
+                        <div class="card-body pt-0 pb-2">
+                            <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
+                                <div class="text-center text-muted py-2">
+                                    <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
+                                    Carregando solicitações pendentes...
+                                </div>
+                            </div>
+                            <div class="text-center" id="rodape-widget-recebidas" style="display: none;">
+                                <button class="btn btn-danger w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
+                                    <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /ABA DASHBOARD -->
+
+        <!-- ABA 2: SOLICITAÇÕES -->
+        <div class="tab-pane fade" id="solicitacoes-pane" role="tabpanel" tabindex="0">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Histórico de Reembolsos</h5>
                     </div>
@@ -149,9 +158,13 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- ABA: Servidores -->
-                <div class="tab-pane fade" id="servidores" role="tabpanel">
+        <!-- ABA 3: SERVIDORES -->
+        <div class="tab-pane fade" id="servidores-pane" role="tabpanel" tabindex="0">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Servidores Cadastrados</h5>
                     </div>
@@ -171,7 +184,52 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
 
+    </div><!-- /tab-content -->
+</div><!-- /container -->
+
+<!-- ============================================================ -->
+<!-- MODAL: Lista de Pendências -->
+<!-- ============================================================ -->
+<div class="modal fade" id="modal-lista-pendencias" tabindex="-1" aria-labelledby="modalPendenciasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0 pt-4 px-4" style="background: #fff5f5;">
+                <h5 class="modal-title fw-bold text-danger" id="modalPendenciasLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>Demandas Pendentes
+                    <span class="badge bg-danger rounded-pill ms-2 fs-6" id="modal-badge-pendencias">0</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="text-muted mb-3">Estas solicitações ainda não foram concluídas. Clique em <strong>Concluir</strong> para registrar o pagamento e finalizar, ou em <strong>Visualizar</strong> para ver os detalhes.</p>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle" id="tabela-pendencias-modal">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Servidor</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>SEI</th>
+                                <th>Ressarcimento</th>
+                                <th class="text-end">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-pendencias">
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="spinner-border text-danger" role="status"></div>
+                                    <p class="mt-2 text-muted">Carregando...</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
             </div>
         </div>
     </div>
@@ -268,10 +326,10 @@
 
 <!-- Modal Solicitação -->
 <div class="modal fade" id="modal-solicitacao" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header border-0 pb-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold text-primary"><i class="bi bi-file-earmark-plus me-2"></i>Nova Solicitação de Reembolso</h5>
+                <h5 class="modal-title fw-bold text-primary" id="modal-solicitacao-titulo"><i class="bi bi-file-earmark-plus me-2"></i>Nova Solicitação de Reembolso</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -402,5 +460,5 @@
 <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{% static 'reembolsos/js/dashboard.js' %}?v=1.2"></script>
+<script src="{% static 'reembolsos/js/dashboard.js' %}?v=2.0"></script>
 {% endblock %}

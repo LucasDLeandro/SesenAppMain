@@ -340,6 +340,95 @@ async function carregarWidgetPendencias() {
     }
 }
 
+// ---------------------- MODAL DE PENDÊNCIAS ----------------------
+const statusLabelsGlobal = {
+    'em_analise': 'Em Análise',
+    'pendente': 'Pendente',
+    'enviado': 'Enviado',
+    'aprovada': 'Aprovada',
+};
+const statusBadgeColors = {
+    'em_analise': 'bg-warning text-dark',
+    'pendente': 'bg-orange text-white',
+    'enviado': 'bg-primary',
+    'aprovada': 'bg-success',
+};
+
+async function abrirModalPendencias() {
+    // Abre o modal imediatamente
+    const modal = new bootstrap.Modal(document.getElementById('modal-lista-pendencias'));
+    modal.show();
+
+    const tbody = document.getElementById('corpo-tabela-pendencias');
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4">
+        <div class="spinner-border text-danger" role="status"></div>
+        <p class="mt-2 text-muted">Carregando pendências...</p>
+    </td></tr>`;
+
+    try {
+        const res = await fetch('/reembolsos/api/solicitacoes/');
+        if (!res.ok) throw new Error('Erro ao buscar dados');
+        const solicitacoes = await res.json();
+
+        const statusPendente = ['em_analise', 'pendente', 'enviado', 'aprovada'];
+        const pendentes = solicitacoes
+            .filter(s => statusPendente.includes(s.status))
+            .sort((a, b) => new Date(b.criado_em || 0) - new Date(a.criado_em || 0));
+
+        document.getElementById('modal-badge-pendencias').textContent = pendentes.length;
+
+        if (pendentes.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-success">
+                <i class="bi bi-check-circle-fill fs-3"></i>
+                <p class="mt-2">Nenhuma pendência! Tudo em dia.</p>
+            </td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = '';
+        pendentes.forEach(s => {
+            const data = s.criado_em ? new Date(s.criado_em).toLocaleDateString('pt-BR') : '-';
+            const statusLabel = statusLabelsGlobal[s.status] || s.status;
+            const badgeCls = statusBadgeColors[s.status] || 'bg-secondary';
+            const ressarcimento = s.valor_ressarcido ? `R$ ${parseFloat(s.valor_ressarcido).toFixed(2).replace('.', ',')}` : '-';
+            const sei = s.protocolo_sei || '-';
+
+            tbody.innerHTML += `
+                <tr>
+                    <td class="fw-bold">${s.servidor_nome || '-'}</td>
+                    <td>${data}</td>
+                    <td><span class="badge ${badgeCls}">${statusLabel}</span></td>
+                    <td>${sei}</td>
+                    <td>${ressarcimento}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="visualizarSolicitacaoPendencia(${s.id})" title="Visualizar">
+                            <i class="bi bi-eye"></i> Ver
+                        </button>
+                        <button class="btn btn-sm btn-success" onclick="concluirSolicitacaoPendencia(${s.id})" title="Concluir">
+                            <i class="bi bi-check-lg"></i> Concluir
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    } catch(e) {
+        console.error(e);
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center text-danger py-3">Erro ao carregar pendências.</td></tr>`;
+    }
+}
+
+async function visualizarSolicitacaoPendencia(id) {
+    // Fecha modal de pendências e abre o de solicitação em modo visualização
+    bootstrap.Modal.getInstance(document.getElementById('modal-lista-pendencias'))?.hide();
+    await editarSolicitacao(id);
+}
+
+async function concluirSolicitacaoPendencia(id) {
+    // Fecha modal de pendências e abre o de solicitação com status focado em "Concluído"
+    bootstrap.Modal.getInstance(document.getElementById('modal-lista-pendencias'))?.hide();
+    await editarSolicitacao(id, true);
+}
+
 
 async function popularSelectLimites() {
     try {
@@ -602,13 +691,14 @@ async function abrirModalNovaSolicitacao() {
     document.getElementById('solicitacao_id').value = '';
     document.getElementById('faturas-container').innerHTML = '';
     document.getElementById('observacoes-container').innerHTML = '';
+    document.getElementById('modal-solicitacao-titulo').innerHTML = '<i class="bi bi-file-earmark-plus me-2"></i>Nova Solicitação de Reembolso';
     adicionarFatura(); // Começa com 1 fatura vazia
     await popularSelectServidores();
     const modal = new bootstrap.Modal(document.getElementById('modal-solicitacao'));
     modal.show();
 }
 
-async function editarSolicitacao(id) {
+async function editarSolicitacao(id, concluir = false) {
     try {
         const res = await fetch(`/reembolsos/api/solicitacoes/${id}/`);
         if(res.ok) {
@@ -624,7 +714,15 @@ async function editarSolicitacao(id) {
             document.getElementById('solicitacao_protocolo_sei').value = data.protocolo_sei || '';
             document.getElementById('solicitacao_ordem_bancaria').value = data.protocolo_ordem_bancaria || '';
             document.getElementById('solicitacao_data_pagamento').value = data.data_pagamento || '';
-            document.getElementById('solicitacao_status').value = data.status;
+
+            // Se vier do botão Concluir, forçar status concluido e atualizar título
+            if (concluir) {
+                document.getElementById('solicitacao_status').value = 'concluido';
+                document.getElementById('modal-solicitacao-titulo').innerHTML = '<i class="bi bi-check-circle-fill me-2 text-success"></i>Concluir Solicitação de Reembolso';
+            } else {
+                document.getElementById('solicitacao_status').value = data.status;
+                document.getElementById('modal-solicitacao-titulo').innerHTML = '<i class="bi bi-pencil-square me-2 text-primary"></i>Editar Solicitação de Reembolso';
+            }
             
             if (data.observacoes) {
                 const obsArray = data.observacoes.split('|||');
@@ -641,6 +739,15 @@ async function editarSolicitacao(id) {
             
             const modal = new bootstrap.Modal(document.getElementById('modal-solicitacao'));
             modal.show();
+
+            // Se "Concluir", scroll para a seção de pagamento para facilitar o preenchimento
+            if (concluir) {
+                setTimeout(() => {
+                    const pagSection = document.getElementById('solicitacao_ordem_bancaria');
+                    if (pagSection) pagSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    pagSection.focus();
+                }, 500);
+            }
         }
     } catch(e) { console.error(e); }
 }
