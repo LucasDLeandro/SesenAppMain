@@ -7,6 +7,7 @@ app_name = 'telefonia'
 
 router = DefaultRouter()
 router.register(r'solicitacoes', views.TelefoneSolicitacaoViewSet, basename='solicitacao-telefone')
+router.register(r'eventos', views.EmprestimoEventoViewSet, basename='emprestimo-evento')
 router.register(r'remessas', views.RemessaManutencaoViewSet, basename='remessa-manutencao')
 router.register(r'senhas', views.CriarSenhaViewSet, basename='criar-senha')
 router.register(r'contratos', views.ContratoColaboradorViewSet, basename='contrato-colaborador')

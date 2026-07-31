@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
         thead.append(tr);
     }
 
+
     // 1. Tabela de Solicitações de Aparelhos
     $('#tabela-solicitacoes').DataTable({
         responsive: true,
@@ -371,8 +372,9 @@ document.addEventListener("DOMContentLoaded", function() {
         ajax: function (data, callback, settings) {
             Promise.all([
                 fetch('/telefonia/api/solicitacoes/'),
-                fetch('/telefonia/api/senhas/')
-            ]).then(async ([resSol, resSenhas]) => {
+                fetch('/telefonia/api/senhas/'),
+                fetch('/telefonia/api/eventos/')
+            ]).then(async ([resSol, resSenhas, resEventos]) => {
                 let pendentes = [];
                 if (resSol.ok) {
                     const solicitacoes = await resSol.json();
@@ -392,6 +394,18 @@ document.addEventListener("DOMContentLoaded", function() {
                         s.local = s.usuario; // unifica a propriedade para a coluna
                     });
                     pendentes = pendentes.concat(pendSenhas);
+                }
+                if (resEventos.ok) {
+                    const eventos = await resEventos.json();
+                    const pendEventos = eventos.filter(s => s.status === 'em_andamento');
+                    pendEventos.forEach(s => {
+                        s.tipo_demanda = 'Evento';
+                        s.protocolo = s.evento_nome;
+                        s.unidade = s.solicitante;
+                        s.sigla_unidade = '-';
+                        s.data_comparacao = new Date(s.data_inicio).getTime();
+                    });
+                    pendentes = pendentes.concat(pendEventos);
                 }
                 callback({ data: pendentes });
             });
@@ -416,6 +430,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 className: 'text-nowrap align-middle text-center',
                 render: function(data) {
                     if (data === 'Aparelho') return `<span class="badge bg-secondary"><i class="bi bi-telephone"></i> Aparelho</span>`;
+                    if (data === 'Evento') return `<span class="badge bg-primary"><i class="bi bi-calendar-event"></i> Evento</span>`;
                     return `<span class="badge bg-dark"><i class="bi bi-key"></i> Senha</span>`;
                 }
             },
@@ -467,6 +482,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <i class="bi bi-eye-fill"></i>
                                     </button>
                                 </div>`;
+                    } else if (row.tipo_demanda === 'Evento') {
+                        return `<div class="d-flex justify-content-end gap-1">
+                                    <button class="btn btn-sm btn-outline-primary text-nowrap" style="white-space: nowrap;" onclick="abrirModalEvento(${row.id})" title="Ver / Recolher Evento">
+                                        <i class="bi bi-eye"></i> Detalhes / Recolher
+                                    </button>
+                                </div>`;
                     } else {
                         if (row.status === 'aguardando_supervisor') {
                             return `<div class="d-flex justify-content-end gap-1">
@@ -508,13 +529,16 @@ window.editarAparelho = async function(id) {
             
             // Preenche os campos do formulário
             document.getElementById('id_oculto_aparelho').value = aparelho.id;
-            document.getElementById('patrimonio').value = aparelho.patrimonio || '';
-            document.getElementById('modelo').value = aparelho.modelo || '';
-            document.getElementById('fcn').value = aparelho.fcn || '';
-            document.getElementById('mac_address').value = aparelho.mac_address || '';
+            const container = document.getElementById('aparelhos-container');
+            const row = container.querySelector('.aparelho-row');
+            
+            row.querySelector('.input-patrimonio').value = aparelho.patrimonio || '';
+            row.querySelector('.input-modelo').value = aparelho.modelo || '';
+            row.querySelector('.input-fcn').value = aparelho.fcn || '';
+            row.querySelector('.input-mac').value = aparelho.mac_address || '';
             
             if (aparelho.integridade) {
-                document.getElementById('integridade').value = aparelho.integridade;
+                row.querySelector('.input-integridade').value = aparelho.integridade;
             }
             
             // Exibe o modal
@@ -605,9 +629,10 @@ window.editarDefeito = async function(id) {
 // Função para carregar mini lista na Dashboard
 window.carregarWidgetRecebidas = async function() {
     try {
-        const [resSol, resSenhas] = await Promise.all([
+        const [resSol, resSenhas, resEventos] = await Promise.all([
             fetch('/telefonia/api/solicitacoes/'),
-            fetch('/telefonia/api/senhas/')
+            fetch('/telefonia/api/senhas/'),
+            fetch('/telefonia/api/eventos/')
         ]);
         
         let pendentes = [];
@@ -630,6 +655,17 @@ window.carregarWidgetRecebidas = async function() {
                 s.data_comparacao = new Date(s.created_at).getTime();
             });
             pendentes = pendentes.concat(pendSenhas);
+        }
+if (resEventos.ok) {
+            const eventos = await resEventos.json();
+            const pendEventos = eventos.filter(s => s.status === 'em_andamento');
+            pendEventos.forEach(s => {
+                s.tipo_demanda = 'Evento';
+                s.protocolo = s.evento_nome;
+                s.sigla_unidade = '-';
+                s.data_comparacao = new Date(s.data_inicio).getTime();
+            });
+            pendentes = pendentes.concat(pendEventos);
         }
 
         // Ordena pela data mais recente primeiro

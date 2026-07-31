@@ -1,0 +1,77 @@
+<div class="modal fade" id="modal-emprestimo-evento" tabindex="-1" aria-labelledby="modalEmprestimoEventoLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            
+            <div class="modal-header text-white" style="background-color: #ef4444;">
+                <h5 class="modal-title fw-bold" id="modalEmprestimoEventoLabel">
+                    <i class="bi bi-calendar-event me-2"></i> Empréstimo para Eventos
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-4 bg-light">
+                <form id="form-emprestimo-evento">
+                    <input type="hidden" id="evento_id" name="evento_id">
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Nome / Descrição do Evento <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="evento_nome" name="evento_nome" required placeholder="Ex: Conferência Anual">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Solicitante <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="evento_solicitante" name="solicitante" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Data Início <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="evento_data_inicio" name="data_inicio" required>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Data Fim (Recolhimento Previsto) <span class="text-danger">*</span></label>
+                            <input type="datetime-local" class="form-control" id="evento_data_fim" name="data_fim" required>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">Local da Instalação <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="evento_local" name="local" required placeholder="Ex: Auditório Principal">
+                        </div>
+
+                        <!-- Seleção de Aparelhos -->
+                        <div class="col-12 mt-4" id="div_selecao_aparelhos">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-header bg-white border-0 pt-3 pb-0">
+                                    <h6 class="fw-bold text-primary mb-0"><i class="bi bi-phone me-2"></i>Selecionar Aparelhos para o Evento</h6>
+                                </div>
+                                <div class="card-body">
+                                    <select class="form-select select2-aparelhos-evento" id="evento_aparelhos" name="aparelhos" multiple="multiple" style="width: 100%;">
+                                        <!-- Populado via JS puxando apenas os aparelhos com funcao_aparelho=eventos -->
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Observações (mostrado ao recolher) -->
+                        <div class="col-12 mt-4 d-none" id="div_evento_observacoes">
+                            <label class="form-label fw-bold">Observações de Recolhimento</label>
+                            <textarea class="form-control" id="evento_observacoes" name="observacoes" rows="3" placeholder="Informar caso algum aparelho tenha sido danificado ou não tenha sido devolvido."></textarea>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            
+            <div class="modal-footer bg-white border-0 pt-0 pb-3 pe-4">
+                <button type="button" class="btn btn-outline-secondary px-4 fw-bold" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                <button type="button" class="btn btn-danger px-4 fw-bold" id="btn-salvar-evento" style="border-radius: 8px;" onclick="salvarEvento()">
+                    <i class="bi bi-check2-circle me-2"></i>Registrar Empréstimo
+                </button>
+                <button type="button" class="btn btn-success px-4 fw-bold d-none" id="btn-recolher-evento" style="border-radius: 8px;" onclick="recolherEvento()">
+                    <i class="bi bi-box-arrow-in-down me-2"></i>Concluir / Recolher Aparelhos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

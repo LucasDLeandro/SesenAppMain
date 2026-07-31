@@ -146,10 +146,138 @@ if (form_senha) {
 }
 
 if (form_aparelho) {
-    form_aparelho.addEventListener('submit', function(e) {
-        submitFormToAPI(e, form_aparelho, modal_aparelho, '/gestao_patrimonio/api/aparelhos-telefonicos/', 'Aparelho cadastrado com sucesso!');
+    // Adicionar logica para clonar linhas
+    const btnAddAparelho = document.getElementById('btn-add-aparelho-row');
+    if (btnAddAparelho) {
+        btnAddAparelho.addEventListener('click', function() {
+            const container = document.getElementById('aparelhos-container');
+            const originalRow = container.querySelector('.aparelho-row');
+            
+            // Verifica se está editando um (se tem ID). Se tiver, não pode clonar (esconder o botão de add via CSS)
+            const idVal = document.getElementById('id_oculto_aparelho').value;
+            if (idVal) {
+                Swal.fire('Aviso', 'Não é possível adicionar múltiplos aparelhos no modo de edição.', 'warning');
+                return;
+            }
+            
+            const newRow = originalRow.cloneNode(true);
+            
+            // Limpa os valores
+            newRow.querySelectorAll('input').forEach(input => input.value = '');
+            newRow.querySelectorAll('select').forEach(select => select.value = 'funciona');
+            
+            // Exibe o botão de remover
+            const btnRemove = newRow.querySelector('.btn-remove-aparelho');
+            if (btnRemove) {
+                btnRemove.classList.remove('d-none');
+                btnRemove.addEventListener('click', function() {
+                    newRow.remove();
+                });
+            }
+            
+            container.appendChild(newRow);
+        });
+    }
+
+    form_aparelho.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Verifica se é edição
+        const id_field = form_aparelho.querySelector('[name="id"]');
+        const isUpdate = id_field && id_field.value.trim() !== '';
+        
+        if (isUpdate) {
+            // Se for update, usa submitFormToAPI normal, pois editamos 1 de cada vez
+            submitFormToAPI(e, form_aparelho, modal_aparelho, '/gestao_patrimonio/api/aparelhos-telefonicos/', 'Aparelho atualizado com sucesso!');
+            return;
+        }
+
+        // É criação. Vamos pegar todas as rows
+        const rows = document.querySelectorAll('#aparelhos-container .aparelho-row');
+        let aparelhosList = [];
+        
+        for (let row of rows) {
+            let patrimonio = row.querySelector('.input-patrimonio').value;
+            let modelo = row.querySelector('.input-modelo').value;
+            let fcn = row.querySelector('.input-fcn').value;
+            let mac = row.querySelector('.input-mac').value;
+            let integridade = row.querySelector('.input-integridade').value;
+            
+            aparelhosList.push({
+                patrimonio: patrimonio,
+                modelo: modelo,
+                fcn: fcn,
+                mac_address: mac,
+                integridade: integridade
+            });
+        }
+        
+        // Dispara requisições concorrentes ou em série. Série é mais seguro pra n falhar metade.
+        // O DRF por padrao suporta bulk create se tiver um ListSerializer, mas como não temos certeza, mandamos um loop assíncrono.
+        Swal.fire({
+            title: 'Salvando...',
+            text: `Salvando ${aparelhosList.length} aparelho(s)`,
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        
+        try {
+            const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            let erros = 0;
+            
+            for (let ap of aparelhosList) {
+                let formData = new FormData();
+                formData.append('patrimonio', ap.patrimonio);
+                formData.append('modelo', ap.modelo);
+                formData.append('fcn', ap.fcn);
+                formData.append('mac_address', ap.mac_address);
+                formData.append('integridade', ap.integridade);
+                
+                const res = await fetch('/gestao_patrimonio/api/aparelhos-telefonicos/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'X-CSRFToken': csrftoken }
+                });
+                
+                if (!res.ok) {
+                    erros++;
+                    console.error("Erro ao salvar aparelho", ap, await res.text());
+                }
+            }
+            
+            if (erros > 0) {
+                Swal.fire("Atenção", `Alguns aparelhos não puderam ser salvos (${erros} erros). Verifique se não há patrimônios duplicados no sistema.`, "warning");
+            } else {
+                Swal.fire("Sucesso!", "Todos os aparelhos foram salvos.", "success");
+                form_aparelho.reset();
+                modal_aparelho.hide();
+                window.location.reload();
+            }
+            
+        } catch(err) {
+            console.error(err);
+            Swal.fire("Erro Crítico!", "Erro ao conectar com o servidor.", "error");
+        }
     });
 }
+
+// Reset do modal ao abrir "Novo Aparelho"
+document.getElementById('modal-aparelho-voip').addEventListener('show.bs.modal', function (e) {
+    if (e.relatedTarget) { // Foi clicado pelo botão de novo
+        form_aparelho.reset();
+        document.getElementById('id_oculto_aparelho').value = '';
+        
+        // Remover todas as linhas adicionais
+        const container = document.getElementById('aparelhos-container');
+        const rows = container.querySelectorAll('.aparelho-row');
+        for (let i = 1; i < rows.length; i++) {
+            rows[i].remove();
+        }
+        
+        // Mostrar o botão de add
+        document.getElementById('div-add-aparelho').classList.remove('d-none');
+    }
+});
 
 
 
@@ -875,3 +1003,167 @@ if (formFinalizarSenha) {
     });
 }
 
+
+
+// ==========================================
+// EVENTOS - EMPRESTIMO
+// ==========================================
+const modal_evento = new bootstrap.Modal(document.getElementById('modal-emprestimo-evento'));
+const form_evento = document.getElementById('form-emprestimo-evento');
+
+function resetModalEvento() {
+    form_evento.reset();
+    $('#evento_id').val('');
+    $('#evento_aparelhos').val(null).trigger('change');
+    $('#div_evento_observacoes').addClass('d-none');
+    $('#btn-recolher-evento').addClass('d-none');
+    $('#btn-salvar-evento').removeClass('d-none');
+    
+    // Habilitar campos
+    $('#form-emprestimo-evento input, #form-emprestimo-evento select, #form-emprestimo-evento textarea').prop('disabled', false);
+    
+    // O select2 deve recarregar os disponíveis
+    carregarAparelhosEvento();
+}
+
+document.getElementById('modal-emprestimo-evento').addEventListener('show.bs.modal', function (e) {
+    if (e.relatedTarget) { // Foi clicado no botão "Novo"
+        resetModalEvento();
+    }
+});
+
+async function carregarAparelhosEvento() {
+    try {
+        const res = await fetch('/gestao_patrimonio/api/aparelhos-telefonicos/?status=estoque');
+        const data = await res.json();
+        
+        const select = $('#evento_aparelhos');
+        select.empty();
+        
+        // Filtra aparelhos com funcao_aparelho === 'eventos'
+        data.forEach(ap => {
+            if (ap.funcao_aparelho === 'eventos') {
+                const opt = new Option(`${ap.patrimonio} - ${ap.modelo} (${ap.mac_address || 'Sem MAC'})`, ap.id, false, false);
+                select.append(opt);
+            }
+        });
+        
+        select.trigger('change');
+    } catch (e) {
+        console.error("Erro ao carregar aparelhos de eventos", e);
+    }
+}
+
+// Inicializa select2
+$(document).ready(function() {
+    $('#evento_aparelhos').select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $('#modal-emprestimo-evento'),
+        placeholder: "Selecione um ou mais aparelhos"
+    });
+});
+
+async function salvarEvento() {
+    if(!form_evento.checkValidity()) {
+        form_evento.reportValidity();
+        return;
+    }
+    
+    const formData = new FormData(form_evento);
+    // Para selects múltiplos
+    const aparelhos = $('#evento_aparelhos').val() || [];
+    formData.delete('aparelhos');
+    aparelhos.forEach(a => formData.append('aparelhos', a));
+    
+    try {
+        const res = await fetch('/telefonia/api/eventos/', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') || document.querySelector('[name=csrfmiddlewaretoken]').value }
+        });
+        
+        if (res.ok) {
+            Swal.fire("Sucesso!", "Evento cadastrado com sucesso. Equipamentos instalados.", "success");
+            modal_evento.hide();
+            $('#tabela-eventos').DataTable().ajax.reload();
+        } else {
+            Swal.fire("Erro", "Verifique os campos obrigatórios.", "error");
+        }
+    } catch(e) {
+        Swal.fire("Erro", "Erro ao conectar com o servidor.", "error");
+    }
+}
+
+async function abrirModalEvento(id) {
+    resetModalEvento();
+    try {
+        const res = await fetch(`/telefonia/api/eventos/${id}/`);
+        const data = await res.json();
+        
+        $('#evento_id').val(data.id);
+        $('#evento_nome').val(data.evento_nome);
+        $('#evento_solicitante').val(data.solicitante);
+        
+        if (data.data_inicio) $('#evento_data_inicio').val(data.data_inicio.substring(0, 16));
+        if (data.data_fim) $('#evento_data_fim').val(data.data_fim.substring(0, 16));
+        
+        $('#evento_local').val(data.local);
+        
+        // Bloquear os campos
+        $('#form-emprestimo-evento input, #form-emprestimo-evento select').prop('disabled', true);
+        
+        // Esconder o select de aparelhos e mostrar lista fixa?
+        // Como o select está disabled, ele serve como lista fixa, vamos preencher com as opções selecionadas.
+        const select = $('#evento_aparelhos');
+        select.empty();
+        data.aparelhos_detalhes.forEach(ap => {
+            const opt = new Option(`${ap.patrimonio} - ${ap.modelo} (${ap.mac_address || ''})`, ap.id, true, true);
+            select.append(opt);
+        });
+        select.trigger('change');
+        
+        if (data.status === 'em_andamento') {
+            $('#div_evento_observacoes').removeClass('d-none');
+            $('#evento_observacoes').prop('disabled', false).val('');
+            
+            $('#btn-salvar-evento').addClass('d-none');
+            $('#btn-recolher-evento').removeClass('d-none');
+        } else {
+            $('#div_evento_observacoes').removeClass('d-none');
+            $('#evento_observacoes').prop('disabled', true).val(data.observacoes);
+            
+            $('#btn-salvar-evento').addClass('d-none');
+            $('#btn-recolher-evento').addClass('d-none');
+        }
+        
+        modal_evento.show();
+        
+    } catch(e) {
+        Swal.fire("Erro", "Erro ao carregar os dados do evento.", "error");
+    }
+}
+
+async function recolherEvento() {
+    const id = $('#evento_id').val();
+    const observacoes = $('#evento_observacoes').val();
+    
+    const formData = new FormData();
+    formData.append('observacoes', observacoes);
+    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    
+    try {
+        const res = await fetch(`/telefonia/api/eventos/${id}/recolher/`, {
+            method: 'PATCH',
+            body: formData
+        });
+        if (res.ok) {
+            Swal.fire("Concluído!", "Equipamentos recolhidos e retornados ao estoque.", "success");
+            modal_evento.hide();
+            $('#tabela-eventos').DataTable().ajax.reload();
+        } else {
+            Swal.fire("Erro", "Não foi possível concluir a ação.", "error");
+        }
+    } catch(e) {
+        Swal.fire("Erro", "Erro ao conectar.", "error");
+    }
+}

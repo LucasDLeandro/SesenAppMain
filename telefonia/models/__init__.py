@@ -25,3 +25,4 @@ from .aparelhos_manutencao import AparelhoManutencao
 from .padrao_senha import PadraoSenhaTelefonia
 from .padrao_tutorial import PadraoTutorialTelefonia
 from .padrao_email import PadraoEmailTelefonia
+from .emprestimo_evento import EmprestimoEvento

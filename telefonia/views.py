@@ -15,12 +15,12 @@ from xhtml2pdf import pisa
 from .models import (
     TelefoneSolicitacao, AparelhoVoip, RemessaManutencao, CriarSenha, 
     AparelhoManutencao, ContratoColaborador, PadraoSenhaTelefonia, 
-    PadraoTutorialTelefonia, PadraoEmailTelefonia
+    PadraoTutorialTelefonia, PadraoEmailTelefonia, EmprestimoEvento
 )
 from .serializers import (
     TelefoneSolicitacaoSerializer,
     RemessaManutencaoSerializer, CriarSenhaSerializer, 
-    ContratoColaboradorSerializer
+    ContratoColaboradorSerializer, EmprestimoEventoSerializer
 )
 
 from notificacoes.services import auto_message
@@ -38,6 +38,8 @@ def main_telefonia(request):
     solicitacoes_pendentes = TelefoneSolicitacao.objects.exclude(status='concluida').count()
     solicitacoes_concluidas = TelefoneSolicitacao.objects.filter(status='concluida').count()
     
+    eventos_ativos = EmprestimoEvento.objects.filter(status='em_andamento').count()
+    
     remessas_total = RemessaManutencao.objects.count()
     total_senhas = CriarSenha.objects.count()
     
@@ -49,6 +51,7 @@ def main_telefonia(request):
         'aparelhos_defeituosos': aparelhos_defeituosos,
         'solicitacoes_pendentes': solicitacoes_pendentes,
         'solicitacoes_concluidas': solicitacoes_concluidas,
+        'eventos_ativos': eventos_ativos,
         'remessas_total': remessas_total,
         'total_senhas': total_senhas,
         'tecnicos': tecnicos,
@@ -173,6 +176,59 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
             
         solicitacao.save()
         return Response({'status': 'Solicitação concluída com sucesso.'}, status=status.HTTP_200_OK)
+
+
+class EmprestimoEventoViewSet(viewsets.ModelViewSet):
+    queryset = EmprestimoEvento.objects.all().order_by('-created_at')
+    serializer_class = EmprestimoEventoSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        aparelhos_ids = serializer.validated_data.pop('aparelhos', [])
+        
+        # Validar data_inicio e data_fim
+        if 'data_inicio' in request.data:
+            dt = parse_datetime(request.data['data_inicio'])
+            if dt and timezone.is_naive(dt): dt = timezone.make_aware(dt)
+            serializer.validated_data['data_inicio'] = dt
+        
+        if 'data_fim' in request.data:
+            dt = parse_datetime(request.data['data_fim'])
+            if dt and timezone.is_naive(dt): dt = timezone.make_aware(dt)
+            serializer.validated_data['data_fim'] = dt
+
+        evento = serializer.save()
+
+        # Adicionar os aparelhos e marcar como 'instalado'
+        if aparelhos_ids:
+            from telefonia.models import AparelhoVoip
+            aps = AparelhoVoip.objects.filter(id__in=aparelhos_ids)
+            for ap in aps:
+                ap.status = 'instalado'
+                ap.save()
+            evento.aparelhos.set(aps)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['patch'])
+    def recolher(self, request, pk=None):
+        evento = self.get_object()
+        
+        if evento.status == 'concluido':
+            return Response({'error': 'Evento já foi concluído.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        evento.observacoes = request.data.get('observacoes', evento.observacoes)
+        evento.status = 'concluido'
+        evento.save()
+
+        # Devolver aparelhos ao estoque
+        for ap in evento.aparelhos.all():
+            ap.status = 'estoque'
+            ap.save()
+
+        return Response({'status': 'Equipamentos recolhidos e evento concluído com sucesso.'}, status=status.HTTP_200_OK)
+
 
 
 class RemessaManutencaoViewSet(viewsets.ModelViewSet):

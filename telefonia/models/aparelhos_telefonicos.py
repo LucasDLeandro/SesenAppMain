@@ -39,6 +39,12 @@ class AparelhoVoip(models.Model):
     ]
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='estoque')
 
+    FUNCAO_CHOICES = [
+        ('fixo', 'Fixo'),
+        ('eventos', 'Eventos'),
+    ]
+    funcao_aparelho = models.CharField(max_length=20, choices=FUNCAO_CHOICES, default='fixo')
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

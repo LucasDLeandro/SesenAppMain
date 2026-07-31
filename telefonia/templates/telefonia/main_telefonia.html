@@ -31,6 +31,7 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
                             <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-solicitacao-telefone"><i class="bi bi-headset me-2 text-primary"></i>Nova Solicitação de Aparelho</a></li>
+                            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-emprestimo-evento"><i class="bi bi-calendar-event me-2 text-danger"></i>Empréstimo p/ Evento</a></li>
                             <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-solicitacao-senha"><i class="bi bi-key me-2 text-info"></i>Nova Senha</a></li>
                             <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-aparelho-voip"><i class="bi bi-phone me-2 text-success"></i>Registrar Aparelho</a></li>
                             <li><a class="dropdown-item py-2" href="#" onclick="abrirModalNovaRemessa()"><i class="bi bi-truck me-2 text-warning"></i>Nova Remessa</a></li>
@@ -46,6 +47,7 @@
                         <i class="bi bi-bar-chart-steps"></i> Dashboard
                     </button>
                 </li>
+                
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="solicitacoes-aparelhos-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-aparelhos" type="button" role="tab">
                         <i class="bi bi-list-check"></i> Solicitações de Aparelhos
@@ -150,10 +152,10 @@
                                             <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
                                         </button>
                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
                     <!-- Linha Inferior de Desempenho e Solicitações -->
                     <div class="row g-3">
@@ -228,6 +230,7 @@
                     </div>
                 </div>
 
+                
                 <!-- ABA 2: SOLICITAÇÕES APARELHOS -->
                 <div class="tab-pane fade" id="solicitacoes-aparelhos" role="tabpanel" tabindex="0">
                     <div class="table-responsive">
@@ -322,6 +325,7 @@
     <!-- Includes dos Modais -->
     {% include 'telefonia/includes/modal_lista_recebidas.html' %}
     {% include 'telefonia/includes/form_solicitacao_modal.html' %}
+    {% include 'telefonia/includes/modal_emprestimo_evento.html' %}
     {% include 'telefonia/includes/form_aparelho_modal.html' %}
     {% include 'telefonia/includes/form_concluir_solicitacao_modal.html' %}
     {% include 'telefonia/includes/form_visualizar_aparelho_modal.html' %}

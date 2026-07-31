@@ -1,5 +1,23 @@
 from rest_framework import serializers
-from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador
+from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador, EmprestimoEvento
+
+class EmprestimoEventoSerializer(serializers.ModelSerializer):
+    aparelhos_detalhes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = EmprestimoEvento
+        fields = '__all__'
+
+    def get_aparelhos_detalhes(self, obj):
+        return [
+            {
+                'id': a.id,
+                'patrimonio': a.patrimonio,
+                'modelo': a.modelo,
+                'mac_address': a.mac_address
+            }
+            for a in obj.aparelhos.all()
+        ]
 
 class TelefoneSolicitacaoSerializer(serializers.ModelSerializer):
     aparelhos_detalhes = serializers.SerializerMethodField()
