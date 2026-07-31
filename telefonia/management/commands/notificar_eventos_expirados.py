@@ -16,7 +16,8 @@ class Command(BaseCommand):
 
         eventos_pendentes = EmprestimoEvento.objects.filter(
             status='em_andamento',
-            data_fim__lte=limite_notificacao
+            data_fim__lte=limite_notificacao,
+            notificacao_enviada=False
         )
 
         if not eventos_pendentes.exists():
@@ -55,3 +56,7 @@ class Command(BaseCommand):
                     self.stdout.write(self.style.ERROR(f"Erro ao notificar {contato.nome}: {e}"))
             
             self.stdout.write(self.style.SUCCESS(f"Notificações enviadas para o evento {evento.evento_nome}."))
+            
+            # Marca como enviada para não repetir
+            evento.notificacao_enviada = True
+            evento.save(update_fields=['notificacao_enviada'])

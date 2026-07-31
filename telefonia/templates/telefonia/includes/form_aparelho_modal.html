@@ -24,13 +24,20 @@
                     </button>
                 </div>
                 <div class="row g-3">
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Patrimônio</label>
                     <input type="text" class="form-control uppercase-text shadow-none input-patrimonio" name="patrimonio" maxlength="10" required style="border-radius: 4px; border-color: #e2e8f0;">
                   </div>
-                  <div class="col-md-6">
+                  <div class="col-md-4">
                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Modelo</label>
                     <input type="text" class="form-control uppercase-text shadow-none input-modelo" name="modelo" maxlength="30" style="border-radius: 4px; border-color: #e2e8f0;">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label text-muted fw-bold text-uppercase mb-1" >Função</label>
+                    <select class="form-select shadow-none input-funcao" name="funcao_aparelho" style="border-radius: 4px; border-color: #e2e8f0;" required>
+                      <option value="fixo" selected>Atendimento Fixo</option>
+                      <option value="eventos">Para Eventos (Empréstimo)</option>
+                    </select>
                   </div>
                   <div class="col-md-4">
                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >FCN</label>

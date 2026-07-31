@@ -534,6 +534,9 @@ window.editarAparelho = async function(id) {
             
             row.querySelector('.input-patrimonio').value = aparelho.patrimonio || '';
             row.querySelector('.input-modelo').value = aparelho.modelo || '';
+            if(row.querySelector('.input-funcao')) {
+                row.querySelector('.input-funcao').value = aparelho.funcao_aparelho || 'fixo';
+            }
             row.querySelector('.input-fcn').value = aparelho.fcn || '';
             row.querySelector('.input-mac').value = aparelho.mac_address || '';
             

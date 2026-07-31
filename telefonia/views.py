@@ -185,7 +185,7 @@ class EmprestimoEventoViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        aparelhos_ids = serializer.validated_data.pop('aparelhos', [])
+        aparelhos_instances = serializer.validated_data.pop('aparelhos', [])
         
         # Validar data_inicio e data_fim
         if 'data_inicio' in request.data:
@@ -201,13 +201,11 @@ class EmprestimoEventoViewSet(viewsets.ModelViewSet):
         evento = serializer.save()
 
         # Adicionar os aparelhos e marcar como 'instalado'
-        if aparelhos_ids:
-            from telefonia.models import AparelhoVoip
-            aps = AparelhoVoip.objects.filter(id__in=aparelhos_ids)
-            for ap in aps:
+        if aparelhos_instances:
+            for ap in aparelhos_instances:
                 ap.status = 'instalado'
                 ap.save()
-            evento.aparelhos.set(aps)
+            evento.aparelhos.set(aparelhos_instances)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

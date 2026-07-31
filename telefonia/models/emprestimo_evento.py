@@ -22,6 +22,7 @@ class EmprestimoEvento(models.Model):
     
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
     observacoes = models.TextField(null=True, blank=True, help_text="Observações gerais ou motivos de problemas no recolhimento")
+    notificacao_enviada = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

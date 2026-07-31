@@ -199,6 +199,7 @@ if (form_aparelho) {
         for (let row of rows) {
             let patrimonio = row.querySelector('.input-patrimonio').value;
             let modelo = row.querySelector('.input-modelo').value;
+            let funcao = row.querySelector('.input-funcao') ? row.querySelector('.input-funcao').value : 'fixo';
             let fcn = row.querySelector('.input-fcn').value;
             let mac = row.querySelector('.input-mac').value;
             let integridade = row.querySelector('.input-integridade').value;
@@ -206,6 +207,7 @@ if (form_aparelho) {
             aparelhosList.push({
                 patrimonio: patrimonio,
                 modelo: modelo,
+                funcao_aparelho: funcao,
                 fcn: fcn,
                 mac_address: mac,
                 integridade: integridade
