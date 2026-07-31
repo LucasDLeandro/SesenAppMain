@@ -66,7 +66,6 @@ INSTALLED_APPS = [
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 CRISPY_TEMPLATE_PACK = "bootstrap5"
-# Force reload
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -103,7 +102,6 @@ WSGI_APPLICATION = 'sesen_app.wsgi.application'
 
 
 REST_FRAMEWORK = {
-
     # Define como o sistema descobre quem é o usuário
     # 'DEFAULT_AUTHENTICATION_CLASSES': (
     #     'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -190,7 +188,6 @@ STATICFILES_FINDERS = [
 ]
 
 
-
 # ---> EMAIL SETTINGS <---
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
@@ -207,17 +204,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SIMPLE_JWT = {
     # Tempo de vida do Token de Acesso (aumentado para 8 horas para melhor experiência do usuário)
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8), 
-    
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=8),
+
     # Tempo de vida do Token de Atualização (7 dias - renovação automática via middleware)
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
-    
+
     # Adiciona a palavra 'Bearer' na frente do token no cabeçalho HTTP
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 # Usuários
 DEFAULT_USER_PASSWORD = os.environ.get('DEFAULT_USER_PASSWORD', 'Sesenapp123')
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -238,4 +236,3 @@ LOGGING = {
 }
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-
