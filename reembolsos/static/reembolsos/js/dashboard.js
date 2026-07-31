@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     initDataTables();
     carregarMétricas();
+    carregarWidgetPendencias();
 });
 
 function initDataTables() {
@@ -229,23 +230,7 @@ async function carregarMétricas() {
                 }
             });
 
-            // Lógica do Alerta de Pendência de Ordem Bancária
-            let pendentesBanco = 0;
-            solicitacoes.forEach(s => {
-                // Se estiver enviada ou aprovada e sem ordem bancária registrada
-                if ((s.status === 'enviado' || s.status === 'aprovada') && !s.protocolo_ordem_bancaria) {
-                    pendentesBanco++;
-                }
-            });
-            
-            const alertElem = document.getElementById('alerta-ordem-bancaria');
-            const countElem = document.getElementById('count-pendentes-banco');
-            if (pendentesBanco > 0) {
-                countElem.textContent = pendentesBanco;
-                alertElem.classList.remove('d-none');
-            } else {
-                alertElem.classList.add('d-none');
-            }
+            // (lógica de alerta bancário migrada para carregarWidgetPendencias())
             
             // 5. Saldo Disponível no Ano (Soma Teto Servidores * 12 - Total Ano)
             let somaTeto = 0;
@@ -267,7 +252,95 @@ async function carregarMétricas() {
     } catch(e) { console.error(e); }
 }
 
-// ---------------------- SERVIDOR ----------------------
+// ---------------------- WIDGET DE PENDÊNCIAS ----------------------
+async function carregarWidgetPendencias() {
+    try {
+        const res = await fetch('/reembolsos/api/solicitacoes/');
+        if (!res.ok) return;
+        const solicitacoes = await res.json();
+
+        // Status que NÃO estão concluídos
+        const statusPendente = ['em_analise', 'pendente', 'enviado', 'aprovada'];
+        const pendentes = solicitacoes
+            .filter(s => statusPendente.includes(s.status))
+            .sort((a, b) => new Date(b.criado_em || 0) - new Date(a.criado_em || 0));
+
+        const badge = document.getElementById('badge-recebidas-count');
+        const listGroup = document.getElementById('lista-recebidas-dashboard');
+        const card = document.getElementById('card-widget-recebidas');
+        const titulo = document.getElementById('titulo-widget-recebidas');
+        const rodape = document.getElementById('rodape-widget-recebidas');
+
+        badge.textContent = pendentes.length;
+        listGroup.innerHTML = '';
+
+        if (pendentes.length === 0) {
+            listGroup.innerHTML = '<div class="text-center text-muted py-2"><i class="bi bi-emoji-smile me-2"></i>Nenhuma solicitação pendente! Tudo em dia.</div>';
+            card.className = 'card shadow-sm border-0 interactive-card';
+            card.style.backgroundColor = '';
+            titulo.className = 'fw-bold mb-0 text-success';
+            titulo.innerHTML = '<i class="bi bi-check-circle-fill me-2"></i>Status: Tudo em Dia';
+            badge.className = 'badge bg-success rounded-pill shadow-sm';
+            rodape.style.display = 'none';
+            return;
+        }
+
+        // Estilo de alerta
+        card.className = 'card shadow-sm border-0 interactive-card widget-recebidas-alerta';
+        titulo.className = 'fw-bold mb-0 text-danger';
+        titulo.innerHTML = '<i class="bi bi-exclamation-triangle-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes';
+        badge.className = 'badge bg-danger rounded-pill pulse-badge shadow-sm';
+        rodape.style.display = 'block';
+
+        const statusLabels = {
+            'em_analise': 'Em Análise',
+            'pendente': 'Pendente',
+            'enviado': 'Enviado',
+            'aprovada': 'Aprovada',
+        };
+        const statusColors = {
+            'em_analise': '#856404',
+            'pendente': '#fd7e14',
+            'enviado': '#0d6efd',
+            'aprovada': '#198754',
+        };
+
+        // Exibe até 3 mais recentes
+        const max = Math.min(pendentes.length, 3);
+        for (let i = 0; i < max; i++) {
+            const s = pendentes[i];
+            const dataStr = s.criado_em || '';
+            let dataFormatada = '-';
+            if (dataStr) {
+                const d = new Date(dataStr);
+                dataFormatada = d.toLocaleDateString('pt-BR');
+            }
+            const servidor = s.servidor_nome || '-';
+            const statusLabel = statusLabels[s.status] || s.status;
+            const statusColor = statusColors[s.status] || '#6c757d';
+            const protocolo = s.protocolo_sei || 'Sem protocolo';
+
+            listGroup.innerHTML += `
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: #fff5f5; border: 1px solid #ffcaca;">
+                    <div>
+                        <small class="text-danger d-block mb-0 fw-bold" style="font-size: 0.8rem;"><i class="bi bi-clock-history"></i> Data: ${dataFormatada}</small>
+                        <span class="fw-bold text-dark">${servidor}</span>
+                        <span class="badge ms-1" style="font-size: 0.7rem; background-color: ${statusColor}; color: #fff;">${statusLabel}</span>
+                        <br><span class="text-muted" style="font-size: 0.85rem;">SEI: ${protocolo}</span>
+                    </div>
+                    <i class="bi bi-chevron-right text-danger fw-bold fs-5"></i>
+                </div>
+            `;
+        }
+
+    } catch (e) {
+        console.error('Erro ao carregar widget de pendências:', e);
+        const listGroup = document.getElementById('lista-recebidas-dashboard');
+        if (listGroup) listGroup.innerHTML = '<div class="text-center text-danger py-3">Erro ao carregar.</div>';
+    }
+}
+
+
 async function popularSelectLimites() {
     try {
         const res = await fetch('/reembolsos/api/limites/');
