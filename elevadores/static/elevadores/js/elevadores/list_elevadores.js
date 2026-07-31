@@ -47,6 +47,37 @@ function aplicarFiltroColunas(tabela) {
     thead.appendChild(tr);
 }
 
+window.visualizarOSLista = function(id) {
+    if (!window.dadosOrdensElevador) return;
+    const os = window.dadosOrdensElevador.find(o => o.id === id);
+    if (!os) return;
+    
+    if (typeof abrirModalVisualizarElev === 'function') {
+        abrirModalVisualizarElev(
+            os.protocolo || '', 
+            os.data_hora || '', 
+            os.elevador || '', 
+            os.ocorrencia || '', 
+            os.aprisionamento ? 'Sim' : 'Não', 
+            os.solicitante || '', 
+            os.atendente || '', 
+            os.status || '', 
+            os.elevador_parado || (os.tempo_parado ? os.tempo_parado + 'h' : ''), 
+            os.data_hora_chegada || '', 
+            os.data_hora_saida || '', 
+            os.tmp_chegada || '', 
+            os.tmp_saida || '', 
+            os.tecnico || '', 
+            os.componente || '', 
+            os.sub_componente || '', 
+            os.servico || '', 
+            os.midia || ''
+        );
+    } else {
+        console.error("Função abrirModalVisualizarElev não encontrada.");
+    }
+}
+
 const ordensAbertas = document.getElementById('tabela-elev-ordens-abertas')
 if (ordensAbertas) {
     new DataTable(ordensAbertas, {
@@ -98,6 +129,8 @@ ordens_concluidas.addEventListener('click', async function() {
 
         let todoOConteudoHTML = ''
 
+        window.dadosOrdensElevador = dados_api.tabela_concluidas;
+
         dados_api.tabela_concluidas.forEach(os => {
             const linhaHTML = `
                 <tr>
@@ -111,7 +144,7 @@ ordens_concluidas.addEventListener('click', async function() {
                     </td>
                     <td class="text-nowrap text-end">
                         <div class="d-flex flex-nowrap justify-content-end gap-1">
-                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" onclick="abrirModalVisualizarElev(&quot;${os.protocolo || ''}&quot;, &quot;${os.data_hora || ''}&quot;, &quot;${os.elevador || ''}&quot;, &quot;${String(os.ocorrencia || '').replace(/\\n/g, ' ').replace(/\"/g, '&amp;quot;')}&quot;, &quot;${os.aprisionamento ? 'Sim' : 'Não'}&quot;, &quot;${os.solicitante || ''}&quot;, &quot;${os.atendente || ''}&quot;, &quot;${os.status || ''}&quot;, &quot;${os.elevador_parado || (os.tempo_parado + 'h')}&quot;, &quot;${os.data_hora_chegada || ''}&quot;, &quot;${os.data_hora_saida || ''}&quot;, &quot;${os.tmp_chegada || ''}&quot;, &quot;${os.tmp_saida || ''}&quot;, &quot;${os.tecnico || ''}&quot;, &quot;${os.componente || ''}&quot;, &quot;${os.sub_componente || ''}&quot;, &quot;${String(os.servico || '').replace(/\\n/g, ' ').replace(/\"/g, '&amp;quot;')}&quot;, &quot;${os.midia || ''}&quot;)" title="Visualizar O.S">
+                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" onclick="visualizarOSLista(${os.id})" title="Visualizar O.S">
                                 <i class="bi bi-eye"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-warning" onclick="editarOS(${os.id})" title="Editar"><i class="bi bi-pencil"></i></button>
