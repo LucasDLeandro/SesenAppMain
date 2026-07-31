@@ -24,24 +24,36 @@
             <div class="offcanvas-body d-flex flex-column p-0">
                 <div class="sidebar-heading">Aplicações Auxiliares</div>
                 <nav class="nav flex-column mb-3">
-                    <a class="nav-sidebar-link {% if 'elevadores' in request.path %}active{% endif %}" href="{% url 'elevadores:elev_list_os' %}">
-                        <i class="bi bi-building-up"></i> Elevadores
+                    <a class="nav-sidebar-link d-flex justify-content-between align-items-center {% if 'elevadores' in request.path %}active{% endif %}" href="{% url 'elevadores:elev_list_os' %}">
+                        <span><i class="bi bi-building-up"></i> Elevadores</span>
+                        {% if pendencias_elevadores > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ pendencias_elevadores }}</span>
+                        {% endif %}
                     </a>
                     
-                    <a class="nav-sidebar-link {% if 'telefonia' in request.path %}active{% endif %}" href="{% url 'telefonia:inicio_telefonia' %}">
-                        <i class="bi bi-telephone"></i> Telefonia
+                    <a class="nav-sidebar-link d-flex justify-content-between align-items-center {% if 'telefonia' in request.path %}active{% endif %}" href="{% url 'telefonia:inicio_telefonia' %}">
+                        <span><i class="bi bi-telephone"></i> Telefonia</span>
+                        {% if pendencias_telefonia > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ pendencias_telefonia }}</span>
+                        {% endif %}
                     </a>
                     
-                    <a class="nav-sidebar-link {% if 'reembolsos' in request.path %}active{% endif %}" href="{% url 'reembolsos:inicio_reembolsos' %}">
-                        <i class="bi bi-wallet2"></i> Reembolsos Telefonia
+                    <a class="nav-sidebar-link d-flex justify-content-between align-items-center {% if 'reembolsos' in request.path %}active{% endif %}" href="{% url 'reembolsos:inicio_reembolsos' %}">
+                        <span><i class="bi bi-wallet2"></i> Reembolsos Telefonia</span>
+                        {% if pendencias_reembolsos > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ pendencias_reembolsos }}</span>
+                        {% endif %}
                     </a>
 
-                    <a class="nav-sidebar-link {% if 'audiovideo' in request.path %}active{% endif %}" href="{% url 'audiovideo:dashboard' %}">
-                        <i class="bi bi-speaker"></i> Áudio e Vídeo
+                    <a class="nav-sidebar-link d-flex justify-content-between align-items-center {% if 'audiovideo' in request.path %}active{% endif %}" href="{% url 'audiovideo:dashboard' %}">
+                        <span><i class="bi bi-speaker"></i> Áudio e Vídeo</span>
+                        {% if pendencias_audiovideo > 0 %}
+                        <span class="badge bg-danger rounded-pill">{{ pendencias_audiovideo }}</span>
+                        {% endif %}
                     </a>
                     
-                    <a class="nav-sidebar-link {% if 'gestao_patrimonio' in request.path %}active{% endif %}" href="{% url 'gestao_patrimonio:dashboard_transferencias' %}">
-                        <i class="bi bi-arrow-left-right"></i> Transf. Patrimônio
+                    <a class="nav-sidebar-link d-flex justify-content-between align-items-center {% if 'gestao_patrimonio' in request.path %}active{% endif %}" href="{% url 'gestao_patrimonio:dashboard_transferencias' %}">
+                        <span><i class="bi bi-arrow-left-right"></i> Transf. Patrimônio</span>
                     </a>
 
                     <!-- <div class="dropdown" style="width: 100%;">
