@@ -27,11 +27,17 @@ def configuracao_telefonia_view(request):
             id_template='TEL_SENHA_TEMPLATE',
             base_text='Olá {solicitante},\n\nSua solicitação do protocolo {protocolo} referente à senha telefônica do(a) {unidade} foi concluída.'
         )
+    if not TemplateMessage.objects.filter(tipo_evento='tel_recolhimento_evento').exists():
+        TemplateMessage.objects.create(
+            tipo_evento='tel_recolhimento_evento',
+            id_template='TEL_RECOLHIMENTO_EVENTO_TEMPLATE',
+            base_text='⚠️ *LEMBRETE DE RECOLHIMENTO*\n\nO evento *{evento_nome}* tem recolhimento de aparelhos previsto para o prazo limite.\nData Fim: {data_fim}\nLocal: {local}\nSolicitante: {solicitante}\n\nPor favor, acesse a Dashboard de Telefonia no SesenApp para efetuar a baixa.'
+        )
 
     templates_senha = PadraoSenhaTelefonia.objects.all().order_by('-id')
     templates_tutorial = PadraoTutorialTelefonia.objects.all().order_by('-id')
     templates_email = PadraoEmailTelefonia.objects.all().order_by('-id')
-    templates_whatsapp = TemplateMessage.objects.filter(tipo_evento__in=['tel_solicitacao_aparelho', 'tel_solicitacao_senha']).order_by('-id')
+    templates_whatsapp = TemplateMessage.objects.filter(tipo_evento__in=['tel_solicitacao_aparelho', 'tel_solicitacao_senha', 'tel_recolhimento_evento']).order_by('-id')
         
     if request.method == 'POST':
         action = request.POST.get('action')
