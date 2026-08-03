@@ -491,6 +491,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         if (row.status === 'aguardando_supervisor') {
                             return `<div class="d-flex justify-content-end gap-1">
+                                        <a href="/telefonia/senha/${row.id}/pdf/" target="_blank" class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" title="Visualizar Documento">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> Documento
+                                        </a>
                                         <button class="btn btn-sm btn-outline-warning text-dark text-nowrap" style="white-space: nowrap;" onclick="abrirModalFinalizarSenha(${row.id}, '${row.status}')" title="Finalizar e Enviar E-mail">
                                             <i class="bi bi-envelope-check me-1"></i> Enviar E-mail
                                         </button>
