@@ -637,77 +637,105 @@ let contadorColaboradoresSenha = 0;
 function addColaboradorSenhaCard() {
     contadorColaboradoresSenha++;
     const idUnico = contadorColaboradoresSenha;
+    const cardId = `colaborador-senha-card-${idUnico}`;
     const container = document.getElementById('lista_colaboradores_senhas');
 
-    // Aqui montamos o card, que conterá o mesmo layout de antes, mas multiplicável
-    const cardHTML = `
-        <div class="colaborador-senha-card card mb-3 border-secondary" id="colaborador-senha-card-${idUnico}">
-            <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                <strong><i class="bi bi-person me-2"></i> Usuário ${idUnico}</strong>
-                <button type="button" class="btn btn-sm btn-danger" onclick="document.getElementById('colaborador-senha-card-${idUnico}').remove()"><i class="bi bi-trash"></i></button>
+    const cardHtml = `
+        <div class="user-card" id="${cardId}">
+            <div class="user-card-header">
+                <div class="user-card-title">
+                    <i class="bi bi-person-fill text-primary me-2"></i> 
+                    <span>Usuário ${contadorColaboradoresSenha}</span>
+                </div>
+                <button type="button" class="btn-remove-user" onclick="document.getElementById('${cardId}').remove()" title="Remover Usuário">
+                    <i class="bi bi-trash3-fill"></i>
+                </button>
             </div>
-            <div class="card-body">
-                <div class="form-row-modal row mb-3">
-                    <div class="form-group-modal col-md-6">
-                        <label class="form-label fw-bold">Primeiro Nome <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control format-text input-primeiro-nome" maxlength="50" required>
+            
+            <div class="card-body p-0">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control format-text input-primeiro-nome" maxlength="50" placeholder="Primeiro Nome" required>
+                            <label>Primeiro Nome <span class="text-danger">*</span></label>
+                        </div>
                     </div>
-                    <div class="form-group-modal col-md-6">
-                        <label class="form-label fw-bold">Sobrenome <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control format-text input-sobrenome" maxlength="100" required>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control format-text input-sobrenome" maxlength="100" placeholder="Sobrenome" required>
+                            <label>Sobrenome <span class="text-danger">*</span></label>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="form-row-modal row mb-3">
-                    <div class="form-group-modal col-md-6">
-                        <label class="form-label">Ramal</label>
-                        <input type="text" class="form-control input-ramal" maxlength="10">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control input-ramal" maxlength="10" placeholder="Ramal">
+                            <label>Ramal</label>
+                        </div>
                     </div>
-                    <div class="form-group-modal col-md-6">
-                        <label class="form-label">E-mail Institucional</label>
-                        <input type="email" class="form-control input-email" maxlength="255">
-                    </div>
-                </div>
-
-                <div class="form-row-modal row mb-3">
-                    <div class="form-group-modal col-md-12 full-width">
-                        <label class="form-label">Cargo</label>
-                        <select class="form-select select-cargo" onchange="toggleCargoFieldsDinâmico(this, ${idUnico})">
-                            <option value="servidor" selected>Servidor</option>
-                            <option value="colaborador">Colaborador</option>
-                        </select>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="email" class="form-control input-email" maxlength="255" placeholder="E-mail Institucional">
+                            <label>E-mail Institucional</label>
+                        </div>
                     </div>
                 </div>
 
-                <div id="dados_colaborador_detalhes_${idUnico}" style="display: none;" class="bg-light p-3 rounded border">
-                    <h6 class="text-secondary fw-bold mb-3"><i class="bi bi-person-badge"></i> Dados do Contrato</h6>
-                    <div class="form-row-modal row mb-3">
-                        <div class="form-group-modal col-md-6">
-                            <label class="form-label">Selecione o Contrato</label>
-                            <select class="form-select select-contrato-existente" onchange="mudarContratoDinamico(this, ${idUnico})">
-                                <option value="">-- Selecione --</option>
-                                <option value="novo">+ Novo Contrato</option>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-12">
+                        <div class="form-floating">
+                            <select class="form-select select-cargo" onchange="toggleCargoFieldsDinâmico(this, ${idUnico})">
+                                <option value="servidor" selected>Servidor</option>
+                                <option value="colaborador">Colaborador</option>
                             </select>
-                        </div>
-                        <div class="form-group-modal col-md-6 div-numero-contrato" style="display: none;">
-                            <label class="form-label">Número do Contrato</label>
-                            <input type="text" class="form-control input-numero-contrato" maxlength="50">
+                            <label>Cargo</label>
                         </div>
                     </div>
-                    <div class="form-row-modal row mb-3">
-                        <div class="form-group-modal col-md-6 div-empresa-vinculada" style="display: none;">
-                            <label class="form-label fw-bold">Empresa Vinculada</label>
-                            <input type="text" class="form-control format-text input-empresa" maxlength="100">
+                </div>
+
+                <div id="dados_colaborador_detalhes_${idUnico}" style="display: none;" class="mt-3 p-4 rounded-3" style="background-color: #f1f5f9; border: 1px dashed #cbd5e1;">
+                    <h6 class="text-secondary fw-bold mb-3" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="bi bi-briefcase-fill me-1"></i> Dados do Contrato
+                    </h6>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select class="form-select select-contrato-existente" onchange="mudarContratoDinamico(this, ${idUnico})">
+                                    <option value="">-- Selecione --</option>
+                                    <option value="novo">+ Novo Contrato</option>
+                                </select>
+                                <label>Selecione o Contrato</label>
+                            </div>
                         </div>
-                        <div class="form-group-modal col-md-6 div-fiscal-contrato" style="display: none;">
-                            <label class="form-label fw-bold">Fiscal do Contrato</label>
-                            <input type="text" class="form-control format-text input-fiscal" maxlength="100">
+                        <div class="col-md-6 div-numero-contrato" style="display: none;">
+                            <div class="form-floating">
+                                <input type="text" class="form-control input-numero-contrato" maxlength="50" placeholder="Número do Contrato">
+                                <label>Número do Contrato</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row-modal row mb-2">
-                        <div class="form-group-modal col-md-12 full-width div-unidade-fiscal" style="display: none;">
-                            <label class="form-label fw-bold">Unidade do Fiscal</label>
-                            <input type="text" class="form-control format-text input-unidade-fiscal" maxlength="200">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6 div-empresa-vinculada" style="display: none;">
+                            <div class="form-floating">
+                                <input type="text" class="form-control format-text input-empresa" maxlength="100" placeholder="Empresa Vinculada">
+                                <label>Empresa Vinculada</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6 div-fiscal-contrato" style="display: none;">
+                            <div class="form-floating">
+                                <input type="text" class="form-control format-text input-fiscal" maxlength="100" placeholder="Fiscal do Contrato">
+                                <label>Fiscal do Contrato</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-2">
+                        <div class="col-md-12 div-unidade-fiscal" style="display: none;">
+                            <div class="form-floating">
+                                <input type="text" class="form-control format-text input-unidade-fiscal" maxlength="200" placeholder="Unidade do Fiscal">
+                                <label>Unidade do Fiscal</label>
+                            </div>
                         </div>
                     </div>
                 </div>
