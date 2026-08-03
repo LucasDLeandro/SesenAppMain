@@ -38,7 +38,10 @@ class LiberacaoAcessoDiariaViewSet(viewsets.ModelViewSet):
 
         # Dados customizados do form
         to_email = request.POST.get('to_email')
-        bcc_email = request.POST.get('bcc_email')
+        cc_email = request.POST.get('bcc_email') # Note: form might still send as bcc_email or cc_email
+        if request.POST.get('cc_email'):
+            cc_email = request.POST.get('cc_email')
+            
         assunto = request.POST.get('assunto')
         corpo = request.POST.get('corpo')
         anexos = request.FILES.getlist('anexos_externos')
@@ -46,7 +49,7 @@ class LiberacaoAcessoDiariaViewSet(viewsets.ModelViewSet):
         sucesso = enviar_email_liberacao(
             liberacao.id, 
             custom_to=to_email, 
-            custom_bcc=bcc_email, 
+            custom_cc=cc_email, 
             custom_subject=assunto, 
             custom_body=corpo, 
             anexos=anexos

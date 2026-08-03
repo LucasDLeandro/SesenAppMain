@@ -640,7 +640,7 @@ function addColaboradorSenhaCard() {
     const cardId = `colaborador-senha-card-${idUnico}`;
     const container = document.getElementById('lista_colaboradores_senhas');
 
-    const cardHtml = `
+    const cardHTML = `
         <div class="user-card" id="${cardId}">
             <div class="user-card-header">
                 <div class="user-card-title">
@@ -653,89 +653,69 @@ function addColaboradorSenhaCard() {
             </div>
             
             <div class="card-body p-0">
-                <div class="row g-3 mb-3">
+                <div class="row g-2 mb-2">
                     <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control format-text input-primeiro-nome" maxlength="50" placeholder="Primeiro Nome" required>
-                            <label>Primeiro Nome <span class="text-danger">*</span></label>
-                        </div>
+                        <label class="form-label">Primeiro Nome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control format-text input-primeiro-nome" maxlength="50" required>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control format-text input-sobrenome" maxlength="100" placeholder="Sobrenome" required>
-                            <label>Sobrenome <span class="text-danger">*</span></label>
-                        </div>
+                        <label class="form-label">Sobrenome <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control format-text input-sobrenome" maxlength="100" required>
                     </div>
                 </div>
                 
-                <div class="row g-3 mb-3">
+                <div class="row g-2 mb-2">
                     <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control input-ramal" maxlength="10" placeholder="Ramal">
-                            <label>Ramal</label>
-                        </div>
+                        <label class="form-label">Ramal</label>
+                        <input type="text" class="form-control input-ramal" maxlength="10">
                     </div>
                     <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="email" class="form-control input-email" maxlength="255" placeholder="E-mail Institucional">
-                            <label>E-mail Institucional</label>
-                        </div>
+                        <label class="form-label">E-mail Institucional</label>
+                        <input type="email" class="form-control input-email" maxlength="255">
                     </div>
                 </div>
 
-                <div class="row g-3 mb-3">
+                <div class="row g-2 mb-2">
                     <div class="col-md-12">
-                        <div class="form-floating">
-                            <select class="form-select select-cargo" onchange="toggleCargoFieldsDinâmico(this, ${idUnico})">
-                                <option value="servidor" selected>Servidor</option>
-                                <option value="colaborador">Colaborador</option>
-                            </select>
-                            <label>Cargo</label>
-                        </div>
+                        <label class="form-label">Cargo</label>
+                        <select class="form-select select-cargo" onchange="toggleCargoFieldsDinâmico(this, ${idUnico})">
+                            <option value="servidor" selected>Servidor</option>
+                            <option value="colaborador">Colaborador</option>
+                        </select>
                     </div>
                 </div>
 
-                <div id="dados_colaborador_detalhes_${idUnico}" style="display: none;" class="mt-3 p-4 rounded-3" style="background-color: #f1f5f9; border: 1px dashed #cbd5e1;">
-                    <h6 class="text-secondary fw-bold mb-3" style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">
+                <div id="dados_colaborador_detalhes_${idUnico}" style="display: none;" class="mt-2 p-3 rounded-3" style="background-color: #f1f5f9; border: 1px dashed #cbd5e1;">
+                    <h6 class="text-secondary fw-bold mb-2" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">
                         <i class="bi bi-briefcase-fill me-1"></i> Dados do Contrato
                     </h6>
-                    <div class="row g-3 mb-3">
+                    <div class="row g-2 mb-2">
                         <div class="col-md-6">
-                            <div class="form-floating">
-                                <select class="form-select select-contrato-existente" onchange="mudarContratoDinamico(this, ${idUnico})">
-                                    <option value="">-- Selecione --</option>
-                                    <option value="novo">+ Novo Contrato</option>
-                                </select>
-                                <label>Selecione o Contrato</label>
-                            </div>
+                            <label class="form-label">Selecione o Contrato</label>
+                            <select class="form-select select-contrato-existente" onchange="mudarContratoDinamico(this, ${idUnico})">
+                                <option value="">-- Selecione --</option>
+                                <option value="novo">+ Novo Contrato</option>
+                            </select>
                         </div>
                         <div class="col-md-6 div-numero-contrato" style="display: none;">
-                            <div class="form-floating">
-                                <input type="text" class="form-control input-numero-contrato" maxlength="50" placeholder="Número do Contrato">
-                                <label>Número do Contrato</label>
-                            </div>
+                            <label class="form-label">Número do Contrato</label>
+                            <input type="text" class="form-control input-numero-contrato" maxlength="50">
                         </div>
                     </div>
-                    <div class="row g-3 mb-3">
+                    <div class="row g-2 mb-2">
                         <div class="col-md-6 div-empresa-vinculada" style="display: none;">
-                            <div class="form-floating">
-                                <input type="text" class="form-control format-text input-empresa" maxlength="100" placeholder="Empresa Vinculada">
-                                <label>Empresa Vinculada</label>
-                            </div>
+                            <label class="form-label">Empresa Vinculada</label>
+                            <input type="text" class="form-control format-text input-empresa" maxlength="100">
                         </div>
                         <div class="col-md-6 div-fiscal-contrato" style="display: none;">
-                            <div class="form-floating">
-                                <input type="text" class="form-control format-text input-fiscal" maxlength="100" placeholder="Fiscal do Contrato">
-                                <label>Fiscal do Contrato</label>
-                            </div>
+                            <label class="form-label">Fiscal do Contrato</label>
+                            <input type="text" class="form-control format-text input-fiscal" maxlength="100">
                         </div>
                     </div>
-                    <div class="row g-3 mb-2">
+                    <div class="row g-2">
                         <div class="col-md-12 div-unidade-fiscal" style="display: none;">
-                            <div class="form-floating">
-                                <input type="text" class="form-control format-text input-unidade-fiscal" maxlength="200" placeholder="Unidade do Fiscal">
-                                <label>Unidade do Fiscal</label>
-                            </div>
+                            <label class="form-label">Unidade do Fiscal</label>
+                            <input type="text" class="form-control format-text input-unidade-fiscal" maxlength="200">
                         </div>
                     </div>
                 </div>
@@ -835,6 +815,7 @@ document.getElementById('modal-solicitacao-senha').addEventListener('show.bs.mod
 window.abrirModalConcluirSenha = async function(id) {
     document.getElementById('id_conclusao_senha').value = id;
     document.getElementById('senha_gerada').value = '';
+    document.getElementById('categoria_conclusao').value = '';
     document.getElementById('desvio_conclusao').value = 'False';
     document.getElementById('tel_desvio_conclusao').value = '';
     
@@ -860,6 +841,7 @@ window.abrirModalConcluirSenha = async function(id) {
             document.getElementById('view_concluir_email').innerText = data.email || 'N/A';
             document.getElementById('view_concluir_ramal').innerText = data.ramal || 'N/A';
             document.getElementById('view_concluir_cargo').innerText = data.cargo || 'servidor';
+            if (data.categoria) document.getElementById('categoria_conclusao').value = data.categoria;
             if (data.desvio) document.getElementById('desvio_conclusao').value = 'True';
             if (data.tel_desvio_externo) document.getElementById('tel_desvio_conclusao').value = data.tel_desvio_externo;
         }
@@ -875,6 +857,7 @@ if (formConcluirSenha) {
         const id = document.getElementById('id_conclusao_senha').value;
         const payload = {
             senha: document.getElementById('senha_gerada').value,
+            categoria: document.getElementById('categoria_conclusao').value || null,
             desvio: document.getElementById('desvio_conclusao').value === 'True',
             tel_desvio_externo: document.getElementById('tel_desvio_conclusao').value || null,
             status: 'aguardando_supervisor'

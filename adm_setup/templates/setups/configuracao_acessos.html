@@ -53,9 +53,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="template_copia" class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail em Cópia Oculta (BCC)</label>
+                                    <label for="template_copia" class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail em Cópia (CC)</label>
                                     <input type="email" class="form-control  shadow-none" id="template_copia" name="email_copia" placeholder="Ex: auditoria@empresa.com.br" style="border-radius: 4px; border-color: #e2e8f0;">
-                                    <div class="form-text mt-1 text-muted" >Se preenchido, enviará uma cópia (BCC) para este endereço.</div>
+                                    <div class="form-text mt-1 text-muted" >Se preenchido, enviará uma cópia (CC) para este endereço.</div>
                                 </div>
 
                                 <div class="col-12">
@@ -135,7 +135,7 @@
                             </div>
                             {% if template.email_copia %}
                             <div class="mb-3">
-                                <small class="text-muted fw-bold">Cópia (BCC):</small>
+                                <small class="text-muted fw-bold">Cópia (CC):</small>
                                 <p class="mb-2 text-break">
                                     <code class="text-secondary">{{ template.email_copia }}</code>
                                 </p>

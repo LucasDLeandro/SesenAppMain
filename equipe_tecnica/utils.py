@@ -57,7 +57,7 @@ def montar_email_liberacao(liberacao):
     remetente = getattr(settings, 'DEFAULT_FROM_EMAIL', settings.EMAIL_HOST_USER)
 
     destinatario = template.email_destinatario or ''
-    copia_oculta = template.email_copia or ''
+    copia_cc = template.email_copia or ''
     pode_enviar = bool(destinatario)
 
     erro = None
@@ -71,7 +71,7 @@ def montar_email_liberacao(liberacao):
         'assunto': template.assunto,
         'corpo': mensagem_final,
         'destinatario': destinatario,
-        'copia_oculta': copia_oculta,
+        'copia_cc': copia_cc,
         'remetente': remetente,
         'template_nome': template.nome,
         'pode_enviar': pode_enviar,
@@ -83,7 +83,7 @@ def montar_email_liberacao(liberacao):
     }
 
 
-def enviar_email_liberacao(liberacao_id, custom_to=None, custom_bcc=None, custom_subject=None, custom_body=None, anexos=None):
+def enviar_email_liberacao(liberacao_id, custom_to=None, custom_cc=None, custom_subject=None, custom_body=None, anexos=None):
     try:
         liberacao = LiberacaoAcessoDiaria.objects.get(id=liberacao_id)
         dados = montar_email_liberacao(liberacao)
@@ -92,7 +92,7 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_bcc=None, custom
         corpo = custom_body if custom_body is not None else dados['corpo']
         remetente = dados['remetente']
         destinatario = custom_to if custom_to is not None else dados['destinatario']
-        copia_oculta = custom_bcc if custom_bcc is not None else dados['copia_oculta']
+        copia_cc = custom_cc if custom_cc is not None else dados['copia_cc']
 
         if not destinatario:
             logger.error(
@@ -101,7 +101,7 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_bcc=None, custom
             )
             return False
 
-        bcc_list = [c.strip() for c in copia_oculta.split(',') if c.strip()] if copia_oculta else None
+        cc_list = [c.strip() for c in copia_cc.split(',') if c.strip()] if copia_cc else None
         to_list = [d.strip() for d in destinatario.split(',') if d.strip()]
 
         email = EmailMessage(
@@ -109,7 +109,7 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_bcc=None, custom
             body=corpo,
             from_email=remetente,
             to=to_list,
-            bcc=bcc_list,
+            cc=cc_list,
         )
         
         # Adiciona os anexos, se existirem

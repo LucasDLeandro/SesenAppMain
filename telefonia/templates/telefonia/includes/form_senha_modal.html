@@ -1,7 +1,7 @@
 <style>
-  /* Premium Styles para o Modal de Senha */
+  /* Premium Styles para o Modal de Senha - Versão Compacta */
   #modal-solicitacao-senha .modal-content {
-    border-radius: 20px;
+    border-radius: 16px;
     background: #fdfdfd;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
     border: none;
@@ -9,89 +9,98 @@
   #modal-solicitacao-senha .modal-header {
     background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-    border-radius: 20px 20px 0 0;
-    padding: 1.5rem 2rem;
+    border-radius: 16px 16px 0 0;
+    padding: 1rem 1.5rem;
   }
   #modal-solicitacao-senha .modal-title {
     color: #1e293b;
     font-weight: 800;
     letter-spacing: -0.5px;
-    font-size: 1.35rem;
+    font-size: 1.15rem;
   }
   #modal-solicitacao-senha .section-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border-radius: 12px;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
   }
   #modal-solicitacao-senha .section-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     border-color: #cbd5e1;
   }
   #modal-solicitacao-senha .section-title {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 700;
     color: #475569;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
   }
   #modal-solicitacao-senha .section-title i {
     color: #3b82f6;
     margin-right: 0.5rem;
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     background: #eff6ff;
-    padding: 0.4rem;
-    border-radius: 8px;
+    padding: 0.25rem 0.35rem;
+    border-radius: 6px;
   }
   
-  /* Floating Labels Styling Customizado */
-  #modal-solicitacao-senha .form-floating > .form-control,
-  #modal-solicitacao-senha .form-floating > .form-select {
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
+  /* Inputs Premium Compactos */
+  #modal-solicitacao-senha .form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 0.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+  #modal-solicitacao-senha .form-control,
+  #modal-solicitacao-senha .form-select {
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
     background-color: #f8fafc;
     transition: all 0.2s ease-in-out;
     box-shadow: none;
     color: #334155;
     font-weight: 500;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    height: 32px;
   }
-  #modal-solicitacao-senha .form-floating > .form-control:focus,
-  #modal-solicitacao-senha .form-floating > .form-select:focus {
+  #modal-solicitacao-senha .form-control:focus,
+  #modal-solicitacao-senha .form-select:focus {
     border-color: #3b82f6;
     background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-  }
-  #modal-solicitacao-senha .form-floating > label {
-    color: #64748b;
-    font-weight: 500;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   }
   
-  /* Botões Premium */
+  /* Botões Premium Compactos */
   #modal-solicitacao-senha .btn-premium-primary {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-weight: 600;
-    padding: 0.6rem 1.5rem;
-    box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.4);
+    font-size: 0.85rem;
+    padding: 0.4rem 1.2rem;
+    box-shadow: 0 2px 4px -1px rgba(59, 130, 246, 0.4);
     transition: all 0.2s;
   }
   #modal-solicitacao-senha .btn-premium-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -2px rgba(59, 130, 246, 0.5);
   }
   #modal-solicitacao-senha .btn-premium-outline {
     background: transparent;
     color: #64748b;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
     font-weight: 600;
-    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 1.2rem;
     transition: all 0.2s;
   }
   #modal-solicitacao-senha .btn-premium-outline:hover {
@@ -102,10 +111,11 @@
   #modal-solicitacao-senha .btn-add-user {
     background: #eff6ff;
     color: #2563eb;
-    border: 1.5px dashed #bfdbfe;
-    border-radius: 12px;
+    border: 1px dashed #bfdbfe;
+    border-radius: 8px;
     font-weight: 600;
-    padding: 0.75rem;
+    font-size: 0.85rem;
+    padding: 0.4rem;
     width: 100%;
     transition: all 0.2s;
   }
@@ -115,33 +125,33 @@
     color: #1d4ed8;
   }
   
-  /* Dinâmicos Cards Usuários */
+  /* Dinâmicos Cards Usuários Compactos */
   #modal-solicitacao-senha .user-card {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
+    border-radius: 8px;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
     position: relative;
     transition: all 0.3s ease;
   }
   #modal-solicitacao-senha .user-card:hover {
     background: #ffffff;
-    box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.05);
     border-color: #cbd5e1;
   }
   #modal-solicitacao-senha .user-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.5rem;
     border-bottom: 1px dashed #cbd5e1;
   }
   #modal-solicitacao-senha .user-card-title {
     font-weight: 700;
     color: #0f172a;
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     display: flex;
     align-items: center;
   }
@@ -149,13 +159,14 @@
     background: #fef2f2;
     color: #ef4444;
     border: none;
-    border-radius: 8px;
-    width: 32px;
-    height: 32px;
+    border-radius: 6px;
+    width: 24px;
+    height: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    font-size: 0.75rem;
   }
   #modal-solicitacao-senha .btn-remove-user:hover {
     background: #fee2e2;
@@ -173,89 +184,69 @@
         </h5>
         <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body px-4 pb-4 pt-4" style="background-color: #f1f5f9;">
+      <div class="modal-body px-4 pb-3 pt-3" style="background-color: #f1f5f9;">
         <form id="form-solicitacao-senha">
           {% csrf_token %}
           <input type="hidden" id="id_oculto_senha" name="id">
 
           <!-- Informações Básicas -->
-          <div class="section-card p-4 mb-4">
+          <div class="section-card p-3 mb-3">
             <h6 class="section-title">
               <i class="bi bi-info-square-fill"></i> Informações Básicas
             </h6>
-            <div class="row g-3">
+            <div class="row g-2">
               <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="protocolo_senha" name="protocolo" maxlength="20" placeholder="Protocolo SEI">
-                  <label for="protocolo_senha">Protocolo SEI</label>
-                </div>
+                <label for="protocolo_senha" class="form-label">Protocolo SEI</label>
+                <input type="text" class="form-control" id="protocolo_senha" name="protocolo" maxlength="20">
               </div>
               <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="text" class="form-control format-text" id="solicitante_senha" name="solicitante" maxlength="100" placeholder="Solicitante" required>
-                  <label for="solicitante_senha">Solicitante <span class="text-danger">*</span></label>
-                </div>
+                <label for="solicitante_senha" class="form-label">Solicitante <span class="text-danger">*</span></label>
+                <input type="text" class="form-control format-text" id="solicitante_senha" name="solicitante" maxlength="100" required>
               </div>
               <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="text" class="form-control format-text" id="unidade_senha" name="unidade" maxlength="200" placeholder="Unidade" required>
-                  <label for="unidade_senha">Unidade <span class="text-danger">*</span></label>
-                </div>
+                <label for="unidade_senha" class="form-label">Unidade <span class="text-danger">*</span></label>
+                <input type="text" class="form-control format-text" id="unidade_senha" name="unidade" maxlength="200" required>
               </div>
               <div class="col-md-6">
-                <div class="form-floating">
-                  <input type="text" class="form-control uppercase-text" id="sigla_unidade_senha" name="sigla_unidade" maxlength="20" placeholder="Sigla da Unidade" required>
-                  <label for="sigla_unidade_senha">Sigla da Unidade <span class="text-danger">*</span></label>
-                </div>
+                <label for="sigla_unidade_senha" class="form-label">Sigla da Unidade <span class="text-danger">*</span></label>
+                <input type="text" class="form-control uppercase-text" id="sigla_unidade_senha" name="sigla_unidade" maxlength="20" required>
               </div>
               <div class="col-md-12">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="edificios_senha" name="edificios" maxlength="100" value="Ed. Sede/Anexo" placeholder="Edifícios Permitidos">
-                  <label for="edificios_senha">Edifícios Permitidos</label>
-                </div>
+                <label for="edificios_senha" class="form-label">Edifícios Permitidos</label>
+                <input type="text" class="form-control" id="edificios_senha" name="edificios" maxlength="100" value="Ed. Sede/Anexo">
               </div>
             </div>
           </div>
 
           <!-- Pessoas / Senhas -->
-          <div class="section-card p-4 mb-4">
+          <div class="section-card p-3 mb-3">
             <h6 class="section-title">
               <i class="bi bi-people-fill"></i> Pessoas / Senhas a serem criadas
             </h6>
             <div id="lista_colaboradores_senhas">
                 <!-- Cards de pessoas serão inseridos aqui -->
             </div>
-            <button type="button" class="btn-add-user mt-2" id="btn-add-colaborador-senha" onclick="addColaboradorSenhaCard()">
-                <i class="bi bi-person-plus-fill me-2"></i> Adicionar Novo Usuário
+            <button type="button" class="btn-add-user mt-1" id="btn-add-colaborador-senha" onclick="addColaboradorSenhaCard()">
+                <i class="bi bi-person-plus-fill me-1"></i> Adicionar Novo Usuário
             </button>
           </div>
 
           <!-- Configurações e Desvio -->
-          <div class="section-card p-4 mb-2">
+          <div class="section-card p-3 mb-1">
             <h6 class="section-title">
               <i class="bi bi-gear-fill"></i> Configurações Avançadas e Desvio
             </h6>
-            <div class="row g-3">
-              <div class="col-md-4">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="categoria_senha" name="categoria" maxlength="10" placeholder="Categoria">
-                  <label for="categoria_senha">Categoria</label>
-                </div>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="desvio_senha" class="form-label">Tem Desvio?</label>
+                <select class="form-select" id="desvio_senha" name="desvio">
+                  <option value="False" selected>Não</option>
+                  <option value="True">Sim</option>
+                </select>
               </div>
-              <div class="col-md-4">
-                <div class="form-floating">
-                  <select class="form-select" id="desvio_senha" name="desvio">
-                    <option value="False" selected>Não</option>
-                    <option value="True">Sim</option>
-                  </select>
-                  <label for="desvio_senha">Tem Desvio?</label>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-floating">
-                  <input type="text" class="form-control" id="tel_desvio_externo" name="tel_desvio_externo" maxlength="30" placeholder="Tel. Desvio Externo">
-                  <label for="tel_desvio_externo">Tel. Desvio Externo</label>
-                </div>
+              <div class="col-md-6">
+                <label for="tel_desvio_externo" class="form-label">Tel. Desvio Externo</label>
+                <input type="text" class="form-control" id="tel_desvio_externo" name="tel_desvio_externo" maxlength="30">
               </div>
             </div>
           </div>
@@ -263,10 +254,10 @@
         </form>
       </div>
 
-      <div class="modal-footer bg-white border-0 px-4 py-3 d-flex justify-content-end gap-2" style="border-radius: 0 0 20px 20px;">
+      <div class="modal-footer bg-white border-0 px-4 py-2 d-flex justify-content-end gap-2" style="border-radius: 0 0 16px 16px;">
         <button type="button" class="btn btn-premium-outline" data-bs-dismiss="modal">Cancelar</button>
         <button type="submit" class="btn btn-premium-primary" form="form-solicitacao-senha">
-          <i class="bi bi-check-circle-fill me-2"></i> Salvar Solicitação
+          <i class="bi bi-check-circle-fill me-1"></i> Salvar Solicitação
         </button>
       </div>
     </div>
