@@ -650,7 +650,7 @@ window.carregarWidgetRecebidas = async function() {
 
         if (resSol.ok) {
             const solicitacoes = await resSol.json();
-            const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise');
+            const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise' || s.status === 'aguardando_supervisor_aparelho');
             pendSol.forEach(s => {
                 s.tipo_demanda = 'Aparelho';
                 s.data_comparacao = new Date(s.data).getTime();
