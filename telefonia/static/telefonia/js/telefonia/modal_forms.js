@@ -97,13 +97,12 @@ if (form_senha) {
             unidade: form_senha.querySelector('[name="unidade"]').value,
             sigla_unidade: form_senha.querySelector('[name="sigla_unidade"]').value,
             edificios: form_senha.querySelector('[name="edificios"]').value,
-            categoria: form_senha.querySelector('[name="categoria"]').value,
             desvio: form_senha.querySelector('[name="desvio"]').value,
             tel_desvio_externo: form_senha.querySelector('[name="tel_desvio_externo"]').value,
             colaboradores: []
         };
 
-        const cards = document.querySelectorAll('.colaborador-senha-card');
+        const cards = document.querySelectorAll('#lista_colaboradores_senhas .user-card');
         cards.forEach(card => {
             const colab = {
                 primeiro_nome: card.querySelector('.input-primeiro-nome').value,
