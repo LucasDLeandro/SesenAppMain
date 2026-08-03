@@ -135,8 +135,29 @@ if (form_senha) {
                 modal_senha.hide();
                 window.location.reload();
             } else {
-                console.error("Erro na API:", await resposta.json());
-                Swal.fire("Erro!", "Não foi possível salvar. Verifique os dados inseridos.", "error");
+                let erros;
+                try {
+                    erros = await resposta.json();
+                } catch (e) {
+                    erros = {};
+                }
+                console.error("Erro na API:", erros);
+
+                // Constrói mensagem de erro legível
+                let mensagemErro = "Não foi possível salvar. Verifique os dados inseridos.";
+                if (erros && typeof erros === 'object') {
+                    const campos = Object.entries(erros).map(([campo, msgs]) => {
+                        const msgStr = Array.isArray(msgs) ? msgs.join(', ') : String(msgs);
+                        return `<b>${campo}</b>: ${msgStr}`;
+                    }).join('<br>');
+                    if (campos) mensagemErro = campos;
+                }
+
+                Swal.fire({
+                    title: "Erro ao Salvar!",
+                    html: mensagemErro,
+                    icon: "error"
+                });
             }
         } catch (erro) {
             console.error("Erro critico: ", erro);

@@ -225,12 +225,22 @@ LOGGING = {
             'class': 'logging.FileHandler',
             'filename': 'C:/Lucas/SesenAppMain/django_error.log',
         },
+        'file_debug': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'C:/Lucas/SesenAppMain/django_error.log',
+        },
     },
     'loggers': {
         'django': {
             'handlers': ['file'],
             'level': 'ERROR',
             'propagate': True,
+        },
+        'telefonia': {
+            'handlers': ['file_debug'],
+            'level': 'WARNING',
+            'propagate': False,
         },
     },
 }

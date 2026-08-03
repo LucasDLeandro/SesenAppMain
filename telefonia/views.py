@@ -266,17 +266,22 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
     serializer_class = CriarSenhaSerializer
 
     def create(self, request, *args, **kwargs):
+        import logging
+        logger = logging.getLogger(__name__)
         data = request.data
         colaboradores = data.get('colaboradores')
 
         if colaboradores and isinstance(colaboradores, list):
             senhas_criadas = []
             for colab in colaboradores:
-                colab_data = data.copy()
-                colab_data.pop('colaboradores', None) # Remove a lista para nao atrapalhar o serializer
+                # Usa dict() para garantir compatibilidade com QueryDict e JSON
+                colab_data = dict(data)
+                colab_data.pop('colaboradores', None)  # Remove a lista para nao atrapalhar o serializer
                 colab_data.update(colab)
                 serializer = self.get_serializer(data=colab_data)
-                serializer.is_valid(raise_exception=True)
+                if not serializer.is_valid():
+                    logger.error(f"[CriarSenha.create] Erros de validação: {serializer.errors}")
+                    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                 self.perform_create(serializer)
                 senhas_criadas.append(serializer.data)
             return Response(senhas_criadas, status=status.HTTP_201_CREATED)
@@ -285,6 +290,22 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         senha = serializer.save(status='recebida')
+
+        # Se cargo for colaborador e houver numero_contrato, salva/atualiza o contrato na tabela
+        if senha.cargo == 'colaborador' and senha.numero_contrato:
+            try:
+                contrato, criado = ContratoColaborador.objects.get_or_create(
+                    numero_contrato=senha.numero_contrato,
+                    defaults={
+                        'empresa_vinculada': senha.empresa_vinculada or '',
+                        'fiscal_contrato': senha.fiscal_contrato or '',
+                        'unidade_fiscal': senha.unidade_fiscal or '',
+                    }
+                )
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning(f"[perform_create] Erro ao salvar ContratoColaborador: {e}")
+
         template = TemplateMessage.objects.filter(tipo_evento='tel_solicitacao_senha', is_ativo=True).first()
         if template:
             from notificacoes.models.contato_notificacao import Contato
