@@ -5,41 +5,48 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def auto_message(tel, text):
-    
-    url = os.environ.get("EVOLUTION_API_URL", "http://127.0.0.1:8080/message/sendText/SESEN")
-    
-    payload_v1 = {
-        "number": tel,
-        "text": text
-    }
-    
-    payload_v2 = {
-        "number": tel,
-        "textMessage": {
+import threading
+import traceback
+
+def _send_auto_message_task(tel, text):
+    try:
+        url = os.environ.get("EVOLUTION_API_URL", "http://127.0.0.1:8080/message/sendText/SESEN")
+        
+        payload_v1 = {
+            "number": tel,
             "text": text
         }
-    }
-    
-    headers = {
-        "apikey": os.environ.get("EVOLUTION_API_KEY", "teste@2026"),
-        "Content-Type": "application/json"
-    }
+        
+        payload_v2 = {
+            "number": tel,
+            "textMessage": {
+                "text": text
+            }
+        }
+        
+        headers = {
+            "apikey": os.environ.get("EVOLUTION_API_KEY", "teste@2026"),
+            "Content-Type": "application/json"
+        }
 
-    # Tenta enviar com o formato V1 (usado no servidor de produção)
-    response = requests.post(url, json=payload_v1, headers=headers)
+        # Tenta enviar com o formato V1 (usado no servidor de produção)
+        response = requests.post(url, json=payload_v1, headers=headers)
 
-    # Se a API reclamar da falta de "textMessage", é porque está rodando a V2 (ex: local)
-    if response.status_code == 400 and 'textMessage' in response.text:
-        response = requests.post(url, json=payload_v2, headers=headers)
+        # Se a API reclamar da falta de "textMessage", é porque está rodando a V2 (ex: local)
+        if response.status_code == 400 and 'textMessage' in response.text:
+            response = requests.post(url, json=payload_v2, headers=headers)
 
-    if response.status_code not in [200, 201]: 
-        print(f"FALHA AO ENVIAR ZAP. Status: {response.status_code}, Resposta: {response.text}")
-        raise Exception(f"Erro {response.status_code} na API")
+        if response.status_code not in [200, 201]: 
+            print(f"FALHA AO ENVIAR ZAP. Status: {response.status_code}, Resposta: {response.text}")
+        else:
+            print("Sucesso WhatsApp:", response.text)
+    except Exception as e:
+        print(f"ERRO AO ENVIAR ZAP (Async):\n{traceback.format_exc()}")
 
-    print("Sucesso:", response.text)
+def auto_message(tel, text):
+    threading.Thread(target=_send_auto_message_task, args=(tel, text)).start()
 
-def auto_email(destinatario, assunto, texto):
+def _send_auto_email_task(destinatario, assunto, texto):
     from django.core.mail import send_mail
     from django.conf import settings
     
@@ -53,8 +60,10 @@ def auto_email(destinatario, assunto, texto):
         )
         print(f"Sucesso ao enviar E-mail para: {destinatario}")
     except Exception as e:
-        print(f"FALHA AO ENVIAR E-MAIL. Erro: {e}")
-        raise Exception(f"Erro ao enviar E-mail: {e}")
+        print(f"ERRO AO ENVIAR E-MAIL (Async):\n{traceback.format_exc()}")
+
+def auto_email(destinatario, assunto, texto):
+    threading.Thread(target=_send_auto_email_task, args=(destinatario, assunto, texto)).start()
 
 def disparar_notificacao_contato(contato, texto_zap, texto_email, assunto_email):
     """

@@ -1,0 +1,32 @@
+<!-- Modal de Fase Administrativa (Solicitação de Aparelho) -->
+<div class="modal fade" id="modal-finalizar-administrativo" tabindex="-1" aria-labelledby="modalFinalizarAdminLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title" id="modalFinalizarAdminLabel"><i class="bi bi-file-earmark-check"></i> Finalização Administrativa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="form-finalizar-administrativo" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="id" id="id_finalizacao_admin">
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        Esta demanda já foi atendida tecnicamente. Preencha os dados do Termo de Transferência para encerrá-la.
+                    </div>
+                    <div class="mb-3">
+                        <label for="termo_transferencia_interna" class="form-label fw-bold">Termo de Transferência Interna</label>
+                        <input type="text" class="form-control" id="termo_transferencia_interna" name="termo_transferencia_interna" required placeholder="Ex: Termo 01/2026">
+                    </div>
+                    <div class="mb-3">
+                        <label for="pdf_termo" class="form-label fw-bold">Relatório / Termo Assinado (PDF)</label>
+                        <input type="file" class="form-control" id="pdf_termo" name="pdf_termo" accept="application/pdf" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning text-dark fw-bold"><i class="bi bi-check-circle"></i> Concluir Demanda</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

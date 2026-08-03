@@ -1196,7 +1196,54 @@ async function recolherEvento() {
         } else {
             Swal.fire("Erro", "Não foi possível concluir a ação.", "error");
         }
-    } catch(e) {
         Swal.fire("Erro", "Erro ao conectar.", "error");
     }
+}
+
+// Lógica Fase Administrativa Aparelhos
+const modal_finalizar_administrativo = new bootstrap.Modal(document.getElementById('modal-finalizar-administrativo'));
+const form_finalizar_administrativo = document.getElementById('form-finalizar-administrativo');
+
+function abrirModalFinalizarAdministrativo(id) {
+    document.getElementById('id_finalizacao_admin').value = id;
+    form_finalizar_administrativo.reset();
+    modal_finalizar_administrativo.show();
+}
+
+if (form_finalizar_administrativo) {
+    form_finalizar_administrativo.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('id_finalizacao_admin').value;
+        const formData = new FormData(form_finalizar_administrativo);
+        
+        try {
+            const res = await fetch(`/telefonia/api/solicitacoes/${id}/finalizar_administrativo/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+            
+            if (res.ok) {
+                Swal.fire('Sucesso!', 'Fase administrativa concluída e solicitação encerrada.', 'success');
+                modal_finalizar_administrativo.hide();
+                // Tenta recarregar a tabela principal (ou a de recebidas no modal)
+                if ($.fn.DataTable.isDataTable('#tabela-solicitacoes')) {
+                    $('#tabela-solicitacoes').DataTable().ajax.reload();
+                }
+                if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
+                    $('#tabela-recebidas-modal').DataTable().ajax.reload();
+                }
+                if (typeof carregarWidgetRecebidas === 'function') {
+                    carregarWidgetRecebidas();
+                }
+            } else {
+                Swal.fire('Erro', 'Ocorreu um erro ao finalizar a demanda.', 'error');
+            }
+        } catch(err) {
+            Swal.fire('Erro', 'Erro ao comunicar com o servidor.', 'error');
+        }
+    });
 }

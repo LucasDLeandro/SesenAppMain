@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 let pendentes = [];
                 if (resSol.ok) {
                     const solicitacoes = await resSol.json();
-                    const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise');
+                    const pendSol = solicitacoes.filter(s => s.status === 'recebida' || s.status === 'pendente' || s.status === 'em_analise' || s.status === 'aguardando_supervisor_aparelho');
                     pendSol.forEach(s => {
                         s.tipo_demanda = 'Aparelho';
                         s.data_comparacao = new Date(s.data).getTime();
@@ -464,7 +464,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(data === 'recebida') return `<span class="badge" style="background-color: #fd7e14; color: white; ${fs}">Recebida</span>`;
                     if(data === 'em_analise') return `<span class="badge bg-warning text-dark" style="${fs}">Em Análise</span>`;
                     if(data === 'pendente') return `<span class="badge bg-danger" style="${fs}">Pendente</span>`;
-                    if(data === 'aguardando_supervisor') return `<span class="badge bg-info text-dark" style="${fs}">Aguardando Supervisor</span>`;
+                    if(data === 'aguardando_supervisor' || data === 'aguardando_supervisor_aparelho') return `<span class="badge bg-info text-dark" style="${fs}">Aguardando Supervisor</span>`;
                     return data;
                 }
             },
@@ -474,14 +474,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 className: 'text-nowrap align-middle text-end',
                 render: function(data, type, row) {
                     if (row.tipo_demanda === 'Aparelho') {
-                        return `<div class="d-flex justify-content-end gap-1">
-                                    <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirConclusao(${row.id})" title="Concluir Instalação">
-                                        <i class="bi bi-check2-circle me-1"></i> Concluir
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-info text-nowrap" style="white-space: nowrap;" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
-                                        <i class="bi bi-eye-fill"></i>
-                                    </button>
-                                </div>`;
+                        if (row.status === 'aguardando_supervisor_aparelho') {
+                            return `<div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-outline-warning text-dark text-nowrap" style="white-space: nowrap;" onclick="abrirModalFinalizarAdministrativo(${row.id})" title="Finalizar Administrativamente">
+                                            <i class="bi bi-file-earmark-check me-1"></i> Anexar Termo
+                                        </button>
+                                    </div>`;
+                        } else {
+                            return `<div class="d-flex justify-content-end gap-1">
+                                        <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirConclusao(${row.id})" title="Concluir Instalação">
+                                            <i class="bi bi-check2-circle me-1"></i> Concluir
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info text-nowrap" style="white-space: nowrap;" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
+                                            <i class="bi bi-eye-fill"></i>
+                                        </button>
+                                    </div>`;
+                        }
                     } else if (row.tipo_demanda === 'Evento') {
                         return `<div class="d-flex justify-content-end gap-1">
                                     <button class="btn btn-sm btn-outline-primary text-nowrap" style="white-space: nowrap;" onclick="abrirModalEvento(${row.id})" title="Ver / Recolher Evento">
@@ -491,9 +499,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         if (row.status === 'aguardando_supervisor') {
                             return `<div class="d-flex justify-content-end gap-1">
-                                        <a href="/telefonia/senha/${row.id}/pdf/" target="_blank" class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" title="Visualizar Documento">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i> Documento
-                                        </a>
                                         <button class="btn btn-sm btn-outline-warning text-dark text-nowrap" style="white-space: nowrap;" onclick="abrirModalFinalizarSenha(${row.id}, '${row.status}')" title="Finalizar e Enviar E-mail">
                                             <i class="bi bi-envelope-check me-1"></i> Enviar E-mail
                                         </button>
@@ -1338,3 +1343,43 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Fase Administrativa
+function abrirModalFinalizarAdministrativo(id) {
+    $('#id_finalizacao_admin').val(id);
+    $('#form-finalizar-administrativo')[0].reset();
+    $('#modal-finalizar-administrativo').modal('show');
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    $('#form-finalizar-administrativo').on('submit', function(e) {
+        e.preventDefault();
+        const id = $('#id_finalizacao_admin').val();
+        let formData = new FormData(this);
+
+        Swal.fire({
+            title: 'Enviando...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
+        fetch(`/telefonia/api/solicitacoes/${id}/finalizar_administrativo/`, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        })
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
+        .then(result => {
+            if (result.status === 200 || result.status === 201) {
+                Swal.fire('Sucesso!', 'Demanda finalizada administrativamente.', 'success');
+                $('#modal-finalizar-administrativo').modal('hide');
+                $('#tabela-solicitacoes').DataTable().ajax.reload(null, false);
+            } else {
+                Swal.fire('Erro!', result.body.detail || 'Ocorreu um erro ao finalizar.', 'error');
+            }
+        })
+        .catch(error => {
+            Swal.fire('Erro!', 'Erro de conexão com o servidor.', 'error');
+        });
+    });
+});

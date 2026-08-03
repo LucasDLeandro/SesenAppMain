@@ -5,6 +5,7 @@ class StatusSolicitacao(models.TextChoices):
     RECEBIDA = 'recebida', 'Recebida'
     EM_ANALISE = 'em_analise', 'Em Análise'
     PENDENTE = 'pendente', 'Pendente'
+    AGUARDANDO_SUPERVISOR_APARELHO = 'aguardando_supervisor_aparelho', 'Aguardando Supervisor'
     CONCLUIDA = 'concluida', 'Concluída'
 
 class IntegridadeAparelho(models.TextChoices):

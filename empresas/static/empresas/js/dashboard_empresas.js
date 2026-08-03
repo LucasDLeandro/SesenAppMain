@@ -289,9 +289,12 @@ function adicionarContato() {
         telefone: $('#contato_telefone').val().replace(/\D/g, ''),
     };
 
+    const url = '/empresas/api/contatos/';
+    const method = 'POST';
+
     $.ajax({
-        url: '/empresas/api/contatos/',
-        method: 'POST',
+        url: url,
+        method: method,
         contentType: 'application/json',
         data: JSON.stringify(data),
         headers: {
@@ -299,9 +302,7 @@ function adicionarContato() {
         },
         success: function() {
             $('#form-novo-contato')[0].reset();
-            // Recarregar a lista de contatos
             recarregarContatos(empresaId);
-            // Recarregar a tabela principal para atualizar o contador
             tabelaEmpresas.ajax.reload(null, false);
             Swal.fire({
                 toast: true,
@@ -313,7 +314,7 @@ function adicionarContato() {
             });
         },
         error: function(xhr) {
-            let msg = 'Erro ao adicionar contato.';
+            let msg = 'Erro ao salvar contato.';
             if (xhr.responseJSON) {
                 const erros = Object.values(xhr.responseJSON).flat();
                 if (erros.length) msg = erros.join('<br>');
@@ -325,86 +326,65 @@ function adicionarContato() {
 
 function editarContato(contatoId) {
     $.get(`/empresas/api/contatos/${contatoId}/`, function(data) {
-        Swal.fire({
-            title: 'Editar Contato',
-            html: `
-                <div class="text-start">
-                    <div class="row g-2 mb-2">
-                        <div class="col-6">
-                            <label class="form-label fw-bold small">Nome *</label>
-                            <input type="text" id="swal-nome" class="form-control" value="${data.nome_contato}">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label fw-bold small">Sobrenome</label>
-                            <input type="text" id="swal-sobrenome" class="form-control" value="${data.sobrenome || ''}">
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold small">Cargo *</label>
-                        <select id="swal-cargo" class="form-select">
-                            <option value="Gerência" ${data.cargo === 'Gerência' ? 'selected' : ''}>Gerência</option>
-                            <option value="Supervisor" ${data.cargo === 'Supervisor' ? 'selected' : ''}>Supervisor</option>
-                            <option value="Administrativo" ${data.cargo === 'Administrativo' ? 'selected' : ''}>Administrativo</option>
-                            <option value="Preposto" ${data.cargo === 'Preposto' ? 'selected' : ''}>Preposto</option>
-                            <option value="Técnico" ${data.cargo === 'Técnico' ? 'selected' : ''}>Técnico</option>
-                        </select>
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold small">E-mail</label>
-                        <input type="email" id="swal-email" class="form-control" value="${data.email || ''}">
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label fw-bold small">Telefone</label>
-                        <input type="text" id="swal-telefone" class="form-control" value="${data.telefone || ''}">
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Salvar',
-            cancelButtonText: 'Cancelar',
-            preConfirm: () => {
-                const nome = document.getElementById('swal-nome').value.trim();
-                if (!nome) {
-                    Swal.showValidationMessage('Informe o nome do contato');
-                    return false;
-                }
-                return {
-                    nome_contato: nome,
-                    sobrenome: document.getElementById('swal-sobrenome').value.trim(),
-                    cargo: document.getElementById('swal-cargo').value.trim(),
-                    email: document.getElementById('swal-email').value.trim(),
-                    telefone: document.getElementById('swal-telefone').value.replace(/\D/g, ''),
-                    empresa: data.empresa
-                };
+        $('#edit_contato_id').val(data.id);
+        $('#edit_contato_nome').val(data.nome_contato || '');
+        $('#edit_contato_sobrenome').val(data.sobrenome || '');
+        $('#edit_contato_email').val(data.email || '');
+        $('#edit_contato_telefone').val(data.telefone || '');
+        $('#edit_contato_cargo').val(data.cargo || '');
+        
+        $('#modal-editar-contato').modal('show');
+    });
+}
+
+function salvarEdicaoContato() {
+    const empresaId = $('#contatos_empresa_id').val();
+    const contatoEditId = $('#edit_contato_id').val();
+    const nome = $('#edit_contato_nome').val().trim();
+    
+    if (!nome) {
+        Swal.fire('Atenção', 'Informe o nome do contato.', 'warning');
+        return;
+    }
+
+    const data = {
+        empresa: empresaId,
+        nome_contato: nome,
+        sobrenome: $('#edit_contato_sobrenome').val().trim(),
+        cargo: $('#edit_contato_cargo').val().trim(),
+        email: $('#edit_contato_email').val().trim(),
+        telefone: $('#edit_contato_telefone').val().replace(/\D/g, ''),
+    };
+
+    $.ajax({
+        url: `/empresas/api/contatos/${contatoEditId}/`,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        headers: {
+            'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+        },
+        success: function() {
+            $('#modal-editar-contato').modal('hide');
+            recarregarContatos(empresaId);
+            tabelaEmpresas.ajax.reload(null, false);
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Contato atualizado!',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        },
+        error: function(xhr) {
+            let msg = 'Erro ao atualizar contato.';
+            if (xhr.responseJSON) {
+                const erros = Object.values(xhr.responseJSON).flat();
+                if (erros.length) msg = erros.join('<br>');
             }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: `/empresas/api/contatos/${contatoId}/`,
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify(result.value),
-                    headers: {
-                        'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
-                    },
-                    success: function() {
-                        recarregarContatos(data.empresa);
-                        tabelaEmpresas.ajax.reload(null, false);
-                        Swal.fire({
-                            toast: true,
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Contato atualizado!',
-                            showConfirmButton: false,
-                            timer: 2000
-                        });
-                    },
-                    error: function() {
-                        Swal.fire('Erro!', 'Não foi possível atualizar o contato.', 'error');
-                    }
-                });
-            }
-        });
+            Swal.fire('Erro!', msg, 'error');
+        }
     });
 }
 

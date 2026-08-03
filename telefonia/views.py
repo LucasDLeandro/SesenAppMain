@@ -168,14 +168,34 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
                         
             solicitacao.aparelhos.set(aparelhos_salvar)
             
-        solicitacao.status = 'concluida'
+        solicitacao.status = 'aguardando_supervisor_aparelho'
         if ramais_agrupados:
             solicitacao.ramal = ", ".join(ramais_agrupados)
         if locais_agrupados:
             solicitacao.local = ", ".join(locais_agrupados)
             
         solicitacao.save()
-        return Response({'status': 'Solicitação concluída com sucesso.'}, status=status.HTTP_200_OK)
+        return Response({'status': 'Solicitação técnica concluída com sucesso. Aguardando fase administrativa.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def finalizar_administrativo(self, request, pk=None):
+        solicitacao = self.get_object()
+        
+        if solicitacao.status != 'aguardando_supervisor_aparelho':
+            return Response({'error': 'A solicitação não está na fase administrativa.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        termo = request.data.get('termo_transferencia_interna')
+        pdf_termo = request.FILES.get('pdf_termo')
+        
+        if termo:
+            solicitacao.termo_transferencia_interna = termo
+        if pdf_termo:
+            solicitacao.pdf_termo = pdf_termo
+            
+        solicitacao.status = 'concluida'
+        solicitacao.save()
+        
+        return Response({'status': 'Fase administrativa concluída com sucesso.'}, status=status.HTTP_200_OK)
 
 
 class EmprestimoEventoViewSet(viewsets.ModelViewSet):

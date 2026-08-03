@@ -69,6 +69,13 @@ class TelefoneSolicitacao(models.Model):
         blank=True
     )
 
+    pdf_termo = models.FileField(
+        upload_to='telefonia/midia/termos/',
+        null=True,
+        blank=True,
+        help_text="PDF do Relatório de Transferência"
+    )
+
     aparelhos = models.ManyToManyField(
         'AparelhoVoip',
         blank=True,
@@ -76,7 +83,7 @@ class TelefoneSolicitacao(models.Model):
     )
 
     status = models.CharField(
-        max_length=20,
+        max_length=50,
         null=True,
         choices=StatusSolicitacao.choices,
         default=StatusSolicitacao.RECEBIDA,

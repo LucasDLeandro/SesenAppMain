@@ -159,35 +159,50 @@
                     <!-- Formulário para adicionar novo contato -->
                     <div class="card border-0 bg-light mb-4" style="border-radius: 10px;">
                         <div class="card-body p-3">
-                            <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-person-plus me-2"></i>Adicionar Novo Contato</h6>
+                            <h6 class="fw-bold text-secondary mb-3" id="titulo-form-contato"><i class="bi bi-person-plus me-2"></i>Adicionar Novo Contato</h6>
                             <form id="form-novo-contato">
                                 {% csrf_token %}
-                                <div class="row g-2">
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome *" required>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome *" required>
+                                            <label for="contato_nome" class="text-muted"><i class="bi bi-person me-1"></i>Nome *</label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control format-text" id="contato_sobrenome" placeholder="Sobrenome">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control format-text" id="contato_sobrenome" placeholder="Sobrenome">
+                                            <label for="contato_sobrenome" class="text-muted"><i class="bi bi-people me-1"></i>Sobrenome</label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input type="email" class="form-control" id="contato_email" placeholder="E-mail">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="email" class="form-control" id="contato_email" placeholder="E-mail">
+                                            <label for="contato_email" class="text-muted"><i class="bi bi-envelope me-1"></i>E-mail</label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input type="text" class="form-control mask-telefone" id="contato_telefone" placeholder="Telefone">
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control mask-telefone" id="contato_telefone" placeholder="Telefone">
+                                            <label for="contato_telefone" class="text-muted"><i class="bi bi-telephone me-1"></i>Telefone</label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-8">
-                                        <select class="form-select" id="contato_cargo" required>
-                                            <option value="" disabled selected>Cargo na Empresa *</option>
-                                            <option value="Gerência">Gerência</option>
-                                            <option value="Supervisor">Supervisor</option>
-                                            <option value="Administrativo">Administrativo</option>
-                                            <option value="Preposto">Preposto</option>
-                                            <option value="Técnico">Técnico</option>
-                                        </select>
+                                    <div class="col-md-7">
+                                        <div class="form-floating">
+                                            <select class="form-select" id="contato_cargo">
+                                                <option value="" selected>Sem cargo definido</option>
+                                                <option value="Gerência">Gerência</option>
+                                                <option value="Supervisor">Supervisor</option>
+                                                <option value="Administrativo">Administrativo</option>
+                                                <option value="Preposto">Preposto</option>
+                                                <option value="Técnico">Técnico</option>
+                                            </select>
+                                            <label for="contato_cargo" class="text-muted"><i class="bi bi-briefcase me-1"></i>Cargo na Empresa</label>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 d-grid">
-                                        <button type="button" class="btn btn-success" onclick="adicionarContato()">
-                                            <i class="bi bi-plus-lg"></i> Salvar
+                                    <div class="col-md-5">
+                                        <button type="button" class="btn btn-success w-100 py-3 fw-bold" id="btn-salvar-contato" onclick="adicionarContato()">
+                                            <i class="bi bi-plus-lg me-1"></i> Salvar
                                         </button>
                                     </div>
                                 </div>
@@ -211,6 +226,72 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Editar Contato -->
+    <div class="modal fade" id="modal-editar-contato" tabindex="-1" aria-labelledby="modalEditarContatoLabel" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0 rounded-4">
+                <div class="modal-header border-0 pb-0 pt-4 px-4">
+                    <h5 class="modal-title fw-bold text-primary" id="modalEditarContatoLabel">
+                        <i class="bi bi-pencil-square me-2"></i> Editar Contato
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form id="form-editar-contato">
+                        <input type="hidden" id="edit_contato_id">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control format-text" id="edit_contato_nome" placeholder="Nome *" required>
+                                    <label for="edit_contato_nome" class="text-muted"><i class="bi bi-person me-1"></i>Nome *</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control format-text" id="edit_contato_sobrenome" placeholder="Sobrenome">
+                                    <label for="edit_contato_sobrenome" class="text-muted"><i class="bi bi-people me-1"></i>Sobrenome</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="email" class="form-control" id="edit_contato_email" placeholder="E-mail">
+                                    <label for="edit_contato_email" class="text-muted"><i class="bi bi-envelope me-1"></i>E-mail</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control mask-telefone" id="edit_contato_telefone" placeholder="Telefone">
+                                    <label for="edit_contato_telefone" class="text-muted"><i class="bi bi-telephone me-1"></i>Telefone</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    <select class="form-select" id="edit_contato_cargo">
+                                        <option value="" selected>Sem cargo definido</option>
+                                        <option value="Gerência">Gerência</option>
+                                        <option value="Supervisor">Supervisor</option>
+                                        <option value="Administrativo">Administrativo</option>
+                                        <option value="Preposto">Preposto</option>
+                                        <option value="Técnico">Técnico</option>
+                                    </select>
+                                    <label for="edit_contato_cargo" class="text-muted"><i class="bi bi-briefcase me-1"></i>Cargo na Empresa</label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 py-2 fw-bold" onclick="salvarEdicaoContato()">
+                        <i class="bi bi-check2-circle me-1"></i> Atualizar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block extra_js %}
@@ -218,5 +299,5 @@
     <script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="{% static 'empresas/js/dashboard_empresas.js' %}?v=2.0"></script>
+    <script src="{% static 'empresas/js/dashboard_empresas.js' %}?v=2.1"></script>
 {% endblock %}

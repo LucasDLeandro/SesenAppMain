@@ -48,6 +48,6 @@ def sincronizar_contato_profissional(sender, instance, created, **kwargs):
     poder ser alocada em Contratos.
     """
     if instance.pessoa:
-        from contratos.models import Profissional
+        from contratos.models.model_contratos import Profissional
         Profissional.objects.get_or_create(pessoa=instance.pessoa)
 
