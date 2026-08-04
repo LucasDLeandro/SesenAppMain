@@ -25,10 +25,17 @@
             const data = await response.json();
 
             // Populate Top Metrics
-            document.getElementById('val-global').innerText = formatBRL(data.valor_total_contratos);
-            document.getElementById('val-empenhado').innerText = formatBRL(data.total_empenhado || 0);
-            document.getElementById('val-saldo-empenhar').innerText = formatBRL(data.saldo_a_empenhar || 0);
-            document.getElementById('val-pago').innerText = formatBRL(data.valor_pago);
+            const elGlobal = document.getElementById('val-global');
+            if(elGlobal) elGlobal.innerText = formatBRL(data.valor_total_contratos);
+            
+            const elEmpenhado = document.getElementById('val-empenhado');
+            if(elEmpenhado) elEmpenhado.innerText = formatBRL(data.total_empenhado || 0);
+            
+            const elValorPrevisto = document.getElementById('val-valor-previsto');
+            if(elValorPrevisto) elValorPrevisto.innerText = formatBRL(data.valor_estimado || 0);
+            
+            const elPago = document.getElementById('val-pago');
+            if(elPago) elPago.innerText = formatBRL(data.valor_pago);
             
             // Populate Upcoming Expirations
             const tbody = document.getElementById('lista-vencimentos');

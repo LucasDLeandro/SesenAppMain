@@ -165,10 +165,7 @@
         </li>
         {% endif %}
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="financeiro-tab" data-bs-toggle="tab" data-bs-target="#financeiro" type="button" role="tab">Evolução Financeira</button>
-        </li>
-        <li class="nav-item" role="presentation">
-            <button class="nav-link" id="pagamentos-tab" data-bs-toggle="tab" data-bs-target="#pagamentos" type="button" role="tab">Histórico de Pagamentos</button>
+            <button class="nav-link" id="pagamentos-tab" data-bs-toggle="tab" data-bs-target="#pagamentos" type="button" role="tab">Histórico e Evolução Financeira</button>
         </li>
     </ul>
 
@@ -236,27 +233,24 @@
         </div>
         {% endif %}
 
-        <!-- Financeiro -->
-        <div class="tab-pane fade" id="financeiro" role="tabpanel">
-            <div class="card border-0 shadow-sm rounded-3">
+        <!-- Histórico e Evolução Financeira -->
+        <div class="tab-pane fade" id="pagamentos" role="tabpanel">
+            
+            <!-- Chart Evolução Mensal de Pagamentos -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
                 <div class="card-body p-4">
                     <h5 class="fw-bold text-secondary mb-4">Evolução Mensal de Pagamentos</h5>
-                    <!-- Chart container -->
                     <div id="chartPagamentos" style="height: 400px; display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding-bottom: 30px; border-bottom: 2px solid #e5e7eb; position: relative;">
                         <!-- Bars will be injected via JS -->
                         <div class="text-muted">Gráfico em construção.</div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Histórico de Pagamentos -->
-        <div class="tab-pane fade" id="pagamentos" role="tabpanel">
-            
-            <!-- Ciclo de Vida do Mês Atual -->
+            <!-- Pagamentos Mensais do Mês Atual -->
             <div class="card bg-light border-0 mb-4 rounded-4 shadow-sm" id="painelCicloVida">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold text-uppercase text-secondary mb-4"><i class="bi bi-arrow-right-circle me-2"></i>Ciclo de Pagamento (Última Medição)</h6>
+                    <h6 class="fw-bold text-uppercase text-secondary mb-4"><i class="bi bi-arrow-right-circle me-2"></i>Pagamentos Mensais (Última Medição)</h6>
                     
                     <div class="position-relative m-4">
                         <div class="progress" style="height: 4px; position: absolute; top: 18px; left: 10%; right: 10%; z-index: 1;">
