@@ -1184,12 +1184,16 @@ async function recolherEvento() {
     
     const formData = new FormData();
     formData.append('observacoes', observacoes);
-    formData.append('csrfmiddlewaretoken', document.querySelector('[name=csrfmiddlewaretoken]').value);
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    formData.append('csrfmiddlewaretoken', csrfToken);
     
     try {
         const res = await fetch(`/telefonia/api/eventos/${id}/recolher/`, {
             method: 'PATCH',
-            body: formData
+            body: formData,
+            headers: {
+                'X-CSRFToken': csrfToken
+            }
         });
         if (res.ok) {
             Swal.fire("Concluído!", "Equipamentos recolhidos e retornados ao estoque.", "success");
