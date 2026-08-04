@@ -785,7 +785,7 @@ window.visualizarSolicitacao = async function(id) {
             const visMidiaContainer = document.getElementById('vis-midia-container');
             const visLinkMidia = document.getElementById('vis-link-midia');
             if (dados.midia) {
-                visMidiaContainer.style.display = 'flex';
+                visMidiaContainer.style.display = 'block';
                 visLinkMidia.href = dados.midia;
             } else {
                 visMidiaContainer.style.display = 'none';
