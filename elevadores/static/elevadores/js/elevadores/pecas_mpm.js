@@ -399,11 +399,17 @@ window.abrirVisualizarPeca = function(pecaStrEncoded) {
         document.getElementById('view_peca_nome').textContent = item.tipo_peca || '-';
         document.getElementById('view_peca_qtd').textContent = item.quantidade || '1';
         
-        document.getElementById('view_peca_data_registro').textContent = item.data_registro || '-';
-        document.getElementById('view_peca_previsao').textContent = item.data_previsao_troca || '-';
+        const fmtDate = (d) => {
+            if (!d) return '-';
+            const p = d.split('-');
+            return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : d;
+        };
+
+        document.getElementById('view_peca_data_registro').textContent = fmtDate(item.data_registro);
+        document.getElementById('view_peca_previsao').textContent = fmtDate(item.data_previsao_troca);
         document.getElementById('view_peca_tec_identificador').textContent = item.tecnico_identificador || '-';
         
-        document.getElementById('view_peca_data_efetiva').textContent = item.data_efetiva_troca || '-';
+        document.getElementById('view_peca_data_efetiva').textContent = fmtDate(item.data_efetiva_troca);
         document.getElementById('view_peca_tecnico').textContent = item.tecnico || '-';
         
         document.getElementById('view_peca_status').textContent = item.status || '-';
