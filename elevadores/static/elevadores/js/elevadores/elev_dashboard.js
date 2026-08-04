@@ -1324,6 +1324,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- DEMANDAS PENDENTES (APPENDED) ---
 window.abrirModalDemandasPendentes = async function() {
+    if (window.isFetchingDemandas) return;
+    window.isFetchingDemandas = true;
     try {
         const [resOs, resPecas, resMpm] = await Promise.all([
             fetch('/elevadores/api/elevadoress/'),
@@ -1463,6 +1465,8 @@ window.abrirModalDemandasPendentes = async function() {
         
     } catch(e) {
         console.error("Erro ao abrir modal", e);
+    } finally {
+        window.isFetchingDemandas = false;
     }
 }
 

@@ -405,6 +405,8 @@
         </div>
     </div> <!-- Fim tab-content -->
 </div>
+
+{% block extra_app_content %}
 {% include 'ordens/includes/modais_mpm.html' %}
 {% include 'ordens/includes/form_visualizar_mpm_modal.html' %}
 {% include 'ordens/includes/modais_pecas.html' %}
@@ -489,6 +491,7 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
 <script>
     window.userCanEditElevadores = {% if request.user.is_superuser or request.user.perfil.is_admin or request.user.perfil.is_supervisor %}true{% else %}false{% endif %};
