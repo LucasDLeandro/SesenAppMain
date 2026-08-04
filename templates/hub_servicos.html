@@ -6,67 +6,132 @@
     <div class="row mb-4">
         <div class="col-12">
             <h2 class="fw-bold mb-1" style="color: var(--text-main);">Hub de Serviços</h2>
-            <p class="text-muted">Acesse rapidamente os submódulos e ferramentas da Secretaria de Administração.</p>
+            <p class="text-muted">Acesse rapidamente os submódulos e acompanhe o desempenho atual de cada setor.</p>
         </div>
     </div>
 
     <div class="row g-4">
         <!-- Elevadores -->
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm interactive-card" style="border-radius: 15px;">
+            <div class="card h-100 border-0 shadow-sm interactive-card position-relative" style="border-radius: 15px; overflow: hidden;">
+                <!-- Decorador de cor no topo -->
+                <div class="bg-primary" style="height: 6px; width: 100%;"></div>
+                
                 <div class="card-body p-4 d-flex flex-column text-center">
-                    <div class="bg-primary bg-opacity-10 rounded-circle p-4 mb-3 mx-auto" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-building-up text-primary fs-1"></i>
+                    <div class="d-flex justify-content-between align-items-start w-100 mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-building-up text-primary fs-3"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="fw-black text-dark mb-0 fs-1 lh-1">{{ elevadores_pendentes|default:"0" }}</h2>
+                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Chamados Abertos</span>
+                        </div>
                     </div>
-                    <h5 class="fw-bold text-dark mb-2">Elevadores</h5>
-                    <p class="text-muted small flex-grow-1">Gestão de chamados, ordens de serviço e manutenção de elevadores.</p>
-                    <a href="{% url 'elevadores:elev_list_os' %}" class="btn btn-outline-primary rounded-pill mt-3 w-100">Acessar Módulo</a>
+                    
+                    <h5 class="fw-bold text-dark text-start mb-2">Elevadores</h5>
+                    <p class="text-muted text-start small flex-grow-1">Gestão de chamados, ordens de serviço e manutenção de elevadores.</p>
+                    
+                    <a href="{% url 'elevadores:elev_list_os' %}" class="btn btn-outline-primary rounded-pill mt-3 w-100 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                        Acessar Módulo <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Telefonia -->
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm interactive-card" style="border-radius: 15px;">
+            <div class="card h-100 border-0 shadow-sm interactive-card position-relative" style="border-radius: 15px; overflow: hidden;">
+                <!-- Decorador de cor no topo -->
+                <div class="bg-success" style="height: 6px; width: 100%;"></div>
+                
                 <div class="card-body p-4 d-flex flex-column text-center">
-                    <div class="bg-success bg-opacity-10 rounded-circle p-4 mb-3 mx-auto" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-telephone text-success fs-1"></i>
+                    <div class="d-flex justify-content-between align-items-start w-100 mb-3">
+                        <div class="bg-success bg-opacity-10 rounded p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-telephone text-success fs-3"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="fw-black text-dark mb-0 fs-1 lh-1">{{ telefonia_pendentes|default:"0" }}</h2>
+                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Sol. em Andamento</span>
+                        </div>
                     </div>
-                    <h5 class="fw-bold text-dark mb-2">Telefonia</h5>
-                    <p class="text-muted small flex-grow-1">Controle de ramais, aparelhos, solicitações e senhas telefônicas.</p>
-                    <a href="{% url 'telefonia:inicio_telefonia' %}" class="btn btn-outline-success rounded-pill mt-3 w-100">Acessar Módulo</a>
+                    
+                    <h5 class="fw-bold text-dark text-start mb-2">Telefonia</h5>
+                    <p class="text-muted text-start small flex-grow-1">Controle de ramais, aparelhos, solicitações e senhas telefônicas.</p>
+                    
+                    <a href="{% url 'telefonia:inicio_telefonia' %}" class="btn btn-outline-success rounded-pill mt-3 w-100 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                        Acessar Módulo <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Áudio e Vídeo -->
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm interactive-card" style="border-radius: 15px;">
+            <div class="card h-100 border-0 shadow-sm interactive-card position-relative" style="border-radius: 15px; overflow: hidden;">
+                <!-- Decorador de cor no topo -->
+                <div class="bg-warning" style="height: 6px; width: 100%;"></div>
+                
                 <div class="card-body p-4 d-flex flex-column text-center">
-                    <div class="bg-warning bg-opacity-10 rounded-circle p-4 mb-3 mx-auto" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-speaker text-warning fs-1"></i>
+                    <div class="d-flex justify-content-between align-items-start w-100 mb-3">
+                        <div class="bg-warning bg-opacity-10 rounded p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-speaker text-warning fs-3"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="fw-black text-dark mb-0 fs-1 lh-1">{{ audiovideo_pendentes|default:"0" }}</h2>
+                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Eventos Agendados</span>
+                        </div>
                     </div>
-                    <h5 class="fw-bold text-dark mb-2">Áudio e Vídeo</h5>
-                    <p class="text-muted small flex-grow-1">Gestão de equipamentos, eventos e suporte audiovisual (TVs, Microfones, Projetores).</p>
-                    <a href="{% url 'audiovideo:dashboard' %}" class="btn btn-outline-warning rounded-pill mt-3 w-100">Acessar Módulo</a>
+                    
+                    <h5 class="fw-bold text-dark text-start mb-2">Áudio e Vídeo</h5>
+                    <p class="text-muted text-start small flex-grow-1">Gestão de equipamentos, eventos e suporte audiovisual.</p>
+                    
+                    <a href="{% url 'audiovideo:dashboard' %}" class="btn btn-outline-warning rounded-pill mt-3 w-100 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                        Acessar Módulo <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
         <!-- Reembolsos Telefonia -->
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100 border-0 shadow-sm interactive-card" style="border-radius: 15px;">
+            <div class="card h-100 border-0 shadow-sm interactive-card position-relative" style="border-radius: 15px; overflow: hidden;">
+                <!-- Decorador de cor no topo -->
+                <div class="bg-info" style="height: 6px; width: 100%;"></div>
+                
                 <div class="card-body p-4 d-flex flex-column text-center">
-                    <div class="bg-info bg-opacity-10 rounded-circle p-4 mb-3 mx-auto" style="width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-wallet2 text-info fs-1"></i>
+                    <div class="d-flex justify-content-between align-items-start w-100 mb-3">
+                        <div class="bg-info bg-opacity-10 rounded p-3" style="width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                            <i class="bi bi-wallet2 text-info fs-3"></i>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="fw-black text-dark mb-0 fs-1 lh-1">{{ reembolsos_pendentes|default:"0" }}</h2>
+                            <span class="text-muted small fw-bold text-uppercase" style="font-size: 0.7rem;">Sol. Pendentes</span>
+                        </div>
                     </div>
-                    <h5 class="fw-bold text-dark mb-2">Reembolsos</h5>
-                    <p class="text-muted small flex-grow-1">Controle e solicitação de reembolsos de faturas telefônicas.</p>
-                    <a href="{% url 'reembolsos:inicio_reembolsos' %}" class="btn btn-outline-info rounded-pill mt-3 w-100">Acessar Módulo</a>
+                    
+                    <h5 class="fw-bold text-dark text-start mb-2">Reembolsos</h5>
+                    <p class="text-muted text-start small flex-grow-1">Controle e solicitação de reembolsos de faturas telefônicas.</p>
+                    
+                    <a href="{% url 'reembolsos:inicio_reembolsos' %}" class="btn btn-outline-info rounded-pill mt-3 w-100 fw-bold shadow-sm" style="transition: all 0.3s ease;">
+                        Acessar Módulo <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
                 </div>
             </div>
         </div>
 
     </div>
 </div>
+
+<style>
+.interactive-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.interactive-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.fw-black {
+    font-weight: 900;
+}
+</style>
 {% endblock %}
