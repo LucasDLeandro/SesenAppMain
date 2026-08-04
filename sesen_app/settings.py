@@ -223,12 +223,12 @@ LOGGING = {
         'file': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': 'C:/Lucas/SesenAppMain/django_error.log',
+            'filename': os.path.join(BASE_DIR, 'django_error.log'),
         },
         'file_debug': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': 'C:/Lucas/SesenAppMain/django_error.log',
+            'filename': os.path.join(BASE_DIR, 'django_error.log'),
         },
     },
     'loggers': {
