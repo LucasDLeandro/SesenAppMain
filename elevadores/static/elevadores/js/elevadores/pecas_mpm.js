@@ -629,15 +629,11 @@ window.editarMPM = async function(id) {
         document.getElementById('editMpmObservacao').value = mpm.observacao || '';
         
         setValAndTrigger('editMpmTecnicoNome', mpm.tecnico || '');
-        document.getElementById('editMpmTecnicoChapa').value = mpm.tecnico_chapa || '';
         document.getElementById('editMpmDataExecucao').value = mpm.data_execucao || '';
         document.getElementById('editMpmHoraChegada').value = mpm.hora_chegada ? mpm.hora_chegada.substring(0, 5) : '';
         document.getElementById('editMpmHoraSaida').value = mpm.hora_saida ? mpm.hora_saida.substring(0, 5) : '';
         
         setValAndTrigger('editMpmClienteNome', mpm.cliente_nome || '');
-        document.getElementById('editMpmClienteEmail').value = mpm.cliente_email || '';
-        document.getElementById('editMpmClienteComentarios').value = mpm.cliente_comentarios || '';
-        document.getElementById('editMpmClienteData').value = mpm.cliente_data || '';
 
         // Limpar os campos de arquivo para nÃ£o causar problemas
         const fPoco = document.getElementById('editMpmFotoPoco');
@@ -877,7 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Find option and get chapa
             const opt = selectTecnico.options[selectTecnico.selectedIndex];
             if (opt && opt.dataset.chapa) {
-                document.getElementById(`${prefix}TecnicoChapa`).value = opt.dataset.chapa;
+                // document.getElementById(`${prefix}TecnicoChapa`).value = opt.dataset.chapa;
             }
             
             // Auto fill current date and time if empty
@@ -935,9 +931,6 @@ function carregarContatosMPMCliente() {
                             // Select if matches logged user
                             if (loggedUser && opt.value.toLowerCase().includes(loggedUser.toLowerCase().trim())) {
                                 opt.selected = true;
-                                // auto fill email se estiver vazio no form (para ediÃ§Ã£o, nÃ£o sobrescrever indiscriminadamente, mas como Ã© carregar inicial, ok)
-                                const emailInput = document.getElementById(`${prefix}ClienteEmail`);
-                                if (emailInput && !emailInput.value) emailInput.value = opt.dataset.email;
                             }
                             
                             selectCliente.appendChild(opt);
@@ -945,17 +938,9 @@ function carregarContatosMPMCliente() {
                     });
                 }
                 
-                // Listen for changes to update email
+                // Listen for changes
                 selectCliente.addEventListener('change', (e) => {
-                    const opt = selectCliente.options[selectCliente.selectedIndex];
-                    const emailInput = document.getElementById(`${prefix}ClienteEmail`);
-                    if (emailInput) {
-                        if (opt && opt.dataset.email) {
-                            emailInput.value = opt.dataset.email;
-                        } else {
-                            emailInput.value = '';
-                        }
-                    }
+                    // Do nothing for now
                 });
                 // Initialize Select2 after populating options
                 if (window.jQuery && $(selectCliente).length) {
@@ -996,14 +981,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData
                 });
                 
-                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusão'; }
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusï¿½o'; }
 
                 if (res.ok) {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('modalConcluirMPM'));
                     if (modal) modal.hide();
                     formConcluirMPM.reset();
                     loadMPMTable();
-                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM concluída com sucesso!', 'success');
+                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM concluï¿½da com sucesso!', 'success');
                 } else {
                     const errorData = await res.json();
                     console.error('Erro na API:', errorData);
@@ -1011,7 +996,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error(err);
-                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusão'; }
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusï¿½o'; }
             }
         });
     }

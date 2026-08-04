@@ -73,25 +73,21 @@
                 </div>
             </div>
 
-            <!-- 3 e 4. EXECUÇÃO E VISTO -->
-            <div class="col-md-6">
+            <!-- 3. EXECUÇÃO E SUPERVISÃO -->
+            <div class="col-md-12">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                            <i class="bi bi-person-badge me-2"></i> 3. Executado Por
+                            <i class="bi bi-person-badge me-2"></i> 3. Executado e Supervisionado Por
                         </h6>
                         <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Nome do Técnico</label>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Nome do Técnico Executante</label>
                                 <select class="form-select" id="mpmTecnicoNome" name="tecnico">
                                     <option value="" selected>Selecione o técnico</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Chapa</label>
-                                <input type="text" class="form-control bg-light" id="mpmTecnicoChapa" name="tecnico_chapa" readonly>
-                            </div>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Data da Execução</label>
                                 <input type="date" class="form-control" id="mpmDataExecucao" name="data_execucao">
                             </div>
@@ -103,42 +99,16 @@
                                 <label class="form-label small fw-bold text-muted">Hora Saída</label>
                                 <input type="time" class="form-control" id="mpmHoraSaida" name="hora_saida">
                             </div>
-                            <div class="col-md-12 mt-2">
-                                <label class="form-label small fw-bold text-muted">Supervisor Local (Técnico Sesen)</label>
-                                <input type="text" class="form-control" id="mpmSupervisorLocal" name="supervisor_local" placeholder="Nome do servidor que supervisionou a manutenção" value="{{ request.user.get_full_name|default:request.user.username }}">
-                            </div>
-                            <div class="col-12 mt-3 text-center bg-danger bg-opacity-10 py-2 rounded-2 border border-danger">
-                                <small class="text-danger fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Atenção: Revise e preencha as datas e horários reais de execução.</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                            <i class="bi bi-pen me-2"></i> 4. Visto do Cliente
-                        </h6>
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Nome do Representante</label>
+                            
+                            <div class="col-md-12 mt-4">
+                                <label class="form-label small fw-bold text-muted">Supervisionado Por (Representante Local)</label>
                                 <select class="form-select" id="mpmClienteNome" name="cliente_nome" required data-logged-user="{{ request.user.get_full_name|default:request.user.username }}">
                                     <option value="">Nenhum / Não Informado</option>
                                 </select>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">E-mail</label>
-                                <input type="email" class="form-control bg-light" id="mpmClienteEmail" name="cliente_email" placeholder="email@tse.jus.br" readonly>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Comentários do Cliente</label>
-                                <input type="text" class="form-control" id="mpmClienteComentarios" name="cliente_comentarios" placeholder="...">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Data do Visto</label>
-                                <input type="date" class="form-control bg-light" id="mpmClienteData" name="cliente_data" readonly>
+
+                            <div class="col-12 mt-4 text-center bg-danger bg-opacity-10 py-2 rounded-2 border border-danger">
+                                <small class="text-danger fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Atenção: Revise e preencha as datas e horários reais de execução.</small>
                             </div>
                         </div>
                     </div>
@@ -392,29 +362,21 @@
                                 <input type="file" class="form-control" id="editMpmMidia" name="midia">
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3 e 4. EXECUÇÃO E VISTO -->
-            <div class="col-md-6">
+                  <!-- 3. EXECUÇÃO E SUPERVISÃO -->
+            <div class="col-md-12">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
                     <div class="card-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                            <i class="bi bi-person-badge me-2"></i> 3. Execução Técnica
+                            <i class="bi bi-person-badge me-2"></i> 3. Executado e Supervisionado Por
                         </h6>
                         <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Nome do Técnico</label>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Nome do Técnico Executante</label>
                                 <select class="form-select" id="editMpmTecnicoNome" name="tecnico">
                                     <option value="" selected>Selecione o técnico</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label small fw-bold text-muted">Chapa</label>
-                                <input type="text" class="form-control bg-light" id="editMpmTecnicoChapa" name="tecnico_chapa" readonly>
-                            </div>
-                            <div class="col-md-8">
+                            <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Data da Execução</label>
                                 <input type="date" class="form-control" id="editMpmDataExecucao" name="data_execucao">
                             </div>
@@ -426,36 +388,12 @@
                                 <label class="form-label small fw-bold text-muted">Hora Saída</label>
                                 <input type="time" class="form-control" id="editMpmHoraSaida" name="hora_saida">
                             </div>
-                            <div class="col-12 mt-3 text-center bg-danger bg-opacity-10 py-2 rounded-2 border border-danger">
-                                <small class="text-danger fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Atenção: Revise e preencha as datas e horários reais de execução.</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4">
-                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                            <i class="bi bi-pen me-2"></i> 4. Visto do Cliente
-                        </h6>
-                        <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Nome do Representante</label>
+                            <div class="col-md-12 mt-4">
+                                <label class="form-label small fw-bold text-muted">Supervisionado Por (Representante Local)</label>
                                 <select class="form-select" id="editMpmClienteNome" name="cliente_nome" data-logged-user="{{ request.user.get_full_name|default:request.user.username }}"><option value="">Nenhum / Não Informado</option></select>
                             </div>
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">E-mail</label>
-                                <input type="email" class="form-control bg-light" id="editMpmClienteEmail" name="cliente_email" placeholder="email@tse.jus.br" readonly>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label small fw-bold text-muted">Comentários do Cliente</label>
-                                <input type="text" class="form-control" id="editMpmClienteComentarios" name="cliente_comentarios" placeholder="...">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted">Data do Visto</label>
-                                <input type="date" class="form-control bg-light" id="editMpmClienteData" name="cliente_data" readonly>
+                            <div class="col-12 mt-4 text-center bg-danger bg-opacity-10 py-2 rounded-2 border border-danger">
+                                <small class="text-danger fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Atenção: Revise e preencha as datas e horários reais de execução.</small>
                             </div>
                         </div>
                     </div>
