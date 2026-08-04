@@ -53,28 +53,7 @@
                 tbody.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum contrato a vencer</td></tr>';
             }
             
-            // Populate Ciclo de Pagamentos
-            const tbodyCiclo = document.getElementById('lista-ciclo-pagamentos');
-            if (tbodyCiclo) {
-                tbodyCiclo.innerHTML = '';
-                if (data.ciclo_pagamentos && data.ciclo_pagamentos.length > 0) {
-                    data.ciclo_pagamentos.forEach(c => {
-                        let badgeClass = "bg-primary";
-                        if (c.atrasado) badgeClass = "bg-danger";
-                        else if (c.fase_atual === 'CONCLUIDO') badgeClass = "bg-success";
-                        else if (c.fase_atual === 'NAO_INICIADO') badgeClass = "bg-secondary";
-                        
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td class="ps-4"><div class="fw-bold text-dark text-nowrap">${c.num_contrato}</div></td>
-                            <td><span class="badge ${badgeClass} px-2 py-1 rounded-3 w-100 text-start" style="font-size:0.75rem;"><i class="bi bi-circle-fill me-1 small"></i>${c.fase_display}</span></td>
-                        `;
-                        tbodyCiclo.appendChild(tr);
-                    });
-                } else {
-                    tbodyCiclo.innerHTML = '<tr><td colspan="2" class="text-center py-4 text-muted">Nenhum dado do ciclo</td></tr>';
-                }
-            }
+            // Ciclo widget removed
 
             // Render ApexChart
             if (data.chart_data && document.querySelector("#chart-execucao")) {

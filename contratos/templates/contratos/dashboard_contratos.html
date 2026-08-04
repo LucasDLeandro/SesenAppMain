@@ -165,13 +165,22 @@
         </div>
     </div>
 
-    <!-- Charts and Table Row (Transferido de home_contratos) -->
+    <!-- Charts and Table Row -->
     <div class="row g-4 mb-4">
         <!-- Overview Chart -->
-        <div class="col-xl-5 col-lg-12">
+        <div class="col-xl-8 col-lg-12">
             <div class="card chart-card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title">Métricas de Execução (Ano Vigente)</h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Este Ano
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Este Ano</a></li>
+                            <li><a class="dropdown-item" href="#">Últimos 12 Meses</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div id="chart-execucao" style="min-height: 300px;"></div>
@@ -180,7 +189,7 @@
         </div>
 
         <!-- Upcoming Expirations -->
-        <div class="col-xl-3 col-lg-6">
+        <div class="col-xl-4 col-lg-12">
             <div class="card chart-card h-100">
                 <div class="card-header">
                     <h5 class="card-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
@@ -195,30 +204,6 @@
                                 </tr>
                             </thead>
                             <tbody id="lista-vencimentos">
-                                <tr><td colspan="2" class="text-center py-4 text-muted spinner-border-wrapper"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Carregando...</td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pagamentos Mensais -->
-        <div class="col-xl-4 col-lg-6">
-            <div class="card chart-card h-100">
-                <div class="card-header">
-                    <h5 class="card-title text-info"><i class="bi bi-clock-history me-2"></i>Pagamentos Mensais</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-vencimentos mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="ps-4">Contrato</th>
-                                    <th>Fase Atual</th>
-                                </tr>
-                            </thead>
-                            <tbody id="lista-ciclo-pagamentos">
                                 <tr><td colspan="2" class="text-center py-4 text-muted spinner-border-wrapper"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Carregando...</td></tr>
                             </tbody>
                         </table>
@@ -803,7 +788,7 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <!-- Incluindo o JS Específico da Dashboard e Métricas -->
 <script src="{% static 'contratos/js/dashboard_contratos.js' %}?v=1.3"></script>
-<script src="{% static 'contratos/js/dashboard_contratos_metrics.js' %}?v=1.1"></script>
+<script src="{% static 'contratos/js/dashboard_contratos_metrics.js' %}?v=1.2"></script>
 
 
 <!-- Modal Detalhes do Pagamento -->
