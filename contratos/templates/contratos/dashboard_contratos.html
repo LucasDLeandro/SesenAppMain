@@ -887,6 +887,15 @@
                             </div>
                         </div>
                     </div>
+                </form>
+            </div>
+            <div class="modal-footer border-top border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarPagamento()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -958,8 +967,8 @@
                     <td><span class="status-badge ${statusClass}">${pag.status || 'PENDENTE'}</span></td>
                     <td>${pag.ordem_pagamento || '<span class="text-muted">Não vinculada</span>'}</td>
                     <td class="text-end">
-                        <button class="btn btn-sm btn-outline-primary" onclick="abrirModalDetalhesPagamento(${pag.id})">
-                            <i class="bi bi-eye"></i> Detalhes
+                        <button class="btn btn-sm btn-outline-warning text-dark fw-bold shadow-sm" onclick="abrirModalDetalhesPagamento(${pag.id})">
+                            <i class="bi bi-pencil-square"></i> Vincular
                         </button>
                     </td>
                 `;
@@ -1037,12 +1046,16 @@
         .then(response => {
             if (response.ok) {
                 modalPagamentoInstance.hide();
+                Swal.fire('Sucesso!', 'Os dados do pagamento foram vinculados com sucesso.', 'success');
                 carregarPagamentos();
             } else {
-                alert('Erro ao atualizar pagamento.');
+                Swal.fire('Erro!', 'Ocorreu um erro ao atualizar os dados do pagamento.', 'error');
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+            console.error(err);
+            Swal.fire('Erro!', 'Ocorreu um erro inesperado ao salvar.', 'error');
+        });
     };
 
     function getCookie(name) {
