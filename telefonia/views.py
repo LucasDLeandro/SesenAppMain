@@ -187,10 +187,22 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         termo = request.data.get('termo_transferencia_interna')
         pdf_termo = request.FILES.get('pdf_termo')
         
-        if termo:
-            solicitacao.termo_transferencia_interna = termo
-        if pdf_termo:
-            solicitacao.pdf_termo = pdf_termo
+        if not termo or str(termo).strip() == '':
+            return Response({'error': 'O preenchimento do número do Termo de Transferência Interna é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+        if not pdf_termo:
+            return Response({'error': 'O envio do arquivo PDF do termo é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Safe string for filename
+        import os
+        import re
+        safe_termo = re.sub(r'[^a-zA-Z0-9_-]', '', str(termo).replace('/', '').replace('\\', '').replace(' ', ''))
+        ext = os.path.splitext(pdf_termo.name)[1]
+        
+        pdf_termo.name = f"TTI_{safe_termo}{ext}"
+        
+        solicitacao.termo_transferencia_interna = termo
+        solicitacao.pdf_termo = pdf_termo
             
         solicitacao.status = 'concluida'
         solicitacao.save()
