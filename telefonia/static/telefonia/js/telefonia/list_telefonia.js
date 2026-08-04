@@ -758,11 +758,20 @@ window.visualizarSolicitacao = async function(id) {
             document.getElementById('vis-unidade').textContent = dados.unidade || '-';
             document.getElementById('vis-sigla').textContent = dados.sigla_unidade ? dados.sigla_unidade.toUpperCase() : '-';
             document.getElementById('vis-local').textContent = dados.local || '-';
-            document.getElementById('vis-termo').textContent = dados.termo_transferencia_interna || '-';
+            
+            const anexoUrl = dados.pdf_termo || dados.midia;
+            
+            if (dados.termo_transferencia_interna) {
+                document.getElementById('vis-termo').textContent = dados.termo_transferencia_interna;
+            } else if (anexoUrl) {
+                document.getElementById('vis-termo').textContent = '';
+            } else {
+                document.getElementById('vis-termo').textContent = '-';
+            }
             
             const btnPdfTermo = document.getElementById('vis-btn-pdf-termo');
-            if (dados.pdf_termo) {
-                btnPdfTermo.href = dados.pdf_termo;
+            if (anexoUrl) {
+                btnPdfTermo.href = anexoUrl;
                 btnPdfTermo.classList.remove('d-none');
             } else {
                 btnPdfTermo.classList.add('d-none');
@@ -781,16 +790,6 @@ window.visualizarSolicitacao = async function(id) {
             document.getElementById('vis_data_instalacao').textContent = dados.data_instalacao ? formatDate(dados.data_instalacao) : 'Não informado';
             
             document.getElementById('vis_relatorio').textContent = dados.relatorio || 'Sem observações/relatório.';
-            
-            const visMidiaContainer = document.getElementById('vis-midia-container');
-            const visLinkMidia = document.getElementById('vis-link-midia');
-            if (dados.midia) {
-                visMidiaContainer.style.display = 'block';
-                visLinkMidia.href = dados.midia;
-            } else {
-                visMidiaContainer.style.display = 'none';
-                visLinkMidia.href = '#';
-            }
             
             document.getElementById('vis-ramal').textContent = dados.ramal || '-';
             document.getElementById('vis-local-instalacao').textContent = dados.local || '-';
