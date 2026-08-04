@@ -909,19 +909,15 @@
     let listaPagamentos = [];
 
     function carregarPagamentos() {
-        console.log("Iniciando fetch para /contratos/api/pagamentos/");
         fetch('/contratos/api/pagamentos/')
             .then(response => {
-                console.log("Resposta status:", response.status);
                 if (!response.ok) {
                     throw new Error("Erro HTTP: " + response.status);
                 }
                 return response.json();
             })
             .then(data => {
-                console.log("Dados recebidos da API:", data);
                 const results = data.results !== undefined ? data.results : (Array.isArray(data) ? data : []);
-                console.log("Resultados extraídos:", results);
                 listaPagamentos = results;
                 renderTabela(results);
             })
