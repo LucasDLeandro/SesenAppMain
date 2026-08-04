@@ -1976,3 +1976,14 @@ document.addEventListener('DOMContentLoaded', () => {
         window.carregarTecnicosGlobais();
     }
 });
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Solução definitiva para z-index de modais no Bootstrap 5
+    document.querySelectorAll('.modal').forEach(modal => {
+        if (modal.parentNode !== document.body) {
+            document.body.appendChild(modal);
+        }
+    });
+});
+
