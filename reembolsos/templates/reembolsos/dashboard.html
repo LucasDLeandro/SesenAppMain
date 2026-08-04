@@ -462,3 +462,69 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="{% static 'reembolsos/js/dashboard.js' %}?v=2.0"></script>
 {% endblock %}
+
+<!-- Modal Visualizar Solicitação -->
+<div class="modal fade" id="modal-visualizar-solicitacao" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 pb-0 pt-4 px-4">
+                <h5 class="modal-title fw-bold text-info"><i class="bi bi-eye me-2"></i>Detalhes da Solicitação</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-8">
+                        <label class="text-muted fw-bold small mb-1">Servidor</label>
+                        <div id="vis-solicitacao-servidor" class="fw-bold fs-6"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="text-muted fw-bold small mb-1">Protocolo SEI (Solicitação)</label>
+                        <div id="vis-solicitacao-sei" class="fw-bold fs-6"></div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3"><i class="bi bi-receipt me-2"></i>Faturas Anexadas</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered align-middle">
+                                <thead class="table-light text-muted small">
+                                    <tr>
+                                        <th>Período</th>
+                                        <th>Fatura (R$)</th>
+                                        <th>Serviço (R$)</th>
+                                        <th>Doc Fatura</th>
+                                        <th>Comprovante</th>
+                                        <th>Aprovada?</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="vis-faturas-tbody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h6 class="mt-4 mb-2 fw-bold text-success border-bottom pb-2">Pagamento de Reembolso</h6>
+                    <div class="col-md-4">
+                        <label class="text-muted fw-bold small mb-1">Ordem Bancária (SEI)</label>
+                        <div id="vis-solicitacao-ob" class="fw-bold"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="text-muted fw-bold small mb-1">Data do Pagamento</label>
+                        <div id="vis-solicitacao-data-pag" class="fw-bold"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="text-muted fw-bold small mb-1">Status</label>
+                        <div><span id="vis-solicitacao-status" class="badge fs-6"></span></div>
+                    </div>
+
+                    <div class="col-12 mt-4">
+                        <h6 class="fw-bold text-secondary border-bottom pb-2 mb-2">Observações</h6>
+                        <ul id="vis-observacoes-list" class="list-group list-group-flush"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+

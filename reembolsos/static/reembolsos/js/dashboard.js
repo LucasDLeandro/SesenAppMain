@@ -420,7 +420,87 @@ async function abrirModalPendencias() {
 async function visualizarSolicitacaoPendencia(id) {
     // Fecha modal de pendências e abre o de solicitação em modo visualização
     bootstrap.Modal.getInstance(document.getElementById('modal-lista-pendencias'))?.hide();
-    await editarSolicitacao(id);
+    await visualizarSolicitacao(id);
+}
+
+async function visualizarSolicitacao(id) {
+    try {
+        const res = await fetch(`/reembolsos/api/solicitacoes/${id}/`);
+        if(res.ok) {
+            const data = await res.json();
+            
+            document.getElementById('vis-solicitacao-servidor').innerText = data.servidor_nome || '-';
+            document.getElementById('vis-solicitacao-sei').innerText = data.protocolo_sei || '-';
+            
+            // Faturas
+            const tbFaturas = document.getElementById('vis-faturas-tbody');
+            tbFaturas.innerHTML = '';
+            if (data.faturas && data.faturas.length > 0) {
+                data.faturas.forEach(f => {
+                    const ini = f.periodo_inicio ? moment(f.periodo_inicio).format('DD/MM/YYYY') : '-';
+                    const fim = f.periodo_fim ? moment(f.periodo_fim).format('DD/MM/YYYY') : '-';
+                    const valorFat = f.valor_fatura ? `R$ ${parseFloat(f.valor_fatura).toFixed(2).replace('.', ',')}` : '-';
+                    const valorServ = f.valor_servico ? `R$ ${parseFloat(f.valor_servico).toFixed(2).replace('.', ',')}` : '-';
+                    const badge = (f.aprovada === true || f.aprovada === 'true') 
+                                    ? '<span class="badge bg-success">Sim</span>' 
+                                    : `<span class="badge bg-danger">Não</span><div class="small text-danger mt-1">${f.justificativa_negacao || ''}</div>`;
+                    
+                    tbFaturas.innerHTML += `
+                        <tr>
+                            <td>${ini} a ${fim}</td>
+                            <td>${valorFat}</td>
+                            <td>${valorServ}</td>
+                            <td>${f.doc_fatura || '-'}</td>
+                            <td>${f.doc_comprovante || '-'}</td>
+                            <td>${badge}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbFaturas.innerHTML = '<tr><td colspan="6" class="text-center text-muted">Nenhuma fatura anexada.</td></tr>';
+            }
+
+            document.getElementById('vis-solicitacao-ob').innerText = data.protocolo_ordem_bancaria || '-';
+            let dtPag = '-';
+            if (data.data_pagamento) {
+                dtPag = moment(data.data_pagamento).format('DD/MM/YYYY');
+            }
+            document.getElementById('vis-solicitacao-data-pag').innerText = dtPag;
+            
+            const badgeMap = {
+                'em_analise': {label: 'Em Análise', class: 'bg-warning text-dark'},
+                'pendente': {label: 'Pendente', class: 'bg-warning text-dark'},
+                'enviado': {label: 'Enviado', class: 'bg-primary'},
+                'aprovada': {label: 'Aprovada', class: 'bg-success'},
+                'concluido': {label: 'Concluído', class: 'bg-success'},
+                'negada': {label: 'Negada', class: 'bg-danger'}
+            };
+            
+            const st = badgeMap[data.status] || {label: data.status, class: 'bg-secondary'};
+            const statusEl = document.getElementById('vis-solicitacao-status');
+            statusEl.className = `badge fs-6 ${st.class}`;
+            statusEl.innerText = st.label;
+
+            // Observações
+            const obsList = document.getElementById('vis-observacoes-list');
+            obsList.innerHTML = '';
+            if (data.observacoes) {
+                const obsArray = data.observacoes.split('|||').filter(txt => txt.trim());
+                if (obsArray.length > 0) {
+                    obsArray.forEach(txt => {
+                        obsList.innerHTML += `<li class="list-group-item bg-transparent text-secondary"><i class="bi bi-chevron-right me-2 text-muted"></i>${txt.trim()}</li>`;
+                    });
+                } else {
+                    obsList.innerHTML = '<li class="list-group-item bg-transparent text-muted text-center border-0">Nenhuma observação.</li>';
+                }
+            } else {
+                obsList.innerHTML = '<li class="list-group-item bg-transparent text-muted text-center border-0">Nenhuma observação.</li>';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('modal-visualizar-solicitacao'));
+            modal.show();
+        }
+    } catch(e) { console.error(e); }
 }
 
 async function concluirSolicitacaoPendencia(id) {
