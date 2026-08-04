@@ -25,7 +25,6 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView
 )
 from usuarios.views import login_view, logout_view, trocar_senha_view
-from .views import hub_servicos_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,7 +45,7 @@ urlpatterns = [
     path('equipe_tecnica/', include('equipe_tecnica.urls', namespace='equipe_tecnica')),
     path('monitoramento-sei/', include('monitoramento_sei.urls', namespace='monitoramento_sei')),
 
-    path('hub_servicos/', hub_servicos_view, name='hub_servicos'),
+    path('hub_servicos/', TemplateView.as_view(template_name='hub_servicos.html'), name='hub_servicos'),
 
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
