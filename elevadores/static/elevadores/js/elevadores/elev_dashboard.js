@@ -1456,6 +1456,9 @@ window.abrirModalDemandasPendentes = async function() {
         if (badge) badge.innerText = demandas.length;
 
         const modalEl = document.getElementById('modal-lista-concluir-demandas');
+        if (modalEl && modalEl.parentNode !== document.body) {
+            document.body.appendChild(modalEl);
+        }
         // Garantimos que não existam múltiplos backdrops usando getInstance
         let modal = bootstrap.Modal.getInstance(modalEl);
         if (!modal) {
