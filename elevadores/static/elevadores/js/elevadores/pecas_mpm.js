@@ -45,13 +45,13 @@ async function loadMPMTable() {
             }
 
             // Extract number from elevador for sorting
-            const match = item.elevador.match(/\d+/);
+            const match = item.elevador ? String(item.elevador).match(/\d+/) : null;
             const elevNum = match ? parseInt(match[0], 10) : 999;
 
             const tr = document.createElement("tr");
             tr.innerHTML = `
                 <td>${item.ordem_servico || "-"}</td>
-                <td data-order="${elevNum}">${item.elevador}</td>
+                <td data-order="${elevNum}">${item.elevador || "-"}</td>
                 <td data-order="${mesRefSort}">${mesRefFormatado}</td>
                 <td>${dataPrevista}</td>
                 <td>${formatData(item.data_execucao)}</td>
