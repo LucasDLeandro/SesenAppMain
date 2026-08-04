@@ -782,6 +782,16 @@ window.visualizarSolicitacao = async function(id) {
             
             document.getElementById('vis_relatorio').textContent = dados.relatorio || 'Sem observações/relatório.';
             
+            const visMidiaContainer = document.getElementById('vis-midia-container');
+            const visLinkMidia = document.getElementById('vis-link-midia');
+            if (dados.midia) {
+                visMidiaContainer.style.display = 'flex';
+                visLinkMidia.href = dados.midia;
+            } else {
+                visMidiaContainer.style.display = 'none';
+                visLinkMidia.href = '#';
+            }
+            
             document.getElementById('vis-ramal').textContent = dados.ramal || '-';
             document.getElementById('vis-local-instalacao').textContent = dados.local || '-';
             
