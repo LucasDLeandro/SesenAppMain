@@ -50,8 +50,8 @@ class SolicitacaoAcesso(models.Model):
 class PadraoEmailLiberacao(models.Model):
     nome = models.CharField(max_length=100, default="Template Padrão", verbose_name="Nome do Template")
     assunto = models.CharField(max_length=200, default="Liberação de Acesso", verbose_name="Assunto do E-mail")
-    email_destinatario = models.EmailField(max_length=255, blank=True, null=True, verbose_name="E-mail Destinatário (Segurança/Portaria)", help_text="E-mail principal que receberá as comunicações de liberação de acesso")
-    email_copia = models.EmailField(max_length=255, blank=True, null=True, verbose_name="E-mail em Cópia Oculta (BCC)")
+    email_destinatario = models.CharField(max_length=255, blank=True, null=True, verbose_name="E-mails Destinatários (Segurança/Portaria)", help_text="E-mails principais que receberão as comunicações de liberação de acesso (separados por vírgula)")
+    email_copia = models.CharField(max_length=255, blank=True, null=True, verbose_name="E-mails em Cópia Oculta (BCC)")
     corpo = models.TextField(verbose_name="Corpo da Mensagem", help_text="Variáveis permitidas: {empresa}, {solicitante}, {periodo}, {datas}, {tecnicos}")
     assinatura = models.TextField(verbose_name="Assinatura da Seção", default="Equipe Técnica")
     ativo = models.BooleanField(default=False, verbose_name="Ativo")

@@ -542,7 +542,7 @@ function preencherModalPreviewEmail(data, permitirEnvio) {
     }
 
     $('#preview-destinatario-input').val(data.destinatario || '');
-    $('#preview-copia-input').val(data.copia || '');
+    $('#preview-copia-input').val(data.copia_cc || '');
     $('#preview-assunto-input').val(data.assunto || '');
     
     // Converte br tags para newlines no corpo para o textarea
