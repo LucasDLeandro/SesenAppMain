@@ -387,11 +387,19 @@
                         <div class="card-body">
                             <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
                             <div class="row g-3 mt-1">
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <label class="form-label">Ordem de Pagamento (Doc. SEI, SIAFI, etc)</label>
                                     <input type="text" class="form-control" id="input_ordem_pagamento" readonly>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nota Técnica de Liquidação de Despesas</label>
+                                    <input type="text" class="form-control" id="input_nota_liquidacao" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Valor Pago (R$)</label>
+                                    <input type="text" class="form-control" id="input_valor_pago" readonly>
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">Status</label>
                                     <input type="text" class="form-control" id="input_status" readonly>
                                 </div>
@@ -555,6 +563,8 @@
         document.getElementById('modal_prot_nt').value = pag.protocolo_nota_tecnica || '-';
 
         document.getElementById('input_ordem_pagamento').value = pag.ordem_pagamento || '';
+        document.getElementById('input_nota_liquidacao').value = pag.protocolo_nota_liquidacao || '';
+        document.getElementById('input_valor_pago').value = pag.valor_pago ? formatCurrency(pag.valor_pago).replace('R$', '').trim() : '';
         document.getElementById('input_status').value = pag.status;
 
         modalPagamentoInstanceVisao.show();
