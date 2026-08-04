@@ -781,49 +781,7 @@ window.abrirVisualizarMPM = function(mpmStrEncoded) {
 }
 
 
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        const response = await fetch('/empresas/api/contatos_por_app/?app=MANUTENCAO_PREDIAL');
-        if (response.ok) {
-            const contatos = await response.json();
-            const selects = [document.getElementById('mpmClienteNome'), document.getElementById('editMpmClienteNome')];
-            selects.forEach(select => {
-                if (!select) return;
-                const firstOption = select.querySelector('option[value=""]');
-                select.innerHTML = '';
-                if (firstOption) select.appendChild(firstOption);
-                else select.innerHTML = '<option value="">Nenhum / Não Informado</option>';
-                contatos.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = `${c.nome} (${c.cargo})`;
-                    opt.textContent = `${c.nome} - ${c.cargo} - ${c.empresa}`;
-                    select.appendChild(opt);
-                });
-                const loggedUser = select.getAttribute('data-logged-user');
-                if (loggedUser) {
-                    let optionExists = Array.from(select.options).some(opt => opt.value.startsWith(loggedUser));
-                    if (!optionExists) {
-                        const opt = document.createElement('option');
-                        opt.value = `${loggedUser} (Usuário Sesen)`;
-                        opt.textContent = `${loggedUser} - Usuário Sesen`;
-                        select.appendChild(opt);
-                    }
-                    let optionToSelect = Array.from(select.options).find(opt => opt.value.startsWith(loggedUser));
-                    if (optionToSelect) {
-                        select.value = optionToSelect.value;
-                    }
-                }
-                if (window.jQuery && $(select).hasClass('select2-hidden-accessible')) {
-                    $(select).trigger('change');
-                } else if (window.jQuery) {
-                    $(select).select2({ tags: true, dropdownParent: $(select).closest('.modal') });
-                }
-            });
-        }
-    } catch (e) {
-        console.error('Erro ao carregar contatos', e);
-    }
-});
+// Bloco de carregamento de contatos duplicado removido. A inicialização real ocorre na função carregarContatosMPMCliente.
 
 // --- LOGIC FOR MULTIPLE ELEVATORS ---
 function adicionarElevadorVazio() {
@@ -946,7 +904,9 @@ function carregarContatosMPMCliente() {
                 if (window.jQuery && $(selectCliente).length) {
                     $(selectCliente).select2({
                         theme: 'bootstrap-5',
-                        width: '100%'
+                        width: '100%',
+                        tags: true,
+                        dropdownParent: $(selectCliente).closest('.modal')
                     });
                 }
             });

@@ -130,10 +130,12 @@ function editarEmpresa(id) {
     $.get(`/empresas/api/empresas/${id}/`, function(data) {
         $('#empresa_id').val(data.id);
         $('#empresa_nome').val(data.nome_empresa);
-        $('#empresa_cnpj').val(data.cnpj);
+        const cnpjEl = $('#empresa_cnpj').val(data.cnpj)[0];
+        if (cnpjEl) cnpjEl.dispatchEvent(new Event('input', {bubbles: true}));
         $('#empresa_classificacao').val(data.classificacao || '');
         $('#empresa_cargo').val(data.cargo || '');
-        $('#empresa_cep').val(data.cep);
+        const cepEl = $('#empresa_cep').val(data.cep)[0];
+        if (cepEl) cepEl.dispatchEvent(new Event('input', {bubbles: true}));
         $('#empresa_rua').val(data.rua);
         $('#empresa_numero').val(data.numero);
         $('#empresa_bairro').val(data.bairro);
@@ -330,7 +332,8 @@ function editarContato(contatoId) {
         $('#edit_contato_nome').val(data.nome_contato || '');
         $('#edit_contato_sobrenome').val(data.sobrenome || '');
         $('#edit_contato_email').val(data.email || '');
-        $('#edit_contato_telefone').val(data.telefone || '');
+        const telEl = $('#edit_contato_telefone').val(data.telefone || '')[0];
+        if (telEl) telEl.dispatchEvent(new Event('input', {bubbles: true}));
         $('#edit_contato_cargo').val(data.cargo || '');
         
         $('#modal-editar-contato').modal('show');
