@@ -103,6 +103,10 @@
                                 <label class="form-label small fw-bold text-muted">Hora Saída</label>
                                 <input type="time" class="form-control" id="mpmHoraSaida" name="hora_saida">
                             </div>
+                            <div class="col-md-12 mt-2">
+                                <label class="form-label small fw-bold text-muted">Supervisor Local (Técnico Sesen)</label>
+                                <input type="text" class="form-control" id="mpmSupervisorLocal" name="supervisor_local" placeholder="Nome do servidor que supervisionou a manutenção" value="{{ request.user.get_full_name|default:request.user.username }}">
+                            </div>
                             <div class="col-12 mt-3 text-center bg-danger bg-opacity-10 py-2 rounded-2 border border-danger">
                                 <small class="text-danger fw-bold"><i class="bi bi-exclamation-triangle me-1"></i> Atenção: Revise e preencha as datas e horários reais de execução.</small>
                             </div>
@@ -183,69 +187,20 @@
                     <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label small fw-bold text-muted">Nº da OS MPM</label>
-                <input type="text" class="form-control form-control-sm mpm-numero-os" placeholder="Ex: OS 12345">
-            </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <label class="form-label small fw-bold text-muted">Situação</label>
                 <select class="form-select form-select-sm mpm-situacao">
                     <option value="Em Funcionamento" selected>Em Funcionamento</option>
                     <option value="Parado">Parado</option>
                 </select>
             </div>
-            <div class="col-md-2 d-flex align-items-end pb-1">
-                <div class="form-check form-switch mb-1">
-                    <input class="form-check-input mpm-executado" type="checkbox" role="switch" checked>
-                    <label class="form-check-label fw-bold text-muted small ms-1">Executado?</label>
-                </div>
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Hora Início</label>
+                <input type="time" class="form-control form-control-sm mpm-hora-inicio" required>
             </div>
-
-            <!-- Campos Específicos -->
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Apresentação</label>
-                <select class="form-select form-select-sm mpm-apresentacao">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Qualidade</label>
-                <select class="form-select form-select-sm mpm-qualidade">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Limit. Vel</label>
-                <select class="form-select form-select-sm mpm-limite">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Controle</label>
-                <select class="form-select form-select-sm mpm-controle">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Poço (P)</label>
-                <select class="form-select form-select-sm mpm-poco">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-            <div class="col-md-2 col-sm-4 col-6">
-                <label class="form-label small fw-bold text-muted">Encerramento</label>
-                <select class="form-select form-select-sm mpm-encerramento">
-                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                </select>
-            </div>
-
-            <div class="col-md-7 mt-3">
-                <label class="form-label small fw-bold text-muted">Observação Adicional</label>
-                <textarea class="form-control form-control-sm mpm-observacao" rows="2" placeholder="Observações..."></textarea>
-            </div>
-            <div class="col-md-5 mt-3">
-                <label class="form-label small fw-bold text-muted">Foto do Poço / Mídia</label>
-                <input type="file" class="form-control form-control-sm mpm-midia" accept="image/*,video/*,.pdf,.doc,.docx">
+            <div class="col-md-2">
+                <label class="form-label small fw-bold text-muted">Hora Fim</label>
+                <input type="time" class="form-control form-control-sm mpm-hora-fim" required>
             </div>
         </div>
     </div>
@@ -255,45 +210,32 @@
 <div class="modal fade" id="modalConcluirMPM" tabindex="-1" aria-labelledby="modalConcluirMPMLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="formConcluirMPM">
+      <form id="formConcluirMPM" enctype="multipart/form-data">
         <div class="modal-header bg-light">
-          <h5 class="modal-title fw-bold" id="modalConcluirMPMLabel"><i class="bi bi-check-circle me-2 text-success"></i>Executar Preventiva</h5>
+          <h5 class="modal-title fw-bold" id="modalConcluirMPMLabel"><i class="bi bi-check-circle me-2 text-success"></i>Concluir Preventiva</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <input type="hidden" id="concluirMPMId">
+            <input type="hidden" id="concluirMPMId" name="mpm_id">
             <div class="mb-3">
-                <label class="form-label text-muted mb-0">Elevador</label>
-                <p id="concluirMPMElevadorText" class="fw-bold"></p>
-            </div>
-            <div class="mb-3">
-                <label class="form-label text-muted mb-0">MÃªs Referência</label>
+                <label class="form-label text-muted mb-0">Visita</label>
                 <p id="concluirMPMMesText" class="fw-bold"></p>
             </div>
             
             <hr class="text-muted">
 
             <div class="mb-3">
-                <label class="form-label">Técnico Executante</label>
-                <select class="form-select" id="concluirMPMTecnico" required>
-                    <option value="" selected>Selecione o tÃ©cnico</option>
-                </select>
+                <label class="form-label">Nº da OS Gerada</label>
+                <input type="text" class="form-control" id="concluirMPMNumeroOS" name="ordem_servico" placeholder="Ex: 123456" required>
             </div>
             <div class="mb-3">
-                <label class="form-label">Data de Execução</label>
-                <input type="date" class="form-control" id="concluirMPMData" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Status Final</label>
-                <select class="form-select" id="concluirMPMStatus" required>
-                    <option value="EXECUTADO">EXECUTADO</option>
-                    <option value="INOPERANTE">INOPERANTE</option>
-                </select>
+                <label class="form-label">Anexar OS Assinada (PDF)</label>
+                <input type="file" class="form-control" id="concluirMPMArquivoOS" name="midia" accept=".pdf" required>
             </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success fw-bold">Confirmar Execução</button>
+          <button type="submit" class="btn btn-success fw-bold" id="btnSubmitFormConcluirMPM">Confirmar Conclusão</button>
         </div>
       </form>
     </div>

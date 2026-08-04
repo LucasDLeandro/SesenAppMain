@@ -196,87 +196,78 @@ document.addEventListener("DOMContentLoaded", () => {
                 formDataBase.set("mes_referencia", mesRef + "-01");
             }
             
-            // Get all elevator items
+            // Build JSON payload
+            const payload = {};
+            for (let [key, val] of Array.from(formDataBase.entries())) {
+                if (val !== "" && val !== null && val !== "null") {
+                    payload[key] = val;
+                }
+            }
+            payload['status'] = 'PENDENTE';
+            
+            const elevadores_registrados = [];
             const elevadorItems = document.querySelectorAll('.mpm-elevador-item');
             if (elevadorItems.length === 0) {
-                alert('Adicione pelo menos um elevador.');
+                if (typeof Swal !== 'undefined') Swal.fire('Atenção', 'Adicione pelo menos um elevador.', 'warning');
+                else alert('Adicione pelo menos um elevador.');
                 if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
                 return;
             }
 
-            const requests = [];
-            let errorCount = 0;
-
             for (const item of elevadorItems) {
-                const fd = new FormData();
-                
-                // Copy global data
-                for (let [key, val] of Array.from(formDataBase.entries())) {
-                    if (val !== "" && val !== null && val !== "null") {
-                        fd.set(key, val);
-                    }
-                }
-
-                // Get specific fields for this elevator
                 const elevador = item.querySelector('.mpm-elevador').value;
-                if (!elevador) continue; // Skip if no elevator selected
+                if (!elevador) continue;
                 
-                const executado = item.querySelector('.mpm-executado').checked;
                 const situacao = item.querySelector('.mpm-situacao').value;
-                const ordem_servico = item.querySelector('.mpm-numero-os') ? item.querySelector('.mpm-numero-os').value : '';
-                const apresentacao = item.querySelector('.mpm-apresentacao').value;
-                const qualidade = item.querySelector('.mpm-qualidade').value;
-                const limite = item.querySelector('.mpm-limite').value;
-                const controle = item.querySelector('.mpm-controle').value;
-                const poco = item.querySelector('.mpm-poco').value;
-                const encerramento = item.querySelector('.mpm-encerramento').value;
-                const observacao = item.querySelector('.mpm-observacao').value;
-                const midia = item.querySelector('.mpm-midia').files[0];
+                const hora_inicio = item.querySelector('.mpm-hora-inicio').value;
+                const hora_fim = item.querySelector('.mpm-hora-fim').value;
 
-                fd.set('elevador', elevador);
-                fd.set('situacao_equipamento', situacao);
-                fd.set('status', executado ? 'EXECUTADO' : 'NAO_EXECUTADO');
-                if (ordem_servico) fd.set('ordem_servico', ordem_servico);
-                fd.set('apresentacao', apresentacao);
-                fd.set('performance_qualidade', qualidade);
-                fd.set('limite_velocidade', limite);
-                fd.set('controle', controle);
-                fd.set('poco', poco);
-                fd.set('encerramento', encerramento);
-                if (observacao) fd.set('observacao', observacao);
-                if (midia) fd.set('foto_poco', midia);
-
-                // Make request
-                const req = fetch("/elevadores/api/manutencao_preventiva/", {
-                    method: "POST",
-                    headers: { "X-CSRFToken": csrftoken },
-                    body: fd
-                }).then(async res => {
-                    if (!res.ok) {
-                        errorCount++;
-                        console.error("Erro na API para o elevador " + elevador, await res.json());
-                    }
-                }).catch(err => {
-                    errorCount++;
-                    console.error("Falha na rede para o elevador " + elevador, err);
+                elevadores_registrados.push({
+                    elevador: elevador,
+                    situacao: situacao,
+                    hora_inicio: hora_inicio || null,
+                    hora_fim: hora_fim || null
                 });
-                requests.push(req);
             }
+            
+            if (elevadores_registrados.length === 0) {
+                if (typeof Swal !== 'undefined') Swal.fire('Atenção', 'Nenhum elevador válido foi adicionado.', 'warning');
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
+                return;
+            }
+            
+            payload['elevadores_registrados'] = elevadores_registrados;
 
-            await Promise.all(requests);
-
-            if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
-
-            if (errorCount === 0) {
-                const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroMPM"));
-                if(modal) modal.hide();
-                formMPM.reset();
-                document.getElementById('mpmElevadoresContainer').innerHTML = ''; // Limpa a lista
-                adicionarElevadorVazio(); // Adiciona um inicial vazio
-                loadMPMTable();
-                if(typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPMs registradas com sucesso!', 'success');
-            } else {
-                alert("Alguns elevadores falharam ao salvar. Verifique o console.");
+            try {
+                const res = await fetch("/elevadores/api/manutencao_preventiva/", {
+                    method: "POST",
+                    headers: { 
+                        "X-CSRFToken": csrftoken,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
+                
+                if (res.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById("modalCadastroMPM"));
+                    if(modal) modal.hide();
+                    formMPM.reset();
+                    document.getElementById('mpmElevadoresContainer').innerHTML = '';
+                    adicionarElevadorVazio();
+                    loadMPMTable();
+                    if(typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM registrada com sucesso! Aguardando OS.', 'success');
+                } else {
+                    const errorData = await res.json();
+                    console.error("Erro na API:", errorData);
+                    if(typeof Swal !== 'undefined') Swal.fire('Erro', 'Falha ao salvar. Verifique os dados e tente novamente.', 'error');
+                    else alert("Falha ao salvar. Verifique o console.");
+                }
+            } catch (err) {
+                console.error("Falha na rede", err);
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = '<i class="bi bi-check-lg me-2"></i> Registrar Relatório MPM'; }
+                if(typeof Swal !== 'undefined') Swal.fire('Erro', 'Erro de conexão.', 'error');
             }
         });
     }
@@ -977,3 +968,52 @@ function carregarContatosMPMCliente() {
         })
         .catch(err => console.error("Erro carregar contatos predial MPM:", err));
 }
+
+// Concluir MPM logic
+window.openConcluirModal = function(id, mes_referencia) {
+    document.getElementById('concluirMPMId').value = id;
+    document.getElementById('concluirMPMMesText').textContent = mes_referencia || 'Visita';
+    const modal = new bootstrap.Modal(document.getElementById('modalConcluirMPM'));
+    modal.show();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const formConcluirMPM = document.getElementById('formConcluirMPM');
+    if (formConcluirMPM) {
+        formConcluirMPM.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btnSubmit = document.getElementById('btnSubmitFormConcluirMPM');
+            if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.innerHTML = 'Salvando...'; }
+
+            const formData = new FormData(formConcluirMPM);
+            const id = formData.get('mpm_id');
+            formData.set('status', 'CONCLUIDA');
+
+            try {
+                const res = await fetch('/elevadores/api/manutencao_preventiva/' + id + '/', {
+                    method: 'PATCH',
+                    headers: { 'X-CSRFToken': csrftoken },
+                    body: formData
+                });
+                
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclus�o'; }
+
+                if (res.ok) {
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('modalConcluirMPM'));
+                    if (modal) modal.hide();
+                    formConcluirMPM.reset();
+                    loadMPMTable();
+                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM conclu�da com sucesso!', 'success');
+                } else {
+                    const errorData = await res.json();
+                    console.error('Erro na API:', errorData);
+                    alert('Erro ao concluir MPM. Verifique o console.');
+                }
+            } catch (err) {
+                console.error(err);
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclus�o'; }
+            }
+        });
+    }
+});
+

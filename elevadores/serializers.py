@@ -95,10 +95,28 @@ class ElevadorSerializer(serializers.ModelSerializer):
 
 from .models import ManutencaoPreventiva, PecaManutencao
 
+from .models.elev_so_model import RegistroElevadorPreventiva
+
+class RegistroElevadorPreventivaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RegistroElevadorPreventiva
+        fields = '__all__'
+        read_only_fields = ['manutencao']
+
 class ManutencaoPreventivaSerializer(serializers.ModelSerializer):
+    elevadores_registrados = RegistroElevadorPreventivaSerializer(many=True, required=False)
+    
     class Meta:
         model = ManutencaoPreventiva
         fields = '__all__'
+
+    def create(self, validated_data):
+        elevadores_data = validated_data.pop('elevadores_registrados', [])
+        manutencao = super().create(validated_data)
+        for elev_data in elevadores_data:
+            RegistroElevadorPreventiva.objects.create(manutencao=manutencao, **elev_data)
+        return manutencao
+
 
 class PecaManutencaoSerializer(serializers.ModelSerializer):
     class Meta:

@@ -251,18 +251,18 @@ class ElevOrderReg(models.Model):
 
 class ManutencaoPreventiva(models.Model):
     STATUS_MPM = [
-        ('EXECUTADO', 'Executado'),
-        ('INOPERANTE', 'Inoperante'),
-        ('NAO_EXECUTADO', 'Não Executado'),
+        ('PENDENTE', 'Pendente'),
+        ('CONCLUIDA', 'Concluída'),
+        ('CANCELADA', 'Cancelada'),
     ]
 
     elevador = models.CharField(
         max_length=50,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         choices=ELEVATOR_CHOICE,
         verbose_name="Elevador",
-        help_text="Selecione o elevador.",
+        help_text="[LEGADO] Mantido para compatibilidade.",
     )
     
     # Integração com Contrato
@@ -297,7 +297,7 @@ class ManutencaoPreventiva(models.Model):
     status = models.CharField(
         max_length=20,
         choices=STATUS_MPM,
-        default='EXECUTADO',
+        default='PENDENTE',
         verbose_name="Status",
     )
     
@@ -375,10 +375,12 @@ class ManutencaoPreventiva(models.Model):
     situacao_equipamento = models.CharField(max_length=50, choices=SITUACAO_CHOICES, default='Em Funcionamento', verbose_name="Situação do Equipamento")
     foto_poco = models.ImageField(upload_to='mpm_fotos/', null=True, blank=True, verbose_name="Foto Poço")
 
-    # Execução (Horários)
+    # Execução (Horários - Mestre)
     tecnico_chapa = models.CharField(max_length=50, null=True, blank=True, verbose_name="Chapa do Técnico")
     hora_chegada = models.TimeField(null=True, blank=True, verbose_name="Hora Chegada")
     hora_saida = models.TimeField(null=True, blank=True, verbose_name="Hora Saída")
+    
+    supervisor_local = models.CharField(max_length=255, null=True, blank=True, verbose_name="Supervisor Local (Técnico Sesen)")
 
     # Visto do Cliente
     cliente_comentarios = models.TextField(null=True, blank=True, verbose_name="Comentários do cliente")
@@ -397,7 +399,41 @@ class ManutencaoPreventiva(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.elevador} - {self.mes_referencia.strftime("%m/%Y")}'
+        return f'Manutenção - {self.mes_referencia.strftime("%m/%Y") if self.mes_referencia else ""}'
+
+class RegistroElevadorPreventiva(models.Model):
+    SITUACAO_CHOICES = [
+        ('Em Funcionamento', 'Em Funcionamento'),
+        ('Parado', 'Parado'),
+    ]
+    
+    manutencao = models.ForeignKey(
+        ManutencaoPreventiva,
+        on_delete=models.CASCADE,
+        related_name='elevadores_registrados',
+        verbose_name="Manutenção Preventiva Mestre"
+    )
+    
+    elevador = models.CharField(
+        max_length=50,
+        null=False,
+        blank=False,
+        choices=ELEVATOR_CHOICE,
+        verbose_name="Elevador"
+    )
+    
+    situacao = models.CharField(
+        max_length=50, 
+        choices=SITUACAO_CHOICES, 
+        default='Em Funcionamento', 
+        verbose_name="Situação do Equipamento"
+    )
+    
+    hora_inicio = models.TimeField(null=True, blank=True, verbose_name="Hora Início")
+    hora_fim = models.TimeField(null=True, blank=True, verbose_name="Hora Fim")
+
+    def __str__(self):
+        return f"{self.elevador} - {self.situacao}"
 
 class PecaManutencao(models.Model):
     STATUS_PECA = [
