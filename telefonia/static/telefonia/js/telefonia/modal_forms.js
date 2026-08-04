@@ -1120,7 +1120,9 @@ async function salvarEvento() {
         if (res.ok) {
             Swal.fire("Sucesso!", "Evento cadastrado com sucesso. Equipamentos instalados.", "success");
             modal_evento.hide();
-            $('#tabela-eventos').DataTable().ajax.reload();
+            if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
+                $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
+            }
         } else {
             Swal.fire("Erro", "Verifique os campos obrigatórios.", "error");
         }
@@ -1198,7 +1200,9 @@ async function recolherEvento() {
         if (res.ok) {
             Swal.fire("Concluído!", "Equipamentos recolhidos e retornados ao estoque.", "success");
             modal_evento.hide();
-            $('#tabela-eventos').DataTable().ajax.reload();
+            if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
+                $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
+            }
         } else {
             Swal.fire("Erro", "Não foi possível concluir a ação.", "error");
         }
