@@ -760,6 +760,15 @@ window.visualizarSolicitacao = async function(id) {
             document.getElementById('vis-local').textContent = dados.local || '-';
             document.getElementById('vis-termo').textContent = dados.termo_transferencia_interna || '-';
             
+            const btnPdfTermo = document.getElementById('vis-btn-pdf-termo');
+            if (dados.pdf_termo) {
+                btnPdfTermo.href = dados.pdf_termo;
+                btnPdfTermo.classList.remove('d-none');
+            } else {
+                btnPdfTermo.classList.add('d-none');
+                btnPdfTermo.href = '#';
+            }
+            
             const sts = dados.status || '-';
             document.getElementById('vis-status').innerHTML = `<span class="badge bg-secondary">${sts.toUpperCase()}</span>`;
             
@@ -772,52 +781,6 @@ window.visualizarSolicitacao = async function(id) {
             document.getElementById('vis_data_instalacao').textContent = dados.data_instalacao ? formatDate(dados.data_instalacao) : 'Não informado';
             
             document.getElementById('vis_relatorio').textContent = dados.relatorio || 'Sem observações/relatório.';
-            
-            const midiaSecao = document.getElementById('vis-tele-secao-midia');
-            const previewBox = document.getElementById('vis-tele-midia-preview-box');
-            const downloadBtn = document.getElementById('vis-tele-midia-download-btn');
-            const filenameEl = document.getElementById('vis-tele-midia-filename');
-            const typeEl = document.getElementById('vis-tele-midia-type');
-            const iconEl = document.getElementById('vis-tele-midia-icon');
-
-            if (dados.midia) {
-                midiaSecao.classList.remove('d-none');
-                downloadBtn.href = dados.midia;
-                
-                const fileName = dados.midia.split('/').pop().split('?')[0];
-                filenameEl.innerText = fileName;
-                
-                const ext = fileName.split('.').pop().toLowerCase();
-                let iconClass = 'bi-file-earmark';
-                let typeName = 'Arquivo';
-                
-                if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
-                    iconClass = 'bi-file-earmark-image';
-                    typeName = 'Imagem';
-                } else if (['pdf'].includes(ext)) {
-                    iconClass = 'bi-file-earmark-pdf';
-                    typeName = 'Documento PDF';
-                } else if (['doc', 'docx'].includes(ext)) {
-                    iconClass = 'bi-file-earmark-word';
-                    typeName = 'Documento Word';
-                } else if (['mp4', 'webm', 'ogg'].includes(ext)) {
-                    iconClass = 'bi-file-earmark-play';
-                    typeName = 'Vídeo';
-                }
-                
-                iconEl.innerHTML = `<i class="bi ${iconClass}"></i>`;
-                typeEl.innerText = typeName;
-                
-                previewBox.onclick = function() {
-                    if (typeof window.openGenericFileViewer === 'function') {
-                        window.openGenericFileViewer(dados.midia, fileName);
-                    } else {
-                        window.open(dados.midia, '_blank');
-                    }
-                };
-            } else {
-                midiaSecao.classList.add('d-none');
-            }
             
             document.getElementById('vis-ramal').textContent = dados.ramal || '-';
             document.getElementById('vis-local-instalacao').textContent = dados.local || '-';
