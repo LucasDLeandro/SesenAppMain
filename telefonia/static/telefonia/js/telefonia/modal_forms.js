@@ -1044,7 +1044,7 @@ if (formFinalizarSenha) {
 const modal_evento = new bootstrap.Modal(document.getElementById('modal-emprestimo-evento'));
 const form_evento = document.getElementById('form-emprestimo-evento');
 
-function resetModalEvento() {
+function resetModalEvento(skipCarregar = false) {
     form_evento.reset();
     $('#evento_id').val('');
     $('#evento_aparelhos').val(null).trigger('change');
@@ -1055,8 +1055,10 @@ function resetModalEvento() {
     // Habilitar campos
     $('#form-emprestimo-evento input, #form-emprestimo-evento select, #form-emprestimo-evento textarea').prop('disabled', false);
     
-    // O select2 deve recarregar os disponíveis
-    carregarAparelhosEvento();
+    if (!skipCarregar) {
+        // O select2 deve recarregar os disponíveis
+        carregarAparelhosEvento();
+    }
 }
 
 document.getElementById('modal-emprestimo-evento').addEventListener('show.bs.modal', function (e) {
@@ -1128,7 +1130,7 @@ async function salvarEvento() {
 }
 
 async function abrirModalEvento(id) {
-    resetModalEvento();
+    resetModalEvento(true);
     try {
         const res = await fetch(`/telefonia/api/eventos/${id}/`);
         const data = await res.json();
