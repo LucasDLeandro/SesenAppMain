@@ -1196,6 +1196,7 @@ async function recolherEvento() {
         } else {
             Swal.fire("Erro", "Não foi possível concluir a ação.", "error");
         }
+    } catch(err) {
         Swal.fire("Erro", "Erro ao conectar.", "error");
     }
 }
