@@ -451,24 +451,12 @@
     </div>
 </template>
 
-</div>
-{% endblock %}
-
-{% block extra_js %}
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="{% static 'reembolsos/js/dashboard.js' %}?v=2.0"></script>
-{% endblock %}
-
-<!-- Modal Visualizar Solicitação -->
+<!-- Modal Visualizar SolicitaÃ§Ã£o -->
 <div class="modal fade" id="modal-visualizar-solicitacao" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header border-0 pb-0 pt-4 px-4">
-                <h5 class="modal-title fw-bold text-info"><i class="bi bi-eye me-2"></i>Detalhes da Solicitação</h5>
+                <h5 class="modal-title fw-bold text-info"><i class="bi bi-eye me-2"></i>Detalhes da SolicitaÃ§Ã£o</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
@@ -478,7 +466,7 @@
                         <div id="vis-solicitacao-servidor" class="fw-bold fs-6"></div>
                     </div>
                     <div class="col-md-4">
-                        <label class="text-muted fw-bold small mb-1">Protocolo SEI (Solicitação)</label>
+                        <label class="text-muted fw-bold small mb-1">Protocolo SEI (SolicitaÃ§Ã£o)</label>
                         <div id="vis-solicitacao-sei" class="fw-bold fs-6"></div>
                     </div>
 
@@ -488,9 +476,9 @@
                             <table class="table table-sm table-bordered align-middle">
                                 <thead class="table-light text-muted small">
                                     <tr>
-                                        <th>Período</th>
+                                        <th>PerÃ­odo</th>
                                         <th>Fatura (R$)</th>
-                                        <th>Serviço (R$)</th>
+                                        <th>ServiÃ§o (R$)</th>
                                         <th>Doc Fatura</th>
                                         <th>Comprovante</th>
                                         <th>Aprovada?</th>
@@ -503,7 +491,7 @@
 
                     <h6 class="mt-4 mb-2 fw-bold text-success border-bottom pb-2">Pagamento de Reembolso</h6>
                     <div class="col-md-4">
-                        <label class="text-muted fw-bold small mb-1">Ordem Bancária (SEI)</label>
+                        <label class="text-muted fw-bold small mb-1">Ordem BancÃ¡ria (SEI)</label>
                         <div id="vis-solicitacao-ob" class="fw-bold"></div>
                     </div>
                     <div class="col-md-4">
@@ -516,7 +504,7 @@
                     </div>
 
                     <div class="col-12 mt-4">
-                        <h6 class="fw-bold text-secondary border-bottom pb-2 mb-2">Observações</h6>
+                        <h6 class="fw-bold text-secondary border-bottom pb-2 mb-2">ObservaÃ§Ãµes</h6>
                         <ul id="vis-observacoes-list" class="list-group list-group-flush"></ul>
                     </div>
                 </div>
@@ -527,4 +515,16 @@
         </div>
     </div>
 </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-2.0.3/datatables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.1/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.1/js/responsive.bootstrap5.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'reembolsos/js/dashboard.js' %}?v=2.0"></script>
+{% endblock %}
 
