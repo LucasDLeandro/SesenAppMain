@@ -114,6 +114,39 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
                 except Exception as e:
                     print(f"Erro ao formatar/enviar mensagem: {e}")
 
+    def perform_update(self, serializer):
+        solicitacao = serializer.save()
+        
+        has_new_files = False
+        import re
+        for key, file in self.request.FILES.items():
+            match = re.match(r'^pdf_termos_edit_(\d+)$', key)
+            if match:
+                has_new_files = True
+                index = int(match.group(1))
+                
+                anexo, created = TelefoneSolicitacaoAnexo.objects.get_or_create(
+                    solicitacao=solicitacao,
+                    ordem=index
+                )
+                
+                if not created and anexo.arquivo:
+                    anexo.arquivo.delete(save=False)
+                    
+                safe_termo = ''.join(c for c in (solicitacao.termo_transferencia_interna or 'termo') if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
+                file.name = f"{safe_termo}_{solicitacao.protocolo}_{index}.pdf"
+                anexo.arquivo = file
+                anexo.save()
+                
+        if has_new_files:
+            if hasattr(solicitacao, 'midia') and solicitacao.midia:
+                solicitacao.midia.delete(save=False)
+                solicitacao.midia = None
+            if hasattr(solicitacao, 'pdf_termo') and solicitacao.pdf_termo:
+                solicitacao.pdf_termo.delete(save=False)
+                solicitacao.pdf_termo = None
+            solicitacao.save()
+
     @action(detail=True, methods=['patch'])
     def concluir(self, request, pk=None):
         solicitacao = self.get_object()

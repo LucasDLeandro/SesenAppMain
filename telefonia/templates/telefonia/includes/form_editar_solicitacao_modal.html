@@ -107,21 +107,12 @@
                 <textarea class="form-control" id="edit-relatorio" rows="3"></textarea>
               </div>
             </div>
-            
-            <div class="row mb-3">
-              <div class="col-12">
-                <label class="form-label text-muted fw-bold mb-1">Anexo/Mídia (Selecione para substituir)</label>
-                <input type="file" class="form-control" id="edit-midia">
-                <div id="midia-atual-container" class="mt-2 small" style="display: none;">
-                  Mídia atual: <a href="#" id="link-midia-atual" target="_blank" class="text-primary fw-bold">Ver Anexo</a>
-                </div>
-              </div>
-            </div>
+            <!-- Bloco edit-midia removido em favor dos inputs na tabela -->
           </div>
 
           <div class="form-section-modal mt-3">
             <h6 class="form-section-title-modal text-success">
-              <i class="bi bi-check-circle"></i> Equipamentos Instalados (Somente Visualização)
+              <i class="bi bi-check-circle"></i> Equipamentos e Anexos
             </h6>
             <div class="table-responsive mt-2">
               <table class="table table-sm table-bordered align-middle text-center mb-0">
@@ -129,6 +120,7 @@
                   <tr>
                     <th>Patrimônio</th>
                     <th>Ramal Associado</th>
+                    <th>Documento (Substituir/Adicionar)</th>
                   </tr>
                 </thead>
                 <tbody id="edit-tbody-aparelhos">

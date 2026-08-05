@@ -903,17 +903,10 @@ window.abrirEdicaoSolicitacao = async function(id) {
             document.getElementById('edit-data_instalacao').value = dados.data_instalacao ? dados.data_instalacao.substring(0, 16) : '';
             document.getElementById('edit-relatorio').value = dados.relatorio || '';
 
-            const midiaContainer = document.getElementById('midia-atual-container');
-            const linkMidia = document.getElementById('link-midia-atual');
-            if (dados.midia) {
-                midiaContainer.style.display = 'block';
-                linkMidia.href = dados.midia;
-            } else {
-                midiaContainer.style.display = 'none';
-                linkMidia.href = '#';
+            const anexoUrl = dados.pdf_termo || dados.midia;
+            if (anexoUrl && (!dados.anexos || dados.anexos.length === 0)) {
+                dados.anexos = [{ arquivo: anexoUrl, id: 'legacy' }];
             }
-            // Reset input file
-            document.getElementById('edit-midia').value = '';
 
             const secaoAparelhosEmpty = document.getElementById('edit-secao-aparelhos-empty');
             const tbodyAparelhos = document.getElementById('edit-tbody-aparelhos');
@@ -921,14 +914,26 @@ window.abrirEdicaoSolicitacao = async function(id) {
             if (dados.aparelhos_detalhes && dados.aparelhos_detalhes.length > 0) {
                 secaoAparelhosEmpty.style.display = 'none';
                 tbodyAparelhos.innerHTML = '';
-                dados.aparelhos_detalhes.forEach(ap => {
+                let maxLen = Math.max(dados.aparelhos_detalhes.length, (dados.anexos || []).length);
+                for(let i = 0; i < maxLen; i++) {
+                    let ap = dados.aparelhos_detalhes[i] || {};
+                    let anexo = (dados.anexos || [])[i];
+                    let anexoHtml = '';
+                    if (anexo) {
+                        anexoHtml = `<div class="mb-1"><a href="${anexo.arquivo}" target="_blank" class="text-primary small fw-bold"><i class="bi bi-file-earmark-pdf"></i> Ver PDF Atual</a></div>`;
+                    }
+                    
                     tbodyAparelhos.innerHTML += `
                         <tr>
-                            <td><strong>${ap.patrimonio || '-'}</strong></td>
-                            <td>${ap.ramal || '-'}</td>
+                            <td class="align-middle"><strong>${ap.patrimonio || '-'}</strong></td>
+                            <td class="align-middle">${ap.ramal || '-'}</td>
+                            <td class="align-middle">
+                                ${anexoHtml}
+                                <input type="file" class="form-control form-control-sm" name="pdf_termos_edit_${i}" accept=".pdf">
+                            </td>
                         </tr>
                     `;
-                });
+                }
             } else {
                 secaoAparelhosEmpty.style.display = 'block';
                 tbodyAparelhos.innerHTML = '';
@@ -966,9 +971,15 @@ window.salvarEdicaoSolicitacao = async function() {
     
     formData.append('relatorio', document.getElementById('edit-relatorio').value);
 
-    const midiaInput = document.getElementById('edit-midia');
-    if (midiaInput && midiaInput.files.length > 0) {
-        formData.append('midia', midiaInput.files[0]);
+    // Coleta arquivos de anexo da tabela
+    const tbody = document.getElementById('edit-tbody-aparelhos');
+    if (tbody) {
+        const fileInputs = tbody.querySelectorAll('input[type="file"]');
+        fileInputs.forEach((input) => {
+            if (input.files.length > 0) {
+                formData.append(input.name, input.files[0]);
+            }
+        });
     }
 
     try {
