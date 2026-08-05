@@ -807,35 +807,61 @@ window.visualizarSolicitacao = async function(id) {
             tbodyAparelhos.innerHTML = '';
 
             if (dados.aparelhos_detalhes && dados.aparelhos_detalhes.length > 0) {
-                dados.aparelhos_detalhes.forEach(ap => {
+                let maxLen = Math.max(dados.aparelhos_detalhes.length, (dados.anexos || []).length);
+                for(let i = 0; i < maxLen; i++) {
+                    let ap = dados.aparelhos_detalhes[i] || {};
+                    let anexo = (dados.anexos || [])[i];
+                    let anexoHtml = '-';
+                    if (anexo) {
+                        anexoHtml = `
+                            <div class="d-flex justify-content-center gap-1">
+                                <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-primary" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>
+                            </div>
+                        `;
+                    }
+                    
                     tbodyAparelhos.innerHTML += `
                         <tr>
                             <td class="d-flex align-items-center justify-content-center gap-2">
                                 <strong>${ap.patrimonio || '-'}</strong>
-                                ${ap.patrimonio ? `<button type="button" class="btn btn-sm btn-link text-secondary p-0" onclick="navigator.clipboard.writeText('${ap.patrimonio}'); Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Copiado!', showConfirmButton: false, timer: 1500});" title="Copiar Patrimônio"><i class="bi bi-copy"></i></button>` : ''}
+                                ${ap.patrimonio ? `<button type="button" class="btn btn-sm btn-link text-secondary p-0" onclick="window.copiarPatrimonio('${ap.patrimonio}')" title="Copiar Patrimônio"><i class="bi bi-copy"></i></button>` : ''}
                             </td>
                             <td>${ap.sala || '-'}</td>
                             <td>${ap.ramal || '-'}</td>
+                            <td>${anexoHtml}</td>
                         </tr>
                     `;
-                });
+                }
             } else {
                 let ramais = dados.ramal ? dados.ramal.split(',').map(s => s.trim()) : [];
                 let locais = dados.local ? dados.local.split(',').map(s => s.trim()) : [];
-                let maxLen = Math.max(ramais.length, locais.length);
+                let maxLen = Math.max(ramais.length, locais.length, (dados.anexos || []).length);
 
                 if (maxLen > 0) {
                     for(let i = 0; i < maxLen; i++) {
+                        let anexo = (dados.anexos || [])[i];
+                        let anexoHtml = '-';
+                        if (anexo) {
+                            anexoHtml = `
+                                <div class="d-flex justify-content-center gap-1">
+                                    <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-primary" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>
+                                </div>
+                            `;
+                        }
+
                         tbodyAparelhos.innerHTML += `
                             <tr>
                                 <td><span class="text-muted fst-italic">Aguardando Instalação</span></td>
                                 <td>${locais[i] || '-'}</td>
                                 <td>${ramais[i] || '-'}</td>
+                                <td>${anexoHtml}</td>
                             </tr>
                         `;
                     }
                 } else {
-                    tbodyAparelhos.innerHTML = `<tr><td colspan="3" class="text-muted">Nenhum aparelho vinculado.</td></tr>`;
+                    tbodyAparelhos.innerHTML = `<tr><td colspan="4" class="text-muted">Nenhum aparelho vinculado.</td></tr>`;
                 }
             }
 
@@ -1378,3 +1404,63 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 });
+
+function copyToClipboardFallback(text) {
+    var textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+    } catch (err) {
+        console.error('Fallback: Oops, unable to copy', err);
+    }
+    document.body.removeChild(textArea);
+}
+
+window.copiarPatrimonio = function(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Copiado!', showConfirmButton: false, timer: 1500});
+        }).catch(err => {
+            copyToClipboardFallback(text);
+            Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Copiado!', showConfirmButton: false, timer: 1500});
+        });
+    } else {
+        copyToClipboardFallback(text);
+        Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Copiado!', showConfirmButton: false, timer: 1500});
+    }
+};
+
+window.excluirAnexo = function(solicitacaoId, anexoId) {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Esta ação irá deletar o documento PDF permanentemente!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, deletar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({title: 'Excluindo...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+            fetch(`/telefonia/api/solicitacoes/${solicitacaoId}/excluir_anexo/${anexoId}/`, {
+                method: 'DELETE',
+                headers: { 'X-CSRFToken': getCookie('csrftoken') }
+            })
+            .then(res => res.json().then(data => ({ status: res.status, body: data })))
+            .then(result => {
+                if (result.status === 200) {
+                    Swal.fire('Excluído!', 'O anexo foi excluído com sucesso.', 'success');
+                    // Reload modal data
+                    visualizarSolicitacao(solicitacaoId);
+                } else {
+                    Swal.fire('Erro!', result.body.error || 'Erro ao excluir.', 'error');
+                }
+            })
+            .catch(() => Swal.fire('Erro!', 'Problema de conexão com o servidor.', 'error'));
+        }
+    });
+}

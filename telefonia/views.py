@@ -183,31 +183,45 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         
         if solicitacao.status != 'aguardando_supervisor_aparelho':
             return Response({'error': 'A solicitação não está na fase administrativa.'}, status=status.HTTP_400_BAD_REQUEST)
-            
         termo = request.data.get('termo_transferencia_interna')
-        pdf_termo = request.FILES.get('pdf_termo')
+        pdf_termos = request.FILES.getlist('pdf_termos')
         
         if not termo or str(termo).strip() == '':
             return Response({'error': 'O preenchimento do número do Termo de Transferência Interna é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
             
-        if not pdf_termo:
-            return Response({'error': 'O envio do arquivo PDF do termo é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not pdf_termos or len(pdf_termos) == 0:
+            return Response({'error': 'O envio de pelo menos um arquivo PDF é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
         
-        # Safe string for filename
+        solicitacao.termo_transferencia_interna = termo
+        solicitacao.status = 'finalizada'
+        solicitacao.save()
+        
         import os
         import re
         safe_termo = re.sub(r'[^a-zA-Z0-9_-]', '', str(termo).replace('/', '').replace('\\', '').replace(' ', ''))
-        ext = os.path.splitext(pdf_termo.name)[1]
         
-        pdf_termo.name = f"TTI_{safe_termo}{ext}"
-        
-        solicitacao.termo_transferencia_interna = termo
-        solicitacao.pdf_termo = pdf_termo
+        for index, arquivo in enumerate(pdf_termos):
+            ext = os.path.splitext(arquivo.name)[1]
+            arquivo.name = f"TTI_{safe_termo}_{index+1}{ext}"
+            TelefoneSolicitacaoAnexo.objects.create(
+                solicitacao=solicitacao,
+                arquivo=arquivo,
+                ordem=index
+            )
             
-        solicitacao.status = 'concluida'
-        solicitacao.save()
-        
-        return Response({'status': 'Fase administrativa concluída com sucesso.'}, status=status.HTTP_200_OK)
+        # Manter compatibilidade com o serializer salvando apenas que a ação foi registrada no log.
+        return Response({'status': 'Solicitação administrativa concluída com sucesso.'}, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['delete'], url_path='excluir_anexo/(?P<anexo_id>[^/.]+)')
+    def excluir_anexo(self, request, pk=None, anexo_id=None):
+        solicitacao = self.get_object()
+        try:
+            anexo = TelefoneSolicitacaoAnexo.objects.get(id=anexo_id, solicitacao=solicitacao)
+            anexo.arquivo.delete(save=False)
+            anexo.delete()
+            return Response({'status': 'Anexo excluído com sucesso.'}, status=status.HTTP_200_OK)
+        except TelefoneSolicitacaoAnexo.DoesNotExist:
+            return Response({'error': 'Anexo não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class EmprestimoEventoViewSet(viewsets.ModelViewSet):

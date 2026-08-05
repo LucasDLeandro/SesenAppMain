@@ -19,9 +19,15 @@ class EmprestimoEventoSerializer(serializers.ModelSerializer):
             for a in obj.aparelhos.all()
         ]
 
+class TelefoneSolicitacaoAnexoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TelefoneSolicitacaoAnexo
+        fields = '__all__'
+
 class TelefoneSolicitacaoSerializer(serializers.ModelSerializer):
     aparelhos_detalhes = serializers.SerializerMethodField()
     ultima_atualizacao = serializers.SerializerMethodField()
+    anexos = TelefoneSolicitacaoAnexoSerializer(many=True, read_only=True)
 
     class Meta:
         model = TelefoneSolicitacao

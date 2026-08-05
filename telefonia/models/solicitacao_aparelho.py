@@ -106,3 +106,24 @@ class TelefoneSolicitacao(models.Model):
         
     def __str__(self):
         return f"{self.protocolo}"
+
+
+class TelefoneSolicitacaoAnexo(models.Model):
+    solicitacao = models.ForeignKey(
+        TelefoneSolicitacao,
+        on_delete=models.CASCADE,
+        related_name="anexos",
+        help_text="Solicitação vinculada"
+    )
+    arquivo = models.FileField(
+        upload_to='telefonia/midia/anexos_solicitacoes/',
+        help_text="Arquivo anexo"
+    )
+    ordem = models.IntegerField(
+        default=0,
+        help_text="Ordem do anexo para relacionamento com aparelhos"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Anexo {self.ordem} - {self.solicitacao.protocolo}"
