@@ -17,7 +17,7 @@ DESVIO_CHOICES = [
     (False, 'Não')
 ]
 
-from .solicitacao_aparelho import TelefoneSolicitacao
+from .solicitacao_aparelho import TelefoneSolicitacao, TelefoneSolicitacaoAnexo
 from .aparelhos_telefonicos import AparelhoVoip
 from .remessa_manutencao import RemessaManutencao
 from .solicitacao_senha import CriarSenha
