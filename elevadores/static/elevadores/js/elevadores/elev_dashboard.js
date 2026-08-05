@@ -218,7 +218,7 @@ async function dadosIndicadorTres() {
                 type: 'category',
                 categoryorder: 'array',
                 categoryarray: [...listaElevadores],
-                title: 'Quantidade de Ocorrências',
+                title: 'Quantidade de Ocorrﾃｪncias',
                 tickmode: 'linear',
                 dtick: 0.1,
                 automargin: true,
@@ -226,7 +226,7 @@ async function dadosIndicadorTres() {
                 range: [-0.5, listaElevadores.length -0.5]
                 
             },
-            showlegend: false, // Ligamos a legenda para você poder filtrar clicando
+            showlegend: false, // Ligamos a legenda para vocﾃｪ poder filtrar clicando
             height: 500,
             margin: { l: 150, r: 20, t: 50, b: 50 }, // Margens mais limpas
             hovermode: 'closest' // O tooltip foca na bolha exata que o mouse encostar
@@ -372,9 +372,9 @@ async function dadosIndicadorQuatro() {
             hovertemplate: 
                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
-                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
-                'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
+                'Hrs ﾃｺteis no Mﾃｪs Total: <b>%{customdata[2]}</b><br>' +
+                'Dias ﾃｺteis no Mﾃｪs Total: <b>%{customdata[3]}</b><br>' +
+                'Horas Disponﾃｭveis: <b>%{customdata[4]}</b><br>' +
                 'Disponibilidade: <b>%{y}%</b>' +
                 '<extra></extra>',
             textposition: 'auto',
@@ -825,10 +825,10 @@ async function dadosIndicadorDois() {
             text: text_status,
             hovertemplate: 
                 '<b>Elevador:</b> %{y}<br>' +
-                '<b>Dia Execução:</b> %{x}<br>' +
+                '<b>Dia Execuﾃｧﾃ｣o:</b> %{x}<br>' +
                 '<b>Status:</b> %{text}<br>' +
                 '<b>OS:</b> %{customdata[0]}<br>' +
-                '<b>Técnico:</b> %{customdata[1]}' +
+                '<b>Tﾃｩcnico:</b> %{customdata[1]}' +
                 '<extra></extra>'
         };
 
@@ -843,7 +843,7 @@ async function dadosIndicadorDois() {
 
         const layoutChartDois = {
             xaxis: {
-                title: 'Dia do Mês',
+                title: 'Dia do Mﾃｪs',
                 range: [0, ultimoDiaAtual],
                 tickmode: 'array',
                 tickvals: tickvalsAtual,
@@ -891,13 +891,13 @@ async function dadosIndicadorDois() {
         Plotly.react(corpoChartDois, [trace], layoutChartDois);
 
 } catch(erro) {
-        console.error("Erro ao renderizar gr├ífico 2:", erro);
-        corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gr├ífico.</div>';
+        console.error("Erro ao renderizar gr笏愿ｭfico 2:", erro);
+        corpoChartDois.innerHTML = '<div class="alert alert-danger m-3">Falha ao carregar gr笏愿ｭfico.</div>';
     }
 }
 
 
-// === NOVAS FUNCIONALIDADES: ALARMES EMS, REGISTRO PARADAS E VISÃO 360 ===
+// === NOVAS FUNCIONALIDADES: ALARMES EMS, REGISTRO PARADAS E VISﾃグ 360 ===
 
 // 1. Alarmes EMS
 function carregarAlarmesEms() {
@@ -1113,7 +1113,7 @@ window.abrirModalVisualizarAlarmeEms = function(id) {
         });
 };
 
-// 3. Visão 360
+// 3. Visﾃ｣o 360
 function carregarVisao360() {
     const inputMes = document.getElementById('filtroMesVisao360');
     if (!inputMes) return;
@@ -1147,7 +1147,7 @@ function renderizarCardsVisao360(mes) {
             grid.innerHTML = '';
             
             if (!data || data.length === 0) {
-                grid.innerHTML = '<div class="col-12 text-center text-muted">Nenhum histórico encontrado.</div>';
+                grid.innerHTML = '<div class="col-12 text-center text-muted">Nenhum histﾃｳrico encontrado.</div>';
                 grid.style.display = 'block';
                 return;
             }
@@ -1165,7 +1165,7 @@ function renderizarCardsVisao360(mes) {
                         let color = 'text-primary';
                         if (ev.tipo === 'ALARME') { icon = 'bi-bell-fill'; color = 'text-danger'; }
                         else if (ev.tipo === 'MPM') { icon = 'bi-tools'; color = 'text-success'; }
-                        else if (ev.tipo === 'PEÇA') { icon = 'bi-nut-fill'; color = 'text-info'; }
+                        else if (ev.tipo === 'PEﾃ②') { icon = 'bi-nut-fill'; color = 'text-info'; }
                         
                         eventosHTML += `
                             <div class="d-flex align-items-center mb-2 small">
@@ -1180,7 +1180,7 @@ function renderizarCardsVisao360(mes) {
                     }
                     eventosHTML += '</div>';
                 } else {
-                    eventosHTML = '<div class="mt-3 text-center text-muted small"><i class="bi bi-check-circle me-1"></i>Sem ocorrências</div>';
+                    eventosHTML = '<div class="mt-3 text-center text-muted small"><i class="bi bi-check-circle me-1"></i>Sem ocorrﾃｪncias</div>';
                 }
                 
                 card.innerHTML = `
@@ -1196,7 +1196,7 @@ function renderizarCardsVisao360(mes) {
                         </div>
                         <div class="mt-3 text-center">
                             <button class="btn btn-sm btn-outline-primary rounded-pill w-100" onclick="abrirModalHistoricoElevador('${elev.elevador}', '${mes}')">
-                                Ver Histórico Completo
+                                Ver Histﾃｳrico Completo
                             </button>
                         </div>
                     </div>
@@ -1205,10 +1205,10 @@ function renderizarCardsVisao360(mes) {
             });
         })
         .catch(err => {
-            console.error('Erro ao buscar histórico', err);
+            console.error('Erro ao buscar histﾃｳrico', err);
             loading.classList.add('d-none');
             grid.style.display = 'block';
-            grid.innerHTML = '<div class="col-12 text-center text-danger">Erro ao carregar visão 360.</div>';
+            grid.innerHTML = '<div class="col-12 text-center text-danger">Erro ao carregar visﾃ｣o 360.</div>';
         });
 }
 
@@ -1226,7 +1226,7 @@ window.abrirModalHistoricoElevador = function(elevador, mes) {
         .then(data => {
             const elevData = data.find(d => d.elevador === elevador);
             if (!elevData) {
-                modalBody.innerHTML = '<div class="alert alert-warning">Elevador não encontrado.</div>';
+                modalBody.innerHTML = '<div class="alert alert-warning">Elevador nﾃ｣o encontrado.</div>';
                 return;
             }
             
@@ -1252,7 +1252,7 @@ window.abrirModalHistoricoElevador = function(elevador, mes) {
             `;
             
             if (elevData.eventos.length === 0) {
-                html += '<div class="text-center text-muted my-5"><i class="bi bi-check-circle fs-1 d-block mb-3"></i>Nenhum evento registrado neste mês.</div>';
+                html += '<div class="text-center text-muted my-5"><i class="bi bi-check-circle fs-1 d-block mb-3"></i>Nenhum evento registrado neste mﾃｪs.</div>';
             } else {
                 html += '<div class="timeline">';
                 elevData.eventos.forEach(ev => {
@@ -1264,7 +1264,7 @@ window.abrirModalHistoricoElevador = function(elevador, mes) {
                     
                     if (ev.tipo === 'ALARME') { icon = 'bi-bell-fill'; bg = 'bg-danger'; text = 'text-danger'; }
                     else if (ev.tipo === 'MPM') { icon = 'bi-tools'; bg = 'bg-success'; text = 'text-success'; }
-                    else if (ev.tipo === 'PEÇA') { icon = 'bi-nut-fill'; bg = 'bg-info'; text = 'text-info'; }
+                    else if (ev.tipo === 'PEﾃ②') { icon = 'bi-nut-fill'; bg = 'bg-info'; text = 'text-info'; }
                     
                     html += `
                         <div class="d-flex mb-4">
@@ -1296,7 +1296,7 @@ window.abrirModalHistoricoElevador = function(elevador, mes) {
         })
         .catch(err => {
             console.error(err);
-            modalBody.innerHTML = '<div class="alert alert-danger">Erro ao carregar o histórico.</div>';
+            modalBody.innerHTML = '<div class="alert alert-danger">Erro ao carregar o histﾃｳrico.</div>';
         });
 };
 
@@ -1314,7 +1314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         paradasTab.addEventListener('shown.bs.tab', carregarRegistroParadas);
     }
     
-    // Carregar visão 360 quando a aba for clicada
+    // Carregar visﾃ｣o 360 quando a aba for clicada
     const visao360Tab = document.getElementById('visao360-tab');
     if (visao360Tab) {
         visao360Tab.addEventListener('shown.bs.tab', carregarVisao360);
@@ -1337,9 +1337,9 @@ window.abrirModalDemandasPendentes = async function() {
 
         if (resOs.ok) {
             const osData = await resOs.json();
-            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
+            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUﾃ好A').forEach(o => {
                 let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
-                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEÇAS')) {
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEﾃ②S')) {
                     const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
                     tempo = `${minPassados} min`;
                 }
@@ -1348,7 +1348,7 @@ window.abrirModalDemandasPendentes = async function() {
                     dataOrigem: o.data_hora,
                     dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
                     ref: o.protocolo,
-                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEÇAS' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEﾃ②S' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
                     equip: o.elevador,
                     tempo: tempo,
                     id: o.id,
@@ -1366,7 +1366,7 @@ window.abrirModalDemandasPendentes = async function() {
                     dataOrigem: p.created_at || p.data_registro || new Date().toISOString(),
                     dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
                     ref: p.tipo_peca,
-                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
+                    tipoNome: '<span class="badge bg-warning text-dark">Peﾃｧa</span>',
                     equip: p.elevador,
                     tempo: p.status,
                     id: p.id,
@@ -1377,12 +1377,12 @@ window.abrirModalDemandasPendentes = async function() {
 
         if (resMpm.ok) {
             const mpmData = await resMpm.json();
-            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO' || m.status === 'PENDENTE').forEach(m => {
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
-                    ref: 'Prevenção Mensal',
+                    ref: 'Prevenﾃｧﾃ｣o Mensal',
                     tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
                     equip: m.elevador,
                     tempo: 'Atrasada',
@@ -1406,7 +1406,7 @@ window.abrirModalDemandasPendentes = async function() {
         tbody.innerHTML = '';
 
         if (demandas.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success py-4"><i class="bi bi-emoji-smile fs-4 d-block mb-2"></i>Nenhuma pendência encontrada!</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-success py-4"><i class="bi bi-emoji-smile fs-4 d-block mb-2"></i>Nenhuma pendﾃｪncia encontrada!</td></tr>';
         } else {
             demandas.forEach(d => {
                 let btnAction = '';
@@ -1421,7 +1421,7 @@ window.abrirModalDemandasPendentes = async function() {
                     const pecaStr = encodeURIComponent(JSON.stringify(d.extra));
                     btnAction = `
                         <div class="d-flex flex-nowrap gap-1">
-                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peça">
+                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peﾃｧa">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
@@ -1459,7 +1459,7 @@ window.abrirModalDemandasPendentes = async function() {
         if (modalEl && modalEl.parentNode !== document.body) {
             document.body.appendChild(modalEl);
         }
-        // Garantimos que não existam múltiplos backdrops usando getInstance
+        // Garantimos que nﾃ｣o existam mﾃｺltiplos backdrops usando getInstance
         let modal = bootstrap.Modal.getInstance(modalEl);
         if (!modal) {
             modal = new bootstrap.Modal(modalEl);
@@ -1501,7 +1501,7 @@ document.getElementById('formConcluirMPM')?.addEventListener('submit', async fun
     const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
     if(csrfElement) csrfToken = csrfElement.value;
     else {
-        // Tentar obter via cookie se não houver no dom
+        // Tentar obter via cookie se nﾃ｣o houver no dom
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
@@ -1527,7 +1527,7 @@ document.getElementById('formConcluirMPM')?.addEventListener('submit', async fun
         });
 
         if(resp.ok) {
-            Swal.fire('Sucesso', 'Manutenção registrada!', 'success');
+            Swal.fire('Sucesso', 'Manutenﾃｧﾃ｣o registrada!', 'success');
             const mEl = document.getElementById('modalConcluirMPM');
             if (mEl) {
                 const m = bootstrap.Modal.getInstance(mEl);
@@ -1537,11 +1537,11 @@ document.getElementById('formConcluirMPM')?.addEventListener('submit', async fun
             if(typeof loadMPMTable === 'function') loadMPMTable();
             window.location.reload();
         } else {
-            Swal.fire('Erro', 'Não foi possível salvar', 'error');
+            Swal.fire('Erro', 'Nﾃ｣o foi possﾃｭvel salvar', 'error');
         }
     } catch(err) {
         console.error(err);
-        Swal.fire('Erro', 'Erro de conexão', 'error');
+        Swal.fire('Erro', 'Erro de conexﾃ｣o', 'error');
     }
 });
 
@@ -1549,7 +1549,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
     const data = JSON.parse(decodeURIComponent(osStrEncoded));
     document.getElementById('chegadaIdOS').value = data.id;
     
-    // Preencher campos read-only com informações da abertura
+    // Preencher campos read-only com informaﾃｧﾃｵes da abertura
     const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
     
     setVal('chegadaProtocolo', data.protocolo || '');
@@ -1561,14 +1561,14 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
     }
     setVal('chegadaDataAbertura', dataAbertura);
     
-    setVal('chegadaAprisionamento', (data.aprisionamento === true || data.aprisionamento === 'Sim') ? 'Sim' : 'Não');
+    setVal('chegadaAprisionamento', (data.aprisionamento === true || data.aprisionamento === 'Sim') ? 'Sim' : 'Nﾃ｣o');
     setVal('chegadaElevadorParado', data.elevador_parado || 'ATIVO');
     setVal('chegadaAtendente', data.atendente || '');
     setVal('chegadaSolicitante', data.solicitante || '');
     setVal('chegadaAlarmeEms', data.alarme_ems || 'Nenhum');
     setVal('chegadaOcorrencia', data.ocorrencia || '');
     
-    // Configurar horário atual padrão
+    // Configurar horﾃ｡rio atual padrﾃ｣o
     const now = new Date();
     now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
     setVal('chegadaDataHora', now.toISOString().slice(0, 16));
@@ -1589,7 +1589,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             theme: 'bootstrap-5',
             dropdownParent: $('#modalRegistrarChegadaOS'),
             tags: true,
-            placeholder: "Ex: João Silva ou selecione na lista",
+            placeholder: "Ex: Joﾃ｣o Silva ou selecione na lista",
             allowClear: true
         });
     }
@@ -1601,12 +1601,12 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             theme: 'bootstrap-5',
             dropdownParent: $('#modalRegistrarChegadaOS'),
             tags: true,
-            placeholder: "Selecione o técnico do TSE",
+            placeholder: "Selecione o tﾃｩcnico do TSE",
             allowClear: true
         });
     }
 
-    // Buscar técnicos da Otis e preencher selects (chegadaTecnico usa Select2, os demais são selects normais)
+    // Buscar tﾃｩcnicos da Otis e preencher selects (chegadaTecnico usa Select2, os demais sﾃ｣o selects normais)
     if (window.tecnicosOtisCache) {
         preencherSelectsTecnicos(window.tecnicosOtisCache);
     } else {
@@ -1616,7 +1616,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
                 window.tecnicosOtisCache = tecnicos;
                 preencherSelectsTecnicos(tecnicos);
             })
-            .catch(err => console.error('Erro ao buscar técnicos da Otis', err));
+            .catch(err => console.error('Erro ao buscar tﾃｩcnicos da Otis', err));
     }
 
     function preencherSelectsTecnicos(tecnicos) {
@@ -1630,7 +1630,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
 
         const outrosSelects = document.querySelectorAll('#edit_os_tecnico, #mpmTecnicoNome, #editMpmTecnicoNome, #concluirMPMTecnico, #pecaTecnicoIdentificador, #concluirTecnico, #editPecaTecnicoIdentificador, #editPecaTecnico, #concluirTecnicoOS, #id_tecnico');
         outrosSelects.forEach(select => {
-            let optionsHtml = '<option value="" selected disabled>Selecione o técnico</option>';
+            let optionsHtml = '<option value="" selected disabled>Selecione o tﾃｩcnico</option>';
             tecnicos.forEach(tec => {
                 optionsHtml += `<option value="${tec}">${tec}</option>`;
             });
@@ -1638,7 +1638,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
         });
     }
 
-    // Buscar equipe do TSE (Contrato de Manutenção Predial) e preencher select2
+    // Buscar equipe do TSE (Contrato de Manutenﾃｧﾃ｣o Predial) e preencher select2
     fetch('/empresas/api/contatos_por_app/?app=MANUTENCAO_PREDIAL')
         .then(res => res.json())
         .then(contatos => {
@@ -1646,7 +1646,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             $selectAcompanhante.append(new Option('', '', false, false)); // placeholder
             contatos.forEach(c => {
                 const cargoStr = (c.cargo || '').toLowerCase();
-                if (cargoStr.includes('técnico') || cargoStr.includes('tecnico') || cargoStr.includes('supervisor')) {
+                if (cargoStr.includes('tﾃｩcnico') || cargoStr.includes('tecnico') || cargoStr.includes('supervisor')) {
                     const valueStr = `${c.nome} (${c.cargo})`;
                     const textStr = `${c.nome} - ${c.cargo} - ${c.empresa}`;
                     $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
@@ -1659,8 +1659,8 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
                 let optionExists = optionsArray.some(opt => opt.value.startsWith(loggedUser));
                 
                 if (!optionExists) {
-                    const valueStr = `${loggedUser} (Usuário Sesen)`;
-                    const textStr = `${loggedUser} - Usuário Sesen`;
+                    const valueStr = `${loggedUser} (Usuﾃ｡rio Sesen)`;
+                    const textStr = `${loggedUser} - Usuﾃ｡rio Sesen`;
                     $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
                 }
                 
@@ -1674,7 +1674,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
                 $selectAcompanhante.val(null).trigger('change');
             }
         })
-        .catch(err => console.error('Erro ao buscar equipe da manutenção predial', err));
+        .catch(err => console.error('Erro ao buscar equipe da manutenﾃｧﾃ｣o predial', err));
 
     const modalEl = document.getElementById('modalRegistrarChegadaOS');
     if (modalEl) {
@@ -1754,9 +1754,9 @@ window.carregarWidgetDemandasDashboard = async function() {
 
         if (resOs.ok) {
             const osData = await resOs.json();
-            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUÍDA').forEach(o => {
+            osData.filter(o => o.status !== 'CONCLUIDA' && o.status !== 'CONCLUﾃ好A').forEach(o => {
                 let tempo = o.min_chegada ? `${o.min_chegada} min` : 'Calculando...';
-                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEÇAS')) {
+                if (!o.min_chegada && (o.status === 'ABERTA' || o.status === 'EM ANDAMENTO' || o.status === 'AGUARDANDO PEﾃ②S')) {
                     const minPassados = Math.floor((new Date() - new Date(o.data_hora)) / 60000);
                     tempo = `${minPassados} min`;
                 }
@@ -1765,7 +1765,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                     dataOrigem: o.data_hora,
                     dataExibicao: new Date(o.data_hora).toLocaleDateString('pt-BR'),
                     ref: o.protocolo,
-                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEÇAS' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
+                    tipoNome: o.status === 'ABERTA' ? '<span class="badge bg-secondary">OS Aberta</span>' : (o.status === 'AGUARDANDO PEﾃ②S' ? '<span class="badge bg-warning text-dark">Pendente</span>' : '<span class="badge bg-primary">Em Andamento</span>'),
                     equip: o.elevador,
                     tempo: tempo,
                     status: o.status,
@@ -1782,7 +1782,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                     dataOrigem: p.data_registro || p.created_at || new Date().toISOString(),
                     dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
                     ref: p.tipo_peca,
-                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
+                    tipoNome: '<span class="badge bg-warning text-dark">Peﾃｧa</span>',
                     equip: p.elevador,
                     tempo: p.status
                 });
@@ -1796,7 +1796,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
-                    ref: 'Prevenção Mensal',
+                    ref: 'Prevenﾃｧﾃ｣o Mensal',
                     tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
                     equip: m.elevador,
                     tempo: 'Atrasada'
@@ -1840,12 +1840,12 @@ window.carregarWidgetDemandasDashboard = async function() {
                     cardWidget.classList.remove('widget-recebidas-alerta');
                     cardWidget.style.border = '1px solid #dee2e6';
                 }
-                listGroup.innerHTML = '<div class="text-center text-secondary py-3"><i class="bi bi-emoji-smile text-secondary me-2"></i>Nenhuma solicitação pendente! Tudo em dia.</div>';
+                listGroup.innerHTML = '<div class="text-center text-secondary py-3"><i class="bi bi-emoji-smile text-secondary me-2"></i>Nenhuma solicitaﾃｧﾃ｣o pendente! Tudo em dia.</div>';
             } else {
                 if (cardTitulo) {
                     cardTitulo.classList.remove('text-success');
                     cardTitulo.classList.add('text-danger');
-                    cardTitulo.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes';
+                    cardTitulo.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenﾃｧﾃ｣o: Demandas Pendentes';
                 }
                 if (cardBadge) {
                     cardBadge.classList.remove('bg-success');
@@ -1927,10 +1927,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 dadosIndicadorQuatro();
                 atualizarCardsIndicadores();
             } catch (e) {
-                console.error("Erro ao atualizar gráficos:", e);
+                console.error("Erro ao atualizar grﾃ｡ficos:", e);
             }
 
-            btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Atualizar Gráficos';
+            btn.innerHTML = '<i class="bi bi-arrow-clockwise me-2"></i>Atualizar Grﾃ｡ficos';
             btn.disabled = false;
         });
     }
@@ -1979,7 +1979,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Solu��o definitiva para z-index de modais no Bootstrap 5
+    // Solu鈬o definitiva para z-index de modais no Bootstrap 5
     document.querySelectorAll('.modal').forEach(modal => {
         if (modal.parentNode !== document.body) {
             document.body.appendChild(modal);

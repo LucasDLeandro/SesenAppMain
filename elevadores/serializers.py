@@ -105,10 +105,15 @@ class RegistroElevadorPreventivaSerializer(serializers.ModelSerializer):
 
 class ManutencaoPreventivaSerializer(serializers.ModelSerializer):
     elevadores_registrados = RegistroElevadorPreventivaSerializer(many=True, required=False)
+    situacao_equipamento = serializers.SerializerMethodField()
     
     class Meta:
         model = ManutencaoPreventiva
         fields = '__all__'
+
+    def get_situacao_equipamento(self, obj):
+        primeiro_registro = obj.elevadores_registrados.first()
+        return primeiro_registro.situacao if primeiro_registro else None
 
     def create(self, validated_data):
         elevadores_data = validated_data.pop('elevadores_registrados', [])

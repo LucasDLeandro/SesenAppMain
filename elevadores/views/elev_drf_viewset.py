@@ -1032,6 +1032,40 @@ class ManutencaoPreventivaViewSet(viewsets.ModelViewSet):
     queryset = ManutencaoPreventiva.objects.all().order_by('-data_execucao', '-mes_referencia')
     serializer_class = ManutencaoPreventivaSerializer
 
+    def create(self, request, *args, **kwargs):
+        from rest_framework.response import Response
+        from rest_framework import status
+        
+        data = request.data
+        elevadores = data.get('elevadores_registrados', [])
+        
+        if len(elevadores) > 1:
+            criados = []
+            for elev in elevadores:
+                single_data = data.copy()
+                single_data['elevadores_registrados'] = [elev]
+                single_data['elevador'] = elev.get('elevador')
+                serializer = self.get_serializer(data=single_data)
+                serializer.is_valid(raise_exception=True)
+                self.perform_create(serializer)
+                criados.append(serializer.data)
+            return Response(criados[0] if criados else {}, status=status.HTTP_201_CREATED)
+        else:
+            if elevadores:
+                data['elevador'] = elevadores[0].get('elevador')
+            serializer = self.get_serializer(data=data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            headers = self.get_success_headers(serializer.data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+            
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        elevadores = data.get('elevadores_registrados', [])
+        if elevadores:
+            data['elevador'] = elevadores[0].get('elevador')
+        return super().update(request, *args, **kwargs)
+
 class PecaManutencaoViewSet(viewsets.ModelViewSet):
     from ..models import PecaManutencao
     from ..serializers import PecaManutencaoSerializer
