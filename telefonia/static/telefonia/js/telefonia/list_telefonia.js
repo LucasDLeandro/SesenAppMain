@@ -124,6 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(data === 'em_analise') return `<span class="badge bg-warning text-dark" style="${fs}">Em Análise</span>`;
                     if(data === 'pendente') return `<span class="badge bg-danger" style="${fs}">Pendente</span>`;
                     if(data === 'concluida') return `<span class="badge bg-success" style="${fs}">Concluída</span>`;
+                    if(data === 'aguardando_supervisor_aparelho') return `<span class="badge bg-info text-dark" style="${fs}">Apenas Finalizar</span>`;
                     return data;
                 }
             },
@@ -464,7 +465,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(data === 'recebida') return `<span class="badge" style="background-color: #fd7e14; color: white; ${fs}">Recebida</span>`;
                     if(data === 'em_analise') return `<span class="badge bg-warning text-dark" style="${fs}">Em Análise</span>`;
                     if(data === 'pendente') return `<span class="badge bg-danger" style="${fs}">Pendente</span>`;
-                    if(data === 'aguardando_supervisor' || data === 'aguardando_supervisor_aparelho') return `<span class="badge bg-info text-dark" style="${fs}">Aguardando Supervisor</span>`;
+                    if(data === 'aguardando_supervisor') return `<span class="badge bg-info text-dark" style="${fs}">Aguardando Supervisor</span>`;
+                    if(data === 'aguardando_supervisor_aparelho') return `<span class="badge bg-info text-dark" style="${fs}">Apenas Finalizar</span>`;
                     return data;
                 }
             },
@@ -779,7 +781,11 @@ window.visualizarSolicitacao = async function(id) {
             }
             
             const sts = dados.status || '-';
-            document.getElementById('vis-status').innerHTML = `<span class="badge bg-secondary">${sts.toUpperCase()}</span>`;
+            if (sts === 'aguardando_supervisor_aparelho') {
+                document.getElementById('vis-status').innerHTML = `<span class="badge bg-info text-dark">APENAS FINALIZAR</span>`;
+            } else {
+                document.getElementById('vis-status').innerHTML = `<span class="badge bg-secondary">${sts.toUpperCase()}</span>`;
+            }
             
             document.getElementById('vis-quantidade').textContent = dados.qnt_solicitada || '-';
             
