@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador, EmprestimoEvento
+from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador, EmprestimoEvento, TelefoneSolicitacaoAnexo
 
 class EmprestimoEventoSerializer(serializers.ModelSerializer):
     aparelhos_detalhes = serializers.SerializerMethodField()
