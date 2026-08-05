@@ -39,11 +39,13 @@ class TelefoneSolicitacaoSerializer(serializers.ModelSerializer):
     def get_ultima_atualizacao(self, obj):
         from logs.models import SystemLog
         from django.contrib.contenttypes.models import ContentType
+        from django.utils.timezone import localtime
         ct = ContentType.objects.get_for_model(obj)
         log = SystemLog.objects.filter(content_type=ct, object_id=str(obj.pk)).first()
         if log:
             nome = log.user.first_name or log.user.username if log.user else 'Sistema'
-            data = log.timestamp.strftime('%d/%m/%Y às %H:%M')
+            local_time = localtime(log.timestamp) if log.timestamp else None
+            data = local_time.strftime('%d/%m/%Y às %H:%M') if local_time else ''
             return f"Atualizado por {nome} em {data}"
         return "Nenhuma atualização registrada"
 class RemessaManutencaoSerializer(serializers.ModelSerializer):
