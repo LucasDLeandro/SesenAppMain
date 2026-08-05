@@ -810,7 +810,10 @@ window.visualizarSolicitacao = async function(id) {
                 dados.aparelhos_detalhes.forEach(ap => {
                     tbodyAparelhos.innerHTML += `
                         <tr>
-                            <td><strong>${ap.patrimonio || '-'}</strong></td>
+                            <td class="d-flex align-items-center justify-content-center gap-2">
+                                <strong>${ap.patrimonio || '-'}</strong>
+                                ${ap.patrimonio ? `<button type="button" class="btn btn-sm btn-link text-secondary p-0" onclick="navigator.clipboard.writeText('${ap.patrimonio}'); Swal.fire({toast: true, position: 'top-end', icon: 'success', title: 'Copiado!', showConfirmButton: false, timer: 1500});" title="Copiar Patrimônio"><i class="bi bi-copy"></i></button>` : ''}
+                            </td>
                             <td>${ap.sala || '-'}</td>
                             <td>${ap.ramal || '-'}</td>
                         </tr>
