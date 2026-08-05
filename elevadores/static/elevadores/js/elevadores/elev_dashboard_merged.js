@@ -1210,15 +1210,28 @@ window.carregarWidgetDemandasDashboard = async function() {
 
         if (resMpm.ok) {
             const mpmData = await resMpm.json();
-            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO' || m.status === 'PENDENTE').forEach(m => {
+                                let isAtrasada = false;
+                if (m.mes_referencia) {
+                    const [yyyy, mm] = m.mes_referencia.split('-');
+                    if (yyyy && mm) {
+                        const dueDate = new Date(parseInt(yyyy), parseInt(mm) - 1, 10, 23, 59, 59);
+                        if (new Date() > dueDate) isAtrasada = true;
+                    }
+                }
+                const tipoNomeStr = isAtrasada ? '<span class="badge bg-danger">MPM Atrasada</span>' : '<span class="badge bg-warning text-dark">MPM Pendente</span>';
+                const tempoStr = isAtrasada ? 'Atrasada' : 'No Prazo';
+
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
                     ref: 'Prevenção Mensal',
-                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    tipoNome: tipoNomeStr,
                     equip: m.elevador,
-                    tempo: 'Atrasada'
+                    tempo: tempoStr,
+                    id: m.id,
+                    extra: m
                 });
             });
         }
@@ -1321,15 +1334,26 @@ window.abrirModalDemandasPendentes = async function() {
 
         if (resMpm.ok) {
             const mpmData = await resMpm.json();
-            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO' || m.status === 'PENDENTE').forEach(m => {
+                                let isAtrasada = false;
+                if (m.mes_referencia) {
+                    const [yyyy, mm] = m.mes_referencia.split('-');
+                    if (yyyy && mm) {
+                        const dueDate = new Date(parseInt(yyyy), parseInt(mm) - 1, 10, 23, 59, 59);
+                        if (new Date() > dueDate) isAtrasada = true;
+                    }
+                }
+                const tipoNomeStr = isAtrasada ? '<span class="badge bg-danger">MPM Atrasada</span>' : '<span class="badge bg-warning text-dark">MPM Pendente</span>';
+                const tempoStr = isAtrasada ? 'Atrasada' : 'No Prazo';
+
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
                     ref: 'Prevenção Mensal',
-                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    tipoNome: tipoNomeStr,
                     equip: m.elevador,
-                    tempo: 'Atrasada',
+                    tempo: tempoStr,
                     id: m.id,
                     extra: m
                 });
@@ -1415,18 +1439,22 @@ window.abrirModalDemandasPendentes = async function() {
 
 window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
     const data = JSON.parse(decodeURIComponent(mpmStrEncoded));
-        document.getElementById('concluirMPMId').value = data.id;
-        document.getElementById('concluirMPMElevadorText').innerText = data.elevador;
-        document.getElementById('concluirMPMMesText').innerText = data.mes;
-        document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
-        document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
-        
-        const userField = document.getElementById('user_hidden_logado');
-        if(userField) document.getElementById('concluirMPMTecnico').value = userField.value;
-
-        const modalEl = document.getElementById('modalConcluirMPM');
-        const modal = new bootstrap.Modal(modalEl);
+    const elId = document.getElementById('concluirMPMId');
+    if(elId) elId.value = data.id || '';
+    
+    const elMes = document.getElementById('concluirMPMMesText');
+    if(elMes) elMes.innerText = (data.mes_referencia || data.mes || '') + ' - ' + (data.elevador || '');
+    
+    if(document.getElementById('concluirMPMElevadorText')) document.getElementById('concluirMPMElevadorText').innerText = data.elevador || '';
+    if(document.getElementById('concluirMPMStatus')) document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
+    if(document.getElementById('concluirMPMData')) document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
+    
+    const modalEl = document.getElementById('modalConcluirMPM');
+    if(modalEl) {
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if(!modal) modal = new bootstrap.Modal(modalEl);
         modal.show();
+    }
 }
 
 document.getElementById('formConcluirMPM')?.addEventListener('submit', async function(e) {

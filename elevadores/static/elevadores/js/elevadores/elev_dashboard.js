@@ -828,7 +828,7 @@ async function dadosIndicadorDois() {
                 '<b>Dia Execuﾃｧﾃ｣o:</b> %{x}<br>' +
                 '<b>Status:</b> %{text}<br>' +
                 '<b>OS:</b> %{customdata[0]}<br>' +
-                '<b>Tﾃｩcnico:</b> %{customdata[1]}' +
+                '<b>Técnico:</b> %{customdata[1]}' +
                 '<extra></extra>'
         };
 
@@ -1196,7 +1196,7 @@ function renderizarCardsVisao360(mes) {
                         </div>
                         <div class="mt-3 text-center">
                             <button class="btn btn-sm btn-outline-primary rounded-pill w-100" onclick="abrirModalHistoricoElevador('${elev.elevador}', '${mes}')">
-                                Ver Histﾃｳrico Completo
+                                Ver Histórico Completo
                             </button>
                         </div>
                     </div>
@@ -1366,7 +1366,7 @@ window.abrirModalDemandasPendentes = async function() {
                     dataOrigem: p.created_at || p.data_registro || new Date().toISOString(),
                     dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
                     ref: p.tipo_peca,
-                    tipoNome: '<span class="badge bg-warning text-dark">Peﾃｧa</span>',
+                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
                     equip: p.elevador,
                     tempo: p.status,
                     id: p.id,
@@ -1378,14 +1378,25 @@ window.abrirModalDemandasPendentes = async function() {
         if (resMpm.ok) {
             const mpmData = await resMpm.json();
             mpmData.filter(m => m.status === 'NAO_EXECUTADO' || m.status === 'PENDENTE').forEach(m => {
+                                let isAtrasada = false;
+                if (m.mes_referencia) {
+                    const [yyyy, mm] = m.mes_referencia.split('-');
+                    if (yyyy && mm) {
+                        const dueDate = new Date(parseInt(yyyy), parseInt(mm) - 1, 10, 23, 59, 59);
+                        if (new Date() > dueDate) isAtrasada = true;
+                    }
+                }
+                const tipoNomeStr = isAtrasada ? '<span class="badge bg-danger">MPM Atrasada</span>' : '<span class="badge bg-warning text-dark">MPM Pendente</span>';
+                const tempoStr = isAtrasada ? 'Atrasada' : 'No Prazo';
+
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
-                    ref: 'Prevenﾃｧﾃ｣o Mensal',
-                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    ref: 'Prevenção Mensal',
+                    tipoNome: tipoNomeStr,
                     equip: m.elevador,
-                    tempo: 'Atrasada',
+                    tempo: tempoStr,
                     id: m.id,
                     extra: m
                 });
@@ -1421,7 +1432,7 @@ window.abrirModalDemandasPendentes = async function() {
                     const pecaStr = encodeURIComponent(JSON.stringify(d.extra));
                     btnAction = `
                         <div class="d-flex flex-nowrap gap-1">
-                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peﾃｧa">
+                            <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarPeca('${pecaStr}'), 400)" title="Visualizar Peça">
                                 <i class="bi bi-eye"></i>
                             </button>
                         </div>
@@ -1475,18 +1486,22 @@ window.abrirModalDemandasPendentes = async function() {
 
 window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
     const data = JSON.parse(decodeURIComponent(mpmStrEncoded));
-        document.getElementById('concluirMPMId').value = data.id;
-        document.getElementById('concluirMPMElevadorText').innerText = data.elevador;
-        document.getElementById('concluirMPMMesText').innerText = data.mes;
-        document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
-        document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
-        
-        const userField = document.getElementById('user_hidden_logado');
-        if(userField) document.getElementById('concluirMPMTecnico').value = userField.value;
-
-        const modalEl = document.getElementById('modalConcluirMPM');
-        const modal = new bootstrap.Modal(modalEl);
+    const elId = document.getElementById('concluirMPMId');
+    if(elId) elId.value = data.id || '';
+    
+    const elMes = document.getElementById('concluirMPMMesText');
+    if(elMes) elMes.innerText = (data.mes_referencia || data.mes || '') + ' - ' + (data.elevador || '');
+    
+    if(document.getElementById('concluirMPMElevadorText')) document.getElementById('concluirMPMElevadorText').innerText = data.elevador || '';
+    if(document.getElementById('concluirMPMStatus')) document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
+    if(document.getElementById('concluirMPMData')) document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
+    
+    const modalEl = document.getElementById('modalConcluirMPM');
+    if(modalEl) {
+        let modal = bootstrap.Modal.getInstance(modalEl);
+        if(!modal) modal = new bootstrap.Modal(modalEl);
         modal.show();
+    }
 }
 
 document.getElementById('formConcluirMPM')?.addEventListener('submit', async function(e) {
@@ -1601,12 +1616,12 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             theme: 'bootstrap-5',
             dropdownParent: $('#modalRegistrarChegadaOS'),
             tags: true,
-            placeholder: "Selecione o tﾃｩcnico do TSE",
+            placeholder: "Selecione o técnico do TSE",
             allowClear: true
         });
     }
 
-    // Buscar tﾃｩcnicos da Otis e preencher selects (chegadaTecnico usa Select2, os demais sﾃ｣o selects normais)
+    // Buscar técnicos da Otis e preencher selects (chegadaTecnico usa Select2, os demais sﾃ｣o selects normais)
     if (window.tecnicosOtisCache) {
         preencherSelectsTecnicos(window.tecnicosOtisCache);
     } else {
@@ -1616,7 +1631,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
                 window.tecnicosOtisCache = tecnicos;
                 preencherSelectsTecnicos(tecnicos);
             })
-            .catch(err => console.error('Erro ao buscar tﾃｩcnicos da Otis', err));
+            .catch(err => console.error('Erro ao buscar técnicos da Otis', err));
     }
 
     function preencherSelectsTecnicos(tecnicos) {
@@ -1630,7 +1645,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
 
         const outrosSelects = document.querySelectorAll('#edit_os_tecnico, #mpmTecnicoNome, #editMpmTecnicoNome, #concluirMPMTecnico, #pecaTecnicoIdentificador, #concluirTecnico, #editPecaTecnicoIdentificador, #editPecaTecnico, #concluirTecnicoOS, #id_tecnico');
         outrosSelects.forEach(select => {
-            let optionsHtml = '<option value="" selected disabled>Selecione o tﾃｩcnico</option>';
+            let optionsHtml = '<option value="" selected disabled>Selecione o técnico</option>';
             tecnicos.forEach(tec => {
                 optionsHtml += `<option value="${tec}">${tec}</option>`;
             });
@@ -1646,7 +1661,7 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
             $selectAcompanhante.append(new Option('', '', false, false)); // placeholder
             contatos.forEach(c => {
                 const cargoStr = (c.cargo || '').toLowerCase();
-                if (cargoStr.includes('tﾃｩcnico') || cargoStr.includes('tecnico') || cargoStr.includes('supervisor')) {
+                if (cargoStr.includes('técnico') || cargoStr.includes('tecnico') || cargoStr.includes('supervisor')) {
                     const valueStr = `${c.nome} (${c.cargo})`;
                     const textStr = `${c.nome} - ${c.cargo} - ${c.empresa}`;
                     $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
@@ -1659,8 +1674,8 @@ window.abrirModalRegistrarChegada = function(osStrEncoded) {
                 let optionExists = optionsArray.some(opt => opt.value.startsWith(loggedUser));
                 
                 if (!optionExists) {
-                    const valueStr = `${loggedUser} (Usuﾃ｡rio Sesen)`;
-                    const textStr = `${loggedUser} - Usuﾃ｡rio Sesen`;
+                    const valueStr = `${loggedUser} (Usuário Sesen)`;
+                    const textStr = `${loggedUser} - Usuário Sesen`;
                     $selectAcompanhante.append(new Option(textStr, valueStr, false, false));
                 }
                 
@@ -1782,7 +1797,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                     dataOrigem: p.data_registro || p.created_at || new Date().toISOString(),
                     dataExibicao: p.data_registro ? p.data_registro.split('-').reverse().join('/') : '-',
                     ref: p.tipo_peca,
-                    tipoNome: '<span class="badge bg-warning text-dark">Peﾃｧa</span>',
+                    tipoNome: '<span class="badge bg-warning text-dark">Peça</span>',
                     equip: p.elevador,
                     tempo: p.status
                 });
@@ -1791,15 +1806,28 @@ window.carregarWidgetDemandasDashboard = async function() {
 
         if (resMpm.ok) {
             const mpmData = await resMpm.json();
-            mpmData.filter(m => m.status === 'NAO_EXECUTADO').forEach(m => {
+            mpmData.filter(m => m.status === 'NAO_EXECUTADO' || m.status === 'PENDENTE').forEach(m => {
+                                let isAtrasada = false;
+                if (m.mes_referencia) {
+                    const [yyyy, mm] = m.mes_referencia.split('-');
+                    if (yyyy && mm) {
+                        const dueDate = new Date(parseInt(yyyy), parseInt(mm) - 1, 10, 23, 59, 59);
+                        if (new Date() > dueDate) isAtrasada = true;
+                    }
+                }
+                const tipoNomeStr = isAtrasada ? '<span class="badge bg-danger">MPM Atrasada</span>' : '<span class="badge bg-warning text-dark">MPM Pendente</span>';
+                const tempoStr = isAtrasada ? 'Atrasada' : 'No Prazo';
+
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
                     dataExibicao: m.mes_referencia,
-                    ref: 'Prevenﾃｧﾃ｣o Mensal',
-                    tipoNome: '<span class="badge bg-danger">MPM Atrasada</span>',
+                    ref: 'Prevenção Mensal',
+                    tipoNome: tipoNomeStr,
                     equip: m.elevador,
-                    tempo: 'Atrasada'
+                    tempo: tempoStr,
+                    id: m.id,
+                    extra: m
                 });
             });
         }
@@ -1845,7 +1873,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                 if (cardTitulo) {
                     cardTitulo.classList.remove('text-success');
                     cardTitulo.classList.add('text-danger');
-                    cardTitulo.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenﾃｧﾃ｣o: Demandas Pendentes';
+                    cardTitulo.innerHTML = '<i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes';
                 }
                 if (cardBadge) {
                     cardBadge.classList.remove('bg-success');
