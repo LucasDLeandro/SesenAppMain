@@ -5,6 +5,7 @@ from io import BytesIO
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
+from django.db import transaction
 from django.db.models import Count, Q
 from django.template.loader import get_template
 from rest_framework import viewsets, status
@@ -15,7 +16,8 @@ from xhtml2pdf import pisa
 from .models import (
     TelefoneSolicitacao, AparelhoVoip, RemessaManutencao, CriarSenha, 
     AparelhoManutencao, ContratoColaborador, PadraoSenhaTelefonia, 
-    PadraoTutorialTelefonia, PadraoEmailTelefonia, EmprestimoEvento
+    PadraoTutorialTelefonia, PadraoEmailTelefonia, EmprestimoEvento,
+    TelefoneSolicitacaoAnexo
 )
 from .serializers import (
     TelefoneSolicitacaoSerializer,
@@ -177,6 +179,7 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         solicitacao.save()
         return Response({'status': 'Solicitação técnica concluída com sucesso. Aguardando fase administrativa.'}, status=status.HTTP_200_OK)
 
+    @transaction.atomic
     @action(detail=True, methods=['post'])
     def finalizar_administrativo(self, request, pk=None):
         solicitacao = self.get_object()
