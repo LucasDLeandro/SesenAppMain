@@ -1365,7 +1365,55 @@ function getCookie(name) {
 function abrirModalFinalizarAdministrativo(id) {
     $('#id_finalizacao_admin').val(id);
     $('#form-finalizar-administrativo')[0].reset();
+    
+    const tbody = document.getElementById('tbody-finalizar-aparelhos');
+    if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="4"><div class="spinner-border spinner-border-sm text-primary" role="status"></div> Carregando...</td></tr>';
+    }
+    
     $('#modal-finalizar-administrativo').modal('show');
+    
+    fetch(`/telefonia/api/solicitacoes/${id}/`)
+        .then(response => response.json())
+        .then(dados => {
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            let html = '';
+            if (dados.aparelhos_detalhes && dados.aparelhos_detalhes.length > 0) {
+                dados.aparelhos_detalhes.forEach(ap => {
+                    html += `
+                        <tr>
+                            <td><strong>${ap.patrimonio || '-'}</strong></td>
+                            <td>${ap.sala || '-'}</td>
+                            <td>${ap.ramal || '-'}</td>
+                            <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm" required></td>
+                        </tr>
+                    `;
+                });
+            } else {
+                let ramais = dados.ramal ? dados.ramal.split(',').map(s => s.trim()) : [];
+                let locais = dados.local ? dados.local.split(',').map(s => s.trim()) : [];
+                let maxLen = Math.max(ramais.length, locais.length);
+                if (maxLen > 0) {
+                    for(let i = 0; i < maxLen; i++) {
+                        html += `
+                            <tr>
+                                <td><span class="text-muted fst-italic">Aguardando Instalação</span></td>
+                                <td>${locais[i] || '-'}</td>
+                                <td>${ramais[i] || '-'}</td>
+                                <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm" required></td>
+                            </tr>
+                        `;
+                    }
+                } else {
+                    html = `<tr><td colspan="4" class="text-muted">Nenhum aparelho vinculado.</td></tr>`;
+                }
+            }
+            tbody.innerHTML = html;
+        })
+        .catch(err => {
+            if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-danger">Erro ao carregar aparelhos.</td></tr>';
+        });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
