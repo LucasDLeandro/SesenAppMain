@@ -203,6 +203,9 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         import re
         safe_termo = re.sub(r'[^a-zA-Z0-9_-]', '', str(termo).replace('/', '').replace('\\', '').replace(' ', ''))
         
+        # Limpar anexos antigos caso seja uma resubmissão para evitar duplicidade
+        solicitacao.anexos.all().delete()
+        
         for index, arquivo in enumerate(pdf_termos):
             ext = os.path.splitext(arquivo.name)[1]
             arquivo.name = f"TTI_{safe_termo}_{index+1}{ext}"

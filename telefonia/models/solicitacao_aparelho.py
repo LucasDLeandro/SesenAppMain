@@ -127,3 +127,6 @@ class TelefoneSolicitacaoAnexo(models.Model):
 
     def __str__(self):
         return f"Anexo {self.ordem} - {self.solicitacao.protocolo}"
+
+    class Meta:
+        ordering = ['ordem']
