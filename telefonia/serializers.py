@@ -31,6 +31,7 @@ class TelefoneSolicitacaoSerializer(serializers.ModelSerializer):
         return [
             {
                 'patrimonio': a.patrimonio,
+                'sala': a.sala,
                 'ramal': a.ramal
             }
             for a in obj.aparelhos.all()

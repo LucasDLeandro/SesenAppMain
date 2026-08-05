@@ -797,29 +797,43 @@ window.visualizarSolicitacao = async function(id) {
             
             document.getElementById('vis_relatorio').textContent = dados.relatorio || 'Sem observações/relatório.';
             
-            document.getElementById('vis-ramal').textContent = dados.ramal || '-';
-            document.getElementById('vis-local-instalacao').textContent = dados.local || '-';
-            
             document.getElementById('vis-ultima-atualizacao').innerHTML = `<i class="bi bi-info-circle me-1"></i> ${dados.ultima_atualizacao || 'Nenhuma atualização registrada'}`;
 
-            // Aparelhos Instalados (Patrimônios e Ramais)
+            // Aparelhos Vinculados / Equipamentos Instalados Unificados
             const secaoAparelhos = document.getElementById('vis-secao-aparelhos-instalados');
             const tbodyAparelhos = document.getElementById('vis-tbody-aparelhos');
             
+            secaoAparelhos.style.display = 'block';
+            tbodyAparelhos.innerHTML = '';
+
             if (dados.aparelhos_detalhes && dados.aparelhos_detalhes.length > 0) {
-                secaoAparelhos.style.display = 'block';
-                tbodyAparelhos.innerHTML = '';
                 dados.aparelhos_detalhes.forEach(ap => {
                     tbodyAparelhos.innerHTML += `
                         <tr>
                             <td><strong>${ap.patrimonio || '-'}</strong></td>
+                            <td>${ap.sala || '-'}</td>
                             <td>${ap.ramal || '-'}</td>
                         </tr>
                     `;
                 });
             } else {
-                secaoAparelhos.style.display = 'none';
-                tbodyAparelhos.innerHTML = '';
+                let ramais = dados.ramal ? dados.ramal.split(',').map(s => s.trim()) : [];
+                let locais = dados.local ? dados.local.split(',').map(s => s.trim()) : [];
+                let maxLen = Math.max(ramais.length, locais.length);
+
+                if (maxLen > 0) {
+                    for(let i = 0; i < maxLen; i++) {
+                        tbodyAparelhos.innerHTML += `
+                            <tr>
+                                <td><span class="text-muted fst-italic">Aguardando Instalação</span></td>
+                                <td>${locais[i] || '-'}</td>
+                                <td>${ramais[i] || '-'}</td>
+                            </tr>
+                        `;
+                    }
+                } else {
+                    tbodyAparelhos.innerHTML = `<tr><td colspan="3" class="text-muted">Nenhum aparelho vinculado.</td></tr>`;
+                }
             }
 
             // Abre o modal
