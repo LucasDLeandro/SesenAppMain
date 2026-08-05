@@ -771,13 +771,9 @@ window.visualizarSolicitacao = async function(id) {
                 document.getElementById('vis-termo').textContent = '-';
             }
             
-            const btnPdfTermo = document.getElementById('vis-btn-pdf-termo');
-            if (anexoUrl) {
-                btnPdfTermo.href = anexoUrl;
-                btnPdfTermo.classList.remove('d-none');
-            } else {
-                btnPdfTermo.classList.add('d-none');
-                btnPdfTermo.href = '#';
+            // Compatibilidade para solicitações antigas sem múltiplos anexos, mas com PDF único:
+            if (anexoUrl && (!dados.anexos || dados.anexos.length === 0)) {
+                dados.anexos = [{ arquivo: anexoUrl, id: 'legacy' }];
             }
             
             const sts = dados.status || '-';
@@ -816,7 +812,7 @@ window.visualizarSolicitacao = async function(id) {
                         anexoHtml = `
                             <div class="d-flex justify-content-center gap-1">
                                 <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-primary" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
-                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>
+                                ${anexo.id !== 'legacy' ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>` : ''}
                             </div>
                         `;
                     }
@@ -846,7 +842,7 @@ window.visualizarSolicitacao = async function(id) {
                             anexoHtml = `
                                 <div class="d-flex justify-content-center gap-1">
                                     <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-primary" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>
+                                    ${anexo.id !== 'legacy' ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>` : ''}
                                 </div>
                             `;
                         }
