@@ -812,7 +812,7 @@ window.visualizarSolicitacao = async function(id) {
                         anexoHtml = `
                             <div class="d-flex justify-content-center gap-1">
                                 <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-danger" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
-                                ${anexo.id !== 'legacy' ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>` : ''}
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, '${anexo.id}')" title="Excluir PDF"><i class="bi bi-trash"></i></button>
                             </div>
                         `;
                     }
@@ -842,7 +842,7 @@ window.visualizarSolicitacao = async function(id) {
                             anexoHtml = `
                                 <div class="d-flex justify-content-center gap-1">
                                     <a href="${anexo.arquivo}" target="_blank" class="btn btn-sm btn-outline-danger" title="Abrir PDF"><i class="bi bi-file-earmark-pdf"></i></a>
-                                    ${anexo.id !== 'legacy' ? `<button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, ${anexo.id})" title="Excluir PDF"><i class="bi bi-trash"></i></button>` : ''}
+                                    <button type="button" class="btn btn-sm btn-outline-danger" onclick="excluirAnexo(${dados.id}, '${anexo.id}')" title="Excluir PDF"><i class="bi bi-trash"></i></button>
                                 </div>
                             `;
                         }

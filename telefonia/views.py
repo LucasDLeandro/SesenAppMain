@@ -221,6 +221,17 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['delete'], url_path='excluir_anexo/(?P<anexo_id>[^/.]+)')
     def excluir_anexo(self, request, pk=None, anexo_id=None):
         solicitacao = self.get_object()
+        
+        if anexo_id == 'legacy':
+            if solicitacao.pdf_termo:
+                solicitacao.pdf_termo.delete(save=False)
+                solicitacao.pdf_termo = None
+            if solicitacao.midia:
+                solicitacao.midia.delete(save=False)
+                solicitacao.midia = None
+            solicitacao.save()
+            return Response({'status': 'Anexo legado excluído com sucesso.'}, status=status.HTTP_200_OK)
+            
         try:
             anexo = TelefoneSolicitacaoAnexo.objects.get(id=anexo_id, solicitacao=solicitacao)
             anexo.arquivo.delete(save=False)
