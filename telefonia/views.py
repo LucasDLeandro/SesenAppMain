@@ -196,7 +196,7 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
             return Response({'error': 'O envio de pelo menos um arquivo PDF é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
         
         solicitacao.termo_transferencia_interna = termo
-        solicitacao.status = 'finalizada'
+        solicitacao.status = 'concluida'
         solicitacao.save()
         
         import os
