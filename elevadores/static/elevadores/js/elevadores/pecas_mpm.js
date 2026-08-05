@@ -285,17 +285,52 @@ document.addEventListener("DOMContentLoaded", () => {
                 formData.set("mes_referencia", mesRef + "-01");
             }
             
+            const payload = {};
             for (let [key, val] of Array.from(formData.entries())) {
-                if (val === "" || val === null || val === "null" || (val instanceof File && val.size === 0)) {
-                    formData.delete(key);
+                if (val !== "" && val !== null && val !== "null") {
+                    payload[key] = val;
                 }
             }
+            
+            const elevadores_registrados = [];
+            const elevadorItems = document.querySelectorAll('#editMpmElevadoresContainer .mpm-elevador-item');
+            if (elevadorItems.length === 0) {
+                if (typeof Swal !== 'undefined') Swal.fire('Atenção', 'Adicione pelo menos um elevador.', 'warning');
+                else alert('Adicione pelo menos um elevador.');
+                return;
+            }
+
+            for (const item of elevadorItems) {
+                const elevador = item.querySelector('.mpm-elevador').value;
+                if (!elevador) continue;
+                
+                const situacao = item.querySelector('.mpm-situacao').value;
+                const hora_inicio = item.querySelector('.mpm-hora-inicio').value;
+                const hora_fim = item.querySelector('.mpm-hora-fim').value;
+
+                elevadores_registrados.push({
+                    elevador: elevador,
+                    situacao: situacao,
+                    hora_inicio: hora_inicio || null,
+                    hora_fim: hora_fim || null
+                });
+            }
+            
+            if (elevadores_registrados.length === 0) {
+                if (typeof Swal !== 'undefined') Swal.fire('Atenção', 'Nenhum elevador válido foi adicionado.', 'warning');
+                return;
+            }
+            
+            payload['elevadores_registrados'] = elevadores_registrados;
 
             try {
                 const res = await fetch(`/elevadores/api/manutencao_preventiva/${id}/`, {
                     method: "PATCH",
-                    headers: { "X-CSRFToken": csrftoken },
-                    body: formData
+                    headers: { 
+                        "X-CSRFToken": csrftoken,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
                 });
                 if (res.ok) {
                     const modal = bootstrap.Modal.getInstance(document.getElementById("modalEditarMPM"));
@@ -621,18 +656,7 @@ window.editarMPM = async function(id) {
         document.getElementById('editMpmId').value = mpm.id || id;
         setValAndTrigger('editMpmContrato', mpm.contrato || '');
         document.getElementById('editMpmMes').value = mpm.mes_referencia ? mpm.mes_referencia.substring(0, 7) : '';
-        document.getElementById('editMpmElevador').value = mpm.elevador || '';
-        document.getElementById('editMpmSituacao').value = mpm.situacao_equipamento || mpm.status || '';
         document.getElementById('editMpmDescricaoServico').value = mpm.descricao_servico || '';
-        
-        document.getElementById('editMpmApresentacao').value = mpm.apresentacao || 'OK';
-        document.getElementById('editMpmPerformance').value = mpm.performance_qualidade || 'OK';
-        document.getElementById('editMpmLimitador').value = mpm.limitador_velocidade || 'OK';
-        document.getElementById('editMpmControle').value = mpm.controle || 'OK';
-        document.getElementById('editMpmPoco').value = mpm.poco || 'OK';
-        document.getElementById('editMpmEncerramento').value = mpm.encerramento || 'OK';
-        
-        document.getElementById('editMpmObservacao').value = mpm.observacao || '';
         
         setValAndTrigger('editMpmTecnicoNome', mpm.tecnico || '');
         document.getElementById('editMpmDataExecucao').value = mpm.data_execucao || '';
@@ -640,12 +664,19 @@ window.editarMPM = async function(id) {
         document.getElementById('editMpmHoraSaida').value = mpm.hora_saida ? mpm.hora_saida.substring(0, 5) : '';
         
         setValAndTrigger('editMpmClienteNome', mpm.cliente_nome || '');
-
-        // Limpar os campos de arquivo para não causar problemas
-        const fPoco = document.getElementById('editMpmFotoPoco');
-        if (fPoco) fPoco.value = '';
-        const fMidia = document.getElementById('editMpmMidia');
-        if (fMidia) fMidia.value = '';
+        
+        // Load multiple elevators
+        const editContainer = document.getElementById('editMpmElevadoresContainer');
+        if (editContainer) {
+            editContainer.innerHTML = ''; // clear previous
+            if (mpm.elevadores_registrados && mpm.elevadores_registrados.length > 0) {
+                mpm.elevadores_registrados.forEach(el => {
+                    adicionarElevador('editMpmElevadoresContainer', el);
+                });
+            } else {
+                adicionarElevador('editMpmElevadoresContainer');
+            }
+        }
 
         if (loadingInfo) loadingInfo.classList.add('d-none');
         if (formContent) formContent.classList.remove('d-none');
@@ -791,19 +822,34 @@ window.abrirVisualizarMPM = function(mpmStrEncoded) {
 
 // --- LOGIC FOR MULTIPLE ELEVATORS ---
 function adicionarElevadorVazio() {
-    const container = document.getElementById('mpmElevadoresContainer');
+    adicionarElevador();
+}
+
+function adicionarElevador(containerId = 'mpmElevadoresContainer', data = null) {
+    const container = document.getElementById(containerId);
     const template = document.getElementById('mpmElevadorTemplate');
     if (!container || !template) return;
     
     const clone = template.content.cloneNode(true);
     const item = clone.querySelector('.mpm-elevador-item');
     
+    if (data) {
+        const selElevador = item.querySelector('.mpm-elevador');
+        if (selElevador && data.elevador) selElevador.value = data.elevador;
+        const selSituacao = item.querySelector('.mpm-situacao');
+        if (selSituacao && data.situacao) selSituacao.value = data.situacao;
+        const inputIni = item.querySelector('.mpm-hora-inicio');
+        if (inputIni && data.hora_inicio) inputIni.value = data.hora_inicio.substring(0, 5);
+        const inputFim = item.querySelector('.mpm-hora-fim');
+        if (inputFim && data.hora_fim) inputFim.value = data.hora_fim.substring(0, 5);
+    }
+    
     // Add remove event listener
     const btnRemove = item.querySelector('.btn-remover-elevador');
     btnRemove.addEventListener('click', () => {
         item.remove();
         if (container.children.length === 0) {
-            adicionarElevadorVazio(); // Always keep at least one
+            adicionarElevador(containerId); // Always keep at least one
         }
     });
 
@@ -813,7 +859,11 @@ function adicionarElevadorVazio() {
 document.addEventListener("DOMContentLoaded", () => {
     const btnAdd = document.getElementById('btnAddElevadorMPM');
     if (btnAdd) {
-        btnAdd.addEventListener('click', adicionarElevadorVazio);
+        btnAdd.addEventListener('click', () => adicionarElevador('mpmElevadoresContainer'));
+    }
+    const btnAddEdit = document.getElementById('btnAddElevadorEditMPM');
+    if (btnAddEdit) {
+        btnAddEdit.addEventListener('click', () => adicionarElevador('editMpmElevadoresContainer'));
     }
     
     // Initialize first elevator block if modal exists

@@ -117,6 +117,17 @@ class ManutencaoPreventivaSerializer(serializers.ModelSerializer):
             RegistroElevadorPreventiva.objects.create(manutencao=manutencao, **elev_data)
         return manutencao
 
+    def update(self, instance, validated_data):
+        elevadores_data = validated_data.pop('elevadores_registrados', None)
+        instance = super().update(instance, validated_data)
+        
+        if elevadores_data is not None:
+            instance.elevadores_registrados.all().delete()
+            for elev_data in elevadores_data:
+                RegistroElevadorPreventiva.objects.create(manutencao=instance, **elev_data)
+                
+        return instance
+
 
 class PecaManutencaoSerializer(serializers.ModelSerializer):
     class Meta:

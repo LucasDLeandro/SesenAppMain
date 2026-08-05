@@ -256,112 +256,48 @@
                             <i class="bi bi-building me-2"></i> 1. Dados do Cliente e Equipamento
                         </h6>
                         <div class="row g-3">
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold text-muted">Contrato / Cliente</label>
-                                <select class="form-select" id="editMpmContrato" name="contrato">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted">Contrato / Cliente <span class="text-danger">*</span></label>
+                                <select class="form-select" id="editMpmContrato" name="contrato" required>
                                     <option value="" selected>Selecione um contrato...</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Mês/Ano de Referência <span class="text-danger">*</span></label>
                                 <input type="month" class="form-control" id="editMpmMes" name="mes_referencia" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold text-muted">Elevador <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editMpmElevador" name="elevador" required>
-                                    <option value="" selected disabled>Selecione...</option>
-                                    <option value="Social 1 - M2674">Social 1 - M2674</option>
-                                    <option value="Social 2 - M2675">Social 2 - M2675</option>
-                                    <option value="Social 3 - M2676">Social 3 - M2676</option>
-                                    <option value="Social 4 - M2677">Social 4 - M2677</option>
-                                    <option value="Social 5 - M2678">Social 5 - M2678</option>
-                                    <option value="Serviço 6 - M2679">Serviço 6 - M2679</option>
-                                    <option value="Privativo 7 - M2680">Privativo 7 - M2680</option>
-                                    <option value="Social 8 - M2681">Social 8 - M2681</option>
-                                    <option value="Social 9 - M2682">Social 9 - M2682</option>
-                                    <option value="Privativo 10 - M2683">Privativo 10 - M2683</option>
-                                    <option value="Social 11 - M2684">Social 11 - M2684</option>
-                                    <option value="Social 12 - M2685">Social 12 - M2685</option>
-                                    <option value="Social 13 - M2686">Social 13 - M2686</option>
-                                    <option value="Serviço 14 - M2687">Serviço 14 - M2687</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold text-muted">Situação do Equipamento <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editMpmSituacao" name="situacao_equipamento" required>
-                                    <option value="Em Funcionamento">Em Funcionamento</option>
-                                    <option value="Parado">Parado</option>
-                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. CHECKLIST DE SERVIÇO -->
-            <div class="col-12">
+            <!-- 2. SERVIÇO PRESTADO (MÚLTIPLOS ELEVADORES) -->
+            <div class="col-md-12">
                 <div class="card border-0 shadow-sm rounded-4">
                     <div class="card-body p-4">
-                        <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                            <i class="bi bi-list-check me-2"></i> 2. Serviço Prestado
-                        </h6>
-                        <div class="row g-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h6 class="fw-bold text-secondary text-uppercase mb-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                                <i class="bi bi-list-check me-2"></i> 2. Serviço Prestado
+                            </h6>
+                            <button type="button" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3" id="btnAddElevadorEditMPM">
+                                <i class="bi bi-plus-lg me-1"></i> Adicionar Elevador
+                            </button>
+                        </div>
+                        
+                        <div class="row g-3 mb-4">
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold text-muted">Descrição do serviço executado / a executar</label>
                                 <input type="text" class="form-control" id="editMpmDescricaoServico" name="descricao_servico" placeholder="Ex: Foi realizada a revisão mensal...">
                             </div>
-                            
-                            <!-- Checklists -->
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Apresentação</label>
-                                <select class="form-select form-select-sm" id="editMpmApresentacao" name="apresentacao">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Qualidade</label>
-                                <select class="form-select form-select-sm" id="editMpmPerformance" name="performance_qualidade">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Limit. Velocidade</label>
-                                <select class="form-select form-select-sm" id="editMpmLimitador" name="limitador_velocidade">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Controle (EL)</label>
-                                <select class="form-select form-select-sm" id="editMpmControle" name="controle">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Poço (P)</label>
-                                <select class="form-select form-select-sm" id="editMpmPoco" name="poco">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2 col-sm-4 col-6">
-                                <label class="form-label small fw-bold text-muted">Encerramento</label>
-                                <select class="form-select form-select-sm" id="editMpmEncerramento" name="encerramento">
-                                    <option value="OK" selected>OK</option><option value="NOK">NOK</option><option value="NA">N/A</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label small fw-bold text-muted">Observação (Adicional)</label>
-                                <textarea class="form-control" id="editMpmObservacao" name="observacao" rows="2" placeholder="Observações do serviço..."></textarea>
-                            </div>
-                            <div class="col-md-6 mt-4">
-                                <label class="form-label small fw-bold text-muted">Foto do Poço (Opcional)</label>
-                                <input type="file" class="form-control" id="editMpmFotoPoco" name="foto_poco" accept="image/*">
-                            </div>
-                            <div class="col-md-12 mt-4">
-                                <label class="form-label small fw-bold text-muted">Anexo / Outra Mídia (Opcional)</label>
-                                <input type="file" class="form-control" id="editMpmMidia" name="midia">
-                            </div>
                         </div>
+                        
+                        <div id="editMpmElevadoresContainer" class="d-flex flex-column gap-3">
+                            <!-- Blocos de elevador clonados irão aparecer aqui -->
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
                   <!-- 3. EXECUÇÃO E SUPERVISÃO -->
             <div class="col-md-12">
                 <div class="card border-0 shadow-sm rounded-4 h-100">
