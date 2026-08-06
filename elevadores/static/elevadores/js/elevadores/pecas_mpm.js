@@ -735,6 +735,24 @@ window.abrirVisualizarMPM = function(mpmStrEncoded) {
     document.getElementById('vis-mpm-descricao').innerText = data.descricao_servico || '-';
     document.getElementById('vis-mpm-observacao').innerText = data.observacao || '-';
     
+    // Tentar pegar os dados específicos do elevador
+    let horaInicio = '-';
+    let horaFim = '-';
+    if (data.elevadores_registrados && data.elevadores_registrados.length > 0) {
+        // Encontrar o elevador correspondente ou pegar o primeiro
+        const elevadorReg = data.elevadores_registrados.find(e => e.elevador === data.elevador) || data.elevadores_registrados[0];
+        if (elevadorReg) {
+            horaInicio = elevadorReg.hora_inicio ? elevadorReg.hora_inicio.substring(0, 5) : '-';
+            horaFim = elevadorReg.hora_fim ? elevadorReg.hora_fim.substring(0, 5) : '-';
+            // Atualiza também a situação se for mais precisa
+            if (elevadorReg.situacao) {
+                document.getElementById('vis-mpm-situacao').innerText = elevadorReg.situacao;
+            }
+        }
+    }
+    document.getElementById('vis-mpm-elevador-inicio').innerText = horaInicio;
+    document.getElementById('vis-mpm-elevador-fim').innerText = horaFim;
+    
     // Foto
     const fotoContainer = document.getElementById('vis-mpm-foto-container');
     const fotoImg = document.getElementById('vis-mpm-foto');
