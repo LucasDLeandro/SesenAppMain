@@ -4,4 +4,4 @@ env/
 .vscode/
 media/
 *.log
-__pycache__/
+__pycache__/django_error.log
