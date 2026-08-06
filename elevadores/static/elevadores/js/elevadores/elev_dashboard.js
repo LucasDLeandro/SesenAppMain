@@ -1392,7 +1392,7 @@ window.abrirModalDemandasPendentes = async function() {
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
-                    dataExibicao: m.mes_referencia,
+                    dataExibicao: m.mes_referencia ? (m.mes_referencia.includes('-') && m.mes_referencia.split('-').length === 3 ? m.mes_referencia.split('-').reverse().join('/') : m.mes_referencia) : '',
                     ref: 'Prevenção Mensal',
                     tipoNome: tipoNomeStr,
                     equip: m.elevador,
@@ -1445,7 +1445,7 @@ window.abrirModalDemandasPendentes = async function() {
                             <button class="btn btn-sm btn-outline-primary" style="white-space: nowrap;" data-bs-dismiss="modal" onclick="setTimeout(() => abrirVisualizarMPM('${mpmStr}'), 400)" title="Visualizar MPM">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-danger fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirConclusaoMPMDemandas('${mpmConcluirStr}'), 400)"><i class="bi bi-calendar-check me-1"></i>Executar MPM</button>
+                            <button class="btn btn-sm btn-danger fw-bold shadow-sm" data-bs-dismiss="modal" onclick="setTimeout(() => abrirConclusaoMPMDemandas('${mpmConcluirStr}'), 400)"><i class="bi bi-calendar-check me-1"></i>Concluir MPM</button>
                         </div>
                     `;
                 }
@@ -1774,7 +1774,7 @@ window.carregarWidgetDemandasDashboard = async function() {
                 demandas.push({
                     tipo: 'mpm',
                     dataOrigem: m.mes_referencia,
-                    dataExibicao: m.mes_referencia,
+                    dataExibicao: m.mes_referencia ? (m.mes_referencia.includes('-') && m.mes_referencia.split('-').length === 3 ? m.mes_referencia.split('-').reverse().join('/') : m.mes_referencia) : '',
                     ref: 'Prevenção Mensal',
                     tipoNome: tipoNomeStr,
                     equip: m.elevador,
