@@ -735,14 +735,6 @@ window.abrirVisualizarMPM = function(mpmStrEncoded) {
     document.getElementById('vis-mpm-descricao').innerText = data.descricao_servico || '-';
     document.getElementById('vis-mpm-observacao').innerText = data.observacao || '-';
     
-    // Checklist
-    document.getElementById('vis-mpm-chk-apresentacao').innerText = data.apresentacao || 'OK';
-    document.getElementById('vis-mpm-chk-performance').innerText = data.performance_qualidade || 'OK';
-    document.getElementById('vis-mpm-chk-limitador').innerText = data.limitador_velocidade || 'OK';
-    document.getElementById('vis-mpm-chk-controle').innerText = data.controle || 'OK';
-    document.getElementById('vis-mpm-chk-poco').innerText = data.poco || 'OK';
-    document.getElementById('vis-mpm-chk-encerramento').innerText = data.encerramento || 'OK';
-    
     // Foto
     const fotoContainer = document.getElementById('vis-mpm-foto-container');
     const fotoImg = document.getElementById('vis-mpm-foto');

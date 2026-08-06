@@ -1442,16 +1442,21 @@ window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
     const elId = document.getElementById('concluirMPMId');
     if(elId) elId.value = data.id || '';
     
-    const elMes = document.getElementById('concluirMPMMesText');
-    if(elMes) {
-        let mesFormatado = data.mes_referencia || data.mes || '';
-        if (mesFormatado.includes('-')) {
-            const parts = mesFormatado.split('-');
-            if(parts.length >= 2) mesFormatado = parts[1] + '/' + parts[0];
-        }
-        let elevadorText = data.elevador ? ' - ' + data.elevador : '';
-        elMes.innerText = mesFormatado + elevadorText;
+    const setInner = (id, val) => {
+        const el = document.getElementById(id);
+        if(el) el.innerText = val || '-';
+    };
+
+    let mesFormatado = data.mes_referencia || data.mes || '';
+    if (mesFormatado.includes('-')) {
+        const parts = mesFormatado.split('-');
+        if(parts.length >= 2) mesFormatado = parts[1] + '/' + parts[0];
     }
+    
+    setInner('concluirMPMMesInfo', mesFormatado);
+    setInner('concluirMPMElevadorInfo', data.elevador || 'Vários / Lote Antigo');
+    setInner('concluirMPMDescricaoInfo', data.descricao_servico || data.extra?.descricao_servico || 'Nenhuma descrição fornecida.');
+    setInner('concluirMPMTecnicoInfo', data.tecnico || data.extra?.tecnico || 'Técnico não informado');
     
     const modalEl = document.getElementById('modalConcluirMPM');
     if(modalEl) {
