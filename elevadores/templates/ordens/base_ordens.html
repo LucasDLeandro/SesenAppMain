@@ -48,4 +48,13 @@
     <script src="{% static 'elevadores/js/elevadores/os_modal_form.js' %}"></script>
     <script type="module" src="{% static 'elevadores/js/elevadores/elev_dashboard.js' %}?v=2.4"></script>
     <script src="{% static 'elevadores/js/elevadores/pecas_mpm.js' %}?v=2.4"></script>
+
+    <script>
+        // Global fix for Bootstrap modal "Blocked aria-hidden" focus warnings
+        document.addEventListener('hide.bs.modal', function (event) {
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+        });
+    </script>
 {% endblock %}
