@@ -22,497 +22,177 @@
       </div>
       
       <!-- BODY -->
-      <div class="modal-body modal-ordens-body px-4 py-4" style="background-color: #f8f9fa;">
-        
+      <div class="modal-body p-4 bg-light">
+      
+        <!-- Top Row: Informações Principais (Full Width) -->
+        <div class="row mb-4">
+          <div class="col-12">
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                   <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-info-circle me-2"></i> Informações Principais
+                   </h6>
+                   <div class="row g-3">
+                      <div class="col-md-3">
+                         <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Mês/Ano Ref.</small>
+                         <span class="fs-5 fw-bold text-primary" id="vis-mpm-mes"></span>
+                      </div>
+                      <div class="col-md-3">
+                         <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Elevador</small>
+                         <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador"></span>
+                      </div>
+                      <div class="col-md-3">
+                         <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Início (Elevador)</small>
+                         <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador-inicio">-</span>
+                      </div>
+                      <div class="col-md-3">
+                         <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Fim (Elevador)</small>
+                         <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador-fim">-</span>
+                      </div>
+                   </div>
+                </div>
+              </div>
+          </div>
+        </div>
+
+        <!-- Main Content Row -->
         <div class="row g-4">
-          <!-- MAIN INFO COLUMN (LEFT) -->
-          <div class="col-md-7 d-flex flex-column gap-4">
-            
-            <!-- Principal Info Card -->
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div>
-                       <h6 class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                          <i class="bi bi-info-circle me-2"></i> Informações Principais
-                       </h6>
-                    </div>
-                    <div id="vis-mpm-status" class="fs-6"></div>
-                 </div>
-                 
-                 <div class="row g-3">
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Mês/Ano Ref.</small>
-                       <span class="fs-5 fw-bold text-primary" id="vis-mpm-mes"></span>
-                    </div>
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Elevador</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador"></span>
-                    </div>
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Situação</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-situacao"></span>
-                    </div>
-                 </div>
+          
+          <!-- LEFT COLUMN -->
+          <div class="col-md-6 d-flex flex-column gap-4">
+              
+              <!-- Execução (OTIS) Card -->
+              <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
+                <div class="card-body p-4">
+                   <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-people me-2"></i> Execução Mestre (Otis)
+                   </h6>
+                   
+                   <div class="mb-3 border-bottom pb-3">
+                      <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Responsável</small>
+                      <div class="d-flex align-items-center gap-2">
+                         <i class="bi bi-person-badge fs-4 text-primary"></i>
+                         <div>
+                             <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-tecnico-nome">-</span>
+                             <small class="text-muted" id="vis-mpm-tecnico-chapa"></small>
+                         </div>
+                      </div>
+                   </div>
+                   
+                   <div class="row g-3">
+                       <div class="col-12">
+                          <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data Efetiva da Execução</small>
+                          <span class="fs-6 fw-semibold text-dark" id="vis-mpm-data-exec">-</span>
+                       </div>
+                       <div class="col-6">
+                          <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Chegada (Prédio)</small>
+                          <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-chegada">-</span>
+                       </div>
+                       <div class="col-6">
+                          <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Saída (Prédio)</small>
+                          <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-saida">-</span>
+                       </div>
+                   </div>
+                </div>
               </div>
-            </div>
 
-            <!-- Serviço Executado Card -->
-            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-card-text me-2"></i> Serviço Executado
-                 </h6>
-                 <p class="text-dark mb-3" style="white-space: pre-line;" id="vis-mpm-descricao"></p>
-                 
-                 <h6 class="fw-bold text-secondary text-uppercase mt-4 mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-chat-left-text me-2"></i> Observações Adicionais
-                 </h6>
-                 <p class="text-dark mb-0" style="white-space: pre-line;" id="vis-mpm-observacao"></p>
+              <!-- Foto Poço -->
+              <div class="card border-0 shadow-sm rounded-4" id="vis-mpm-foto-container" style="display: none;">
+                <div class="card-body p-4">
+                   <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-camera me-2"></i> Foto do Poço
+                   </h6>
+                   <div class="text-center">
+                       <img id="vis-mpm-foto" src="" alt="Foto do Poço" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
+                   </div>
+                </div>
               </div>
-            </div>
-
-            <!-- Foto Poço -->
-            <div class="card border-0 shadow-sm rounded-4" id="vis-mpm-foto-container" style="display: none;">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-camera me-2"></i> Foto do Poço
-                 </h6>
-                 <div class="text-center">
-                     <img id="vis-mpm-foto" src="" alt="Foto do Poço" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
-                 </div>
+              
+              <!-- Serviço Executado Card -->
+              <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                   <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-card-text me-2"></i> Serviço Executado
+                   </h6>
+                   <p class="text-dark mb-3 small" style="white-space: pre-line;" id="vis-mpm-descricao"></p>
+                   
+                   <h6 class="fw-bold text-secondary text-uppercase mt-4 mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-chat-left-text me-2"></i> Observações Adicionais
+                   </h6>
+                   <p class="text-dark mb-0 small" style="white-space: pre-line;" id="vis-mpm-observacao"></p>
+                </div>
               </div>
-            </div>
 
           </div>
           
-          <!-- TIMELINE & ENVOLVIDOS COLUMN (RIGHT) -->
-          <div class="col-md-5 d-flex flex-column gap-4">
-            
-            <!-- Envolvidos Card (Execução) -->
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-people me-2"></i> Execução (Otis)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Responsável</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-badge fs-4 text-primary"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-tecnico-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-tecnico-chapa"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="row g-3">
-                     <div class="col-12">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data Efetiva da Execução</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-data-exec">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Chegada</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-chegada">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Saída</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-saida">-</span>
-                     </div>
-                 </div>
+          <!-- RIGHT COLUMN -->
+          <div class="col-md-6 d-flex flex-column gap-4">
+              
+              <!-- Situação Card -->
+              <div class="card border-0 shadow-sm rounded-4">
+                  <div class="card-body p-4 text-center">
+                      <h6 class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.5px;">Situação do Equipamento</h6>
+                      <span class="fs-5 fw-bold text-dark" id="vis-mpm-situacao">-</span>
+                  </div>
               </div>
-            </div>
-            
-            <!-- Visto do Cliente Card -->
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-pen me-2"></i> Visto do Cliente (Sesen)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Representante</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-check fs-4 text-success"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-cliente-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-cliente-email"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="mb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Comentários do Cliente</small>
-                    <p class="fs-6 fw-normal text-dark fst-italic mb-0" id="vis-mpm-cliente-comentarios">-</p>
-                 </div>
 
-                 <div>
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data do Visto</small>
-                    <span class="fs-6 fw-semibold text-dark" id="vis-mpm-cliente-data">-</span>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Mídia/Anexo -->
-            <div class="card border-0 shadow-sm rounded-4 d-none" id="vis-mpm-secao-midia">
+              <!-- Visto do Cliente Card -->
+              <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
                 <div class="card-body p-4">
-                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                        <i class="bi bi-paperclip me-2"></i> Arquivo Anexo
-                    </h6>
-                    <div class="d-flex align-items-center p-3 border rounded-3 bg-light" style="cursor: pointer; transition: all 0.2s ease;" id="vis-mpm-midia-preview-box" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
-                        <div class="me-3 fs-1 text-primary" id="vis-mpm-midia-icon">
-                            <i class="bi bi-file-earmark"></i>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <h6 class="mb-1 text-truncate fw-bold text-dark" id="vis-mpm-midia-filename">Arquivo Anexo</h6>
-                            <small class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.7rem;" id="vis-mpm-midia-type">Tipo Desconhecido</small>
-                        </div>
-                        <div class="ms-2">
-                            <a href="#" target="_blank" download id="vis-mpm-midia-download-btn" class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="event.stopPropagation();" title="Baixar">
-                                <i class="bi bi-download text-secondary"></i>
-                            </a>
-                        </div>
-                    </div>
+                   <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                      <i class="bi bi-pen me-2"></i> Visto do Cliente (Sesen)
+                   </h6>
+                   
+                   <div class="mb-3 border-bottom pb-3">
+                      <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Representante</small>
+                      <div class="d-flex align-items-center gap-2">
+                         <i class="bi bi-person-check fs-4 text-success"></i>
+                         <div>
+                             <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-cliente-nome">-</span>
+                             <small class="text-muted" id="vis-mpm-cliente-email"></small>
+                         </div>
+                      </div>
+                   </div>
+                   
+                   <div class="mb-3">
+                      <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Comentários do Cliente</small>
+                      <p class="fs-6 fw-normal text-dark fst-italic mb-0" id="vis-mpm-cliente-comentarios">-</p>
+                   </div>
+
+                   <div>
+                      <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data do Visto</small>
+                      <span class="fs-6 fw-semibold text-dark" id="vis-mpm-cliente-data">-</span>
+                   </div>
                 </div>
-            </div>
+              </div>
+
+              <!-- Mídia/Anexo -->
+              <div class="card border-0 shadow-sm rounded-4 d-none" id="vis-mpm-secao-midia">
+                  <div class="card-body p-4">
+                      <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                          <i class="bi bi-paperclip me-2"></i> Arquivo Anexo
+                      </h6>
+                      <div class="d-flex align-items-center p-3 border rounded-3 bg-light" style="cursor: pointer; transition: all 0.2s ease;" id="vis-mpm-midia-preview-box" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
+                          <div class="me-3 fs-1 text-primary" id="vis-mpm-midia-icon">
+                              <i class="bi bi-file-earmark"></i>
+                          </div>
+                          <div class="flex-grow-1 overflow-hidden">
+                              <h6 class="mb-1 text-truncate fw-bold text-dark" id="vis-mpm-midia-filename">Arquivo Anexo</h6>
+                              <small class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.7rem;" id="vis-mpm-midia-type">Tipo Desconhecido</small>
+                          </div>
+                          <div class="ms-2">
+                              <a href="#" target="_blank" download id="vis-mpm-midia-download-btn" class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="event.stopPropagation();" title="Baixar">
+                                  <i class="bi bi-download text-secondary"></i>
+                              </a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
 
           </div>
         </div>
-        
+
       </div>
-    </div>
-  </div>
-</div><div class="modal-body p-4 bg-light">
-      
-      <!-- Top Row: Informações Principais (Full Width) -->
-      <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-info-circle me-2"></i> Informações Principais
-                 </h6>
-                 <div class="row g-3">
-                    <div class="col-md-3">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Mês/Ano Ref.</small>
-                       <span class="fs-5 fw-bold text-primary" id="vis-mpm-mes"></span>
-                    </div>
-                    <div class="col-md-3">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Elevador</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador"></span>
-                    </div>
-                    <div class="col-md-3">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Início (Elevador)</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador-inicio">-</span>
-                    </div>
-                    <div class="col-md-3">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Fim (Elevador)</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador-fim">-</span>
-                    </div>
-                 </div>
-              </div>
-            </div>
-        </div>
-      </div>
-
-      <!-- Main Content Row -->
-      <div class="row g-4">
-        
-        <!-- LEFT COLUMN -->
-        <div class="col-md-6 d-flex flex-column gap-4">
-            
-            <!-- Execução (OTIS) Card -->
-            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-people me-2"></i> Execução Mestre (Otis)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Responsável</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-badge fs-4 text-primary"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-tecnico-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-tecnico-chapa"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="row g-3">
-                     <div class="col-12">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data Efetiva da Execução</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-data-exec">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Chegada (Prédio)</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-chegada">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Saída (Prédio)</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-saida">-</span>
-                     </div>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Foto Poço -->
-            <div class="card border-0 shadow-sm rounded-4" id="vis-mpm-foto-container" style="display: none;">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-camera me-2"></i> Foto do Poço
-                 </h6>
-                 <div class="text-center">
-                     <img id="vis-mpm-foto" src="" alt="Foto do Poço" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
-                 </div>
-              </div>
-            </div>
-            
-            <!-- Serviço Executado Card -->
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-card-text me-2"></i> Serviço Executado
-                 </h6>
-                 <p class="text-dark mb-3 small" style="white-space: pre-line;" id="vis-mpm-descricao"></p>
-                 
-                 <h6 class="fw-bold text-secondary text-uppercase mt-4 mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-chat-left-text me-2"></i> Observações Adicionais
-                 </h6>
-                 <p class="text-dark mb-0 small" style="white-space: pre-line;" id="vis-mpm-observacao"></p>
-              </div>
-            </div>
-
-        </div>
-        
-        <!-- RIGHT COLUMN -->
-        <div class="col-md-6 d-flex flex-column gap-4">
-            
-            <!-- Situação Card -->
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-body p-4 text-center">
-                    <h6 class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 0.85rem; letter-spacing: 0.5px;">Situação do Equipamento</h6>
-                    <span class="fs-5 fw-bold text-dark" id="vis-mpm-situacao">-</span>
-                </div>
-            </div>
-
-            <!-- Visto do Cliente Card -->
-            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-pen me-2"></i> Visto do Cliente (Sesen)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Representante</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-check fs-4 text-success"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-cliente-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-cliente-email"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="mb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Comentários do Cliente</small>
-                    <p class="fs-6 fw-normal text-dark fst-italic mb-0" id="vis-mpm-cliente-comentarios">-</p>
-                 </div>
-
-                 <div>
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data do Visto</small>
-                    <span class="fs-6 fw-semibold text-dark" id="vis-mpm-cliente-data">-</span>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Mídia/Anexo -->
-            <div class="card border-0 shadow-sm rounded-4 d-none" id="vis-mpm-secao-midia">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                        <i class="bi bi-paperclip me-2"></i> Arquivo Anexo
-                    </h6>
-                    <div class="d-flex align-items-center p-3 border rounded-3 bg-light" style="cursor: pointer; transition: all 0.2s ease;" id="vis-mpm-midia-preview-box" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
-                        <div class="me-3 fs-1 text-primary" id="vis-mpm-midia-icon">
-                            <i class="bi bi-file-earmark"></i>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <h6 class="mb-1 text-truncate fw-bold text-dark" id="vis-mpm-midia-filename">Arquivo Anexo</h6>
-                            <small class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.7rem;" id="vis-mpm-midia-type">Tipo Desconhecido</small>
-                        </div>
-                        <div class="ms-2">
-                            <a href="#" target="_blank" download id="vis-mpm-midia-download-btn" class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="event.stopPropagation();" title="Baixar">
-                                <i class="bi bi-download text-secondary"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-      </div>
-</div>
-    </div>
-  </div>
-</div><div class="modal-body p-4 bg-light">
-      
-      <!-- Top Row: Informações Principais (Full Width) -->
-      <div class="row mb-4">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-info-circle me-2"></i> Informações Principais
-                 </h6>
-                 <div class="row g-3">
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Mês/Ano Ref.</small>
-                       <span class="fs-5 fw-bold text-primary" id="vis-mpm-mes"></span>
-                    </div>
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Elevador</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-elevador"></span>
-                    </div>
-                    <div class="col-md-4">
-                       <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Situação</small>
-                       <span class="fs-6 fw-semibold text-dark" id="vis-mpm-situacao"></span>
-                    </div>
-                 </div>
-              </div>
-            </div>
-        </div>
-      </div>
-
-      <!-- Main Content Row -->
-      <div class="row g-4">
-        
-        <!-- LEFT COLUMN -->
-        <div class="col-md-6 d-flex flex-column gap-4">
-            
-            <!-- Serviço Executado Card -->
-            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-card-text me-2"></i> Serviço Executado
-                 </h6>
-                 <p class="text-dark mb-3" style="white-space: pre-line;" id="vis-mpm-descricao"></p>
-                 
-                 <h6 class="fw-bold text-secondary text-uppercase mt-4 mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-chat-left-text me-2"></i> Observações Adicionais
-                 </h6>
-                 <p class="text-dark mb-0" style="white-space: pre-line;" id="vis-mpm-observacao"></p>
-              </div>
-            </div>
-
-            <!-- Execução (OTIS) Card -->
-            <div class="card border-0 shadow-sm rounded-4">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-people me-2"></i> Execução (Otis)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Técnico Responsável</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-badge fs-4 text-primary"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-tecnico-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-tecnico-chapa"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="row g-3">
-                     <div class="col-12">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data Efetiva da Execução</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-data-exec">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Chegada</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-chegada">-</span>
-                     </div>
-                     <div class="col-6">
-                        <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Hora Saída</small>
-                        <span class="fs-6 fw-semibold text-dark" id="vis-mpm-hora-saida">-</span>
-                     </div>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Foto Poço -->
-            <div class="card border-0 shadow-sm rounded-4" id="vis-mpm-foto-container" style="display: none;">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-camera me-2"></i> Foto do Poço
-                 </h6>
-                 <div class="text-center">
-                     <img id="vis-mpm-foto" src="" alt="Foto do Poço" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;">
-                 </div>
-              </div>
-            </div>
-
-        </div>
-        
-        <!-- RIGHT COLUMN -->
-        <div class="col-md-6 d-flex flex-column gap-4">
-            
-            <!-- Visto do Cliente Card -->
-            <div class="card border-0 shadow-sm rounded-4 flex-grow-1">
-              <div class="card-body p-4">
-                 <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                    <i class="bi bi-pen me-2"></i> Visto do Cliente (Sesen)
-                 </h6>
-                 
-                 <div class="mb-3 border-bottom pb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Representante</small>
-                    <div class="d-flex align-items-center gap-2">
-                       <i class="bi bi-person-check fs-4 text-success"></i>
-                       <div>
-                           <span class="fs-6 fw-semibold text-dark d-block" id="vis-mpm-cliente-nome">-</span>
-                           <small class="text-muted" id="vis-mpm-cliente-email"></small>
-                       </div>
-                    </div>
-                 </div>
-                 
-                 <div class="mb-3">
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Comentários do Cliente</small>
-                    <p class="fs-6 fw-normal text-dark fst-italic mb-0" id="vis-mpm-cliente-comentarios">-</p>
-                 </div>
-
-                 <div>
-                    <small class="text-muted text-uppercase fw-bold d-block" style="font-size: 0.7rem;">Data do Visto</small>
-                    <span class="fs-6 fw-semibold text-dark" id="vis-mpm-cliente-data">-</span>
-                 </div>
-              </div>
-            </div>
-
-            <!-- Mídia/Anexo -->
-            <div class="card border-0 shadow-sm rounded-4 d-none" id="vis-mpm-secao-midia">
-                <div class="card-body p-4">
-                    <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
-                        <i class="bi bi-paperclip me-2"></i> Arquivo Anexo
-                    </h6>
-                    <div class="d-flex align-items-center p-3 border rounded-3 bg-light" style="cursor: pointer; transition: all 0.2s ease;" id="vis-mpm-midia-preview-box" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
-                        <div class="me-3 fs-1 text-primary" id="vis-mpm-midia-icon">
-                            <i class="bi bi-file-earmark"></i>
-                        </div>
-                        <div class="flex-grow-1 overflow-hidden">
-                            <h6 class="mb-1 text-truncate fw-bold text-dark" id="vis-mpm-midia-filename">Arquivo Anexo</h6>
-                            <small class="text-muted d-block text-uppercase fw-semibold" style="font-size: 0.7rem;" id="vis-mpm-midia-type">Tipo Desconhecido</small>
-                        </div>
-                        <div class="ms-2">
-                            <a href="#" target="_blank" download id="vis-mpm-midia-download-btn" class="btn btn-sm btn-light rounded-circle shadow-sm" onclick="event.stopPropagation();" title="Baixar">
-                                <i class="bi bi-download text-secondary"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-      </div>
-</div>
     </div>
   </div>
 </div>
