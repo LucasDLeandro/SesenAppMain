@@ -1798,7 +1798,7 @@ function carregarAlarmesEms() {
 }
 
 // ==========================================
-// FUNﾃ�髭S DE REGISTRO DE PARADAS
+// FUNÇÕES DE REGISTRO DE PARADAS
 // ==========================================
 
 function carregarRegistroParadas() {

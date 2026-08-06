@@ -989,14 +989,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: formData
                 });
                 
-                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclus�o'; }
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusão'; }
 
                 if (res.ok) {
                     const modal = bootstrap.Modal.getInstance(document.getElementById('modalConcluirMPM'));
                     if (modal) modal.hide();
                     formConcluirMPM.reset();
                     loadMPMTable();
-                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM conclu�da com sucesso!', 'success');
+                    if (typeof Swal !== 'undefined') Swal.fire('Sucesso', 'MPM concluída com sucesso!', 'success');
                 } else {
                     const errorData = await res.json();
                     console.error('Erro na API:', errorData);
@@ -1004,7 +1004,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             } catch (err) {
                 console.error(err);
-                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclus�o'; }
+                if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.innerHTML = 'Confirmar Conclusão'; }
             }
         });
     }
