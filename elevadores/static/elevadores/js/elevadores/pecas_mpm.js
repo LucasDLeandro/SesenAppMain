@@ -1008,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     const errorData = await res.json();
                     console.error('Erro na API:', errorData);
-                    alert('Erro ao concluir MPM. Verifique o console.');
+                    if (typeof Swal !== 'undefined') Swal.fire('Erro', 'Erro ao concluir MPM. Verifique o console.', 'error'); else alert('Erro ao concluir MPM. Verifique o console.');
                 }
             } catch (err) {
                 console.error(err);

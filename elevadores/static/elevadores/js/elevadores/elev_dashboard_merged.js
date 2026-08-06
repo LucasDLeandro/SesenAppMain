@@ -1443,11 +1443,15 @@ window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
     if(elId) elId.value = data.id || '';
     
     const elMes = document.getElementById('concluirMPMMesText');
-    if(elMes) elMes.innerText = (data.mes_referencia || data.mes || '') + ' - ' + (data.elevador || '');
-    
-    if(document.getElementById('concluirMPMElevadorText')) document.getElementById('concluirMPMElevadorText').innerText = data.elevador || '';
-    if(document.getElementById('concluirMPMStatus')) document.getElementById('concluirMPMStatus').value = 'EXECUTADO';
-    if(document.getElementById('concluirMPMData')) document.getElementById('concluirMPMData').value = new Date().toISOString().split('T')[0];
+    if(elMes) {
+        let mesFormatado = data.mes_referencia || data.mes || '';
+        if (mesFormatado.includes('-')) {
+            const parts = mesFormatado.split('-');
+            if(parts.length >= 2) mesFormatado = parts[1] + '/' + parts[0];
+        }
+        let elevadorText = data.elevador ? ' - ' + data.elevador : '';
+        elMes.innerText = mesFormatado + elevadorText;
+    }
     
     const modalEl = document.getElementById('modalConcluirMPM');
     if(modalEl) {
@@ -1456,43 +1460,6 @@ window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
         modal.show();
     }
 }
-
-document.getElementById('formConcluirMPM')?.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const id = document.getElementById('concluirMPMId').value;
-    const tec = document.getElementById('concluirMPMTecnico').value;
-    const dataExec = document.getElementById('concluirMPMData').value;
-    const status = document.getElementById('concluirMPMStatus').value;
-    
-    // Obter CSRF token
-    let csrfToken = '';
-    const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
-    if(csrfElement) csrfToken = csrfElement.value;
-    else {
-        // Tentar obter via cookie se não houver no dom
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('csrftoken=')) {
-                csrfToken = cookie.substring('csrftoken='.length, cookie.length);
-                break;
-            }
-        }
-    }
-
-    try {
-        const resp = await fetch('/elevadores/api/manutencao_preventiva/' + id + '/', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({
-                tecnico: tec,
-                data_execucao: dataExec,
-                status: status
-            })
-        });
 
         if(resp.ok) {
             Swal.fire('Sucesso', 'Manutenção registrada!', 'success');
