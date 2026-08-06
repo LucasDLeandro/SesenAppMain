@@ -1508,25 +1508,6 @@ window.abrirConclusaoMPMDemandas = function(mpmStrEncoded) {
     }
 }
 
-        if(resp.ok) {
-            Swal.fire('Sucesso', 'Manutenﾃｧﾃ｣o registrada!', 'success');
-            const mEl = document.getElementById('modalConcluirMPM');
-            if (mEl) {
-                const m = bootstrap.Modal.getInstance(mEl);
-                if(m) m.hide();
-            }
-            abrirModalDemandasPendentes();
-            if(typeof loadMPMTable === 'function') loadMPMTable();
-            window.location.reload();
-        } else {
-            Swal.fire('Erro', 'Nﾃ｣o foi possﾃｭvel salvar', 'error');
-        }
-    } catch(err) {
-        console.error(err);
-        Swal.fire('Erro', 'Erro de conexﾃ｣o', 'error');
-    }
-});
-
 window.abrirModalRegistrarChegada = function(osStrEncoded) {
     const data = JSON.parse(decodeURIComponent(osStrEncoded));
     document.getElementById('chegadaIdOS').value = data.id;
