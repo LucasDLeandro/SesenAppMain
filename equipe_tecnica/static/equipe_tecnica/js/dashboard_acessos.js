@@ -98,7 +98,10 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return `
                         <div class="d-flex gap-1 flex-nowrap justify-content-end">
-                            <button class="btn btn-sm btn-outline-primary" onclick="editarSolicitacao(${row.id})" title="Visualizar/Editar">
+                            <button class="btn btn-sm btn-outline-info" onclick="visualizarPedido(${row.id})" title="Visualizar Detalhes">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarSolicitacao(${row.id})" title="Editar">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-success" onclick="abrirModalLiberacao(${row.id})" title="Gerar Liberação">
@@ -682,9 +685,20 @@ function carregarAgenda() {
                         <td>${dataAgendada.toLocaleString('pt-BR')}</td>
                         <td class="${classTempo} timer-agenda" data-target="${dataAgendada.toISOString()}">${textTempo}</td>
                         <td class="text-end">
-                            <button class="btn btn-sm btn-outline-info" onclick="visualizarEmailLiberacao(${lib.id}, true)" title="Visualizar e enviar agora">
-                                <i class="bi bi-send"></i> Enviar Agora
-                            </button>
+                            <div class="d-flex gap-1 flex-nowrap justify-content-end">
+                                <button class="btn btn-sm btn-outline-primary" onclick="editarAgendamento(${lib.id}, '${lib.data_agendamento_email}')" title="Mudar Data">
+                                    <i class="bi bi-calendar-event"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-warning" onclick="cancelarAgendamento(${lib.id})" title="Cancelar Envio Agendado">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-info" onclick="visualizarEmailLiberacao(${lib.id}, true)" title="Visualizar e enviar agora">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="excluirLiberacao(${lib.id}); setTimeout(carregarAgenda, 2000);" title="Excluir Liberação Inteira">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 `);
@@ -717,3 +731,112 @@ setInterval(function() {
         });
     }
 }, 60000);
+
+
+function visualizarPedido(id) {
+    $.get(`/equipe_tecnica/api/solicitacoes/${id}/`, function(data) {
+        $('#vis_empresa').text(data.empresa_nome);
+        $('#vis_solicitante').text(data.nome_solicitante);
+        $('#vis_data_solicitacao').text(formatDate(data.data_solicitacao));
+        $('#vis_validade_inicio').text(formatDate(data.validade_inicio));
+        $('#vis_validade_fim').text(formatDate(data.validade_fim));
+        
+        const tbody = $('#tabela-vis-tecnicos tbody');
+        tbody.empty();
+        
+        if (data.tecnicos_detalhes && data.tecnicos_detalhes.length > 0) {
+            data.tecnicos_detalhes.forEach(t => {
+                tbody.append(`
+                    <tr>
+                        <td>${t.nome}</td>
+                        <td>${t.cpf}</td>
+                        <td>${t.rg || '-'}</td>
+                        <td>${t.telefone || '-'}</td>
+                    </tr>
+                `);
+            });
+        } else {
+            tbody.append('<tr><td colspan="4" class="text-center text-muted">Nenhum técnico cadastrado.</td></tr>');
+        }
+
+        $('#modal-visualizar-pedido').modal('show');
+    });
+}
+
+function editarAgendamento(id, current_date) {
+    const defaultDate = current_date ? current_date.substring(0, 16) : ''; // format YYYY-MM-DDTHH:mm
+    Swal.fire({
+        title: 'Editar Data e Hora do Envio',
+        html: `
+            <p class="text-muted small">Selecione o novo horário para agendamento do envio deste e-mail:</p>
+            <input type="datetime-local" id="swal-agendamento" class="form-control" value="${defaultDate}">
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Salvar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            return document.getElementById('swal-agendamento').value;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const newDate = result.value;
+            if (!newDate) {
+                Swal.showValidationMessage('Insira uma data válida');
+                return;
+            }
+            
+            $.ajax({
+                url: `/equipe_tecnica/api/liberacoes/${id}/`,
+                method: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify({ data_agendamento_email: newDate }),
+                headers: {
+                    'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                },
+                success: function() {
+                    Swal.fire('Atualizado!', 'A data do agendamento foi alterada.', 'success');
+                    carregarAgenda();
+                    tabelaLiberacoes.ajax.reload();
+                },
+                error: function() {
+                    Swal.fire('Erro!', 'Não foi possível alterar o agendamento.', 'error');
+                }
+            });
+        }
+    });
+}
+
+function cancelarAgendamento(id) {
+    Swal.fire({
+        title: 'Cancelar Agendamento?',
+        text: "O e-mail não será mais enviado de forma automática, mas a liberação continuará existindo.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#f39c12',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sim, cancelar envio'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `/equipe_tecnica/api/liberacoes/${id}/`,
+                method: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify({ data_agendamento_email: null }),
+                headers: {
+                    'X-CSRFToken': $('[name=csrfmiddlewaretoken]').val()
+                },
+                success: function() {
+                    Swal.fire('Cancelado!', 'O agendamento de envio foi removido.', 'success');
+                    carregarAgenda();
+                    tabelaLiberacoes.ajax.reload();
+                    
+                    // Decrease counter visually
+                    let counter = parseInt($('#contador-agendamentos').text()) || 0;
+                    if(counter > 0) {
+                        $('#contador-agendamentos').text(counter - 1);
+                    }
+                }
+            });
+        }
+    });
+}

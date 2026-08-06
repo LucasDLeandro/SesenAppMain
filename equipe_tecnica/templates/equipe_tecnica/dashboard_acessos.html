@@ -36,6 +36,74 @@
         </div>
     </div>
 
+
+    <!-- Modal Visualizar Pedido -->
+    <div class="modal fade" id="modal-visualizar-pedido" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold" style="color: #3b82f6">
+                        <i class="bi bi-eye me-2"></i> Detalhes do Pedido de Acesso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-4">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
+                                    <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Nome do Solicitante (E-mail)</h6>
+                                    <p class="mb-0 text-dark" id="vis_solicitante">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Data da Solicitação</h6>
+                                    <p class="mb-0 text-dark" id="vis_data_solicitacao">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Início)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_inicio">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Fim)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_fim">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">CPF</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">RG</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block extra_css %}
@@ -69,6 +137,74 @@
                             <tbody>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Visualizar Pedido -->
+    <div class="modal fade" id="modal-visualizar-pedido" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold" style="color: #3b82f6">
+                        <i class="bi bi-eye me-2"></i> Detalhes do Pedido de Acesso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-4">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
+                                    <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Nome do Solicitante (E-mail)</h6>
+                                    <p class="mb-0 text-dark" id="vis_solicitante">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Data da Solicitação</h6>
+                                    <p class="mb-0 text-dark" id="vis_data_solicitacao">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Início)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_inicio">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Fim)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_fim">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">CPF</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">RG</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
@@ -524,6 +660,74 @@
         </div>
     </div>
 
+
+    <!-- Modal Visualizar Pedido -->
+    <div class="modal fade" id="modal-visualizar-pedido" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold" style="color: #3b82f6">
+                        <i class="bi bi-eye me-2"></i> Detalhes do Pedido de Acesso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-4">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
+                                    <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Nome do Solicitante (E-mail)</h6>
+                                    <p class="mb-0 text-dark" id="vis_solicitante">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Data da Solicitação</h6>
+                                    <p class="mb-0 text-dark" id="vis_data_solicitacao">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Início)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_inicio">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Fim)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_fim">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">CPF</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">RG</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block extra_js %}
@@ -562,6 +766,74 @@
                             <tbody>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Visualizar Pedido -->
+    <div class="modal fade" id="modal-visualizar-pedido" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
+                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
+                    <h5 class="modal-title fw-bold" style="color: #3b82f6">
+                        <i class="bi bi-eye me-2"></i> Detalhes do Pedido de Acesso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-4">
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
+                                    <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Nome do Solicitante (E-mail)</h6>
+                                    <p class="mb-0 text-dark" id="vis_solicitante">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Data da Solicitação</h6>
+                                    <p class="mb-0 text-dark" id="vis_data_solicitacao">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Início)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_inicio">-</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Fim)</h6>
+                                    <p class="mb-0 text-dark" id="vis_validade_fim">-</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                                <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
+                            </h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">CPF</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">RG</th>
+                                            <th style="font-size: 0.75rem; text-transform: uppercase;">Telefone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
