@@ -134,7 +134,8 @@ $(document).ready(function() {
             { 
                 data: null,
                 render: function(data, type, row) {
-                    return `${formatDate(row.data_inicio)} a ${formatDate(row.data_fim)}<br><small class="text-muted">${row.periodo}</small>`;
+                    let horas = row.hora_inicio && row.hora_fim ? `${row.hora_inicio.substring(0,5)} às ${row.hora_fim.substring(0,5)}` : 'Horário não definido';
+                    return `${formatDate(row.data_inicio)} a ${formatDate(row.data_fim)}<br><small class="text-muted">${horas}</small>`;
                 }
             },
             {
@@ -444,7 +445,8 @@ function salvarLiberacao() {
         tecnicos: tecnicosSelecionados,
         data_inicio: $('#lib_data_inicio').val(),
         data_fim: $('#lib_data_fim').val(),
-        periodo: $('#lib_periodo').val(),
+        hora_inicio: $('#lib_hora_inicio').val(),
+        hora_fim: $('#lib_hora_fim').val(),
     };
 
     const agendamento = $('#lib_agendamento').val();
@@ -641,3 +643,77 @@ function confirmarEnvioEmail() {
         });
     });
 }
+
+
+function abrirModalAgenda() {
+    $('#modal-agenda').modal('show');
+    carregarAgenda();
+}
+
+function carregarAgenda() {
+    $.get('/equipe_tecnica/api/liberacoes/', function(data) {
+        const tbody = $('#tabela-agenda tbody');
+        tbody.empty();
+        
+        let hasAgenda = false;
+        const agora = new Date();
+        
+        data.forEach(lib => {
+            if (!lib.email_enviado && lib.data_agendamento_email) {
+                hasAgenda = true;
+                const dataAgendada = new Date(lib.data_agendamento_email);
+                
+                let diffTime = dataAgendada - agora;
+                let textTempo = "Atrasado!";
+                let classTempo = "text-danger fw-bold";
+                
+                if (diffTime > 0) {
+                    const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                    textTempo = `Faltam ${days}d ${hours}h ${minutes}m`;
+                    classTempo = "text-warning fw-bold";
+                }
+                
+                tbody.append(`
+                    <tr>
+                        <td>#${lib.id}</td>
+                        <td class="fw-bold">${lib.empresa_nome}</td>
+                        <td>${dataAgendada.toLocaleString('pt-BR')}</td>
+                        <td class="${classTempo} timer-agenda" data-target="${dataAgendada.toISOString()}">${textTempo}</td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-outline-info" onclick="visualizarEmailLiberacao(${lib.id}, true)" title="Visualizar e enviar agora">
+                                <i class="bi bi-send"></i> Enviar Agora
+                            </button>
+                        </td>
+                    </tr>
+                `);
+            }
+        });
+        
+        if (!hasAgenda) {
+            tbody.append('<tr><td colspan="5" class="text-center text-muted">Nenhum envio agendado.</td></tr>');
+        }
+    });
+}
+
+// Timer para atualizar os countdowns da agenda a cada 1 minuto
+setInterval(function() {
+    if ($('#modal-agenda').is(':visible')) {
+        $('.timer-agenda').each(function() {
+            const target = new Date($(this).data('target'));
+            const agora = new Date();
+            let diffTime = target - agora;
+            
+            if (diffTime > 0) {
+                const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                $(this).text(`Faltam ${days}d ${hours}h ${minutes}m`);
+            } else {
+                $(this).text('Atrasado!');
+                $(this).removeClass('text-warning').addClass('text-danger');
+            }
+        });
+    }
+}, 60000);

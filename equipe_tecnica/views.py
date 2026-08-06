@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.utils import timezone
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -69,7 +70,18 @@ def dashboard_acessos(request):
         if request.user.is_superuser or request.user.groups.filter(name__in=['Administrador', 'Supervisor']).exists():
             is_admin_or_supervisor = True
 
+    hoje = timezone.now().date()
+    
+    total_pedidos = SolicitacaoAcesso.objects.count()
+    liberacoes_mes = LiberacaoAcessoDiaria.objects.filter(data_inicio__year=hoje.year, data_inicio__month=hoje.month).count()
+    tecnicos_mes = LiberacaoAcessoDiaria.objects.filter(data_inicio__year=hoje.year, data_inicio__month=hoje.month).values_list('tecnicos', flat=True).distinct().count()
+    agendamentos_pendentes = LiberacaoAcessoDiaria.objects.filter(email_enviado=False, data_agendamento_email__isnull=False).count()
+
     return render(request, 'equipe_tecnica/dashboard_acessos.html', {
         'empresas': empresas,
-        'is_admin_or_supervisor': is_admin_or_supervisor
+        'is_admin_or_supervisor': is_admin_or_supervisor,
+        'total_pedidos': total_pedidos,
+        'liberacoes_mes': liberacoes_mes,
+        'tecnicos_mes': tecnicos_mes,
+        'agendamentos_pendentes': agendamentos_pendentes
     })

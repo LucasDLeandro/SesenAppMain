@@ -64,18 +64,14 @@ class PadraoEmailLiberacao(models.Model):
         return self.nome
 
 class LiberacaoAcessoDiaria(models.Model):
-    PERIODO_CHOICES = [
-        ('Manhã', 'Matutino'),
-        ('Tarde', 'Vespertino'),
-        ('Integral', 'Integral'),
-        ('Noturno', 'Noturno'),
-    ]
+
 
     solicitacao = models.ForeignKey(SolicitacaoAcesso, on_delete=models.CASCADE, related_name="liberacoes_diarias")
     tecnicos = models.ManyToManyField(Tecnico, related_name="liberacoes_presentes")
     data_inicio = models.DateField(verbose_name="Data Início")
     data_fim = models.DateField(verbose_name="Data Fim")
-    periodo = models.CharField(max_length=20, choices=PERIODO_CHOICES, default='Integral')
+    hora_inicio = models.TimeField(verbose_name="Hora Início", null=True, blank=True)
+    hora_fim = models.TimeField(verbose_name="Hora Fim", null=True, blank=True)
     
     email_enviado = models.BooleanField(default=False)
     data_agendamento_email = models.DateTimeField(null=True, blank=True, verbose_name="Envio Programado")
@@ -84,4 +80,5 @@ class LiberacaoAcessoDiaria(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Liberação: {self.solicitacao.empresa.nome_empresa} ({self.data_inicio} - {self.periodo})"
+        horario = f"{self.hora_inicio.strftime('%H:%M')} às {self.hora_fim.strftime('%H:%M')}" if self.hora_inicio and self.hora_fim else "Horário não definido"
+        return f"Liberação: {self.solicitacao.empresa.nome_empresa} ({self.data_inicio} - {horario})"

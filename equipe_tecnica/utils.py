@@ -32,7 +32,11 @@ def montar_email_liberacao(liberacao):
 
     empresa = liberacao.solicitacao.empresa.nome_empresa
     solicitante = liberacao.solicitacao.nome_solicitante
-    periodo = liberacao.periodo
+    
+    if liberacao.hora_inicio and liberacao.hora_fim:
+        periodo = f"{liberacao.hora_inicio.strftime('%H:%M')} às {liberacao.hora_fim.strftime('%H:%M')}"
+    else:
+        periodo = "Horário não definido"
 
     if liberacao.data_inicio == liberacao.data_fim:
         datas = f"{liberacao.data_inicio.strftime('%d/%m/%Y')}"
