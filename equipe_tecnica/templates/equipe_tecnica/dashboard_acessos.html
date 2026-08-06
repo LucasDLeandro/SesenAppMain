@@ -2,39 +2,7 @@
 {% load static %}
 
 {% block title %}Equipe Técnica - Solicitações
-    <!-- Modal Agenda de Pedidos -->
-    <div class="modal fade" id="modal-agenda" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
-                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
-                    <h5 class="modal-title fw-bold text-warning" id="modalAgendaTitle">
-                        <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="table-responsive">
-                        <table id="tabela-agenda" class="table table-hover align-middle w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Empresa</th>
-                                    <th>Data Programada</th>
-                                    <th>Tempo Restante</th>
-                                    <th class="text-end">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
     <!-- Modal Visualizar Pedido -->
@@ -112,39 +80,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="stylesheet" href="{% static 'equipe_tecnica/css/dashboard_acessos.css' %}?v=1.0">
 
-    <!-- Modal Agenda de Pedidos -->
-    <div class="modal fade" id="modal-agenda" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
-                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
-                    <h5 class="modal-title fw-bold text-warning" id="modalAgendaTitle">
-                        <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="table-responsive">
-                        <table id="tabela-agenda" class="table table-hover align-middle w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Empresa</th>
-                                    <th>Data Programada</th>
-                                    <th>Tempo Restante</th>
-                                    <th class="text-end">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
     <!-- Modal Visualizar Pedido -->
@@ -239,87 +175,15 @@
                 </div>
             </div>
 
-            
-            <!-- Dashboard Cards -->
-            <div class="row g-3 mb-4">
-                <!-- Total de Pedidos -->
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0d6efd;">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs fw-bold text-primary text-uppercase mb-1" style="font-size: 0.75rem;">
-                                        Total de Pedidos</div>
-                                    <div class="h5 mb-0 fw-bold text-gray-800">{{ total_pedidos }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="bi bi-file-earmark-text fs-2 text-secondary opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Liberações no Mês -->
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #198754;">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs fw-bold text-success text-uppercase mb-1" style="font-size: 0.75rem;">
-                                        Liberações (Mês)</div>
-                                    <div class="h5 mb-0 fw-bold text-gray-800">{{ liberacoes_mes }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="bi bi-person-check fs-2 text-secondary opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Técnicos no Mês -->
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0dcaf0;">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs fw-bold text-info text-uppercase mb-1" style="font-size: 0.75rem;">
-                                        Técnicos (Mês)</div>
-                                    <div class="h5 mb-0 fw-bold text-gray-800">{{ tecnicos_mes }}</div>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="bi bi-tools fs-2 text-secondary opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Agendamentos Pendentes -->
-                <div class="col-xl-3 col-md-6">
-                    <div class="card border-0 shadow-sm h-100 py-2 cursor-pointer hover-shadow" style="border-left: 4px solid #ffc107; cursor: pointer; transition: 0.3s;" onclick="abrirModalAgenda()">
-                        <div class="card-body">
-                            <div class="row no-gutters align-items-center">
-                                <div class="col mr-2">
-                                    <div class="text-xs fw-bold text-warning text-uppercase mb-1" style="font-size: 0.75rem;">
-                                        Envios Agendados</div>
-                                    <div class="h5 mb-0 fw-bold text-gray-800" id="contador-agendamentos">{{ agendamentos_pendentes }}</div>
-                                    <small class="text-muted" style="font-size: 0.7rem;">Clique para ver a agenda</small>
-                                </div>
-                                <div class="col-auto">
-                                    <i class="bi bi-clock-history fs-2 text-secondary opacity-50"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Nav Tabs -->
             <ul class="nav nav-tabs border-0 mb-3" id="acessosTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active fw-bold text-secondary" id="solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-pane" type="button" role="tab" aria-controls="solicitacoes-pane" aria-selected="true" style="border-radius: 10px 10px 0 0;">
+                    <button class="nav-link active fw-bold text-secondary" id="visaogeral-tab" data-bs-toggle="tab" data-bs-target="#visaogeral-pane" type="button" role="tab" aria-controls="visaogeral-pane" aria-selected="true" style="border-radius: 10px 10px 0 0;">
+                        <i class="bi bi-grid-1x2 me-2"></i>Visão Geral
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold text-secondary" id="solicitacoes-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-pane" type="button" role="tab" aria-controls="solicitacoes-pane" aria-selected="false" style="border-radius: 10px 10px 0 0;">
                         <i class="bi bi-file-earmark-text me-2"></i>Pedidos Registrados
                     </button>
                 </li>
@@ -331,8 +195,114 @@
             </ul>
 
             <div class="tab-content flex-grow-1" id="acessosTabsContent">
+                
+                <!-- Aba Visão Geral -->
+                <div class="tab-pane fade show active h-100" id="visaogeral-pane" role="tabpanel" aria-labelledby="visaogeral-tab" tabindex="0">
+                    <!-- Dashboard Cards -->
+                    <div class="row g-3 mb-4">
+                        <!-- Pedidos Ativos -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0d6efd;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs fw-bold text-primary text-uppercase mb-1" style="font-size: 0.75rem;">
+                                                Pedidos Ativos (Hoje)</div>
+                                            <div class="h5 mb-0 fw-bold text-gray-800">{{ pedidos_ativos }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="bi bi-file-earmark-check fs-2 text-secondary opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Liberações Hoje -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #198754;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs fw-bold text-success text-uppercase mb-1" style="font-size: 0.75rem;">
+                                                Liberações (Hoje)</div>
+                                            <div class="h5 mb-0 fw-bold text-gray-800">{{ liberacoes_hoje }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="bi bi-calendar-check fs-2 text-secondary opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Técnicos Hoje -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0dcaf0;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs fw-bold text-info text-uppercase mb-1" style="font-size: 0.75rem;">
+                                                Técnicos (Hoje)</div>
+                                            <div class="h5 mb-0 fw-bold text-gray-800">{{ tecnicos_hoje }}</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="bi bi-tools fs-2 text-secondary opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Agendamentos Pendentes -->
+                        <div class="col-xl-3 col-md-6">
+                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #ffc107;">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs fw-bold text-warning text-uppercase mb-1" style="font-size: 0.75rem;">
+                                                Envios Agendados</div>
+                                            <div class="h5 mb-0 fw-bold text-gray-800" id="contador-agendamentos">{{ agendamentos_pendentes }}</div>
+                                            <small class="text-muted" style="font-size: 0.7rem;">Aguardando disparo</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="bi bi-clock-history fs-2 text-secondary opacity-50"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Agenda de Envios Panel -->
+                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                        <div class="card-header bg-white border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center" style="border-radius: 12px 12px 0 0;">
+                            <h5 class="fw-bold text-warning mb-0">
+                                <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table id="tabela-agenda" class="table table-hover align-middle w-100">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Empresa</th>
+                                            <th>Data Programada</th>
+                                            <th>Tempo Restante</th>
+                                            <th class="text-end">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Aba Solicitações -->
-                <div class="tab-pane fade show active h-100" id="solicitacoes-pane" role="tabpanel" aria-labelledby="solicitacoes-tab" tabindex="0">
+                <div class="tab-pane fade h-100" id="solicitacoes-pane" role="tabpanel" aria-labelledby="solicitacoes-tab" tabindex="0">
                     <div class="card border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
                         <div class="card-body p-4 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-4">
@@ -626,39 +596,7 @@
         </div>
     </div>
 
-    <!-- Modal Agenda de Pedidos -->
-    <div class="modal fade" id="modal-agenda" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
-                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
-                    <h5 class="modal-title fw-bold text-warning" id="modalAgendaTitle">
-                        <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="table-responsive">
-                        <table id="tabela-agenda" class="table table-hover align-middle w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Empresa</th>
-                                    <th>Data Programada</th>
-                                    <th>Tempo Restante</th>
-                                    <th class="text-end">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
     <!-- Modal Visualizar Pedido -->
@@ -741,39 +679,7 @@
     </script>
     <script src="{% static 'equipe_tecnica/js/dashboard_acessos.js' %}?v=1.1"></script>
 
-    <!-- Modal Agenda de Pedidos -->
-    <div class="modal fade" id="modal-agenda" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: #f8fafc;">
-                <div class="modal-header border-0 pb-3 pt-4 px-4 bg-white shadow-sm" style="z-index: 10;">
-                    <h5 class="modal-title fw-bold text-warning" id="modalAgendaTitle">
-                        <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="table-responsive">
-                        <table id="tabela-agenda" class="table table-hover align-middle w-100">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Empresa</th>
-                                    <th>Data Programada</th>
-                                    <th>Tempo Restante</th>
-                                    <th class="text-end">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
-                    <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Fechar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 
 
     <!-- Modal Visualizar Pedido -->

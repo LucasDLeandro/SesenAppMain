@@ -72,16 +72,16 @@ def dashboard_acessos(request):
 
     hoje = timezone.now().date()
     
-    total_pedidos = SolicitacaoAcesso.objects.count()
-    liberacoes_mes = LiberacaoAcessoDiaria.objects.filter(data_inicio__year=hoje.year, data_inicio__month=hoje.month).count()
-    tecnicos_mes = LiberacaoAcessoDiaria.objects.filter(data_inicio__year=hoje.year, data_inicio__month=hoje.month).values_list('tecnicos', flat=True).distinct().count()
+    pedidos_ativos = SolicitacaoAcesso.objects.filter(validade_fim__gte=hoje, validade_inicio__lte=hoje, status='ativa').count()
+    liberacoes_hoje = LiberacaoAcessoDiaria.objects.filter(data_inicio__lte=hoje, data_fim__gte=hoje).count()
+    tecnicos_hoje = LiberacaoAcessoDiaria.objects.filter(data_inicio__lte=hoje, data_fim__gte=hoje).values_list('tecnicos', flat=True).distinct().count()
     agendamentos_pendentes = LiberacaoAcessoDiaria.objects.filter(email_enviado=False, data_agendamento_email__isnull=False).count()
 
     return render(request, 'equipe_tecnica/dashboard_acessos.html', {
         'empresas': empresas,
         'is_admin_or_supervisor': is_admin_or_supervisor,
-        'total_pedidos': total_pedidos,
-        'liberacoes_mes': liberacoes_mes,
-        'tecnicos_mes': tecnicos_mes,
+        'pedidos_ativos': pedidos_ativos,
+        'liberacoes_hoje': liberacoes_hoje,
+        'tecnicos_hoje': tecnicos_hoje,
         'agendamentos_pendentes': agendamentos_pendentes
     })

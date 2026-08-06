@@ -2,6 +2,13 @@ let tabelaSolicitacoes;
 let tabelaLiberacoes;
 
 $(document).ready(function() {
+    // Adjust DataTables when switching tabs
+    $('button[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+    });
+
+    carregarAgenda();
+
     // Função utilitária para aplicar filtros de pesquisa individual por coluna
     function aplicarFiltroColunas(tabela) {
         var tableNode = tabela.table().node();
@@ -648,11 +655,6 @@ function confirmarEnvioEmail() {
 }
 
 
-function abrirModalAgenda() {
-    $('#modal-agenda').modal('show');
-    carregarAgenda();
-}
-
 function carregarAgenda() {
     $.get('/equipe_tecnica/api/liberacoes/', function(data) {
         const tbody = $('#tabela-agenda tbody');
@@ -713,7 +715,7 @@ function carregarAgenda() {
 
 // Timer para atualizar os countdowns da agenda a cada 1 minuto
 setInterval(function() {
-    if ($('#modal-agenda').is(':visible')) {
+    if ($('#tabela-agenda').is(':visible')) {
         $('.timer-agenda').each(function() {
             const target = new Date($(this).data('target'));
             const agora = new Date();
