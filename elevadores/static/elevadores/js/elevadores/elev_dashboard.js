@@ -372,9 +372,9 @@ async function dadosIndicadorQuatro() {
             hovertemplate: 
                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                'Hrs ﾃｺteis no Mﾃｪs Total: <b>%{customdata[2]}</b><br>' +
-                'Dias ﾃｺteis no Mﾃｪs Total: <b>%{customdata[3]}</b><br>' +
-                'Horas Disponﾃｭveis: <b>%{customdata[4]}</b><br>' +
+                'Hrs Úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
+                'Dias Úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
+                'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
                 'Disponibilidade: <b>%{y}%</b>' +
                 '<extra></extra>',
             textposition: 'auto',
@@ -825,7 +825,7 @@ async function dadosIndicadorDois() {
             text: text_status,
             hovertemplate: 
                 '<b>Elevador:</b> %{y}<br>' +
-                '<b>Dia Execuﾃｧﾃ｣o:</b> %{x}<br>' +
+                '<b>Dia Execução:</b> %{x}<br>' +
                 '<b>Status:</b> %{text}<br>' +
                 '<b>OS:</b> %{customdata[0]}<br>' +
                 '<b>Técnico:</b> %{customdata[1]}' +

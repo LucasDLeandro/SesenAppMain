@@ -481,8 +481,8 @@ async function dadosIndicadorQuatro() {
             hovertemplate: 
                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
-                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
+                'Hrs Úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
+                'Dias Úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
                 'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
                 'Disponibilidade: <b>%{y}%</b>' +
                 '<extra></extra>',
@@ -547,8 +547,8 @@ async function dadosIndicadorQuatro() {
                             hovertemplate: 
                                 'Elevador: <b>%{customdata[0]}</b><br><br>' +
                                 'Tempo Parado: <b>%{customdata[1]}</b><br>' +
-                                'Hrs úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
-                                'Dias úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
+                                'Hrs Úteis no Mês Total: <b>%{customdata[2]}</b><br>' +
+                                'Dias Úteis no Mês Total: <b>%{customdata[3]}</b><br>' +
                                 'Horas Disponíveis: <b>%{customdata[4]}</b><br>' +
                                 'Disponibilidade: <b>%{y}%</b>' +
                                 '<extra></extra>',
