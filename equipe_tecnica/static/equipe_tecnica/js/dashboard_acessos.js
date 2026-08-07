@@ -325,6 +325,7 @@ function salvarSolicitacao() {
         data_solicitacao: $('#solicitacao_data').val(),
         validade_inicio: $('#solicitacao_inicio').val(),
         validade_fim: $('#solicitacao_fim').val(),
+        servico_executar: $('#solicitacao_servico').val(),
         tecnicos_data: tecnicos // enviamos pro backend tratar no create
     };
     
@@ -457,9 +458,10 @@ function salvarLiberacao() {
         data_fim: $('#lib_data_fim').val(),
         hora_inicio: $('#lib_hora_inicio').val(),
         hora_fim: $('#lib_hora_fim').val(),
+        supervisor_local: $('#lib_supervisor_local').val(),
     };
 
-    const agendamento = $('#lib_agendamento').val();
+    let agendamento = $('#lib_agendamento').val();
     if(agendamento) {
         data.data_agendamento_email = agendamento;
     }
@@ -742,6 +744,7 @@ function visualizarPedido(id) {
         $('#vis_data_solicitacao').text(formatDate(data.data_solicitacao));
         $('#vis_validade_inicio').text(formatDate(data.validade_inicio));
         $('#vis_validade_fim').text(formatDate(data.validade_fim));
+        $('#vis_servico_executar').text(data.servico_executar || '-');
         
         const tbody = $('#tabela-vis-tecnicos tbody');
         tbody.empty();

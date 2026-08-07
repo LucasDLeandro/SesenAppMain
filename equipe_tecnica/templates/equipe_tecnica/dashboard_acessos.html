@@ -406,6 +406,10 @@
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Validade (Fim) <span class="text-danger">*</span></label>
                                         <input type="date" class="form-control  shadow-none" id="solicitacao_fim" name="validade_fim" required style="border-radius: 4px; border-color: #e2e8f0;">
                                     </div>
+                                    <div class="col-md-12">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Serviço a ser executado</label>
+                                        <textarea class="form-control shadow-none format-text" id="solicitacao_servico" name="servico_executar" rows="2" style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -502,6 +506,11 @@
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Programar Envio (Opcional)</label>
                                         <input type="datetime-local" class="form-control  shadow-none" id="lib_agendamento" style="border-radius: 4px; border-color: #e2e8f0;">
                                         <small class="text-muted" >Deixe em branco para enviar imediatamente.</small>
+                                    </div>
+                                    
+                                    <div class="col-md-12">
+                                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Supervisor Local (Contato Segurança)</label>
+                                        <input type="text" class="form-control shadow-none" id="lib_supervisor_local" name="supervisor_local" style="border-radius: 4px; border-color: #e2e8f0;">
                                     </div>
                                 </div>
                             </div>
@@ -632,6 +641,10 @@
                                 <div class="col-md-4">
                                     <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Validade (Fim)</h6>
                                     <p class="mb-0 text-dark" id="vis_validade_fim">-</p>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Serviço a ser executado</h6>
+                                    <p class="mb-0 text-dark" id="vis_servico_executar">-</p>
                                 </div>
                             </div>
                         </div>

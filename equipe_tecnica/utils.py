@@ -8,8 +8,10 @@ logger = logging.getLogger(__name__)
 FALLBACK_CORPO = (
     "Empresa: {empresa}\n"
     "Solicitante: {solicitante}\n"
+    "Serviço a ser executado: {servico}\n"
     "Período: {periodo}\n"
     "Datas: {datas}\n"
+    "Supervisor Local: {supervisor}\n"
     "Técnicos:\n{tecnicos}"
 )
 
@@ -50,12 +52,17 @@ def montar_email_liberacao(liberacao):
         [f"- {t.nome} (CPF: {t.cpf} | RG: {t.rg or 'N/A'})" for t in liberacao.tecnicos.all()]
     )
 
+    servico = liberacao.solicitacao.servico_executar or "Não informado."
+    supervisor = liberacao.supervisor_local or "Não informado."
+
     corpo = template.corpo
     corpo = corpo.replace('{empresa}', empresa)
     corpo = corpo.replace('{solicitante}', solicitante)
     corpo = corpo.replace('{periodo}', periodo)
     corpo = corpo.replace('{datas}', datas)
     corpo = corpo.replace('{tecnicos}', tecnicos_str)
+    corpo = corpo.replace('{servico}', servico)
+    corpo = corpo.replace('{supervisor}', supervisor)
 
     mensagem_final = f"{corpo}\n\n{template.assinatura}"
     remetente = getattr(settings, 'DEFAULT_FROM_EMAIL', settings.EMAIL_HOST_USER)

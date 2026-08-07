@@ -36,6 +36,7 @@ class SolicitacaoAcesso(models.Model):
     data_solicitacao = models.DateField(verbose_name="Data da Solicitação")
     validade_inicio = models.DateField(verbose_name="Validade (Início)")
     validade_fim = models.DateField(verbose_name="Validade (Fim)")
+    servico_executar = models.TextField(verbose_name="Serviço a ser executado", blank=True, null=True)
     
     tecnicos = models.ManyToManyField(Tecnico, related_name="solicitacoes_vinculadas", verbose_name="Técnicos Autorizados")
     
@@ -52,7 +53,7 @@ class PadraoEmailLiberacao(models.Model):
     assunto = models.CharField(max_length=200, default="Liberação de Acesso", verbose_name="Assunto do E-mail")
     email_destinatario = models.CharField(max_length=255, blank=True, null=True, verbose_name="E-mails Destinatários (Segurança/Portaria)", help_text="E-mails principais que receberão as comunicações de liberação de acesso (separados por vírgula)")
     email_copia = models.CharField(max_length=255, blank=True, null=True, verbose_name="E-mails em Cópia Oculta (BCC)")
-    corpo = models.TextField(verbose_name="Corpo da Mensagem", help_text="Variáveis permitidas: {empresa}, {solicitante}, {periodo}, {datas}, {tecnicos}")
+    corpo = models.TextField(verbose_name="Corpo da Mensagem", help_text="Variáveis permitidas: {empresa}, {solicitante}, {periodo}, {datas}, {tecnicos}, {servico}, {supervisor}")
     assinatura = models.TextField(verbose_name="Assinatura da Seção", default="Equipe Técnica")
     ativo = models.BooleanField(default=False, verbose_name="Ativo")
 
@@ -72,6 +73,7 @@ class LiberacaoAcessoDiaria(models.Model):
     data_fim = models.DateField(verbose_name="Data Fim")
     hora_inicio = models.TimeField(verbose_name="Hora Início", null=True, blank=True)
     hora_fim = models.TimeField(verbose_name="Hora Fim", null=True, blank=True)
+    supervisor_local = models.CharField(max_length=255, verbose_name="Supervisor Local / Contato Segurança", blank=True, null=True)
     
     email_enviado = models.BooleanField(default=False)
     data_agendamento_email = models.DateTimeField(null=True, blank=True, verbose_name="Envio Programado")
