@@ -10,9 +10,9 @@
 {% block painel_contratos %}
 <div class="container-fluid py-4">
     <!-- Header -->
-    <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" style="position: relative; z-index: 1050;">
+    <div class="dashboard-header compact-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3" style="position: relative; z-index: 1050;">
         <div>
-            <h2 class="mb-2 fw-bold"><i class="bi bi-diagram-3 me-3"></i>Dashboard de Contratações</h2>
+            <h4 class="mb-2 fw-bold"><i class="bi bi-diagram-3 me-3"></i>Dashboard de Contratações</h4>
             <p class="mb-0 fs-5 opacity-75">Visão consolidada da fase preparatória e licitatória (Tramitação SEI)</p>
         </div>
         <div class="d-flex gap-2 flex-wrap justify-content-end">
@@ -31,7 +31,7 @@
     <!-- Top Metrics -->
     <div class="row g-4 mb-4">
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Processos Ativos</div>
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Valor Global Previsto</div>
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Inseridos no PAC</div>
@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Atrasados no Cronograma</div>
@@ -80,11 +80,11 @@
     <div class="row g-4">
         <!-- Linha do Tempo Resumida (Substitui Gráfico de Fases) -->
         <div class="col-xl-6 col-lg-6">
-            <div class="card chart-card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Acompanhamento de Cronogramas</h5>
+            <div class="card card-compact chart-card h-100">
+                <div class="card card-compact-header d-flex justify-content-between align-items-center">
+                    <h5 class="card card-compact-title">Acompanhamento de Cronogramas</h5>
                 </div>
-                <div class="card-body p-4" id="timeline-list" style="max-height: 500px; overflow-y: auto;">
+                <div class="card card-compact-body p-4" id="timeline-list" style="max-height: 500px; overflow-y: auto;">
                     <div class="text-center py-5 text-muted">
                         <div class="spinner-border text-primary mb-2" role="status"></div>
                         <p>Carregando cronogramas...</p>
@@ -95,11 +95,11 @@
 
         <!-- Gráfico de Valores -->
         <div class="col-xl-6 col-lg-6">
-            <div class="card chart-card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title"><i class="bi bi-bar-chart-fill me-2 text-success"></i>Valores das Contratações</h5>
+            <div class="card card-compact chart-card h-100">
+                <div class="card card-compact-header d-flex justify-content-between align-items-center">
+                    <h5 class="card card-compact-title"><i class="bi bi-bar-chart-fill me-2 text-success"></i>Valores das Contratações</h5>
                 </div>
-                <div class="card-body d-flex flex-column" style="min-height: 400px;">
+                <div class="card card-compact-body d-flex flex-column" style="min-height: 400px;">
                     <div id="chart-valores" class="flex-grow-1" style="width: 100%;"></div>
                 </div>
             </div>
@@ -133,10 +133,10 @@
 
         <!-- Aba 2: Tramitação SEI -->
         <div class="tab-pane fade" id="tramitacao" role="tabpanel">
-            <div class="card chart-card">
-                <div class="card-body">
+            <div class="card card-compact chart-card">
+                <div class="card card-compact-body">
                     <div class="table-responsive">
-                        <table id="tabela-tramitacoes" class="table table-hover align-middle w-100">
+                        <table id="tabela-tramitacoes" class="table table-hover align-middle w-100 table-dense">
                             <thead class="table-light">
                                 <tr>
                                     <th>Processo</th>
@@ -369,7 +369,7 @@
                     </div>
 
                     <!-- Bloco 1: Situação Atual -->
-                    <div class="card bg-light border-0 mb-4 p-3 rounded-3 shadow-sm">
+                    <div class="card card-compact bg-light border-0 mb-4 p-3 rounded-3 shadow-sm">
                         <h6 class="fw-bold mb-3 text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Situação Atual (Chegada)</h6>
                         <div class="row">
                             <div class="form-group-modal col-md-8 mb-3">
@@ -388,7 +388,7 @@
                     </div>
 
                     <!-- Bloco 2: Histórico (De Onde Veio) -->
-                    <div class="card border mb-3 p-3 rounded-3 shadow-sm">
+                    <div class="card card-compact border mb-3 p-3 rounded-3 shadow-sm">
                         <h6 class="fw-bold mb-3"><i class="bi bi-pen me-2"></i>Informações da Última Assinatura</h6>
                         <div class="row">
                             <div class="form-group-modal col-md-8 mb-3">
@@ -455,7 +455,7 @@
                 </div>
                 
                 <div class="table-responsive">
-                    <table class="table table-bordered align-middle text-center" id="tabela-fases-crono">
+                    <table class="table table-bordered align-middle text-center table-dense" id="tabela-fases-crono">
                         <thead class="table-light">
                             <tr>
                                 <th class="text-start">Fase / Artefato</th>

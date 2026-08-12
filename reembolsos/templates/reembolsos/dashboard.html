@@ -9,13 +9,13 @@
 
 <div class="container-fluid py-4">
     <!-- Header -->
-    <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div class="dashboard-header compact-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
         <div>
-            <h2 class="mb-1 fw-bold"><i class="bi bi-wallet2 me-2"></i>Gestão de Reembolsos</h2>
+            <h4 class="mb-1 fw-bold"><i class="bi bi-wallet2 me-2"></i>Gestão de Reembolsos</h4>
             <p class="mb-0 opacity-75">Controle de Gastos e Ressarcimentos de Telefonia Móvel</p>
         </div>
         <div class="dropdown">
-            <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+            <button class="btn btn-warning btn-compact px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
                 <i class="bi bi-cash-coin me-2"></i>Opções Financeiras
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -107,16 +107,16 @@
             </div>
 
             <!-- Widget de Demandas Pendentes -->
-            <div class="row g-3 mb-4">
+            <div class="row g-compact mb-4">
                 <div class="col-12">
-                    <div class="card shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirModalPendencias()">
-                        <div class="card-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
+                    <div class="card card-compact shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirModalPendencias()">
+                        <div class="card card-compact-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
                             <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
                                 <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes
                             </h6>
                             <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
                         </div>
-                        <div class="card-body pt-0 pb-2">
+                        <div class="card card-compact-body pt-0 pb-2">
                             <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
                                 <div class="text-center text-muted py-2">
                                     <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
@@ -137,13 +137,13 @@
 
         <!-- ABA 2: SOLICITAÇÕES -->
         <div class="tab-pane fade" id="solicitacoes-pane" role="tabpanel" tabindex="0">
-            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                <div class="card-body p-4 bg-light rounded">
+            <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
+                <div class="card card-compact-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Histórico de Reembolsos</h5>
                     </div>
                     <div class="table-responsive">
-                        <table id="tabela-solicitacoes" class="table custom-modern-table w-100">
+                        <table id="tabela-solicitacoes" class="table custom-modern-table w-100 table-dense">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -163,13 +163,13 @@
 
         <!-- ABA 3: SERVIDORES -->
         <div class="tab-pane fade" id="servidores-pane" role="tabpanel" tabindex="0">
-            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                <div class="card-body p-4 bg-light rounded">
+            <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
+                <div class="card card-compact-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Servidores Cadastrados</h5>
                     </div>
                     <div class="table-responsive">
-                        <table id="tabela-servidores" class="table custom-modern-table w-100">
+                        <table id="tabela-servidores" class="table custom-modern-table w-100 table-dense">
                             <thead>
                                 <tr>
                                     <th>Nome</th>
@@ -206,7 +206,7 @@
             <div class="modal-body p-4">
                 <p class="text-muted mb-3">Estas solicitações ainda não foram concluídas. Clique em <strong>Concluir</strong> para registrar o pagamento e finalizar, ou em <strong>Visualizar</strong> para ver os detalhes.</p>
                 <div class="table-responsive">
-                    <table class="table table-hover align-middle" id="tabela-pendencias-modal">
+                    <table class="table table-hover align-middle table-dense" id="tabela-pendencias-modal">
                         <thead class="table-light">
                             <tr>
                                 <th>Servidor</th>
@@ -244,7 +244,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="form-servidor" class="row g-3">
+                <form id="form-servidor" class="row g-compact">
                     <input type="hidden" id="servidor_id">
                     <div class="col-md-7">
                         <label class="form-label text-muted fw-bold">Nome Completo</label>
@@ -333,7 +333,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="form-solicitacao" class="row g-3">
+                <form id="form-solicitacao" class="row g-compact">
                     <input type="hidden" id="solicitacao_id">
                     <div class="col-md-8">
                         <label class="form-label text-muted fw-bold">Servidor</label>
@@ -460,7 +460,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="row g-3">
+                <div class="row g-compact">
                     <div class="col-md-8">
                         <label class="text-muted fw-bold small mb-1">Servidor</label>
                         <div id="vis-solicitacao-servidor" class="fw-bold fs-6"></div>
@@ -473,7 +473,7 @@
                     <div class="col-12 mt-4">
                         <h6 class="fw-bold text-secondary border-bottom pb-2 mb-3"><i class="bi bi-receipt me-2"></i>Faturas Anexadas</h6>
                         <div class="table-responsive">
-                            <table class="table table-sm table-bordered align-middle">
+                            <table class="table table-sm table-bordered align-middle table-dense">
                                 <thead class="table-light text-muted small">
                                     <tr>
                                         <th>Período</th>

@@ -81,7 +81,7 @@
                         <!-- KPI 1 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #10b981 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Disp.</h6>
                                         <i class="bi bi-box-seam text-success"></i>
@@ -95,7 +95,7 @@
                         <!-- KPI 2 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #3b82f6 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Inst.</h6>
                                         <i class="bi bi-telephone text-primary"></i>
@@ -109,7 +109,7 @@
                         <!-- KPI 3 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #ef4444 !important;" onclick="new bootstrap.Tab(document.getElementById('aparelhos-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Defeit.</h6>
                                         <i class="bi bi-exclamation-triangle text-danger"></i>
@@ -123,7 +123,7 @@
                         <!-- KPI 4 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #f59e0b !important;" onclick="new bootstrap.Tab(document.getElementById('solicitacoes-aparelhos-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Sol. Pendentes</h6>
                                         <i class="bi bi-hourglass-split text-warning"></i>
@@ -137,7 +137,7 @@
                         <!-- KPI 5 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #10b981 !important;" onclick="new bootstrap.Tab(document.getElementById('solicitacoes-aparelhos-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Sol. Concluídas</h6>
                                         <i class="bi bi-check2-all text-success"></i>
@@ -151,7 +151,7 @@
                         <!-- KPI 6 -->
                         <div class="col-6 col-md-4 col-xl-2">
                             <div class="card card-compact shadow-sm border-0 h-100 interactive-card" style="border-left: 4px solid #06b6d4 !important;" onclick="new bootstrap.Tab(document.getElementById('solicitacoes-senhas-tab')).show()">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                         <h6 class="text-muted fw-bold mb-0">Total Senhas</h6>
                                         <i class="bi bi-key text-info"></i>
@@ -164,16 +164,16 @@
                     </div>
 
                     <!-- Solicitações Recebidas (Lista Rápida) -->
-                    <div class="row g-3 mb-4">
+                    <div class="row g-compact mb-4">
                         <div class="col-12">
                             <div class="card card-compact shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirListaRecebidas()">
-                                <div class="card-header bg-transparent border-0 p-2 d-flex justify-content-between align-items-center">
+                                <div class="card card-compact-header bg-transparent border-0 p-2 d-flex justify-content-between align-items-center">
                                     <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
                                         <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>AÇÃO NECESSÁRIA: Instalações Pendentes de Aparelho
                                     </h6>
                                     <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
                                 </div>
-                                <div class="card-body p-2 pt-0">
+                                <div class="card card-compact-body p-2 pt-0">
                                     <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
                                         <div class="text-center text-muted py-2">
                                             <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
@@ -196,7 +196,7 @@
                     <div class="row mt-4 mb-4">
                         <div class="col-md-6">
                             <div class="card card-compact shadow-sm border-0" style="border-radius: 12px;">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <h6 class="fw-bold text-muted mb-2"><i class="bi bi-pie-chart-fill me-2 text-primary"></i>Status das Solicitações</h6>
                                     <div style="height: 200px; position: relative;">
                                         <canvas id="chartSolicitacoes"></canvas>
@@ -206,7 +206,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="card card-compact shadow-sm border-0" style="border-radius: 12px;">
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <h6 class="fw-bold text-muted mb-2"><i class="bi bi-bar-chart-fill me-2 text-info"></i>Situação dos Aparelhos Voip</h6>
                                     <div style="height: 200px; position: relative;">
                                         <canvas id="chartAparelhos"></canvas>

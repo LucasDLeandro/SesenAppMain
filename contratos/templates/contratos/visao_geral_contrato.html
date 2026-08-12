@@ -178,7 +178,7 @@
                 <button class="btn btn-primary" onclick="abrirModalAditivo()">+ Novo Termo Aditivo</button>
             </div>
             <div class="table-responsive">
-                <table class="table-modern" id="tableAditivos">
+                <table class="table-modern table-dense" id="tableAditivos">
                     <thead>
                         <tr>
                             <th>Número</th>
@@ -215,7 +215,7 @@
                 <button class="btn btn-primary" onclick="abrirModalCadastroEmLote()">+ Cadastrar Pessoas em Lote</button>
             </div>
             <div class="table-responsive">
-                <table class="table-modern" id="tableAlocacoes">
+                <table class="table-modern table-dense" id="tableAlocacoes">
                     <thead>
                         <tr>
                             <th>Profissional</th>
@@ -237,8 +237,8 @@
         <div class="tab-pane fade" id="pagamentos" role="tabpanel">
             
             <!-- Chart Evolução Mensal de Pagamentos -->
-            <div class="card border-0 shadow-sm rounded-3 mb-4">
-                <div class="card-body p-4">
+            <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
+                <div class="card card-compact-body p-4">
                     <h5 class="fw-bold text-secondary mb-4">Evolução Mensal de Pagamentos</h5>
                     <div id="chartPagamentos" style="height: 400px; display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding-bottom: 30px; border-bottom: 2px solid #e5e7eb; position: relative;">
                         <!-- Bars will be injected via JS -->
@@ -248,8 +248,8 @@
             </div>
 
             <!-- Pagamentos Mensais do Mês Atual -->
-            <div class="card bg-light border-0 mb-4 rounded-4 shadow-sm" id="painelCicloVida">
-                <div class="card-body p-4">
+            <div class="card card-compact bg-light border-0 mb-4 rounded-4 shadow-sm" id="painelCicloVida">
+                <div class="card card-compact-body p-4">
                     <h6 class="fw-bold text-uppercase text-secondary mb-4"><i class="bi bi-arrow-right-circle me-2"></i>Pagamentos Mensais (Última Medição)</h6>
                     
                     <div class="position-relative m-4">
@@ -291,7 +291,7 @@
                 <h5 class="fw-bold text-secondary">Histórico de Pagamentos</h5>
             </div>
             <div class="table-responsive">
-                <table class="table-modern" id="tablePagamentosVisao">
+                <table class="table-modern table-dense" id="tablePagamentosVisao">
                     <thead>
                         <tr>
                             <th>Competência</th>
@@ -340,7 +340,7 @@
                     </div>
 
                     <h6 class="border-bottom border-secondary pb-2 mb-3 mt-4" style="color: var(--text-main, #111827);">Valores Financeiros</h6>
-                    <div class="row g-3 mb-4">
+                    <div class="row g-compact mb-4">
                         <div class="col-md-3">
                             <label class="form-label text-muted">Faturado</label>
                             <input type="text" class="form-control" id="modal_faturado" readonly>
@@ -360,7 +360,7 @@
                     </div>
 
                     <h6 class="border-bottom border-secondary pb-2 mb-3" style="color: var(--text-main, #111827);">Protocolos e Documentos</h6>
-                    <div class="row g-3">
+                    <div class="row g-compact">
                         <div class="col-md-4">
                             <label class="form-label text-muted">Relatório Mensal</label>
                             <input type="text" class="form-control" id="modal_prot_rel" readonly>
@@ -383,10 +383,10 @@
                         </div>
                     </div>
 
-                    <div class="card mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
-                        <div class="card-body">
+                    <div class="card card-compact mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
+                        <div class="card card-compact-body">
                             <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
-                            <div class="row g-3 mt-1">
+                            <div class="row g-compact mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label">Ordem de Pagamento (Doc. SEI, SIAFI, etc)</label>
                                     <input type="text" class="form-control" id="input_ordem_pagamento" readonly>
@@ -635,8 +635,8 @@
                 const col = document.createElement('div');
                 col.className = 'col-md-4 mb-4';
                 col.innerHTML = `
-                    <div class="card border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid ${cardBorderColor} !important;">
-                        <div class="card-body">
+                    <div class="card card-compact border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid ${cardBorderColor} !important;">
+                        <div class="card card-compact-body">
                             ${badgeStatus}
                             <h6 class="fw-bold text-dark mb-1">${posto.nome_cargo}</h6>
                             <span class="badge bg-light text-secondary mb-3">${posto.tipo} | ${posto.carga_horaria || '-'}</span>
@@ -900,7 +900,7 @@
                     </div>
                     
                     <div class="col-12 mt-2 mb-4 p-3 bg-light rounded-3 shadow-sm border">
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-primary" style="text-transform: uppercase; letter-spacing: 0.5px;">Salário Bruto (Base)</label>
                                 <div class="input-group shadow-sm rounded-3">

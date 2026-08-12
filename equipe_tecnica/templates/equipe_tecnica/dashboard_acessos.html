@@ -16,9 +16,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
-                        <div class="card-body p-4">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
+                            <div class="row g-compact">
                                 <div class="col-md-6">
                                     <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
                                     <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
@@ -43,13 +43,13 @@
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                 <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
                             </h6>
                             <div class="table-responsive">
-                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                <table class="table table-sm table-hover align-middle mb-0 table-dense" id="tabela-vis-tecnicos">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
@@ -94,9 +94,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
-                        <div class="card-body p-4">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
+                            <div class="row g-compact">
                                 <div class="col-md-6">
                                     <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
                                     <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
@@ -121,13 +121,13 @@
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                 <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
                             </h6>
                             <div class="table-responsive">
-                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                <table class="table table-sm table-hover align-middle mb-0 table-dense" id="tabela-vis-tecnicos">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
@@ -157,14 +157,14 @@
         <div class="container-fluid mt-3 flex-grow-1 d-flex flex-column">
             
             <!-- Cabeçalho -->
-            <div class="dashboard-header mb-4">
+            <div class="dashboard-header compact-header mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
-                        <h2 class="fw-bold mb-1"><i class="bi bi-person-badge me-3"></i>Liberação de Acessos</h2>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-person-badge me-3"></i>Liberação de Acessos</h4>
                         <p class="mb-0 opacity-75">Controle de solicitações de acesso de equipes técnicas terceirizadas.</p>
                     </div>
                     <div class="dropdown">
-                        <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+                        <button class="btn btn-warning btn-compact px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
                             <i class="bi bi-shield-check me-2"></i>Ações de Acesso
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -199,11 +199,11 @@
                 <!-- Aba Visão Geral -->
                 <div class="tab-pane fade show active h-100" id="visaogeral-pane" role="tabpanel" aria-labelledby="visaogeral-tab" tabindex="0">
                     <!-- Dashboard Cards -->
-                    <div class="row g-3 mb-4">
+                    <div class="row g-compact mb-4">
                         <!-- Pedidos Ativos -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0d6efd;">
-                                <div class="card-body">
+                            <div class="card card-compact border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0d6efd;">
+                                <div class="card card-compact-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs fw-bold text-primary text-uppercase mb-1" style="font-size: 0.75rem;">
@@ -220,8 +220,8 @@
 
                         <!-- Liberações Hoje -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #198754;">
-                                <div class="card-body">
+                            <div class="card card-compact border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #198754;">
+                                <div class="card card-compact-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs fw-bold text-success text-uppercase mb-1" style="font-size: 0.75rem;">
@@ -238,8 +238,8 @@
 
                         <!-- Técnicos Hoje -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0dcaf0;">
-                                <div class="card-body">
+                            <div class="card card-compact border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #0dcaf0;">
+                                <div class="card card-compact-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs fw-bold text-info text-uppercase mb-1" style="font-size: 0.75rem;">
@@ -256,8 +256,8 @@
 
                         <!-- Agendamentos Pendentes -->
                         <div class="col-xl-3 col-md-6">
-                            <div class="card border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #ffc107;">
-                                <div class="card-body">
+                            <div class="card card-compact border-0 shadow-sm h-100 py-2" style="border-left: 4px solid #ffc107;">
+                                <div class="card card-compact-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs fw-bold text-warning text-uppercase mb-1" style="font-size: 0.75rem;">
@@ -275,15 +275,15 @@
                     </div>
 
                     <!-- Agenda de Envios Panel -->
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 12px;">
-                        <div class="card-header bg-white border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center" style="border-radius: 12px 12px 0 0;">
+                    <div class="card card-compact border-0 shadow-sm mb-4" style="border-radius: 12px;">
+                        <div class="card card-compact-header bg-white border-0 pt-4 pb-3 px-4 d-flex justify-content-between align-items-center" style="border-radius: 12px 12px 0 0;">
                             <h5 class="fw-bold text-warning mb-0">
                                 <i class="bi bi-clock-history me-2"></i> Agenda de Liberações (Envio de E-mail)
                             </h5>
                         </div>
-                        <div class="card-body p-4">
+                        <div class="card card-compact-body p-4">
                             <div class="table-responsive">
-                                <table id="tabela-agenda" class="table table-hover align-middle w-100">
+                                <table id="tabela-agenda" class="table table-hover align-middle w-100 table-dense">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID</th>
@@ -303,13 +303,13 @@
 
                 <!-- Aba Solicitações -->
                 <div class="tab-pane fade h-100" id="solicitacoes-pane" role="tabpanel" aria-labelledby="solicitacoes-tab" tabindex="0">
-                    <div class="card border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
-                        <div class="card-body p-4 d-flex flex-column">
+                    <div class="card card-compact border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
+                        <div class="card card-compact-body p-4 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="card-title fw-bold text-secondary mb-0">Pedidos de Acesso</h5>
+                                <h5 class="card card-compact-title fw-bold text-secondary mb-0">Pedidos de Acesso</h5>
                             </div>
                             <div class="table-responsive flex-grow-1">
-                                <table id="tabela-solicitacoes" class="table table-hover align-middle w-100">
+                                <table id="tabela-solicitacoes" class="table table-hover align-middle w-100 table-dense">
                                     <thead class="table-light">
                                         <tr>
                                             <th>Empresa</th>
@@ -330,13 +330,13 @@
 
                 <!-- Aba Liberações Diárias -->
                 <div class="tab-pane fade h-100" id="liberacoes-pane" role="tabpanel" aria-labelledby="liberacoes-tab" tabindex="0">
-                    <div class="card border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
-                        <div class="card-body p-4 d-flex flex-column">
+                    <div class="card card-compact border-0 shadow-sm h-100 d-flex flex-column mb-4" style="border-radius: 0 12px 12px 12px;">
+                        <div class="card card-compact-body p-4 d-flex flex-column">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h5 class="card-title fw-bold text-secondary mb-0">Liberações Geradas</h5>
+                                <h5 class="card card-compact-title fw-bold text-secondary mb-0">Liberações Geradas</h5>
                             </div>
                             <div class="table-responsive flex-grow-1">
-                                <table id="tabela-liberacoes" class="table table-hover align-middle w-100">
+                                <table id="tabela-liberacoes" class="table table-hover align-middle w-100 table-dense">
                                     <thead class="table-light">
                                         <tr>
                                             <th>ID Pedido</th>
@@ -373,13 +373,13 @@
                         {% csrf_token %}
                         <input type="hidden" id="solicitacao_id" name="id">
                         
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                     <i class="bi bi-info-circle me-2 fs-6"></i> Dados da Solicitação
                                 </h6>
                                 
-                                <div class="row g-3">
+                                <div class="row g-compact">
                                     <div class="col-md-6">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Empresa <span class="text-danger">*</span></label>
                                         <select class="form-select select2-empresas" id="solicitacao_empresa" name="empresa" required>
@@ -414,8 +414,8 @@
                             </div>
                         </div>
 
-                        <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h6 class="fw-bold text-primary mb-0 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                         <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
@@ -455,13 +455,13 @@
                         {% csrf_token %}
                         <input type="hidden" id="liberacao_solicitacao_id" name="solicitacao_id">
                         
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                     <i class="bi bi-check2-circle me-2 fs-6"></i> Detalhes da Liberação
                                 </h6>
                                 
-                                <div class="row g-3">
+                                <div class="row g-compact">
                                     <div class="col-12" id="bloco-selecao-pedido" style="display: none;">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Selecionar Pedido de Acesso Ativo <span class="text-danger">*</span></label>
                                         <select class="form-select  shadow-none" id="lib_select_pedido_geral" onchange="carregarTecnicosDoPedido(this.value)" style="border-radius: 4px; border-color: #e2e8f0;">
@@ -550,7 +550,7 @@
 
                     <form id="form-enviar-email-liberacao">
                         <!-- E-mail Modal Container -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                        <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
                             <div style="background: #f1f5f9; padding: 10px 15px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0;">
                                 <i class="bi bi-envelope-paper text-success" style="font-size: 1.1rem;"></i>
                                 <h6 class="mb-0 fw-bold text-uppercase" style="color: #334155;">Nova Mensagem</h6>
@@ -578,8 +578,8 @@
                             </div>
                         </div>
 
-                        <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <h6 class="fw-bold text-success mb-2 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                     <i class="bi bi-paperclip me-2 fs-6"></i> Anexos do E-mail
                                 </h6>
@@ -619,9 +619,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
-                        <div class="card-body p-4">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
+                            <div class="row g-compact">
                                 <div class="col-md-6">
                                     <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
                                     <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
@@ -650,13 +650,13 @@
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                 <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
                             </h6>
                             <div class="table-responsive">
-                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                <table class="table table-sm table-hover align-middle mb-0 table-dense" id="tabela-vis-tecnicos">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>
@@ -706,9 +706,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-4 pb-4 pt-4">
-                    <div class="card border-0 shadow-sm mb-4" style="border-radius: 8px;">
-                        <div class="card-body p-4">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-4" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
+                            <div class="row g-compact">
                                 <div class="col-md-6">
                                     <h6 class="text-muted fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Empresa</h6>
                                     <p class="mb-0 fw-semibold text-dark" id="vis_empresa">-</p>
@@ -733,13 +733,13 @@
                         </div>
                     </div>
 
-                    <div class="card border-0 shadow-sm" style="border-radius: 8px;">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                 <i class="bi bi-people me-2 fs-6"></i> Técnicos Autorizados
                             </h6>
                             <div class="table-responsive">
-                                <table class="table table-sm table-hover align-middle mb-0" id="tabela-vis-tecnicos">
+                                <table class="table table-sm table-hover align-middle mb-0 table-dense" id="tabela-vis-tecnicos">
                                     <thead class="table-light">
                                         <tr>
                                             <th style="font-size: 0.75rem; text-transform: uppercase;">Nome</th>

@@ -10,9 +10,9 @@
 {% block painel_contratos %}
 <div class="container-fluid py-4">
     <!-- Header -->
-    <div class="dashboard-header d-flex justify-content-between align-items-center">
+    <div class="dashboard-header compact-header d-flex justify-content-between align-items-center">
         <div>
-            <h2 class="mb-2 fw-bold"><i class="bi bi-briefcase me-3"></i>Dashboard Gerencial</h2>
+            <h4 class="mb-2 fw-bold"><i class="bi bi-briefcase me-3"></i>Dashboard Gerencial</h4>
             <p class="mb-0 fs-5 opacity-75">Visão consolidada do ciclo de vida das contratações (Lei 14.133/2021)</p>
         </div>
         <div class="d-flex gap-2">
@@ -28,7 +28,7 @@
     <!-- Top Metrics -->
     <div class="row g-4 mb-4">
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Contratos Ativos</div>
@@ -39,7 +39,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Val. Mensal Estimado</div>
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Glosas Aplicadas</div>
@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="col-xl-3 col-sm-6">
-            <div class="card metric-card h-100 p-4">
+            <div class="card card-compact metric-card h-100 p-4">
                 <div class="d-flex justify-content-between align-items-start">
                     <div>
                         <div class="metric-label">Licitações Pendentes</div>
@@ -77,11 +77,11 @@
     <div class="row g-4">
         <!-- Overview Chart -->
         <div class="col-xl-8 col-lg-7">
-            <div class="card chart-card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">Métricas de Execução (Ano Vigente)</h5>
+            <div class="card card-compact chart-card h-100">
+                <div class="card card-compact-header d-flex justify-content-between align-items-center">
+                    <h5 class="card card-compact-title">Métricas de Execução (Ano Vigente)</h5>
                 </div>
-                <div class="card-body">
+                <div class="card card-compact-body">
                     <div id="chart-execucao" style="min-height: 300px;"></div>
                 </div>
             </div>
@@ -89,13 +89,13 @@
 
         <!-- Upcoming Expirations -->
         <div class="col-xl-4 col-lg-5">
-            <div class="card chart-card h-100">
-                <div class="card-header">
-                    <h5 class="card-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
+            <div class="card card-compact chart-card h-100">
+                <div class="card card-compact-header">
+                    <h5 class="card card-compact-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
                 </div>
-                <div class="card-body p-0">
+                <div class="card card-compact-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-vencimentos mb-0">
+                        <table class="table table-vencimentos mb-0 table-dense">
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-4">Contrato</th>

@@ -14,14 +14,14 @@
         <div class="container-fluid mt-3 flex-grow-1 d-flex flex-column">
             
             <!-- Cabeçalho -->
-            <div class="dashboard-header mb-4">
+            <div class="dashboard-header compact-header mb-4">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                     <div>
-                        <h2 class="fw-bold mb-1"><i class="bi bi-building me-3"></i>Gestão de Empresas</h2>
+                        <h4 class="fw-bold mb-1"><i class="bi bi-building me-3"></i>Gestão de Empresas</h4>
                         <p class="mb-0 opacity-75">Cadastro e gerenciamento de empresas e seus contatos.</p>
                     </div>
                     <div class="dropdown">
-                        <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+                        <button class="btn btn-warning btn-compact px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
                             <i class="bi bi-building-gear me-2"></i>Ações da Empresa
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -32,11 +32,11 @@
             </div>
 
             <!-- Tabela de Empresas -->
-            <div class="card border-0 shadow-sm flex-grow-1 d-flex flex-column mb-4">
-                <div class="card-body p-4 d-flex flex-column">
-                    <h5 class="card-title fw-bold text-secondary mb-4">Empresas Cadastradas</h5>
+            <div class="card card-compact border-0 shadow-sm flex-grow-1 d-flex flex-column mb-4">
+                <div class="card card-compact-body p-4 d-flex flex-column">
+                    <h5 class="card card-compact-title fw-bold text-secondary mb-4">Empresas Cadastradas</h5>
                     <div class="table-responsive flex-grow-1">
-                        <table id="tabela-empresas" class="table table-hover align-middle w-100">
+                        <table id="tabela-empresas" class="table table-hover align-middle w-100 table-dense">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nome da Empresa</th>
@@ -73,12 +73,12 @@
                         <input type="hidden" id="empresa_id" name="id">
                         
         <!-- Dados Principais -->
-                        <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                     <i class="bi bi-info-circle me-2 fs-6"></i> Dados Principais
                                 </h6>
-                                <div class="row g-3">
+                                <div class="row g-compact">
                                     <div class="col-md-5">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome da Empresa <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control  format-text shadow-none" id="empresa_nome" name="nome_empresa" required style="border-radius: 4px; border-color: #e2e8f0;">
@@ -96,12 +96,12 @@
                         </div>
 
                         <!-- Endereço -->
-                        <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                            <div class="card-body p-3">
+                        <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                            <div class="card card-compact-body p-3">
                                 <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                                     <i class="bi bi-geo-alt me-2 fs-6"></i> Endereço
                                 </h6>
-                                <div class="row g-3">
+                                <div class="row g-compact">
                                     <div class="col-md-3">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >CEP</label>
                                         <input type="text" class="form-control  mask-cep shadow-none" id="empresa_cep" name="cep" style="border-radius: 4px; border-color: #e2e8f0;">
@@ -157,12 +157,12 @@
                     <input type="hidden" id="contatos_empresa_id">
 
                     <!-- Formulário para adicionar novo contato -->
-                    <div class="card border-0 bg-light mb-4" style="border-radius: 10px;">
-                        <div class="card-body p-3">
+                    <div class="card card-compact border-0 bg-light mb-4" style="border-radius: 10px;">
+                        <div class="card card-compact-body p-3">
                             <h6 class="fw-bold text-secondary mb-3" id="titulo-form-contato"><i class="bi bi-person-plus me-2"></i>Adicionar Novo Contato</h6>
                             <form id="form-novo-contato">
                                 {% csrf_token %}
-                                <div class="row g-3">
+                                <div class="row g-compact">
                                     <div class="col-md-6">
                                         <div class="form-floating">
                                             <input type="text" class="form-control format-text" id="contato_nome" placeholder="Nome *" required>
@@ -240,7 +240,7 @@
                 <div class="modal-body p-4">
                     <form id="form-editar-contato">
                         <input type="hidden" id="edit_contato_id">
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input type="text" class="form-control format-text" id="edit_contato_nome" placeholder="Nome *" required>

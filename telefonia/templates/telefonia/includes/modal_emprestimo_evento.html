@@ -13,7 +13,7 @@
                 <form id="form-emprestimo-evento">
                     <input type="hidden" id="evento_id" name="evento_id">
 
-                    <div class="row g-3">
+                    <div class="row g-compact">
                         <div class="col-md-12">
                             <label class="form-label fw-bold">Nome / Descrição do Evento <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="evento_nome" name="evento_nome" required placeholder="Ex: Conferência Anual">
@@ -41,11 +41,11 @@
 
                         <!-- Seleção de Aparelhos -->
                         <div class="col-12 mt-4" id="div_selecao_aparelhos">
-                            <div class="card border-0 shadow-sm">
-                                <div class="card-header bg-white border-0 pt-3 pb-0">
+                            <div class="card card-compact border-0 shadow-sm">
+                                <div class="card card-compact-header bg-white border-0 pt-3 pb-0">
                                     <h6 class="fw-bold text-primary mb-0"><i class="bi bi-phone me-2"></i>Selecionar Aparelhos para o Evento</h6>
                                 </div>
-                                <div class="card-body">
+                                <div class="card card-compact-body">
                                     <select class="form-select select2-aparelhos-evento" id="evento_aparelhos" name="aparelhos" multiple="multiple" style="width: 100%;">
                                         <!-- Populado via JS puxando apenas os aparelhos com funcao_aparelho=eventos -->
                                     </select>

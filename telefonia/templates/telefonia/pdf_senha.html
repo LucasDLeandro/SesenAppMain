@@ -78,7 +78,7 @@
 </head>
 <body>
 
-    <table class="header-table">
+    <table class="header-table table-dense">
         <tr>
             <td width="30%">
                 <div class="tse-logo">{{ padrao.cabecalho_logo|default:"TSE" }}</div>
@@ -91,7 +91,7 @@
     </table>
     
     <div class="section-title">Identificação do Usuário</div>
-    <table class="info-table">
+    <table class="info-table table-dense">
         <tr>
             <td colspan="2" class="bg-light">
                 <div class="info-label">Nome Completo</div>
@@ -110,7 +110,7 @@
         </tr>
     </table>
 
-    <table class="grid-table">
+    <table class="grid-table table-dense">
         <tr>
             <th width="35%">Senha Móvel Pessoal</th>
             <th width="20%">Ramal</th>
@@ -125,7 +125,7 @@
 
     <div class="instructions-box">
         <div class="instructions-header">Instruções de Uso e Observações</div>
-        <table class="use-table">
+        <table class="use-table table-dense">
             <tr>
                 <td width="30%"><strong>Ligações para Celular:</strong></td>
                 <td width="70%">{{ padrao.instrucoes_celular|default:'2 → <strong>“senha”</strong> → número desejado'|safe }}</td>

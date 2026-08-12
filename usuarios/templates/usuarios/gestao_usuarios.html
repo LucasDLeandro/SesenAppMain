@@ -44,9 +44,9 @@
         </div>
 
         <!-- Tabela -->
-        <div class="card shadow-sm border-0">
-            <div class="card-body">
-                <table id="tabela-usuarios" class="table table-hover align-middle w-100">
+        <div class="card card-compact shadow-sm border-0">
+            <div class="card card-compact-body">
+                <table id="tabela-usuarios" class="table table-hover align-middle w-100 table-dense">
                     <thead class="table-light">
                         <tr>
                             <th>Usuário</th>
@@ -128,8 +128,8 @@
                     {% csrf_token %}
                     <input type="hidden" name="action" value="save_template">
                     
-                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                        <div class="card-body p-3">
+                    <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-3">
                             <label for="mensagem_boas_vindas" class="form-label text-muted fw-bold text-uppercase mb-2" >Texto da Mensagem</label>
                             <textarea class="form-control  shadow-none font-monospace" id="mensagem_boas_vindas" name="mensagem_boas_vindas" rows="8" required style="border-radius: 4px; border-color: #e2e8f0;">{{ config.mensagem_boas_vindas }}</textarea>
                             <div class="form-text mt-2 text-muted" >
@@ -162,8 +162,8 @@
             </div>
             <div class="modal-body px-4 pb-4 pt-4">
                 <p class="text-muted small mb-3">O servidor retornou a seguinte mensagem de erro ao tentar enviar o e-mail de boas-vindas para este usuário:</p>
-                <div class="card border-0 shadow-sm" style="border-radius: 8px; border: 1px solid #f5c6cb !important;">
-                    <div class="card-body p-3 bg-danger bg-opacity-10 font-monospace" style="color: #d9534f; word-break: break-all; border-radius: 8px;" id="erro-email-conteudo">
+                <div class="card card-compact border-0 shadow-sm" style="border-radius: 8px; border: 1px solid #f5c6cb !important;">
+                    <div class="card card-compact-body p-3 bg-danger bg-opacity-10 font-monospace" style="color: #d9534f; word-break: break-all; border-radius: 8px;" id="erro-email-conteudo">
                         <!-- error text here -->
                     </div>
                 </div>
@@ -193,9 +193,9 @@
                         </select>
                     </div>
                     
-                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                        <div class="card-body p-3">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-3">
+                            <div class="row g-compact">
                                 <div class="col-12">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login) <span class="text-danger">*</span></label>
                                     <input type="text" class="form-control  shadow-none" id="create_username" name="username" required style="border-radius: 4px; border-color: #e2e8f0;">
@@ -255,9 +255,9 @@
                 <form id="form-editar-usuario" onsubmit="salvarEdicaoUsuario(event)">
                     <input type="hidden" id="edit_user_id">
                     
-                    <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                        <div class="card-body p-3">
-                            <div class="row g-3">
+                    <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                        <div class="card card-compact-body p-3">
+                            <div class="row g-compact">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login)</label>
                                     <input type="text" class="form-control  shadow-none bg-light" id="edit_username" readonly style="border-radius: 4px; border-color: #e2e8f0;">
@@ -268,7 +268,7 @@
                                 </div>
                             </div>
 
-                            <div class="row g-3 mt-1">
+                            <div class="row g-compact mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome</label>
                                     <input type="text" class="form-control  shadow-none" id="edit_first_name" style="border-radius: 4px; border-color: #e2e8f0;">
@@ -279,7 +279,7 @@
                                 </div>
                             </div>
 
-                            <div class="row g-3 mt-1">
+                            <div class="row g-compact mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail</label>
                                     <input type="email" class="form-control  shadow-none" id="edit_email" style="border-radius: 4px; border-color: #e2e8f0;">

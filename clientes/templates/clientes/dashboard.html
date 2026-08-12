@@ -5,24 +5,24 @@
 <div class="row g-4 mb-4">
     <!-- Métricas -->
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-primary text-white h-100">
-            <div class="card-body">
+        <div class="card card-compact shadow-sm border-0 bg-primary text-white h-100">
+            <div class="card card-compact-body">
                 <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Total de Clientes</h6>
                 <h2 class="display-5 fw-bold mb-0">{{ total_clientes }}</h2>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-success text-white h-100">
-            <div class="card-body">
+        <div class="card card-compact shadow-sm border-0 bg-success text-white h-100">
+            <div class="card card-compact-body">
                 <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Total de Pedidos</h6>
                 <h2 class="display-5 fw-bold mb-0">{{ total_pedidos }}</h2>
             </div>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card shadow-sm border-0 bg-info text-white h-100">
-            <div class="card-body">
+        <div class="card card-compact shadow-sm border-0 bg-info text-white h-100">
+            <div class="card card-compact-body">
                 <h6 class="text-uppercase fw-semibold mb-2 opacity-75">Faturamento Total</h6>
                 <h2 class="display-5 fw-bold mb-0">R$ {{ total_valor|floatformat:2 }}</h2>
             </div>
@@ -33,11 +33,11 @@
 <div class="row g-4">
     <!-- Gráfico de Pizza (Tipos) -->
     <div class="col-md-5">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white border-0 pt-4 pb-0">
+        <div class="card card-compact shadow-sm border-0 h-100">
+            <div class="card card-compact-header bg-white border-0 pt-4 pb-0">
                 <h5 class="mb-0">Clientes por Tipo</h5>
             </div>
-            <div class="card-body d-flex justify-content-center">
+            <div class="card card-compact-body d-flex justify-content-center">
                 <div style="max-width: 300px; width: 100%;">
                     <canvas id="tipoChart"></canvas>
                 </div>
@@ -47,11 +47,11 @@
     
     <!-- Gráfico de Barras (Pedidos por Cliente) -->
     <div class="col-md-7">
-        <div class="card shadow-sm border-0 h-100">
-            <div class="card-header bg-white border-0 pt-4 pb-0">
+        <div class="card card-compact shadow-sm border-0 h-100">
+            <div class="card card-compact-header bg-white border-0 pt-4 pb-0">
                 <h5 class="mb-0">Valor dos Pedidos por Cliente</h5>
             </div>
-            <div class="card-body">
+            <div class="card card-compact-body">
                 <canvas id="valorChart"></canvas>
             </div>
         </div>

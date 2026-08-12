@@ -24,12 +24,12 @@
           <div class="row g-4">
             <!-- 1. DADOS DO CLIENTE E CONTRATO -->
             <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4">
+                    <div class="card card-compact-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                             <i class="bi bi-building me-2"></i> 1. Dados do Cliente e Equipamento
                         </h6>
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Contrato / Cliente <span class="text-danger">*</span></label>
                                 <select class="form-select" id="mpmContrato" name="contrato" required>
@@ -47,8 +47,8 @@
 
             <!-- 2. SERVIÇO PRESTADO (MÚLTIPLOS ELEVADORES) -->
             <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4">
+                    <div class="card card-compact-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold text-secondary text-uppercase mb-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                                 <i class="bi bi-list-check me-2"></i> 2. Serviço Prestado
@@ -58,7 +58,7 @@
                             </button>
                         </div>
                         
-                        <div class="row g-3 mb-4">
+                        <div class="row g-compact mb-4">
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold text-muted">Descrição do serviço executado / a executar</label>
                                 <input type="text" class="form-control" id="mpmDescricaoServico" name="descricao_servico" placeholder="Ex: Foi realizada a revisão mensal...">
@@ -75,12 +75,12 @@
 
             <!-- 3. EXECUÇÃO E SUPERVISÃO -->
             <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4 h-100">
+                    <div class="card card-compact-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                             <i class="bi bi-person-badge me-2"></i> 3. Executado e Supervisionado Por
                         </h6>
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Nome do Técnico Executante</label>
                                 <select class="form-select" id="mpmTecnicoNome" name="tecnico">
@@ -136,7 +136,7 @@
         <button type="button" class="btn btn-sm btn-outline-danger position-absolute top-0 end-0 m-2 btn-remover-elevador" title="Remover Elevador" style="z-index: 10;">
             <i class="bi bi-trash"></i>
         </button>
-        <div class="row g-3">
+        <div class="row g-compact">
             <div class="col-md-4">
                 <label class="form-label small fw-bold text-muted">Elevador <span class="text-danger">*</span></label>
                 <select class="form-select form-select-sm mpm-elevador" required>
@@ -202,13 +202,13 @@
             <div class="row g-4">
                 <!-- Informações da MPM (Read-only) -->
                 <div class="col-md-7 d-flex flex-column gap-4">
-                    <div class="card border-0 shadow-sm rounded-4 h-100">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm rounded-4 h-100">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-secondary text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                                 <i class="bi bi-info-circle me-2"></i> Detalhes da Vistoria Pendente
                             </h6>
                             
-                            <div class="row g-3 mb-4">
+                            <div class="row g-compact mb-4">
                                 <div class="col-6">
                                     <small class="text-muted text-uppercase fw-bold d-block mb-1" style="font-size: 0.7rem;">Mês/Ano Ref.</small>
                                     <span class="fs-5 fw-bold text-primary" id="concluirMPMMesInfo">-</span>
@@ -237,8 +237,8 @@
 
                 <!-- Campos de Conclusão -->
                 <div class="col-md-5 d-flex flex-column gap-4">
-                    <div class="card border-0 shadow-sm rounded-4 border-success border-start border-4 h-100">
-                        <div class="card-body p-4">
+                    <div class="card card-compact border-0 shadow-sm rounded-4 border-success border-start border-4 h-100">
+                        <div class="card card-compact-body p-4">
                             <h6 class="fw-bold text-success text-uppercase mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                                 <i class="bi bi-ui-checks-grid me-2"></i> Dados de Conclusão
                             </h6>
@@ -306,12 +306,12 @@
           <div class="row g-4" id="editMpmFormContent">
             <!-- 1. DADOS BÁSICOS & CLIENTE -->
             <div class="col-12">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4">
+                    <div class="card card-compact-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                             <i class="bi bi-building me-2"></i> 1. Dados do Cliente e Equipamento
                         </h6>
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Contrato / Cliente <span class="text-danger">*</span></label>
                                 <select class="form-select" id="editMpmContrato" name="contrato" required>
@@ -329,8 +329,8 @@
 
             <!-- 2. SERVIÇO PRESTADO (MÚLTIPLOS ELEVADORES) -->
             <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded-4">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4">
+                    <div class="card card-compact-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h6 class="fw-bold text-secondary text-uppercase mb-0" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                                 <i class="bi bi-list-check me-2"></i> 2. Serviço Prestado
@@ -340,7 +340,7 @@
                             </button>
                         </div>
                         
-                        <div class="row g-3 mb-4">
+                        <div class="row g-compact mb-4">
                             <div class="col-md-12">
                                 <label class="form-label small fw-bold text-muted">Descrição do serviço executado / a executar</label>
                                 <input type="text" class="form-control" id="editMpmDescricaoServico" name="descricao_servico" placeholder="Ex: Foi realizada a revisão mensal...">
@@ -356,12 +356,12 @@
             </div>
                   <!-- 3. EXECUÇÃO E SUPERVISÃO -->
             <div class="col-md-12">
-                <div class="card border-0 shadow-sm rounded-4 h-100">
-                    <div class="card-body p-4">
+                <div class="card card-compact border-0 shadow-sm rounded-4 h-100">
+                    <div class="card card-compact-body p-4">
                         <h6 class="fw-bold text-secondary text-uppercase mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                             <i class="bi bi-person-badge me-2"></i> 3. Executado e Supervisionado Por
                         </h6>
-                        <div class="row g-3">
+                        <div class="row g-compact">
                             <div class="col-md-6">
                                 <label class="form-label small fw-bold text-muted">Nome do Técnico Executante</label>
                                 <select class="form-select" id="editMpmTecnicoNome" name="tecnico">

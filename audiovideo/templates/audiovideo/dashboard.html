@@ -7,13 +7,13 @@
 
 <div class="container-fluid py-4">
     <!-- Header -->
-    <div class="dashboard-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 flex-wrap">
+    <div class="dashboard-header compact-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 flex-wrap">
         <div>
-            <h2 class="mb-1 fw-bold"><i class="bi bi-speaker me-2"></i>Áudio e Vídeo</h2>
+            <h4 class="mb-1 fw-bold"><i class="bi bi-speaker me-2"></i>Áudio e Vídeo</h4>
             <p class="mb-0 opacity-75">Gestão de Equipamentos, Eventos, TVs e Ordens de Serviço</p>
         </div>
         <div class="dropdown mt-2 mt-md-0">
-            <button class="btn btn-warning btn-lg px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
+            <button class="btn btn-warning btn-compact px-4 shadow text-dark fw-bold dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="border-radius: 8px;">
                 <i class="bi bi-camera-reels me-2"></i>Serviços A&V
             </button>
             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
@@ -70,7 +70,7 @@
         <!-- Eventos -->
         <div class="tab-pane fade show active" id="eventos" role="tabpanel">
             <div class="custom-modern-table p-4">
-                <table id="tbEventos" class="table table-hover w-100">
+                <table id="tbEventos" class="table table-hover w-100 table-dense">
                     <thead class="table-light">
                         <tr>
                             <th>ID</th><th>Evento</th><th>Local</th><th>Data Início</th><th>Solicitante</th><th>Status & Ações</th>
@@ -84,7 +84,7 @@
         <!-- Equipamentos -->
         <div class="tab-pane fade" id="equip" role="tabpanel">
             <div class="custom-modern-table p-4">
-                <table id="tbEquipamentos" class="table table-hover w-100">
+                <table id="tbEquipamentos" class="table table-hover w-100 table-dense">
                     <thead class="table-light">
                         <tr>
                             <th>ID</th><th>Nome</th><th>Categoria</th><th>Patrimônio / Série</th><th>Status</th>
@@ -98,7 +98,7 @@
         <!-- TVs -->
         <div class="tab-pane fade" id="tvs" role="tabpanel">
             <div class="custom-modern-table p-4">
-                <table id="tbTVs" class="table table-hover w-100">
+                <table id="tbTVs" class="table table-hover w-100 table-dense">
                     <thead class="table-light">
                         <tr>
                             <th>ID</th><th>TV</th><th>Tamanho</th><th>Patrimônio</th><th>Local Atual</th><th>Status</th>
@@ -112,7 +112,7 @@
         <!-- OS -->
         <div class="tab-pane fade" id="os" role="tabpanel">
             <div class="custom-modern-table p-4">
-                <table id="tbOS" class="table table-hover w-100">
+                <table id="tbOS" class="table table-hover w-100 table-dense">
                     <thead class="table-light">
                         <tr>
                             <th>Protocolo</th><th>Equipamento</th><th>Defeito</th><th>Data Abertura</th><th>Status</th>

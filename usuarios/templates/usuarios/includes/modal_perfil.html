@@ -17,8 +17,8 @@
         <form id="form-meu-perfil-modal" onsubmit="salvarMeuPerfilModal(event)">
             <input type="hidden" id="modal_perfil_user_id" value="{{ request.user.id }}">
             
-            <div class="card border-0 shadow-sm mb-3" style="border-radius: 8px;">
-                <div class="card-body p-3 text-center">
+            <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+                <div class="card card-compact-body p-3 text-center">
                     <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-2" style="width: 60px; height: 60px;">
                         <i class="bi bi-person-fill text-primary" style="font-size: 2rem;"></i>
                     </div>
@@ -33,13 +33,13 @@
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mb-2" style="border-radius: 8px;">
-                <div class="card-body p-3">
+            <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
+                <div class="card card-compact-body p-3">
                     <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
                         <i class="bi bi-person-vcard me-2 fs-6"></i> Dados Pessoais
                     </h6>
                     
-                    <div class="row g-3">
+                    <div class="row g-compact">
                         <div class="col-12">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login)</label>
                             <input type="text" class="form-control  bg-light shadow-none" value="{{ request.user.username }}" readonly style="border-radius: 4px; border-color: #e2e8f0;">
