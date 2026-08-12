@@ -103,3 +103,97 @@
     --bs-gutter-x: 0.75rem;
     --bs-gutter-y: 0.75rem;
 }
+
+/* 5. Estilização Moderna de DataTables Global */
+.dataTables_wrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 0 !important;
+}
+
+/* Limpeza de bordas */
+table.dataTable, 
+table.dataTable th, 
+table.dataTable td {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+}
+
+table.dataTable {
+    border-bottom: 1px solid #e2e8f0 !important;
+    border-collapse: collapse !important;
+}
+
+/* Cabeçalho Limpo */
+table.dataTable thead th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #e2e8f0 !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1rem !important;
+}
+
+/* Linhas e Hover */
+table.dataTable tbody td {
+    border-bottom: 1px solid #f1f5f9 !important;
+    vertical-align: middle;
+    color: #334155;
+    padding: 0.5rem 1rem !important;
+}
+
+table.dataTable.table-hover tbody tr:hover {
+    background-color: #f1f5f9 !important;
+    cursor: pointer;
+}
+
+/* Controles de Paginação e Busca Compactos */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.2rem 0.5rem !important;
+    margin-left: 2px !important;
+    border-radius: 4px !important;
+    border: 1px solid transparent !important;
+    font-size: 0.8rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: #eff6ff !important;
+    color: #2563eb !important;
+    border: 1px solid #bfdbfe !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #f1f5f9 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border-radius: 6px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.85rem !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 6px !important;
+    border: 1px solid #cbd5e1 !important;
+    padding: 0.2rem 1.5rem 0.2rem 0.5rem !important;
+    font-size: 0.85rem !important;
+}
+
+.dataTables_info {
+    font-size: 0.8rem !important;
+    color: #64748b !important;
+    padding-top: 0.5rem !important;
+}

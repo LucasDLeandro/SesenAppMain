@@ -107,25 +107,22 @@
             </div>
 
             <!-- Widget de Demandas Pendentes -->
-            <div class="row g-compact mb-4">
+            <div class="row mb-4">
                 <div class="col-12">
-                    <div class="card card-compact shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirModalPendencias()">
-                        <div class="card card-compact-header bg-transparent border-0 pt-3 pb-1 d-flex justify-content-between align-items-center">
-                            <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
+                    <div class="alert alert-danger shadow-sm border-0 interactive-card py-2 px-3 m-0 d-flex justify-content-between align-items-center" style="border-radius: 8px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirModalPendencias()">
+                        <div class="d-flex align-items-center gap-3">
+                            <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas" style="font-size: 0.9rem;">
                                 <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes
                             </h6>
                             <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
                         </div>
-                        <div class="card card-compact-body pt-0 pb-2">
-                            <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
-                                <div class="text-center text-muted py-2">
-                                    <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
-                                    Carregando solicitações pendentes...
-                                </div>
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="list-group list-group-flush" id="lista-recebidas-dashboard" style="display: none;">
+                                <!-- Itens carregados via AJAX -->
                             </div>
-                            <div class="text-center" id="rodape-widget-recebidas" style="display: none;">
-                                <button class="btn btn-danger w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
-                                    <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
+                            <div id="rodape-widget-recebidas" style="display: none;">
+                                <button class="btn btn-danger btn-sm fw-bold pulse-button text-uppercase" style="border-radius: 4px; font-size: 0.75rem;">
+                                    Resolver Agora <i class="bi bi-arrow-right ms-1"></i>
                                 </button>
                             </div>
                         </div>
@@ -138,7 +135,7 @@
         <!-- ABA 2: SOLICITAÇÕES -->
         <div class="tab-pane fade" id="solicitacoes-pane" role="tabpanel" tabindex="0">
             <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
-                <div class="card card-compact-body p-4 bg-light rounded">
+                <div class="card-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Histórico de Reembolsos</h5>
                     </div>
@@ -164,7 +161,7 @@
         <!-- ABA 3: SERVIDORES -->
         <div class="tab-pane fade" id="servidores-pane" role="tabpanel" tabindex="0">
             <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
-                <div class="card card-compact-body p-4 bg-light rounded">
+                <div class="card-body p-4 bg-light rounded">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-dark mb-0">Servidores Cadastrados</h5>
                     </div>

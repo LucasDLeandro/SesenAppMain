@@ -73,7 +73,7 @@
 
     <!-- Filtros Globais -->
     <div class="card card-compact border-0 shadow-sm mb-4 bg-white rounded-3">
-        <div class="card card-compact-body p-3 d-flex flex-wrap gap-3 align-items-end">
+        <div class="card-body p-3 d-flex flex-wrap gap-3 align-items-end">
             <div style="flex: 1; min-width: 200px;">
                 <label class="form-label small fw-bold text-muted mb-1">Contrato</label>
                 <select id="filtro-global-contrato" class="form-select form-select-sm select2-dashboard">
@@ -170,8 +170,8 @@
         <!-- Overview Chart -->
         <div class="col-xl-8 col-lg-12">
             <div class="card card-compact chart-card h-100">
-                <div class="card card-compact-header d-flex justify-content-between align-items-center">
-                    <h5 class="card card-compact-title">Métricas de Execução (Ano Vigente)</h5>
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title">Métricas de Execução (Ano Vigente)</h5>
                     <div class="dropdown">
                         <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                             Este Ano
@@ -182,7 +182,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="card card-compact-body">
+                <div class="card-body">
                     <div id="chart-execucao" style="min-height: 300px;"></div>
                 </div>
             </div>
@@ -191,10 +191,10 @@
         <!-- Upcoming Expirations -->
         <div class="col-xl-4 col-lg-12">
             <div class="card card-compact chart-card h-100">
-                <div class="card card-compact-header">
-                    <h5 class="card card-compact-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
+                <div class="card-header">
+                    <h5 class="card-title text-warning"><i class="bi bi-exclamation-triangle me-2"></i>Contratos a Vencer</h5>
                 </div>
-                <div class="card card-compact-body p-0">
+                <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-vencimentos mb-0 table-dense">
                             <thead class="table-light">
@@ -218,10 +218,10 @@
         <!-- Aba 2: Contratos -->
         <div class="tab-pane fade" id="tab-contratos" role="tabpanel">
             <div class="card card-compact card-dashboard">
-                <div class="card card-compact-header bg-white border-bottom py-3">
+                <div class="card-header bg-white border-bottom py-3">
                     <h5 class="mb-0 fw-bold" style="font-size: 1.1rem;"><i class="bi bi-list-check me-2 text-primary"></i>Lista de Contratos Filtrados</h5>
                 </div>
-                <div class="card card-compact-body">
+                <div class="card-body">
                     <div class="table-responsive">
                         <table id="tabela-contratos" class="table table-hover align-middle w-100 table-dense">
                             <thead class="table-light">
@@ -246,10 +246,10 @@
         <!-- Aba 3: Pagamentos -->
         <div class="tab-pane fade" id="tab-pagamentos" role="tabpanel">
             <div class="card card-compact card-dashboard">
-                <div class="card card-compact-header bg-white border-bottom py-3">
+                <div class="card-header bg-white border-bottom py-3">
                     <h5 class="mb-0 fw-bold" style="font-size: 1.1rem;"><i class="bi bi-cash-stack me-2 text-success"></i>Lista de Pagamentos</h5>
                 </div>
-                <div class="card card-compact-body">
+                <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle w-100 table-dense" id="tabela-pagamentos">
                             <thead class="table-light">
@@ -306,7 +306,7 @@
 
                     <!-- ═══════ SEÇÃO 1: DADOS DA EMPRESA ═══════ -->
                     <div class="card card-compact border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card card-compact-body p-4">
+                        <div class="card-body p-4">
                             <h6 class="fw-bold text-uppercase mb-3 d-flex align-items-center gap-2" style="font-size: 0.82rem; letter-spacing: 0.5px; color: #475569;">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 30px; height: 30px; background: #eff6ff; color: #3b82f6;">
                                     <i class="bi bi-building" style="font-size: 0.85rem;"></i>
@@ -390,7 +390,7 @@
 
                     <!-- ═══════ SEÇÃO 2: DETALHES DO CONTRATO ═══════ -->
                     <div class="card card-compact border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card card-compact-body p-4">
+                        <div class="card-body p-4">
                             <h6 class="fw-bold text-uppercase mb-3 d-flex align-items-center gap-2" style="font-size: 0.82rem; letter-spacing: 0.5px; color: #475569;">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 30px; height: 30px; background: #f0fdf4; color: #22c55e;">
                                     <i class="bi bi-file-text" style="font-size: 0.85rem;"></i>
@@ -454,7 +454,7 @@
 
                     <!-- ═══════ SEÇÃO 3: FISCAIS E GESTORES ═══════ -->
                     <div class="card card-compact border-0 shadow-sm rounded-4 mb-4">
-                        <div class="card card-compact-body p-4">
+                        <div class="card-body p-4">
                             <h6 class="fw-bold text-uppercase mb-3 d-flex align-items-center gap-2" style="font-size: 0.82rem; letter-spacing: 0.5px; color: #475569;">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 30px; height: 30px; background: #fef3c7; color: #d97706;">
                                     <i class="bi bi-people" style="font-size: 0.85rem;"></i>
@@ -505,7 +505,7 @@
 
                     <!-- ═══════ SEÇÃO 4: INTEGRAÇÃO SEI ═══════ -->
                     <div class="card card-compact border-0 shadow-sm rounded-4 mb-2">
-                        <div class="card card-compact-body p-4">
+                        <div class="card-body p-4">
                             <h6 class="fw-bold text-uppercase mb-3 d-flex align-items-center gap-2" style="font-size: 0.82rem; letter-spacing: 0.5px; color: #475569;">
                                 <span class="d-inline-flex align-items-center justify-content-center rounded-circle" style="width: 30px; height: 30px; background: #ede9fe; color: #7c3aed;">
                                     <i class="bi bi-folder" style="font-size: 0.85rem;"></i>
@@ -670,8 +670,8 @@
                     </div>
 
                     <div class="card card-compact border-0 shadow-sm mb-4">
-                        <div class="card card-compact-header bg-white fw-bold"><i class="bi bi-folder2-open me-2 text-primary"></i>Números de Protocolos</div>
-                        <div class="card card-compact-body">
+                        <div class="card-header bg-white fw-bold"><i class="bi bi-folder2-open me-2 text-primary"></i>Números de Protocolos</div>
+                        <div class="card-body">
                             <div class="row g-compact">
                                 <div class="col-md-4">
                                     <label class="form-label small">Relatório Mensal</label>
@@ -698,8 +698,8 @@
                     </div>
 
                     <div class="card card-compact border-0 shadow-sm mb-4">
-                        <div class="card card-compact-header bg-white fw-bold"><i class="bi bi-calculator me-2 text-success"></i>Cálculo de Valores</div>
-                        <div class="card card-compact-body">
+                        <div class="card-header bg-white fw-bold"><i class="bi bi-calculator me-2 text-success"></i>Cálculo de Valores</div>
+                        <div class="card-body">
                             <div class="row g-compact">
                                 <div class="col-md-4">
                                     <label class="form-label small fw-bold">Valor Faturado (NF) <span class="text-danger">*</span></label>
@@ -724,7 +724,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card card-compact-footer bg-light border-0 py-3">
+                        <div class="card-footer bg-light border-0 py-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="fw-bold text-muted">Valor Final a ser Pago:</span>
                                 <span class="fs-4 fw-bold text-success" id="display_valor_final">R$ 0,00</span>
@@ -862,7 +862,7 @@
                     </div>
 
                     <div class="card card-compact mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
-                        <div class="card card-compact-body">
+                        <div class="card-body">
                             <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
                             <div class="row g-compact mt-1">
                                 <div class="col-md-6">

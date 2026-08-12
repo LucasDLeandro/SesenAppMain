@@ -1397,7 +1397,7 @@ function abrirModalFinalizarAdministrativo(id) {
                             <td><strong>${ap.patrimonio || '-'}</strong></td>
                             <td>${ap.sala || '-'}</td>
                             <td>${ap.ramal || '-'}</td>
-                            <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm" required></td>
+                            <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm"></td>
                         </tr>
                     `;
                 });
@@ -1412,7 +1412,7 @@ function abrirModalFinalizarAdministrativo(id) {
                                 <td><span class="text-muted fst-italic">Aguardando Instalação</span></td>
                                 <td>${locais[i] || '-'}</td>
                                 <td>${ramais[i] || '-'}</td>
-                                <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm" required></td>
+                                <td><input type="file" name="pdf_termos" accept="application/pdf" class="form-control form-control-sm"></td>
                             </tr>
                         `;
                     }

@@ -238,7 +238,7 @@
             
             <!-- Chart Evolução Mensal de Pagamentos -->
             <div class="card card-compact border-0 shadow-sm rounded-3 mb-4">
-                <div class="card card-compact-body p-4">
+                <div class="card-body p-4">
                     <h5 class="fw-bold text-secondary mb-4">Evolução Mensal de Pagamentos</h5>
                     <div id="chartPagamentos" style="height: 400px; display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding-bottom: 30px; border-bottom: 2px solid #e5e7eb; position: relative;">
                         <!-- Bars will be injected via JS -->
@@ -249,7 +249,7 @@
 
             <!-- Pagamentos Mensais do Mês Atual -->
             <div class="card card-compact bg-light border-0 mb-4 rounded-4 shadow-sm" id="painelCicloVida">
-                <div class="card card-compact-body p-4">
+                <div class="card-body p-4">
                     <h6 class="fw-bold text-uppercase text-secondary mb-4"><i class="bi bi-arrow-right-circle me-2"></i>Pagamentos Mensais (Última Medição)</h6>
                     
                     <div class="position-relative m-4">
@@ -384,7 +384,7 @@
                     </div>
 
                     <div class="card card-compact mt-4" style="background-color: rgba(59, 130, 246, 0.05); border: 1px solid #3b82f6;">
-                        <div class="card card-compact-body">
+                        <div class="card-body">
                             <h6 style="color: #3b82f6;">Vinculação de Pagamento</h6>
                             <div class="row g-compact mt-1">
                                 <div class="col-md-6">
@@ -636,7 +636,7 @@
                 col.className = 'col-md-4 mb-4';
                 col.innerHTML = `
                     <div class="card card-compact border-0 shadow-sm" style="border-radius: 12px; border-top: 4px solid ${cardBorderColor} !important;">
-                        <div class="card card-compact-body">
+                        <div class="card-body">
                             ${badgeStatus}
                             <h6 class="fw-bold text-dark mb-1">${posto.nome_cargo}</h6>
                             <span class="badge bg-light text-secondary mb-3">${posto.tipo} | ${posto.carga_horaria || '-'}</span>

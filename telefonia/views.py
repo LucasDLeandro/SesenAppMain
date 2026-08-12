@@ -224,9 +224,6 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         
         if not termo or str(termo).strip() == '':
             return Response({'error': 'O preenchimento do número do Termo de Transferência Interna é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
-            
-        if not pdf_termos or len(pdf_termos) == 0:
-            return Response({'error': 'O envio de pelo menos um arquivo PDF é obrigatório.'}, status=status.HTTP_400_BAD_REQUEST)
         
         solicitacao.termo_transferencia_interna = termo
         solicitacao.status = 'concluida'
