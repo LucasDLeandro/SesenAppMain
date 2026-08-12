@@ -1,0 +1,105 @@
+/* Padronização Sistêmica TSE: Minimalismo Compacto e Denso */
+
+:root {
+    --tse-spacing-xs: 4px;
+    --tse-spacing-sm: 8px;
+    --tse-spacing-md: 12px;
+    --tse-spacing-lg: 16px;
+    --tse-font-size-kpi: 24px;      /* Old: ~36-48px */
+    --tse-font-size-label: 0.75rem; /* Old: ~0.875rem */
+    --tse-font-size-body: 0.85rem;  /* Old: ~1rem */
+}
+
+/* 1. Header Compacto */
+.dashboard-header.compact-header {
+    padding: var(--tse-spacing-md) var(--tse-spacing-lg);
+    margin-bottom: var(--tse-spacing-lg) !important;
+}
+
+.dashboard-header.compact-header h5,
+.dashboard-header.compact-header h4 {
+    margin-bottom: 2px;
+    font-size: 1.25rem;
+}
+
+.dashboard-header.compact-header p {
+    font-size: var(--tse-font-size-label);
+}
+
+.btn-compact {
+    padding: 0.35rem 0.75rem !important;
+    font-size: var(--tse-font-size-body) !important;
+    border-radius: 6px !important;
+}
+
+/* 2. Cartões KPI Compactos */
+.card-compact {
+    border-radius: 8px !important;
+    padding: 0 !important;
+}
+
+.card-compact .card-body {
+    padding: var(--tse-spacing-md) !important;
+}
+
+.card-compact h6 {
+    font-size: var(--tse-font-size-label);
+    margin-bottom: 4px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-compact h3,
+.card-compact h2 {
+    font-size: var(--tse-font-size-kpi) !important;
+    margin-bottom: 0 !important;
+    line-height: 1.1;
+}
+
+.card-compact small {
+    font-size: 0.7rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
+}
+
+.card-compact .rounded-circle {
+    padding: var(--tse-spacing-sm) !important;
+}
+
+.card-compact .fs-3,
+.card-compact .fs-2 {
+    font-size: 1.25rem !important; /* Smaller icon */
+}
+
+/* 3. Tabelas Densas */
+.table-dense th,
+.table-dense td {
+    padding: 0.25rem 0.5rem !important;
+    font-size: var(--tse-font-size-body);
+}
+
+.table-dense .btn {
+    padding: 0.15rem 0.4rem !important;
+    font-size: 0.75rem !important;
+}
+
+/* 4. Alertas Finos */
+.alert-compact {
+    padding: var(--tse-spacing-xs) var(--tse-spacing-md) !important;
+    font-size: var(--tse-font-size-body) !important;
+    margin-bottom: var(--tse-spacing-md) !important;
+}
+
+.alert-compact h6 {
+    font-size: 0.9rem !important;
+}
+
+/* Redução geral de espaçamento de grid */
+.g-compact {
+    --bs-gutter-x: 0.75rem;
+    --bs-gutter-y: 0.75rem;
+}
