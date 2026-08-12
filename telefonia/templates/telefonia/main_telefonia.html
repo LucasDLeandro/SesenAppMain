@@ -164,30 +164,28 @@
                     </div>
 
                     <!-- Solicitações Recebidas (Lista Rápida) -->
-                    <div class="row g-compact mb-4">
+                    <div class="row mb-4">
                         <div class="col-12">
-                            <div class="card card-compact shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 12px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirListaRecebidas()">
-                                <div class="card-header bg-transparent border-0 p-2 d-flex justify-content-between align-items-center">
-                                    <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas">
-                                        <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>AÇÃO NECESSÁRIA: Instalações Pendentes de Aparelho
-                                    </h6>
-                                    <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
-                                </div>
-                                <div class="card-body p-2 pt-0">
-                                    <div class="list-group list-group-flush mb-2" id="lista-recebidas-dashboard">
-                                        <div class="text-center text-muted py-2">
-                                            <div class="spinner-border spinner-border-sm text-danger" role="status"></div>
-                                            Carregando solicitações pendentes...
-                                        </div>
+                            <div class="card shadow-sm border-0 interactive-card widget-recebidas-alerta" style="border-radius: 8px; cursor: pointer;" id="card-widget-recebidas" onclick="abrirListaRecebidas()">
+                                <div class="card-body p-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="fw-bold mb-0 text-danger" id="titulo-widget-recebidas" style="font-size: 0.9rem;">
+                                            <i class="bi bi-exclamation-octagon-fill me-2 pulse-icon"></i>Atenção: Demandas Pendentes
+                                        </h6>
+                                        <span class="badge bg-danger rounded-pill pulse-badge" id="badge-recebidas-count">0</span>
                                     </div>
-                                    <div class="text-center" id="rodape-widget-recebidas">
-                                        <button class="btn btn-danger  w-100 fw-bold pulse-button text-uppercase" style="border-radius: 6px; letter-spacing: 0.5px;">
-                                            <i class="bi bi-hand-index-thumb me-2"></i>Clique aqui para resolver as pendências agora!
+                                    <div class="list-group list-group-flush" id="lista-recebidas-dashboard">
+                                        <!-- Itens carregados via AJAX -->
+                                    </div>
+                                    <div class="text-end mt-2" id="rodape-widget-recebidas" style="display: none;">
+                                        <button class="btn btn-danger btn-sm fw-bold pulse-button text-uppercase" style="border-radius: 4px; font-size: 0.75rem;">
+                                            Resolver Agora <i class="bi bi-arrow-right ms-1"></i>
                                         </button>
-                                    </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
                         </div>
 
 
