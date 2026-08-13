@@ -1673,7 +1673,19 @@ document.getElementById('formRegistrarChegadaOS')?.addEventListener('submit', as
         }
     }
 
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Aguarde...';
+    }
+
     try {
+        Swal.fire({
+            title: 'Registrando...',
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+
         const resp = await fetch(`/elevadores/api/elevadoress/${id}/registrar_chegada/`, {
             method: 'POST',
             headers: {

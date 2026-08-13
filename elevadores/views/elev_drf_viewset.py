@@ -253,9 +253,14 @@ class ElevadorViewSet(viewsets.ModelViewSet):
         nomes = [t.get_full_name() or t.username for t in tecnicos]
         return Response(nomes)
 
+    @transaction.atomic
     @action(detail=True, methods=['post'], url_path='registrar_chegada')
     def registrar_chegada(self, request, pk=None):
         os_existente = self.get_object()
+        
+        # Bloqueia a linha no banco de dados para evitar condição de corrida (clique duplo)
+        os_existente = type(os_existente).objects.select_for_update().get(pk=os_existente.pk)
+        
         dados = request.data.copy()
         
         # Só permite registrar se ainda não estiver concluída
