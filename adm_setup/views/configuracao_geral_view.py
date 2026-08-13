@@ -14,6 +14,14 @@ def configuracao_geral_view(request):
             'ativo': True
         }
     )
+    AgendamentoTask.objects.get_or_create(
+        task_id='enviar_emails_liberacao',
+        defaults={
+            'nome_amigavel': 'Enviar E-mails Agendados (Equipe Técnica)',
+            'intervalo_minutos': 1,
+            'ativo': True
+        }
+    )
     
     rotinas = AgendamentoTask.objects.all().order_by('nome_amigavel')
     
@@ -57,6 +65,20 @@ def configuracao_geral_view(request):
                         else:
                             if task.ativo:
                                 scheduler.add_job(verificar_e_notificar_eventos, 'interval', minutes=task.intervalo_minutos, id='job_notificar_eventos_expirados', replace_existing=True)
+                    
+                    elif task.task_id == 'enviar_emails_liberacao':
+                        if scheduler.get_job('job_enviar_emails_liberacao'):
+                            if task.ativo:
+                                scheduler.reschedule_job('job_enviar_emails_liberacao', trigger='interval', minutes=task.intervalo_minutos)
+                                scheduler.resume_job('job_enviar_emails_liberacao')
+                            else:
+                                scheduler.pause_job('job_enviar_emails_liberacao')
+                        else:
+                            if task.ativo:
+                                from django.core.management import call_command
+                                def run_enviar_emails_liberacao():
+                                    call_command('enviar_emails_liberacao')
+                                scheduler.add_job(run_enviar_emails_liberacao, 'interval', minutes=task.intervalo_minutos, id='job_enviar_emails_liberacao', replace_existing=True)
                 except Exception as e:
                     messages.error(request, f'Rotina salva, mas erro ao atualizar agendamento em memória: {e}')
                 

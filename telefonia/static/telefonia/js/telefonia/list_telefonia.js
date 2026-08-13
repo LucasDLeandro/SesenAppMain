@@ -1204,6 +1204,18 @@ window.enviarEmailSenha = async function(id) {
         
         if (response.ok) {
             Swal.fire('Enviado!', responseData.message || 'E-mail enviado com sucesso.', 'success');
+            if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
+                $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
+            }
+            if ($.fn.DataTable.isDataTable('#tabela-senhas')) {
+                $('#tabela-senhas').DataTable().ajax.reload(null, false);
+            }
+            if (typeof carregarWidgetRecebidas === 'function') {
+                carregarWidgetRecebidas();
+            }
+            if (typeof carregarWidgetDemandasDashboard === 'function') {
+                carregarWidgetDemandasDashboard();
+            }
         } else {
             Swal.fire('Erro!', responseData.error || 'Erro ao enviar o e-mail.', 'error');
         }
