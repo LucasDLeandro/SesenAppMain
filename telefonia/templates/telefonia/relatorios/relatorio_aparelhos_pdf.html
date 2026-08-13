@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        @page {
+            size: A4;
+            margin: 1.5cm;
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                left: 1.5cm; width: 18cm; top: 27.5cm; height: 1cm;
+            }
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #004c99;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #004c99;
+            margin: 0;
+            font-size: 18px;
+        }
+        .header p {
+            margin: 5px 0 0 0;
+            color: #666;
+            font-size: 12px;
+        }
+        .summary-section {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            width: 50%;
+            text-align: center;
+            float: left;
+        }
+        .chart-container img {
+            width: 90%;
+            max-width: 300px;
+        }
+        .stats-container {
+            width: 50%;
+            float: left;
+            padding-top: 30px;
+        }
+        .stat-box {
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .stat-label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+        }
+        .stat-value {
+            color: #004c99;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+            font-size: 10px;
+        }
+        th {
+            background-color: #004c99;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .clear {
+            clear: both;
+        }
+        #footer_content {
+            text-align: center;
+            font-size: 9px;
+            color: #666;
+            border-top: 1px solid #ccc;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Relatório de Desempenho - Gestão de Aparelhos</h1>
+        <p>Gerado em {{ data_emissao|date:"d/m/Y H:i" }}</p>
+    </div>
+
+    <div class="summary-section">
+        <div class="chart-container">
+            <img src="{{ chart_uri }}" alt="Gráfico de Desempenho">
+        </div>
+        <div class="stats-container">
+            <div class="stat-box">
+                <span class="stat-label">Total em Estoque:</span>
+                <span class="stat-value">{{ counts.estoque }}</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Instalados:</span>
+                <span class="stat-value">{{ counts.instalado }}</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Em Manutenção:</span>
+                <span class="stat-value">{{ counts.manutencao }}</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">Defeituosos:</span>
+                <span class="stat-value">{{ counts.defeituoso }}</span>
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div>
+
+    <h3>Relação de Aparelhos Instalados</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Patrimônio</th>
+                <th>Modelo</th>
+                <th>MAC Address</th>
+                <th>Ramal</th>
+                <th>Integridade</th>
+                <th>Local/Sala</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aparelho in aparelhos %}
+            <tr>
+                <td>{{ aparelho.patrimonio|default:"-" }}</td>
+                <td>{{ aparelho.modelo|default:"-" }}</td>
+                <td>{{ aparelho.mac_address|default:"-" }}</td>
+                <td>{{ aparelho.ramal|default:"-" }}</td>
+                <td>{{ aparelho.get_integridade_display|default:"-" }}</td>
+                <td>{{ aparelho.sala|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center;">Nenhum aparelho instalado encontrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="footer_content">
+        Página <pdf:pagenumber> de <pdf:pagecount> - Sistema SESEN
+    </div>
+
+</body>
+</html>

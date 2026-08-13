@@ -263,7 +263,15 @@
 
                 <!-- ABA 4: APARELHOS GERAIS -->
                 <div class="tab-pane fade" id="aparelhos" role="tabpanel" tabindex="0">
-                    <div class="table-responsive mt-3">
+                    <div class="d-flex justify-content-end mb-2 mt-3">
+                        <a href="{% url 'telefonia:relatorio_aparelhos' %}?formato=pdf" target="_blank" class="btn btn-sm btn-outline-danger me-2 shadow-sm rounded-pill px-3">
+                            <i class="bi bi-file-earmark-pdf me-1"></i> Exportar PDF
+                        </a>
+                        <a href="{% url 'telefonia:relatorio_aparelhos' %}?formato=excel" target="_blank" class="btn btn-sm btn-outline-success shadow-sm rounded-pill px-3">
+                            <i class="bi bi-file-earmark-excel me-1"></i> Exportar Excel
+                        </a>
+                    </div>
+                    <div class="table-responsive">
                         <table id="tabela-aparelhos" class="table custom-modern-table table-dense w-100">
                             <thead class="custom-thead">
                                 <tr>

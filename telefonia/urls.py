@@ -22,4 +22,5 @@ urlpatterns = [
     path('tutorial/pdf/', views.gerar_pdf_tutorial, name='gerar_pdf_tutorial'),
     path('preview/senha/<int:template_id>/pdf/', views.preview_pdf_senha_template, name='preview_pdf_senha_template'),
     path('preview/tutorial/<int:template_id>/pdf/', views.preview_pdf_tutorial_template, name='preview_pdf_tutorial_template'),
+    path('relatorios/aparelhos/', views.AparelhosReportView.as_view(), name='relatorio_aparelhos'),
 ]
