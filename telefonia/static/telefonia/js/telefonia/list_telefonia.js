@@ -1476,15 +1476,24 @@ function copyToClipboardFallback(text) {
     var textArea = document.createElement("textarea");
     textArea.value = text;
     textArea.style.position = "fixed";
-    document.body.appendChild(textArea);
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.opacity = "0";
+    
+    // Anexa ao modal ativo ou ao body (evita a perda de foco causada pelo Bootstrap Modal)
+    var container = document.querySelector('.modal.show') || document.body;
+    container.appendChild(textArea);
+    
     textArea.focus();
     textArea.select();
+    
     try {
         document.execCommand('copy');
     } catch (err) {
         console.error('Fallback: Oops, unable to copy', err);
     }
-    document.body.removeChild(textArea);
+    
+    container.removeChild(textArea);
 }
 
 window.copiarPatrimonio = function(text) {
