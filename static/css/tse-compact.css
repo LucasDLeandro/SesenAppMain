@@ -197,3 +197,54 @@ table.dataTable.table-hover tbody tr:hover {
     color: #64748b !important;
     padding-top: 0.5rem !important;
 }
+
+
+/* --- Dark Mode Overrides for DataTables --- */
+[data-bs-theme="dark"] table.dataTable thead th {
+    background-color: var(--background-body) !important;
+    color: var(--text-main) !important;
+    border-bottom: 2px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] table.dataTable tbody td {
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] table.dataTable.table-hover tbody tr:hover {
+    background-color: rgba(255,255,255,0.05) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.current, 
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+    background: rgba(255,255,255,0.1) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: var(--background-body) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_filter input {
+    background-color: var(--background-body) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_wrapper .dataTables_length select {
+    background-color: var(--background-body) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .dataTables_info {
+    color: var(--text-main) !important;
+    opacity: 0.8;
+}

@@ -20,9 +20,20 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden; /* Prevent body scrolling */
+}
+
 :root {
+    --primary-blue: #106EBE; 
+    --mint-accent: #0FFCBE; 
+    --background-body: #f8fafc;
+    --text-main: #1e293b;
+    --nav-bg: #1e293b;    
+    --nav-text: #ffffff;  
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --sidebar-bg: #f8f9fa;
     --danger-bg-subtle: #fff5f5;
-    --danger-border-subtle: var(--danger-border-subtle);
+    --danger-border-subtle: #ffcaca;
     --success-bg-subtle: #f0fdf4;
     --success-border-subtle: #bbf7d0;
     --warning-bg-subtle: #fffbeb;
