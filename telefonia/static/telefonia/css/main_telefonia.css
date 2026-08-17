@@ -10,7 +10,7 @@
 
 /* Melhoria visual nas nav-tabs (se houverem abas no dashboard) */
 .nav-tabs.custom-tabs {
-    border-bottom: 2px solid #dee2e6;
+    border-bottom: 2px solid var(--border-color);
     gap: 0.2rem;
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -158,8 +158,8 @@
 .pulse-icon { animation: shake-icon 2s infinite; display: inline-block; }
 .widget-recebidas-alerta {
     border: 2px solid #dc3545 !important;
-    background-color: #fff !important;
+    background-color: var(--card-bg) !important;
 }
 .widget-recebidas-alerta:hover {
-    background-color: #fff5f5 !important;
+    background-color: var(--danger-bg-subtle) !important;
 }

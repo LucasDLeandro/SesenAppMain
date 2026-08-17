@@ -14,14 +14,14 @@
             border-bottom: 2px solid #e9ecef;
         }
         .email-preview-card {
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
             border-radius: 10px;
             overflow: hidden;
-            background: #fff;
+            background: var(--card-bg);
         }
         .email-preview-header {
             background: #f8f9fa;
-            border-bottom: 1px solid #dee2e6;
+            border-bottom: 1px solid var(--border-color);
             padding: 16px 20px;
         }
         .email-preview-meta {
@@ -44,7 +44,7 @@
             font-family: Georgia, 'Times New Roman', serif;
             font-size: 0.95rem;
             line-height: 1.6;
-            color: #212529;
+            color: var(--text-main);
             min-height: 200px;
             max-height: 400px;
             overflow-y: auto;

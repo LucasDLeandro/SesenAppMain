@@ -4,7 +4,7 @@
 
 /* Navegação de Abas */
 .msg-nav-tabs {
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid var(--border-color);
     gap: 0;
 }
 
@@ -43,7 +43,7 @@
 .msg-card-template {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     overflow: hidden;
     transition: all 0.3s ease;
     display: flex;
@@ -60,7 +60,7 @@
 .msg-card-header {
     padding: 16px;
     background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
-    border-bottom: 2px solid #e2e8f0;
+    border-bottom: 2px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,7 +108,7 @@
 .msg-card-footer {
     padding: 12px 16px;
     background-color: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
     display: flex;
     gap: 8px;
 }
@@ -149,7 +149,7 @@
 .msg-card-contact {
     background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border-color);
     overflow: hidden;
     transition: all 0.3s ease;
     display: flex;
@@ -209,7 +209,7 @@
 .msg-card-footer {
     padding: 12px 16px;
     background-color: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
     display: flex;
     gap: 8px;
 }

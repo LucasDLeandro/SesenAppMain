@@ -11,19 +11,19 @@
 
 .table thead {
   background-color: #f0f4f8;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border-color);
 }
 
 .table thead th {
   font-weight: 600;
   color: #1e293b;
   padding: 1rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border-color);
   font-size: 0.95rem;
 }
 
 .table tbody tr {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   transition: background-color 0.2s ease;
 }
 
@@ -46,7 +46,7 @@
 }
 
 .modal-header {
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color);
   padding: 1.5rem 2rem;
   background-color: #f8fafc;
 }
@@ -59,20 +59,20 @@
 
 .modal-body {
   padding: 2rem;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
 }
 
 .modal-footer {
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid var(--border-color);
   padding: 1.5rem 2rem;
   background-color: #f8fafc;
 }
 
 /* Item Formset styling */
 .item-formset {
-  border: 1px solid #e2e8f0 !important;
+  border: 1px solid var(--border-color) !important;
   border-radius: 0.75rem !important;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   transition: all 0.2s ease;
 }
 
@@ -116,7 +116,7 @@
 /* Form controls */
 .form-control {
   border-radius: 0.5rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid var(--border-color);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   font-size: 0.9rem;
   padding: 0.5rem 0.75rem;
@@ -188,13 +188,13 @@
 }
 
 .btn-outline-danger {
-  color: #dc3545;
-  border-color: #dc3545;
+  color: var(--text-main);
+  border-color: var(--text-main);
 }
 
 .btn-outline-danger:hover {
-  background-color: #dc3545;
-  border-color: #dc3545;
+  background-color: var(--text-main);
+  border-color: var(--text-main);
   color: #ffffff;
 }
 
@@ -243,7 +243,7 @@
 
 /* Divider/HR */
 hr {
-  border-color: #e2e8f0;
+  border-color: var(--border-color);
   margin: 1.5rem 0;
 }
 

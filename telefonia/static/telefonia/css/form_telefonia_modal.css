@@ -46,13 +46,13 @@
 .modal-ordens-body form .form-control:hover,
 .modal-ordens-body form .form-select:hover {
     border-color: #94a3b8;
-    background-color: #ffffff;
+    background-color: var(--card-bg);
 }
 
 .modal-ordens-body form .form-control:focus,
 .modal-ordens-body form .form-select:focus {
     border-color: #106EBE;
-    background-color: #ffffff;
+    background-color: var(--card-bg);
     box-shadow: 0 0 0 4px rgba(16, 110, 190, 0.1);
     outline: none;
 }
@@ -117,7 +117,7 @@
     color: #0f172a;
     margin-bottom: 16px;
     padding-bottom: 8px;
-    border-bottom: 1px solid #e2e8f0; /* Linha sutil para separar seções */
+    border-bottom: 1px solid var(--border-color); /* Linha sutil para separar seções */
     display: flex;
     align-items: center;
     gap: 8px;
@@ -149,7 +149,7 @@
 .modal-ordens-footer {
     padding: 24px 0 8px 0; /* Mais padding no topo para afastar dos inputs, padding bottom para evitar corte */
     margin-top: 32px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--border-color);
     gap: 12px;
     background-color: transparent;
     display: flex;

@@ -45,7 +45,7 @@
 
 #contatoForm .form-control,
 #contatoForm .form-select {
-    border: 2px solid #e2e8f0;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     padding: 12px 16px;
     font-size: 0.95rem;
@@ -53,7 +53,7 @@
     min-height: 44px;
     transition: all 0.3s ease;
     color: #1e293b;
-    background-color: #ffffff;
+    background-color: var(--card-bg);
 }
 
 #contatoForm .form-control:hover,
@@ -144,8 +144,8 @@
 .modal-contato-footer {
     padding: 20px 28px;
     gap: 12px;
-    border-top: 1px solid #e2e8f0;
-    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg);
 }
 
 /* Botões do Modal */
@@ -172,7 +172,7 @@
 .modal-contato-footer .btn-cancel {
     border: 2px solid #cbd5e1;
     color: #475569;
-    background-color: #ffffff;
+    background-color: var(--card-bg);
 }
 
 .modal-contato-footer .btn-cancel:hover {

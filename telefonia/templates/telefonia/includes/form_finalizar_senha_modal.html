@@ -22,7 +22,7 @@
               <div class="row g-compact">
                 <div class="col-md-12">
                   <label class="form-label text-muted fw-bold text-uppercase mb-1" >Cargo</label>
-                  <select class="form-select  shadow-none" id="cargo_finalizacao" name="cargo" onchange="toggleCargoFinalizacao(this.value)" style="border-radius: 4px; border-color: #e2e8f0;">
+                  <select class="form-select  shadow-none" id="cargo_finalizacao" name="cargo" onchange="toggleCargoFinalizacao(this.value)" style="border-radius: 4px; border-color: var(--border-color);">
                     <option value="servidor" selected>Servidor</option>
                     <option value="colaborador">Colaborador</option>
                   </select>
@@ -36,30 +36,30 @@
                 <div class="row g-compact mb-2">
                     <div class="col-md-6">
                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Selecione o Contrato</label>
-                        <select class="form-select  shadow-none" id="select_contrato_finalizacao" onchange="mudarContratoFinalizacao(this.value)" style="border-radius: 4px; border-color: #e2e8f0;">
+                        <select class="form-select  shadow-none" id="select_contrato_finalizacao" onchange="mudarContratoFinalizacao(this.value)" style="border-radius: 4px; border-color: var(--border-color);">
                             <option value="">-- Selecione --</option>
                             <option value="novo">+ Novo Contrato</option>
                         </select>
                     </div>
                     <div class="col-md-6 div_numero_contrato_finalizacao" style="display: none;">
                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Número do Contrato</label>
-                        <input type="text" class="form-control  shadow-none" id="numero_contrato_finalizacao" name="numero_contrato" maxlength="50" style="border-radius: 4px; border-color: #e2e8f0;">
+                        <input type="text" class="form-control  shadow-none" id="numero_contrato_finalizacao" name="numero_contrato" maxlength="50" style="border-radius: 4px; border-color: var(--border-color);">
                     </div>
                 </div>
                 <div class="row g-compact mb-2">
                     <div class="col-md-6 div_empresa_finalizacao" style="display: none;">
                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Empresa Vinculada</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="empresa_finalizacao" name="empresa_vinculada" maxlength="100" style="border-radius: 4px; border-color: #e2e8f0;">
+                        <input type="text" class="form-control  format-text shadow-none" id="empresa_finalizacao" name="empresa_vinculada" maxlength="100" style="border-radius: 4px; border-color: var(--border-color);">
                     </div>
                     <div class="col-md-6 div_fiscal_finalizacao" style="display: none;">
                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Fiscal do Contrato</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="fiscal_finalizacao" name="fiscal_contrato" maxlength="100" style="border-radius: 4px; border-color: #e2e8f0;">
+                        <input type="text" class="form-control  format-text shadow-none" id="fiscal_finalizacao" name="fiscal_contrato" maxlength="100" style="border-radius: 4px; border-color: var(--border-color);">
                     </div>
                 </div>
                 <div class="row g-compact">
                     <div class="col-md-12 div_unidade_fiscal_finalizacao" style="display: none;">
                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Unidade do Fiscal</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="unidade_fiscal_finalizacao" name="unidade_fiscal" maxlength="200" style="border-radius: 4px; border-color: #e2e8f0;">
+                        <input type="text" class="form-control  format-text shadow-none" id="unidade_fiscal_finalizacao" name="unidade_fiscal" maxlength="200" style="border-radius: 4px; border-color: var(--border-color);">
                     </div>
                 </div>
               </div>
@@ -68,25 +68,25 @@
           
           <!-- E-mail Modal Container -->
           <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
-            <div style="background: #f1f5f9; padding: 10px 15px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0;">
+            <div style="background: #f1f5f9; padding: 10px 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0;">
                 <i class="bi bi-envelope-paper text-primary" style="font-size: 1.1rem;"></i>
                 <h6 class="mb-0 fw-bold text-uppercase" style="color: #334155;">Nova Mensagem</h6>
             </div>
             
-            <div style="padding: 12px; background: #ffffff; border-radius: 0 0 8px 8px;">
+            <div style="padding: 12px; background: var(--card-bg); border-radius: 0 0 8px 8px;">
                 <div class="input-group input-group-sm mb-2">
                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Para</span>
-                    <input type="email" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none" id="email_para_finalizacao" required style="border-bottom-color: #e2e8f0 !important;">
+                    <input type="email" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none" id="email_para_finalizacao" required style="border-bottom-color: var(--border-color) !important;">
                 </div>
                 
                 <div class="input-group input-group-sm mb-2">
                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Cc/Bcc</span>
-                    <input type="text" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none" id="email_copia_finalizacao" style="border-bottom-color: #e2e8f0 !important;">
+                    <input type="text" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none" id="email_copia_finalizacao" style="border-bottom-color: var(--border-color) !important;">
                 </div>
 
                 <div class="input-group input-group-sm mb-3">
                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Assunto</span>
-                    <input type="text" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none fw-bold" id="email_assunto_finalizacao" required style="border-bottom-color: #e2e8f0 !important; color: #0f172a;">
+                    <input type="text" class="form-control  border-0 border-bottom rounded-0 px-2 shadow-none fw-bold" id="email_assunto_finalizacao" required style="border-bottom-color: var(--border-color) !important; color: #0f172a;">
                 </div>
                 
                 <div class="form-group-modal">
@@ -105,7 +105,7 @@
               <div class="d-flex flex-wrap gap-2">
                   <!-- Anexo Termo -->
                   <a href="#" id="link_preview_senha" target="_blank" class="text-decoration-none" title="Clique para abrir e visualizar o documento final em uma nova aba">
-                      <div class="border rounded p-2 d-flex align-items-center" style="width: fit-content; background: #f8fafc; transition: all 0.2s; border-color: #e2e8f0 !important;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f8fafc'">
+                      <div class="border rounded p-2 d-flex align-items-center" style="width: fit-content; background: #f8fafc; transition: all 0.2s; border-color: var(--border-color) !important;" onmouseover="this.style.background='var(--border-color)'" onmouseout="this.style.background='#f8fafc'">
                           <div class="bg-danger bg-opacity-10 rounded p-1 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                               <i class="bi bi-file-pdf-fill text-danger fs-5"></i>
                           </div>
@@ -118,7 +118,7 @@
                   
                   <!-- Anexo Tutorial -->
                   <a href="/telefonia/tutorial/pdf/" target="_blank" class="text-decoration-none" title="Clique para visualizar o manual de validação">
-                      <div class="border rounded p-2 d-flex align-items-center" style="width: fit-content; background: #f8fafc; transition: all 0.2s; border-color: #e2e8f0 !important;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f8fafc'">
+                      <div class="border rounded p-2 d-flex align-items-center" style="width: fit-content; background: #f8fafc; transition: all 0.2s; border-color: var(--border-color) !important;" onmouseover="this.style.background='var(--border-color)'" onmouseout="this.style.background='#f8fafc'">
                           <div class="bg-danger bg-opacity-10 rounded p-1 me-2 d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
                               <i class="bi bi-file-pdf-fill text-danger fs-5"></i>
                           </div>

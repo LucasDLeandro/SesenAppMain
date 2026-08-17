@@ -33,7 +33,7 @@
         border-radius: 16px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-        background: white;
+        background: var(--card-bg);
         overflow: hidden;
         position: relative;
     }
@@ -76,7 +76,7 @@
         border-radius: 16px;
         border: none;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        background: white;
+        background: var(--card-bg);
     }
     .chart-card .card-header {
         background: transparent;
@@ -91,7 +91,7 @@
 
     /* Premium Process Card Styles */
     .process-card {
-        background: #ffffff;
+        background: var(--card-bg);
         border-radius: 20px;
         border: 1px solid rgba(0,0,0,0.05);
         box-shadow: 0 10px 30px rgba(0,0,0,0.04);
@@ -179,7 +179,7 @@
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: #fff;
+        background: var(--card-bg);
         border: 2px solid #e9ecef;
         display: flex;
         align-items: center;
@@ -205,7 +205,7 @@
     .stepper-label {
         font-size: 0.65rem;
         font-weight: 700;
-        color: #495057;
+        color: var(--text-main);
         text-align: center;
         line-height: 1;
         margin-bottom: 2px;

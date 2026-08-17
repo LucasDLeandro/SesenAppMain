@@ -29,7 +29,7 @@
         border-radius: 12px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-        background: white;
+        background: var(--card-bg);
         overflow: hidden;
         position: relative;
     }
@@ -72,7 +72,7 @@
         border-radius: 12px;
         border: none;
         box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-        background: white;
+        background: var(--card-bg);
     }
     .chart-card .card-header {
         background: transparent;

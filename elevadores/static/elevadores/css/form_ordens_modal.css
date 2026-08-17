@@ -149,7 +149,7 @@
 .modal-ordens-footer {
     padding: 1px 22px;
     gap: 10px;
-    /*border-top: 1px solid #e2e8f0;*/
+    /*border-top: 1px solid var(--border-color);*/
     background-color: transparent;
     display: flex;
     justify-content: flex-end;

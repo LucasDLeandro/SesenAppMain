@@ -7,7 +7,7 @@
     --nav-bg: #1e293b;    
     --nav-text: #ffffff;  
     --card-bg: #ffffff;
-    --border-color: #e2e8f0;
+    --border-color: var(--border-color);
     --sidebar-bg: #f8f9fa; /* Cinza claro nativo (light) */
 }
 
@@ -20,16 +20,33 @@ body {
     margin: 0 !important;
     padding: 0 !important;
     overflow: hidden; /* Prevent body scrolling */
+:root {
+    --danger-bg-subtle: #fff5f5;
+    --danger-border-subtle: var(--danger-border-subtle);
+    --success-bg-subtle: #f0fdf4;
+    --success-border-subtle: #bbf7d0;
+    --warning-bg-subtle: #fffbeb;
+    --warning-border-subtle: #fde68a;
+    --info-bg-subtle: #f0f9ff;
+    --info-border-subtle: #bae6fd;
 }
 
 [data-bs-theme="dark"] {
-    --background-body: #000000;
-    --text-main: #f1f5f9;
-    --nav-bg: #000000 !important;   
+    --background-body: #0f172a;
+    --text-main: #e2e8f0;
+    --nav-bg: #0f172a !important;   
     --nav-text: #f8fafc !important; 
-    --card-bg: #1a1a1a;
-    --border-color: #333333;
-    --sidebar-bg: #0d0d0d; 
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --sidebar-bg: #1e293b; 
+    --danger-bg-subtle: rgba(220, 53, 69, 0.15);
+    --danger-border-subtle: rgba(220, 53, 69, 0.3);
+    --success-bg-subtle: rgba(25, 135, 84, 0.15);
+    --success-border-subtle: rgba(25, 135, 84, 0.3);
+    --warning-bg-subtle: rgba(255, 193, 7, 0.15);
+    --warning-border-subtle: rgba(255, 193, 7, 0.3);
+    --info-bg-subtle: rgba(13, 202, 240, 0.15);
+    --info-border-subtle: rgba(13, 202, 240, 0.3);
 }
 
 [data-bs-theme="light"] {
@@ -151,3 +168,42 @@ body {
 
 /* Ajuste da Logo */
 .navbar-brand img { height: 40px; }
+/* Adicionar ao final do global.css */
+[data-bs-theme="dark"] .js-plotly-plot .g-xtitle text,
+[data-bs-theme="dark"] .js-plotly-plot .g-ytitle text,
+[data-bs-theme="dark"] .js-plotly-plot .g-polartitle text,
+[data-bs-theme="dark"] .js-plotly-plot .xtick text,
+[data-bs-theme="dark"] .js-plotly-plot .ytick text,
+[data-bs-theme="dark"] .js-plotly-plot .legendtext {
+    fill: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .js-plotly-plot .xgrid,
+[data-bs-theme="dark"] .js-plotly-plot .ygrid {
+    stroke: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-text tspan {
+    fill: var(--text-main) !important;
+}
+[data-bs-theme="dark"] .apexcharts-gridline {
+    stroke: var(--border-color) !important;
+}
+[data-bs-theme="dark"] .apexcharts-legend-text {
+    color: var(--text-main) !important;
+}
+[data-bs-theme="dark"] .apexcharts-tooltip {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important;
+}
+[data-bs-theme="dark"] .apexcharts-tooltip-title {
+    background: var(--sidebar-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+[data-bs-theme="dark"] .apexcharts-menu {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}

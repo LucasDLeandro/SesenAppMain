@@ -131,7 +131,7 @@
                     <div class="card card-compact border-0 shadow-sm mb-2" style="border-radius: 8px;">
                         <div class="card-body p-3">
                             <label for="mensagem_boas_vindas" class="form-label text-muted fw-bold text-uppercase mb-2" >Texto da Mensagem</label>
-                            <textarea class="form-control  shadow-none font-monospace" id="mensagem_boas_vindas" name="mensagem_boas_vindas" rows="8" required style="border-radius: 4px; border-color: #e2e8f0;">{{ config.mensagem_boas_vindas }}</textarea>
+                            <textarea class="form-control  shadow-none font-monospace" id="mensagem_boas_vindas" name="mensagem_boas_vindas" rows="8" required style="border-radius: 4px; border-color: var(--border-color);">{{ config.mensagem_boas_vindas }}</textarea>
                             <div class="form-text mt-2 text-muted" >
                                 <strong>Variáveis disponíveis:</strong><br>
                                 <code>{nome}</code> - Nome do usuário<br>
@@ -198,31 +198,31 @@
                             <div class="row g-compact">
                                 <div class="col-12">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login) <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none" id="create_username" name="username" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="create_username" name="username" required style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none format-text" id="create_first_name" name="first_name" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none format-text" id="create_first_name" name="first_name" required style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Sobrenome <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none format-text" id="create_last_name" name="last_name" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none format-text" id="create_last_name" name="last_name" required style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control  shadow-none" id="create_email" name="email" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="email" class="form-control  shadow-none" id="create_email" name="email" required style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Senha Inicial Padrão <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none bg-light text-muted" id="create_password" name="password" value="{{ default_password }}" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none bg-light text-muted" id="create_password" name="password" value="{{ default_password }}" required style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-12">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Telefone (WhatsApp) <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none mask-telefone" id="create_telefone" name="telefone" value="61" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none mask-telefone" id="create_telefone" name="telefone" value="61" required style="border-radius: 4px; border-color: var(--border-color);">
                                     <div class="form-text mt-1 text-muted" >
                                         <i class="bi bi-info-circle me-1"></i> A senha inicial será enviada para este número.
                                     </div>
@@ -260,33 +260,33 @@
                             <div class="row g-compact">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login)</label>
-                                    <input type="text" class="form-control  shadow-none bg-light" id="edit_username" readonly style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none bg-light" id="edit_username" readonly style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Redefinir Senha</label>
-                                    <input type="text" class="form-control  shadow-none" id="edit_password" placeholder="(Opcional)" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="edit_password" placeholder="(Opcional)" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                             </div>
 
                             <div class="row g-compact mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome</label>
-                                    <input type="text" class="form-control  shadow-none" id="edit_first_name" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="edit_first_name" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Sobrenome</label>
-                                    <input type="text" class="form-control  shadow-none" id="edit_last_name" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="edit_last_name" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                             </div>
 
                             <div class="row g-compact mt-1">
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail</label>
-                                    <input type="email" class="form-control  shadow-none" id="edit_email" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="email" class="form-control  shadow-none" id="edit_email" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label text-muted fw-bold text-uppercase mb-1" >Telefone (WhatsApp)</label>
-                                    <input type="text" class="form-control  shadow-none mask-telefone" id="edit_telefone" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none mask-telefone" id="edit_telefone" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
                             </div>
                         </div>

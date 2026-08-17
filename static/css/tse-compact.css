@@ -106,7 +106,7 @@
 
 /* 5. Estilização Moderna de DataTables Global */
 .dataTables_wrapper {
-    background: white;
+    background: var(--card-bg);
     border-radius: 8px;
     padding: 0 !important;
 }
@@ -121,7 +121,7 @@ table.dataTable td {
 }
 
 table.dataTable {
-    border-bottom: 1px solid #e2e8f0 !important;
+    border-bottom: 1px solid var(--border-color) !important;
     border-collapse: collapse !important;
 }
 
@@ -132,7 +132,7 @@ table.dataTable thead th {
     font-size: 0.75rem !important;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    border-bottom: 2px solid #e2e8f0 !important;
+    border-bottom: 2px solid var(--border-color) !important;
     font-weight: 600 !important;
     padding: 0.75rem 1rem !important;
 }
@@ -168,7 +168,7 @@ table.dataTable.table-hover tbody tr:hover {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
     background: #f1f5f9 !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid var(--border-color) !important;
 }
 
 .dataTables_wrapper .dataTables_filter input {

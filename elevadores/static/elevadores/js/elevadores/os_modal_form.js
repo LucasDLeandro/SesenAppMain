@@ -22,7 +22,7 @@ function aplicarFiltroColunasModal(tabela) {
         input.type = 'text';
         input.className = 'form-control form-control-sm';
         input.placeholder = 'Filtrar ' + headerText;
-        input.style.cssText = 'width:100%;font-size:12px;padding:4px 8px;border:1px solid #ced4da;border-radius:4px;background-color:#f8f9fa';
+        input.style.cssText = 'width:100%;font-size:12px;padding:4px 8px;border:1px solid #ced4da;border-radius:4px;background-color:var(--background-body)';
 
         var debounceTimer;
         input.addEventListener('keyup', function() {

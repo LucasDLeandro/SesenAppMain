@@ -42,27 +42,27 @@
                     <div class="row g-compact">
                         <div class="col-12">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de Usuário (Login)</label>
-                            <input type="text" class="form-control  bg-light shadow-none" value="{{ request.user.username }}" readonly style="border-radius: 4px; border-color: #e2e8f0;">
+                            <input type="text" class="form-control  bg-light shadow-none" value="{{ request.user.username }}" readonly style="border-radius: 4px; border-color: var(--border-color);">
                         </div>
                         
                         <div class="col-md-6">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome</label>
-                            <input type="text" class="form-control  shadow-none" id="modal_perfil_first_name" value="{{ request.user.first_name }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                            <input type="text" class="form-control  shadow-none" id="modal_perfil_first_name" value="{{ request.user.first_name }}" style="border-radius: 4px; border-color: var(--border-color);">
                         </div>
                         
                         <div class="col-md-6">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >Sobrenome</label>
-                            <input type="text" class="form-control  shadow-none" id="modal_perfil_last_name" value="{{ request.user.last_name }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                            <input type="text" class="form-control  shadow-none" id="modal_perfil_last_name" value="{{ request.user.last_name }}" style="border-radius: 4px; border-color: var(--border-color);">
                         </div>
 
                         <div class="col-12">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail</label>
-                            <input type="email" class="form-control  shadow-none" id="modal_perfil_email" value="{{ request.user.email }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                            <input type="email" class="form-control  shadow-none" id="modal_perfil_email" value="{{ request.user.email }}" style="border-radius: 4px; border-color: var(--border-color);">
                         </div>
                         
                         <div class="col-12">
                             <label class="form-label text-muted fw-bold text-uppercase mb-1" >Telefone (WhatsApp)</label>
-                            <input type="text" class="form-control  mask-telefone shadow-none" id="modal_perfil_telefone" value="{{ request.user.perfil.telefone|default:'' }}" style="border-radius: 4px; border-color: #e2e8f0;">
+                            <input type="text" class="form-control  mask-telefone shadow-none" id="modal_perfil_telefone" value="{{ request.user.perfil.telefone|default:'' }}" style="border-radius: 4px; border-color: var(--border-color);">
                             <div class="form-text mt-1" >Inclua o DDD. Ex: (61) 9 9999-9999</div>
                         </div>
                     </div>

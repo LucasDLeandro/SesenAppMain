@@ -391,24 +391,24 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Nome de quem Solicitou (E-mail) <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control  format-text shadow-none" id="solicitacao_solicitante" name="nome_solicitante" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="text" class="form-control  format-text shadow-none" id="solicitacao_solicitante" name="nome_solicitante" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     
                                     <div class="col-md-4">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Data da Solicitação <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control  shadow-none" id="solicitacao_data" name="data_solicitacao" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="date" class="form-control  shadow-none" id="solicitacao_data" name="data_solicitacao" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Validade (Início) <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control  shadow-none" id="solicitacao_inicio" name="validade_inicio" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="date" class="form-control  shadow-none" id="solicitacao_inicio" name="validade_inicio" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Validade (Fim) <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control  shadow-none" id="solicitacao_fim" name="validade_fim" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="date" class="form-control  shadow-none" id="solicitacao_fim" name="validade_fim" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     <div class="col-md-12">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Serviço a ser executado</label>
-                                        <textarea class="form-control shadow-none format-text" id="solicitacao_servico" name="servico_executar" rows="2" style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                        <textarea class="form-control shadow-none format-text" id="solicitacao_servico" name="servico_executar" rows="2" style="border-radius: 4px; border-color: var(--border-color);"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -464,7 +464,7 @@
                                 <div class="row g-compact">
                                     <div class="col-12" id="bloco-selecao-pedido" style="display: none;">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Selecionar Pedido de Acesso Ativo <span class="text-danger">*</span></label>
-                                        <select class="form-select  shadow-none" id="lib_select_pedido_geral" onchange="carregarTecnicosDoPedido(this.value)" style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <select class="form-select  shadow-none" id="lib_select_pedido_geral" onchange="carregarTecnicosDoPedido(this.value)" style="border-radius: 4px; border-color: var(--border-color);">
                                             <option value="">Selecione...</option>
                                             <!-- Opções dinâmicas -->
                                         </select>
@@ -478,39 +478,39 @@
                                     
                                     <div class="col-md-12">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Técnicos Disponíveis no Pedido</label>
-                                        <div id="container-tecnicos-liberacao" class="border rounded p-3 bg-light" style="border-color: #e2e8f0 !important;">
+                                        <div id="container-tecnicos-liberacao" class="border rounded p-3 bg-light" style="border-color: var(--border-color) !important;">
                                             <p class="text-muted mb-0 small">Selecione um pedido primeiro.</p>
                                         </div>
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Data Inicial <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control  shadow-none" id="lib_data_inicio" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="date" class="form-control  shadow-none" id="lib_data_inicio" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Data Final <span class="text-danger">*</span></label>
-                                        <input type="date" class="form-control  shadow-none" id="lib_data_fim" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="date" class="form-control  shadow-none" id="lib_data_fim" required style="border-radius: 4px; border-color: var(--border-color);">
                                         <small class="text-muted" >Se for apenas para um dia, repita a data inicial.</small>
                                     </div>
 
                                     <div class="col-md-3">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Hora Início <span class="text-danger">*</span></label>
-                                        <input type="time" class="form-control shadow-none" id="lib_hora_inicio" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="time" class="form-control shadow-none" id="lib_hora_inicio" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     <div class="col-md-3">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Hora Fim <span class="text-danger">*</span></label>
-                                        <input type="time" class="form-control shadow-none" id="lib_hora_fim" required style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="time" class="form-control shadow-none" id="lib_hora_fim" required style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                     
                                     <div class="col-md-6">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Programar Envio (Opcional)</label>
-                                        <input type="datetime-local" class="form-control  shadow-none" id="lib_agendamento" style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="datetime-local" class="form-control  shadow-none" id="lib_agendamento" style="border-radius: 4px; border-color: var(--border-color);">
                                         <small class="text-muted" >Deixe em branco para enviar imediatamente.</small>
                                     </div>
                                     
                                     <div class="col-md-12">
                                         <label class="form-label text-muted fw-bold text-uppercase mb-1" >Supervisor Local (Contato Segurança)</label>
-                                        <input type="text" class="form-control shadow-none" id="lib_supervisor_local" name="supervisor_local" style="border-radius: 4px; border-color: #e2e8f0;">
+                                        <input type="text" class="form-control shadow-none" id="lib_supervisor_local" name="supervisor_local" style="border-radius: 4px; border-color: var(--border-color);">
                                     </div>
                                 </div>
                             </div>
@@ -551,25 +551,25 @@
                     <form id="form-enviar-email-liberacao">
                         <!-- E-mail Modal Container -->
                         <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
-                            <div style="background: #f1f5f9; padding: 10px 15px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0;">
+                            <div style="background: #f1f5f9; padding: 10px 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0;">
                                 <i class="bi bi-envelope-paper text-success" style="font-size: 1.1rem;"></i>
                                 <h6 class="mb-0 fw-bold text-uppercase" style="color: #334155;">Nova Mensagem</h6>
                             </div>
                             
-                            <div style="padding: 12px; background: #ffffff; border-radius: 0 0 8px 8px;">
+                            <div style="padding: 12px; background: var(--card-bg); border-radius: 0 0 8px 8px;">
                                 <div class="input-group input-group-sm mb-2">
                                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Para</span>
-                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none" id="preview-destinatario-input" required style="border-bottom-color: #e2e8f0 !important;">
+                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none" id="preview-destinatario-input" required style="border-bottom-color: var(--border-color) !important;">
                                 </div>
                                 
                                 <div class="input-group input-group-sm mb-2">
                                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Cc/Bcc</span>
-                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none" id="preview-copia-input" style="border-bottom-color: #e2e8f0 !important;">
+                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none" id="preview-copia-input" style="border-bottom-color: var(--border-color) !important;">
                                 </div>
 
                                 <div class="input-group input-group-sm mb-3">
                                     <span class="input-group-text bg-white border-0 text-muted fw-semibold" style="width: 60px;">Assunto</span>
-                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none fw-bold" id="preview-assunto-input" required style="border-bottom-color: #e2e8f0 !important; color: #0f172a;">
+                                    <input type="text" class="form-control border-0 border-bottom rounded-0 px-2 shadow-none fw-bold" id="preview-assunto-input" required style="border-bottom-color: var(--border-color) !important; color: #0f172a;">
                                 </div>
                                 
                                 <div class="form-group-modal mb-3">
@@ -585,7 +585,7 @@
                                 </h6>
                                 <p class="text-muted mb-3" >Anexar Documentos Externos (Opcional)</p>
                                 
-                                <input type="file" class="form-control shadow-none" id="preview-anexos-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" style="border-radius: 4px; border-color: #e2e8f0;">
+                                <input type="file" class="form-control shadow-none" id="preview-anexos-input" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" style="border-radius: 4px; border-color: var(--border-color);">
                                 <div class="form-text mt-1" >Selecione os arquivos que deseja anexar ao e-mail.</div>
                             </div>
                         </div>

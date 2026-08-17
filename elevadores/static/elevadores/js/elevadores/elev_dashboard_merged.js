@@ -2035,7 +2035,7 @@ function renderizarCardsVisao360(mesRef) {
             if (hasAlarm || hasOS) {
                 cardClass = 'border-danger';
                 iconClass = 'bi-exclamation-triangle-fill text-danger';
-                bgStyle = 'background-color: #fff5f5;';
+                bgStyle = 'background-color: var(--danger-bg-subtle);';
             } else {
                 cardClass = 'border-warning';
                 iconClass = 'bi-info-circle-fill text-warning';
@@ -2072,7 +2072,7 @@ function abrirModalHistoricoElevador(elev, mesRef) {
     const eventos = dadosVisao360[elev] || [];
             const card = document.createElement('div');
             card.className = 'card border shadow-sm rounded-3 mb-2 hover-shadow';
-            card.style.cssText = 'transition: all 0.2s ease; cursor: pointer; background: #ffffff;';
+            card.style.cssText = 'transition: all 0.2s ease; cursor: pointer; background: var(--card-bg);';
             card.onmouseenter = () => { card.style.transform = 'translateY(-2px)'; card.style.boxShadow = '0 .5rem 1rem rgba(0,0,0,.15) !important'; };
             card.onmouseleave = () => { card.style.transform = 'none'; card.style.boxShadow = '0 .125rem .25rem rgba(0,0,0,.075) !important'; };
             

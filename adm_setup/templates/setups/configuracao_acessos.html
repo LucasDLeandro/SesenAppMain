@@ -38,23 +38,23 @@
                             <div class="row g-compact">
                                 <div class="col-12">
                                     <label for="template_nome" class="form-label text-muted fw-bold text-uppercase mb-1" >Nome do Template</label>
-                                    <input type="text" class="form-control  shadow-none" id="template_nome" name="nome" required placeholder="Ex: Template Padrão Liberação" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="template_nome" name="nome" required placeholder="Ex: Template Padrão Liberação" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-12">
                                     <label for="template_assunto" class="form-label text-muted fw-bold text-uppercase mb-1" >Assunto do E-mail</label>
-                                    <input type="text" class="form-control  shadow-none" id="template_assunto" name="assunto" required placeholder="Ex: [SEGURANÇA] Liberação de Acesso de Terceiros" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="template_assunto" name="assunto" required placeholder="Ex: [SEGURANÇA] Liberação de Acesso de Terceiros" style="border-radius: 4px; border-color: var(--border-color);">
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="template_destinatario" class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail Destinatário <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control  shadow-none" id="template_destinatario" name="email_destinatario" required placeholder="Ex: seguranca@tse.jus.br, outro@tse.jus.br" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="template_destinatario" name="email_destinatario" required placeholder="Ex: seguranca@tse.jus.br, outro@tse.jus.br" style="border-radius: 4px; border-color: var(--border-color);">
                                     <div class="form-text mt-1 text-muted" >E-mail principal da Segurança/Portaria. Separe por vírgula para mais de um.</div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label for="template_copia" class="form-label text-muted fw-bold text-uppercase mb-1" >E-mail em Cópia (CC)</label>
-                                    <input type="text" class="form-control  shadow-none" id="template_copia" name="email_copia" placeholder="Ex: auditoria@tse.jus.br, extra@tse.jus.br" style="border-radius: 4px; border-color: #e2e8f0;">
+                                    <input type="text" class="form-control  shadow-none" id="template_copia" name="email_copia" placeholder="Ex: auditoria@tse.jus.br, extra@tse.jus.br" style="border-radius: 4px; border-color: var(--border-color);">
                                     <div class="form-text mt-1 text-muted" >Se preenchido, enviará uma cópia (CC) para este endereço. Separe por vírgula para múltiplos.</div>
                                 </div>
 
@@ -64,12 +64,12 @@
                                         <strong>Variáveis disponíveis:</strong>
                                         <code>{empresa}</code>, <code>{solicitante}</code>, <code>{periodo}</code>, <code>{datas}</code>, <code>{tecnicos}</code>
                                     </div>
-                                    <textarea class="form-control  shadow-none" id="template_corpo" name="corpo" rows="6" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                    <textarea class="form-control  shadow-none" id="template_corpo" name="corpo" rows="6" required style="border-radius: 4px; border-color: var(--border-color);"></textarea>
                                 </div>
                                 
                                 <div class="col-12">
                                     <label for="template_assinatura" class="form-label text-muted fw-bold text-uppercase mb-1" >Assinatura da Comunicação</label>
-                                    <textarea class="form-control  shadow-none" id="template_assinatura" name="assinatura" rows="3" required style="border-radius: 4px; border-color: #e2e8f0;"></textarea>
+                                    <textarea class="form-control  shadow-none" id="template_assinatura" name="assinatura" rows="3" required style="border-radius: 4px; border-color: var(--border-color);"></textarea>
                                 </div>
                             </div>
                         </div>

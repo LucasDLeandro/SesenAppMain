@@ -10,7 +10,7 @@
 
 /* Melhoria visual nas nav-tabs */
 .nav-tabs.custom-tabs {
-    border-bottom: 2px solid #dee2e6;
+    border-bottom: 2px solid var(--border-color);
     gap: 0.2rem;
     flex-wrap: nowrap;
     overflow-x: auto;

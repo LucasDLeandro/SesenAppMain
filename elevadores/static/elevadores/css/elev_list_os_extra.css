@@ -15,13 +15,13 @@
         }
 
         .elev-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 15px;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             transition: transform 0.2s;
-            border: 1px solid #edf2f9;
+            border: 1px solid var(--border-color);
             position: relative;
         }
         .elev-card:hover {
@@ -47,14 +47,14 @@
             margin-bottom: 10px;
         }
         .elev-card.ativo .elev-icon { color: #28a745; }
-        .elev-card.parado .elev-icon { color: #dc3545; }
+        .elev-card.parado .elev-icon { color: var(--text-main); }
         
         .elev-timer {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #dc3545;
+            color: var(--text-main);
             margin-top: 10px;
-            background: #ffeaea;
+            background: var(--danger-bg-subtle);
             padding: 5px;
             border-radius: 5px;
         }
@@ -76,9 +76,9 @@
                 .pulse-icon { animation: shake-icon 2s infinite; display: inline-block; }
                 .widget-recebidas-alerta {
                     border: 2px solid #dc3545 !important;
-                    background-color: #fff !important;
+                    background-color: var(--card-bg) !important;
                 }
                 .widget-recebidas-alerta:hover {
-                    background-color: #fff5f5 !important;
+                    background-color: var(--danger-bg-subtle) !important;
                 }
                 </style>

@@ -716,7 +716,7 @@ if (resEventos.ok) {
             const sigla = s.sigla_unidade ? s.sigla_unidade.toUpperCase() : '-';
             
             listGroup.innerHTML += `
-                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: #fff5f5; border: 1px solid #ffcaca;">
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: var(--danger-bg-subtle); border: 1px solid var(--danger-border-subtle);">
                     <div>
                         <small class="text-danger d-block mb-0 fw-bold" style="font-size: 0.8rem;"><i class="bi bi-clock-history"></i> Data: ${dataFormatada}</small>
                         <span class="fw-bold text-dark">${s.protocolo}</span> <span class="badge bg-secondary ms-1" style="font-size: 0.7rem;">${s.tipo_demanda}</span>

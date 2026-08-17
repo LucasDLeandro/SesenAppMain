@@ -1,7 +1,7 @@
     /* Estilos Modernos - Inspirados nos elevadores/telefonia */
     /* Tabs */
     .custom-tabs {
-        border-bottom: 2px solid #dee2e6;
+        border-bottom: 2px solid var(--border-color);
         gap: 4px;
     }
     .custom-tabs .nav-link {
@@ -18,7 +18,7 @@
     }
     .custom-tabs .nav-link.active {
         color: #1e3c72;
-        background-color: white;
+        background-color: var(--card-bg);
         border-bottom: 2px solid #1e3c72;
         margin-bottom: -2px;
     }
@@ -33,7 +33,7 @@
     }
     
     .metric-card {
-        background: white;
+        background: var(--card-bg);
         border-radius: 12px;
         padding: 20px;
         border: none;
@@ -62,14 +62,14 @@
     .metric-icon.orange { background: rgba(253, 126, 20, 0.1); color: #fd7e14; }
     
     .custom-modern-table {
-        background: white;
+        background: var(--card-bg);
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
     .custom-modern-table thead {
-        background-color: #f8f9fa;
-        color: #495057;
+        background-color: var(--background-body);
+        color: var(--text-main);
         font-weight: 600;
     }
     .custom-modern-table th, .custom-modern-table td {
@@ -95,7 +95,7 @@
     /* Widget de Pendências - igual ao de telefonia */
     .widget-recebidas-alerta {
         border: 2px solid #dc3545 !important;
-        background-color: #fff5f5;
+        background-color: var(--danger-bg-subtle);
         transition: all 0.3s ease;
     }
     .widget-recebidas-alerta:hover {
