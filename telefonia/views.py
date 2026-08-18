@@ -1032,6 +1032,10 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
             if senha.ativo:
                 senha.ativo = False
                 senha.save(update_fields=['ativo'])
+                
+        if solicitacao.status == 'concluida' and not solicitacao.tecnico_responsavel:
+            solicitacao.tecnico_responsavel = self.request.user.get_full_name() or self.request.user.username
+            solicitacao.save(update_fields=['tecnico_responsavel'])
 
 def gerar_pdf_nada_consta(request, pk):
     try:

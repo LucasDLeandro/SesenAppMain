@@ -190,7 +190,8 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             { 
                 data: 'status',
-                render: function(data) {
+                render: function(data, type, row) {
+                    if (row.ativo === false) return '<span class="badge bg-danger">Inativa (Cancelada)</span>';
                     if(data === 'recebida') return '<span class="badge bg-primary">Recebida</span>';
                     if(data === 'aguardando_supervisor') return '<span class="badge bg-warning text-dark">Aguardando Sup.</span>';
                     if(data === 'finalizada') return '<span class="badge bg-success">Finalizada</span>';
@@ -1118,6 +1119,7 @@ window.visualizarSenha = async function(id) {
             document.getElementById('vis-senha-unidade').textContent = dados.unidade || '-';
             document.getElementById('vis-senha-sigla').textContent = dados.sigla_unidade ? dados.sigla_unidade.toUpperCase() : '-';
             document.getElementById('vis-senha-registrada').textContent = dados.senha || 'Não informada';
+            document.getElementById('vis-senha-status-ativo').innerHTML = dados.ativo === false ? '<span class="badge bg-danger">Inativa / Cancelada</span>' : '<span class="badge bg-success">Ativa</span>';
             document.getElementById('vis-senha-edificios').textContent = dados.edificios || '-';
             document.getElementById('vis-senha-usuario').textContent = dados.usuario || '-';
             document.getElementById('vis-senha-ramal').textContent = dados.ramal || '-';
