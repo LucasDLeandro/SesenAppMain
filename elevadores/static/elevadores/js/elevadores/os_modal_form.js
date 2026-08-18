@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (header) {
                     header.classList.remove('bg-danger');
                     header.classList.add('bg-success');
-                    header.innerHTML = `<h6 class="mb-0 fw-bold" style="font-size: 0.95rem; letter-spacing: 0.5px;"><i class="bi bi-check-circle-fill me-2"></i> Tudo em ordem! Nenhuma O.S Aberta</h6><span class="badge bg-white text-success rounded-pill fs-6 px-3 shadow-sm">0</span>`;
+                    header.innerHTML = `<h6 class="mb-0 fw-bold" style="font-size: 0.95rem; letter-spacing: 0.5px;"><i class="bi bi-check-circle-fill me-2"></i> Tudo em ordem! Nenhuma O.S Aberta</h6><span class="badge  text-success rounded-pill fs-6 px-3 shadow-sm">0</span>`;
                 }
                 
                 const btn = alertaDashboard.querySelector('button');

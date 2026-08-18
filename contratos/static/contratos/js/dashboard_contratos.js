@@ -796,7 +796,7 @@ function carregarContratacoesCards() {
 
             const listItemHtml = `
                 <div class="col-12" style="cursor: pointer;" onclick="abrirModalDetalhesProcesso(${processo.id})">
-                    <div class="bg-white rounded-3 shadow-sm border p-3 transition-hover">
+                    <div class=" rounded-3 shadow-sm border p-3 transition-hover">
                         
                         <div class="row gx-3">
                             <!-- Esquerda: Info do Processo -->
@@ -1390,10 +1390,10 @@ function abrirDetalhesContrato(contrato) {
                 <p class="text-muted"><i class="bi bi-building me-2"></i>${contrato.empresa_nome} (CNPJ: ${contrato.empresa_cnpj})</p>
                 <hr>
                 <h6 class="fw-bold">Objeto:</h6>
-                <p class="small text-muted bg-white p-3 rounded shadow-sm border">${contrato.objeto || 'Não informado'}</p>
+                <p class="small text-muted  p-3 rounded shadow-sm border">${contrato.objeto || 'Não informado'}</p>
             </div>
             <div class="col-md-6">
-                <div class="p-3 bg-white rounded shadow-sm border h-100">
+                <div class="p-3  rounded shadow-sm border h-100">
                     <h6 class="fw-bold text-dark"><i class="bi bi-calendar-range me-2 text-warning"></i>Vigência</h6>
                     <ul class="list-unstyled small mb-0 mt-3 text-muted">
                         <li class="mb-2"><strong>Início:</strong> ${formatDate(contrato.inicio_vigencia)}</li>
@@ -1402,7 +1402,7 @@ function abrirDetalhesContrato(contrato) {
                 </div>
             </div>
             <div class="col-md-6">
-                <div class="p-3 bg-white rounded shadow-sm border h-100">
+                <div class="p-3  rounded shadow-sm border h-100">
                     <h6 class="fw-bold text-dark"><i class="bi bi-cash-stack me-2 text-success"></i>Valores</h6>
                     <ul class="list-unstyled small mb-0 mt-3 text-muted">
                         <li class="mb-2"><strong>Mensal Estimado:</strong> R$ ${parseFloat(contrato.valor_mensal_estimado).toLocaleString('pt-BR')}</li>
@@ -1411,7 +1411,7 @@ function abrirDetalhesContrato(contrato) {
                 </div>
             </div>
             <div class="col-md-12">
-                <div class="p-3 bg-white rounded shadow-sm border">
+                <div class="p-3  rounded shadow-sm border">
                     <h6 class="fw-bold text-dark"><i class="bi bi-people me-2 text-info"></i>Fiscais do Contrato (Lei 14.133)</h6>
                     <div class="row mt-3 small text-muted">
                         <div class="col-sm-6">

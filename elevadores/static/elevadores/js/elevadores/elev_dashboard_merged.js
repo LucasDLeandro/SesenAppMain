@@ -102,7 +102,9 @@ async function dadosIndicadorUm() {
         }]
         
 
-        const layoutChartUm = { margin: { l: 40, r: 20, t: 30, b: 40 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#4e73df', '#1cc88a', '#36b9cc'], hovermode: 'closest', xaxis: { showgrid: false,
+        const layoutChartUm = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)", margin: { l: 40, r: 20, t: 30, b: 40 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#4e73df', '#1cc88a', '#36b9cc'], hovermode: 'closest', xaxis: { showgrid: false,
                 type: 'category',
             },
             height: 500
@@ -250,6 +252,8 @@ async function dadosIndicadorTres() {
         
         
         const layout = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             
             xaxis: { 
                 type: 'date',
@@ -377,6 +381,8 @@ async function dadosVisaoGeral() {
         ]
 
         const layout = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             xaxis: {
                 type: 'date',
                 tickformat: '%m/%Y',
@@ -490,7 +496,9 @@ async function dadosIndicadorQuatro() {
             textfont: { size: 14, weight: 'bold', color: '#1e293b' }
         }]
         
-        const layoutChartQuatro = { margin: { l: 50, r: 20, t: 30, b: 50 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#36b9cc'], hovermode: 'closest', xaxis: { showgrid: false, tickangle: -45, automargin: true },
+        const layoutChartQuatro = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)", margin: { l: 50, r: 20, t: 30, b: 50 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#36b9cc'], hovermode: 'closest', xaxis: { showgrid: false, tickangle: -45, automargin: true },
             yaxis: { title: 'Disponibilidade %', range: [0, 105], automargin: true },
             margin: { b: 80 },
             paper_bgcolor: 'transparent',
@@ -998,7 +1006,9 @@ async function dadosIndicadorDois() {
             ticktextAtual.push(`${i.toString().padStart(2, '0')}/${mesAtual.toString().padStart(2, '0')}`);
         }
 
-        const layoutChartDois = { margin: { l: 40, r: 20, t: 30, b: 40 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#1cc88a'], hovermode: 'closest', xaxis: { showgrid: false,
+        const layoutChartDois = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)", margin: { l: 40, r: 20, t: 30, b: 40 }, paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)', font: { family: 'Inter, sans-serif' }, colorway: ['#1cc88a'], hovermode: 'closest', xaxis: { showgrid: false,
                 title: 'Dia do Mês',
                 range: [0, ultimoDiaAtual],
                 tickmode: 'array',

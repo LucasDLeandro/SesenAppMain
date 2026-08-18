@@ -133,6 +133,8 @@ async function dadosIndicadorUm() {
         
 
         const layoutChartUm = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             xaxis: {
                 type: 'category',
                 tickangle: -45,
@@ -203,6 +205,8 @@ async function dadosIndicadorTres() {
         const rangeFim3 = dataFimObj3.toISOString().substring(0, 19).replace('T', ' ');
 
         const layout = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             
             xaxis: { 
                 type: 'date',
@@ -269,6 +273,8 @@ async function dadosVisaoGeral() {
         ]
 
         const layout = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             xaxis: {
                 type: 'date',
                 tickformat: '%m/%Y',
@@ -382,6 +388,8 @@ async function dadosIndicadorQuatro() {
         }]
         
         const layoutChartQuatro = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             xaxis: { tickangle: -45, automargin: true },
             yaxis: { title: 'Disponibilidade %', range: [0, 105], automargin: true },
             margin: { b: 80 },
@@ -842,6 +850,8 @@ async function dadosIndicadorDois() {
         }
 
         const layoutChartDois = {
+        paper_bgcolor: "rgba(0,0,0,0)",
+        plot_bgcolor: "rgba(0,0,0,0)",
             xaxis: {
                 title: 'Dia do Mﾃｪs',
                 range: [0, ultimoDiaAtual],
