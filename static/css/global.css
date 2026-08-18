@@ -218,3 +218,27 @@ body {
     border: 1px solid var(--border-color) !important;
     color: var(--text-main) !important;
 }
+
+
+/* --- Global Utility Overrides for Dark Mode --- */
+[data-bs-theme="dark"] .text-dark {
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .text-secondary {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--card-bg) !important;
+}
+
+[data-bs-theme="dark"] .card {
+    border-color: var(--border-color) !important;
+    background-color: var(--card-bg) !important;
+}
