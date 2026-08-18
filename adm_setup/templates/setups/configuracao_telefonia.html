@@ -18,7 +18,7 @@
                     <input type="hidden" name="action" value="save_email_template">
                     <input type="hidden" name="template_id" id="email_template_id" value="">
                     
-                    <div class="mb-4 bg-light p-3 rounded">
+                    <div class="mb-4  p-3 rounded">
                         <div class="form-check form-switch fs-5">
                             <input class="form-check-input" type="checkbox" role="switch" id="email_ativo" name="ativo">
                             <label class="form-check-label ms-2" for="email_ativo">
@@ -144,7 +144,7 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Telefonia - Template de Documento de Senha</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
+                            <div class="msg-preview p-3  rounded" style="font-family: monospace; ">
                                 <strong>Prévia:</strong><br><br>"Instruções para Celular: {{ temp.instrucoes_celular }}<br><br>
                                 {{ temp.termo_obrigatorio|truncatewords:20 }}"
                             </div>
@@ -207,7 +207,7 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Telefonia - Tutorial de Utilização e GRU</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
+                            <div class="msg-preview p-3  rounded" style="font-family: monospace; ">
                                 <strong>Prévia (Introdução):</strong><br><br>"{{ temp.introducao|striptags|truncatewords:20 }}"
                             </div>
                         </div>
@@ -332,7 +332,7 @@
                         </div>
                         <div class="msg-card-body flex-grow-1">
                             <p class="text-muted small mb-3">Esta mensagem será disparada para a equipe técnica no fechamento desta demanda.</p>
-                            <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555; white-space: pre-wrap;">{{ temp.base_text }}</div>
+                            <div class="msg-preview p-3  rounded" style="font-family: monospace; white-space: pre-wrap;">{{ temp.base_text }}</div>
                         </div>
                         <div class="msg-card-footer mt-3 pt-3 border-top d-flex justify-content-end">
                             <button class="btn  btn-outline-primary" onclick="editarTemplateWhatsapp({{ temp.id }}, `{{ temp.base_text|escapejs }}`)">
@@ -366,7 +366,7 @@
                     </div>
                     <div class="msg-card-body flex-grow-1">
                         <p class="text-muted small mb-3">Estes textos serão utilizados na emissão dos Relatórios Anuais e de Solicitação de Reembolso na Gestão de Reembolsos.</p>
-                        <div class="msg-preview p-3 bg-light rounded" style="font-family: monospace; color: #555;">
+                        <div class="msg-preview p-3  rounded" style="font-family: monospace; ">
                             <strong>Cabeçalho:</strong><br>
                             {{ config_reembolsos.cabecalho_linha1 }}<br>
                             {{ config_reembolsos.cabecalho_linha2 }}<br>

@@ -349,3 +349,36 @@
         font-size: 24px;
     }
 }
+
+
+/* ========================================
+   Dark Mode Overrides
+   ======================================== */
+[data-bs-theme='dark'] .msg-card-template {
+    background: var(--card-bg, #1e293b);
+    border-color: var(--border-color, #334155);
+}
+
+[data-bs-theme='dark'] .msg-card-header {
+    background: var(--card-bg, #1e293b);
+    border-bottom-color: var(--border-color, #334155);
+}
+
+[data-bs-theme='dark'] .msg-card-header h6 {
+    color: var(--text-color, #f8fafc);
+}
+
+[data-bs-theme='dark'] .msg-card-footer {
+    background-color: var(--card-bg, #1e293b);
+    border-top-color: var(--border-color, #334155);
+}
+
+[data-bs-theme='dark'] .msg-preview {
+    background-color: var(--bg-color, #0f172a) !important;
+    color: var(--text-color, #cbd5e1) !important;
+    border-left-color: #3b82f6;
+}
+
+[data-bs-theme='dark'] .msg-card-body p {
+    color: var(--text-color, #94a3b8);
+}
