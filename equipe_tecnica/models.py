@@ -77,6 +77,8 @@ class LiberacaoAcessoDiaria(models.Model):
     
     email_enviado = models.BooleanField(default=False)
     data_agendamento_email = models.DateTimeField(null=True, blank=True, verbose_name="Envio Programado")
+    email_falhou = models.BooleanField(default=False)
+    erro_envio = models.TextField(blank=True, null=True, verbose_name="Log de Erro do Envio")
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

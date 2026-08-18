@@ -110,6 +110,9 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_cc=None, custom_
                 "Nenhum destinatário configurado para a liberação %s.",
                 liberacao_id,
             )
+            liberacao.email_falhou = True
+            liberacao.erro_envio = "Nenhum destinatário configurado no Padrão de E-mail."
+            liberacao.save(update_fields=['email_falhou', 'erro_envio'])
             return False
 
         cc_list = [c.strip() for c in copia_cc.split(',') if c.strip()] if copia_cc else None
@@ -131,7 +134,9 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_cc=None, custom_
         email.send(fail_silently=False)
 
         liberacao.email_enviado = True
-        liberacao.save(update_fields=['email_enviado'])
+        liberacao.email_falhou = False
+        liberacao.erro_envio = None
+        liberacao.save(update_fields=['email_enviado', 'email_falhou', 'erro_envio'])
         return True
 
     except LiberacaoAcessoDiaria.DoesNotExist:
@@ -139,4 +144,9 @@ def enviar_email_liberacao(liberacao_id, custom_to=None, custom_cc=None, custom_
         return False
     except Exception as e:
         logger.error(f"Erro ao enviar e-mail de liberação {liberacao_id}: {e}")
+        liberacao = LiberacaoAcessoDiaria.objects.filter(id=liberacao_id).first()
+        if liberacao:
+            liberacao.email_falhou = True
+            liberacao.erro_envio = str(e)
+            liberacao.save(update_fields=['email_falhou', 'erro_envio'])
         return False

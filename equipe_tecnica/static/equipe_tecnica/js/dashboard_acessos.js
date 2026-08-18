@@ -671,8 +671,18 @@ function carregarAgenda() {
                 let diffTime = dataAgendada - agora;
                 let textTempo = "Atrasado!";
                 let classTempo = "text-danger fw-bold";
+                let btnErro = "";
                 
-                if (diffTime > 0) {
+                if (lib.email_falhou) {
+                    textTempo = "Falha no Envio!";
+                    classTempo = "text-danger fw-bold";
+                    const erroTxt = lib.erro_envio ? lib.erro_envio.replace(/`/g, "'").replace(/\n/g, "<br>") : 'Erro desconhecido.';
+                    btnErro = `
+                        <button class="btn btn-sm btn-danger shadow-sm" onclick="Swal.fire({title: 'Erro de Envio', html: \`${erroTxt}\`, icon: 'error'})" title="Ver Detalhes do Erro">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </button>
+                    `;
+                } else if (diffTime > 0) {
                     const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
@@ -685,9 +695,10 @@ function carregarAgenda() {
                         <td>#${lib.id}</td>
                         <td class="fw-bold">${lib.empresa_nome}</td>
                         <td>${dataAgendada.toLocaleString('pt-BR')}</td>
-                        <td class="${classTempo} timer-agenda" data-target="${dataAgendada.toISOString()}">${textTempo}</td>
+                        <td class="${classTempo} timer-agenda" data-target="${dataAgendada.toISOString()}" data-falhou="${lib.email_falhou ? 'true' : 'false'}">${textTempo}</td>
                         <td class="text-end">
                             <div class="d-flex gap-1 flex-nowrap justify-content-end">
+                                ${btnErro}
                                 <button class="btn btn-sm btn-outline-primary" onclick="editarAgendamento(${lib.id}, '${lib.data_agendamento_email}')" title="Mudar Data">
                                     <i class="bi bi-calendar-event"></i>
                                 </button>
@@ -717,6 +728,8 @@ function carregarAgenda() {
 setInterval(function() {
     if ($('#tabela-agenda').is(':visible')) {
         $('.timer-agenda').each(function() {
+            if ($(this).data('falhou') === true) return;
+            
             const target = new Date($(this).data('target'));
             const agora = new Date();
             let diffTime = target - agora;
