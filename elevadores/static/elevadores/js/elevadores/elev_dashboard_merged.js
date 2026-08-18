@@ -1264,13 +1264,13 @@ window.carregarWidgetDemandasDashboard = async function() {
             } else {
                 demandas.slice(0, 3).forEach(d => {
                     listGroup.innerHTML += `
-                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-0 px-2 rounded mb-1" style="background-color: #fffaf0;">
+                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2 mb-1 rounded" style="background-color: var(--danger-bg-subtle); border: 1px solid var(--danger-border-subtle);">
                             <div>
-                                <small class="text-danger"><i class="bi bi-clock me-1"></i> Data/Ref: ${d.dataExibicao}</small><br>
-                                <span class="fw-bold text-dark fs-6">${d.ref}</span> ${d.tipoNome}<br>
-                                <small class="text-muted">Equip: ${d.equip}</small>
+                                <small class="text-danger d-block mb-0 fw-bold" style="font-size: 0.8rem;"><i class="bi bi-clock-history"></i> Data/Ref: ${d.dataExibicao}</small>
+                                <span class="fw-bold text-dark">${d.ref}</span> <span class="ms-1" style="font-size: 0.7rem;">${d.tipoNome}</span>
+                                <br><span class="text-muted" style="font-size: 0.85rem;">Equip: ${d.equip}</span>
                             </div>
-                            <i class="bi bi-chevron-right text-danger"></i>
+                            <i class="bi bi-chevron-right text-danger fw-bold fs-5"></i>
                         </div>
                     `;
                 });
