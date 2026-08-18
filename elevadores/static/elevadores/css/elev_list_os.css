@@ -8,40 +8,6 @@
     white-space: nowrap; /* Evita quebra de linha em excesso nas colunas */
 }
 
-/* Melhoria visual nas nav-tabs */
-.nav-tabs.custom-tabs {
-    border-bottom: 2px solid var(--border-color);
-    gap: 0.2rem;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-.nav-tabs.custom-tabs::-webkit-scrollbar {
-    height: 4px;
-}
-.nav-tabs.custom-tabs::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
-}
-.nav-tabs.custom-tabs .nav-item .nav-link {
-    color: var(--text-main);
-    border: none;
-    border-bottom: 2px solid transparent;
-    border-radius: 0;
-    padding: 0.75rem 1rem;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-    white-space: nowrap;
-}
-.nav-tabs.custom-tabs .nav-item .nav-link:hover {
-    color: var(--light-blue, #0d6efd);
-    background-color: var(--border-color, #e9ecef);
-}
-.nav-tabs.custom-tabs .nav-item .nav-link.active {
-    color: var(--primary-blue, #106EBE);
-    background-color: transparent;
-    border-color: var(--primary-blue, #106EBE);
-}
 
 /* Tabelas Modernas */
 .custom-modern-table {
