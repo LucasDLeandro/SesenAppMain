@@ -998,11 +998,6 @@ if (formFinalizarSenha) {
         e.preventDefault();
         const id = document.getElementById('id_finalizacao_senha').value;
         const payload = {
-            cargo: document.getElementById('cargo_finalizacao').value,
-            numero_contrato: document.getElementById('numero_contrato_finalizacao').value,
-            empresa_vinculada: document.getElementById('empresa_finalizacao').value,
-            fiscal_contrato: document.getElementById('fiscal_finalizacao').value,
-            unidade_fiscal: document.getElementById('unidade_fiscal_finalizacao').value,
             to_email: document.getElementById('email_para_finalizacao').value,
             bcc_email: document.getElementById('email_copia_finalizacao').value,
             assunto: document.getElementById('email_assunto_finalizacao').value,

@@ -12,60 +12,7 @@
           {% csrf_token %}
           <input type="hidden" id="id_finalizacao_senha" name="id">
           
-          <!-- Ação do Supervisor -->
-          <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;" id="bloco_acao_supervisor_finalizacao">
-            <div class="card-body p-3">
-              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
-                <i class="bi bi-person-workspace me-2 fs-6"></i> Ação do Supervisor
-              </h6>
-              
-              <div class="row g-compact">
-                <div class="col-md-12">
-                  <label class="form-label text-muted fw-bold text-uppercase mb-1" >Cargo</label>
-                  <select class="form-select  shadow-none" id="cargo_finalizacao" name="cargo" onchange="toggleCargoFinalizacao(this.value)" style="border-radius: 4px; border-color: var(--border-color);">
-                    <option value="servidor" selected>Servidor</option>
-                    <option value="colaborador">Colaborador</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div id="dados_contrato_finalizacao" style="display: none;" class="bg-light p-3 rounded border mt-3">
-                <h6 class="text-secondary fw-bold mb-3 d-flex align-items-center" style="text-transform: uppercase;">
-                    <i class="bi bi-person-badge me-2"></i> Dados do Contrato
-                </h6>
-                <div class="row g-compact mb-2">
-                    <div class="col-md-6">
-                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Selecione o Contrato</label>
-                        <select class="form-select  shadow-none" id="select_contrato_finalizacao" onchange="mudarContratoFinalizacao(this.value)" style="border-radius: 4px; border-color: var(--border-color);">
-                            <option value="">-- Selecione --</option>
-                            <option value="novo">+ Novo Contrato</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6 div_numero_contrato_finalizacao" style="display: none;">
-                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Número do Contrato</label>
-                        <input type="text" class="form-control  shadow-none" id="numero_contrato_finalizacao" name="numero_contrato" maxlength="50" style="border-radius: 4px; border-color: var(--border-color);">
-                    </div>
-                </div>
-                <div class="row g-compact mb-2">
-                    <div class="col-md-6 div_empresa_finalizacao" style="display: none;">
-                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Empresa Vinculada</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="empresa_finalizacao" name="empresa_vinculada" maxlength="100" style="border-radius: 4px; border-color: var(--border-color);">
-                    </div>
-                    <div class="col-md-6 div_fiscal_finalizacao" style="display: none;">
-                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Fiscal do Contrato</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="fiscal_finalizacao" name="fiscal_contrato" maxlength="100" style="border-radius: 4px; border-color: var(--border-color);">
-                    </div>
-                </div>
-                <div class="row g-compact">
-                    <div class="col-md-12 div_unidade_fiscal_finalizacao" style="display: none;">
-                        <label class="form-label text-muted fw-bold text-uppercase mb-1" >Unidade do Fiscal</label>
-                        <input type="text" class="form-control  format-text shadow-none" id="unidade_fiscal_finalizacao" name="unidade_fiscal" maxlength="200" style="border-radius: 4px; border-color: var(--border-color);">
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
+
           <!-- E-mail Modal Container -->
           <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
             <div style="padding: 10px 15px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px; border-radius: 8px 8px 0 0; background: rgba(128, 128, 128, 0.1);">
