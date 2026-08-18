@@ -89,24 +89,19 @@
 
     <div class="header">
         <!-- Assume there's a brasao somewhere in static or just use a generic text if not found. For now, text representation -->
-        <h3>TRIBUNAL SUPERIOR ELEITORAL</h3>
-        <h4>SECRETARIA DE TECNOLOGIA DA INFORMAÇÃO</h4>
-        <h4>SEÇÃO DE TELEFONIA</h4>
+        <h3>{{ padrao.cabecalho_logo|default:"TRIBUNAL SUPERIOR ELEITORAL" }}</h3>
+        <h4>{{ padrao.cabecalho_sublogo1|default:"SECRETARIA DE TECNOLOGIA DA INFORMAÇÃO" }}</h4>
+        <h4>{{ padrao.cabecalho_sublogo2|default:"SEÇÃO DE TELEFONIA" }}</h4>
     </div>
 
-    <div class="title">INFORMATIVO DE DÉBITO - TELEFONIA</div>
+    <div class="title">{{ padrao.titulo_documento|default:"INFORMATIVO DE DÉBITO - TELEFONIA" }}</div>
 
     <div class="content">
         <p>
-            Em resposta à solicitação de Nada Consta (Protocolo SEI nº <strong>{{ solicitacao.protocolo }}</strong>), 
-            informamos que após verificação no sistema de tarifação desta Seção de Telefonia, 
-            foi constatado débito pendente em nome do(a) servidor(a) <strong>{{ solicitacao.servidor }}</strong>, 
-            da unidade <strong>{{ solicitacao.unidade }} ({{ solicitacao.sigla_unidade }})</strong>.
+            {{ paragrafo_introdutorio|linebreaksbr }}
         </p>
         <p>
-            Os dados vinculados ao servidor no sistema são:
-            <br>Ramal: {% if solicitacao.ramal %}{{ solicitacao.ramal }}{% else %}Não informado{% endif %}
-            <br>E-mail Cadastrado: {% if solicitacao.email_cadastrado %}{{ solicitacao.email_cadastrado }}{% else %}Não informado{% endif %}
+            {{ paragrafo_dados|linebreaksbr }}
         </p>
     </div>
 
@@ -119,7 +114,7 @@
         </thead>
         <tbody>
             <tr>
-                <td>Débito referente à utilização do sistema de telefonia (faturas pendentes)</td>
+                <td>{{ padrao.descricao_debito|default:"Débito referente à utilização do sistema de telefonia (faturas pendentes)" }}</td>
                 <td class="valor">{{ solicitacao.valor_devido }}</td>
             </tr>
         </tbody>
@@ -127,16 +122,15 @@
 
     <div class="content">
         <p>
-            Solicita-se que o referido valor seja recolhido via Guia de Recolhimento da União (GRU) e o 
-            comprovante anexado ao processo SEI para a devida quitação e emissão do Nada Consta definitivo.
+            {{ padrao.paragrafo_conclusao|default:"Solicita-se que o referido valor seja recolhido via Guia de Recolhimento da União (GRU) e o comprovante anexado ao processo SEI para a devida quitação e emissão do Nada Consta definitivo."|linebreaksbr }}
         </p>
     </div>
 
     <div class="assinatura">
         <div class="linha-assinatura"></div>
         <p><strong>{{ solicitacao.tecnico_responsavel|default:"Técnico Responsável" }}</strong></p>
-        <p>Seção de Telefonia - TSE</p>
-        <p>Brasília, {{ data_geracao|date:"d \d\e F \d\e Y" }}</p>
+        <p>{{ padrao.assinatura_secao|default:"Seção de Telefonia - TSE" }}</p>
+        <p>{{ assinatura_local }}</p>
     </div>
 
     <div id="footer_content">

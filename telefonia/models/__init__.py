@@ -28,3 +28,4 @@ from .padrao_tutorial import PadraoTutorialTelefonia
 from .padrao_email import PadraoEmailTelefonia
 from .emprestimo_evento import EmprestimoEvento
 from .nada_consta import NadaConsta
+from .padrao_nada_consta import PadraoNadaConstaTelefonia

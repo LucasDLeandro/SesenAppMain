@@ -953,12 +953,70 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
     queryset = NadaConsta.objects.all().order_by('-data')
     serializer_class = NadaConstaSerializer
 
+    def perform_create(self, serializer):
+        solicitacao = serializer.save()
+        template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta', is_ativo=True).first()
+        if template:
+            from notificacoes.models.contato_notificacao import Contato
+            from notificacoes.services import disparar_notificacao_contato
+            
+            contatos = Contato.objects.filter(is_ativo=True, notifica_telefonia=True)
+            enviados = set()
+            for contato in contatos:
+                chave_duplicidade = getattr(contato, '_telefone_sanitizado', contato.telefone) or (contato.pessoa.email if contato.pessoa else None)
+                if chave_duplicidade:
+                    if chave_duplicidade in enviados:
+                        continue
+                    enviados.add(chave_duplicidade)
+                
+                texto = template.base_text
+                try:
+                    text = texto.format(
+                        nome=contato.nome,
+                        protocolo=solicitacao.protocolo or 'N/A',
+                        unidade=solicitacao.unidade or 'N/A',
+                        sigla_unidade=solicitacao.sigla_unidade or 'N/A',
+                        servidor=solicitacao.servidor or 'N/A',
+                    )
+                    assunto = f"Nova Solicitação de Nada Consta - {solicitacao.protocolo or 'N/A'}"
+                    disparar_notificacao_contato(contato, text, text, assunto)
+                except Exception as e:
+                    print(f"Erro ao formatar/enviar mensagem (Nada Consta): {e}")
+
 def gerar_pdf_nada_consta(request, pk):
     try:
         solicitacao = NadaConsta.objects.get(pk=pk)
+        
+        from telefonia.models import PadraoNadaConstaTelefonia
+        padrao = PadraoNadaConstaTelefonia.objects.filter(ativo=True).first()
+        
+        # Formata textos dinâmicos se existir padrão
+        paragrafo_introdutorio = "Texto introdutório não configurado."
+        paragrafo_dados = "Dados não configurados."
+        if padrao:
+            paragrafo_introdutorio = padrao.paragrafo_introdutorio.format(
+                protocolo=solicitacao.protocolo or 'N/A',
+                servidor=solicitacao.servidor or 'N/A',
+                unidade=solicitacao.unidade or 'N/A',
+                sigla_unidade=solicitacao.sigla_unidade or 'N/A'
+            )
+            paragrafo_dados = padrao.paragrafo_dados_vinculados.format(
+                ramal=solicitacao.ramal or 'Não informado',
+                email=solicitacao.email_cadastrado or 'Não informado'
+            )
+            assinatura_local = padrao.assinatura_local.format(
+                data=timezone.now().strftime('%d de %B de %Y')
+            )
+        else:
+            assinatura_local = f"Brasília, {timezone.now().strftime('%d de %B de %Y')}"
+            
         template = get_template('telefonia/pdf_nada_consta.html')
         context = {
             'solicitacao': solicitacao,
+            'padrao': padrao,
+            'paragrafo_introdutorio': paragrafo_introdutorio,
+            'paragrafo_dados': paragrafo_dados,
+            'assinatura_local': assinatura_local,
             'data_geracao': timezone.now()
         }
         html = template.render(context)

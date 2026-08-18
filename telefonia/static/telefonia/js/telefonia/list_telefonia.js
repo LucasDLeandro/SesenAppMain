@@ -257,6 +257,82 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // 2.5 Tabela de Nada Consta
+    $('#tabela-nada-consta-aba').DataTable({
+        responsive: true,
+        order: [[0, 'desc']],
+        ajax: {
+            url: '/telefonia/api/nada_consta/',
+            dataSrc: ''
+        },
+        columns: [
+            { 
+                data: 'data',
+                render: function(data, type, row) {
+                    if(!data) return '';
+                    if (type === 'sort' || type === 'type') return data;
+                    let d = new Date(data);
+                    return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                }
+            },
+            { data: 'protocolo' },
+            { 
+                data: 'unidade',
+                defaultContent: '-'
+            },
+            { 
+                data: 'sigla_unidade',
+                defaultContent: '-',
+                render: function(data) {
+                    if(!data) return '-';
+                    return data.toUpperCase();
+                }
+            },
+            { data: 'servidor', defaultContent: '-' },
+            { 
+                data: 'status',
+                render: function(data) {
+                    if(data === 'pendente') return '<span class="badge bg-danger">Pendente</span>';
+                    if(data === 'concluida') return '<span class="badge bg-success">Concluída</span>';
+                    return `<span class="badge bg-secondary">${data}</span>`;
+                }
+            },
+            {
+                data: 'id',
+                orderable: false,
+                className: 'text-end',
+                render: function(data, type, row) {
+                    let buttons = `<div class="d-flex justify-content-end gap-2">`;
+
+                    if (row.status === 'pendente') {
+                        buttons += `
+                            <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}')" title="Concluir">
+                                <i class="bi bi-check-circle"></i> Concluir
+                            </button>
+                        `;
+                    }
+                    
+                    if (row.status === 'concluida' && parseFloat(row.valor_devido || 0) > 0) {
+                        buttons += `
+                            <a href="/telefonia/nada_consta/${data}/pdf/" target="_blank" class="btn btn-sm btn-outline-danger shadow-sm" title="Imprimir Fatura PDF">
+                                <i class="bi bi-file-earmark-pdf"></i> Fatura
+                            </a>
+                        `;
+                    }
+
+                    buttons += `</div>`;
+                    return buttons;
+                }
+            }
+        ],
+        language: dtLanguage,
+        responsive: true,
+        orderCellsTop: true,
+        initComplete: function() {
+            aplicarFiltroColunas(this.api());
+        }
+    });
+
     // 3. Tabela de Aparelhos VOIP (Geral)
     $('#tabela-aparelhos').DataTable({
         responsive: true,

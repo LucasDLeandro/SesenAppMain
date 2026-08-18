@@ -61,6 +61,11 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="solicitacoes-nada-consta-tab" data-bs-toggle="tab" data-bs-target="#solicitacoes-nada-consta" type="button" role="tab">
+                        <i class="bi bi-file-earmark-check"></i> Nada Consta
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="aparelhos-tab" data-bs-toggle="tab" data-bs-target="#aparelhos" type="button" role="tab">
                         <i class="bi bi-cpu"></i> Aparelhos (Geral)
                     </button>
@@ -230,6 +235,28 @@
                                     <th>Sigla</th>
                                     <th>Local</th>
                                     <th>Qtd.</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Populado via DataTables (AJAX) -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ABA 3.5: NADA CONSTA -->
+                <div class="tab-pane fade" id="solicitacoes-nada-consta" role="tabpanel" tabindex="0">
+                    <div class="table-responsive">
+                        <table id="tabela-nada-consta-aba" class="table custom-modern-table table-dense w-100">
+                            <thead class="custom-thead">
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Protocolo</th>
+                                    <th>Unidade</th>
+                                    <th>Sigla</th>
+                                    <th>Servidor</th>
                                     <th>Status</th>
                                     <th>Ações</th>
                                 </tr>
