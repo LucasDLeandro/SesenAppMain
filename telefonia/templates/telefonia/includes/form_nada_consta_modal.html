@@ -26,18 +26,58 @@
                   <input type="text" class="form-control uppercase-text shadow-none" id="protocolo_nada_consta" name="protocolo" maxlength="50" required style="border-radius: 4px; border-color: var(--border-color);">
                 </div>
                 
-                <div class="col-md-8">
+                <div class="col-md-8 mb-2">
                   <label for="unidade_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Unidade Solicitante <span class="text-danger">*</span></label>
                   <input type="text" class="form-control format-text shadow-none" id="unidade_nada_consta" name="unidade" maxlength="200" required style="border-radius: 4px; border-color: var(--border-color);">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 mb-2">
                   <label for="sigla_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Sigla <span class="text-danger">*</span></label>
                   <input type="text" class="form-control uppercase-text shadow-none" id="sigla_nada_consta" name="sigla_unidade" maxlength="20" required style="border-radius: 4px; border-color: var(--border-color);">
                 </div>
-                
+              </div>
+
+              <hr class="my-3" style="border-color: var(--border-color);">
+
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-person-badge me-2 fs-6"></i> Servidor e Vínculos
+              </h6>
+
+              <div class="row position-relative">
                 <div class="col-md-12">
                   <label for="servidor_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Nome do Servidor <span class="text-danger">*</span></label>
-                  <input type="text" class="form-control format-text shadow-none" id="servidor_nada_consta" name="servidor" maxlength="200" required style="border-radius: 4px; border-color: var(--border-color);">
+                  <input type="text" class="form-control format-text shadow-none" id="servidor_nada_consta" name="servidor" maxlength="200" required autocomplete="off" placeholder="Digite para buscar vínculos no sistema..." style="border-radius: 4px; border-color: var(--border-color);">
+                  
+                  <!-- Dropdown flutuante para resultados da busca -->
+                  <div id="autocomplete-resultados" class="list-group shadow-sm position-absolute w-100" style="display: none; z-index: 1050; max-height: 200px; overflow-y: auto;">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card de Vínculos Encontrados (Inicialmente Oculto) -->
+              <div id="card-vinculos-encontrados" class="card mt-3 border-info" style="display: none; background-color: rgba(13, 202, 240, 0.05); border-radius: 8px;">
+                <div class="card-body p-3">
+                    <h6 class="fw-bold text-info mb-2"><i class="bi bi-link-45deg fs-5"></i> Vínculos Encontrados</h6>
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.75rem;">E-mail</small>
+                            <span id="vinculo-email" style="color: var(--text-main);">---</span>
+                        </div>
+                        <div class="col-md-6 mb-2">
+                            <small class="text-muted d-block fw-bold text-uppercase" style="font-size: 0.75rem;">Ramal / Aparelho</small>
+                            <span id="vinculo-ramal" style="color: var(--text-main);">---</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-check form-switch mt-2">
+                        <input class="form-check-input" type="checkbox" role="switch" id="solicitar_desvinculacao" name="solicitar_desvinculacao" value="true">
+                        <label class="form-check-label fw-bold text-danger" for="solicitar_desvinculacao">
+                            Marcar senha como inativa e solicitar desvinculação do ramal
+                        </label>
+                    </div>
+                    
+                    <!-- Campos ocultos para enviar as FKs -->
+                    <input type="hidden" name="senha_vinculada" id="hidden_senha_vinculada">
+                    <input type="hidden" name="aparelho_vinculado" id="hidden_aparelho_vinculado">
                 </div>
               </div>
             </div>

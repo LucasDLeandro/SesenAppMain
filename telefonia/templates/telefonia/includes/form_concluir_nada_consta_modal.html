@@ -45,15 +45,26 @@
                 <i class="bi bi-clipboard-check me-2 fs-6"></i> Parecer Técnico
               </h6>
               
+              <div class="row g-compact mt-2">
+                <div class="col-md-6 mb-2">
+                  <label for="ramal_concluir_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Ramal Utilizado</label>
+                  <input type="text" class="form-control format-text shadow-none" id="ramal_concluir_nada_consta" name="ramal" maxlength="50" style="border-radius: 4px; border-color: var(--border-color);">
+                </div>
+                <div class="col-md-6 mb-2">
+                  <label for="email_concluir_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">E-mail Cadastrado</label>
+                  <input type="email" class="form-control format-text shadow-none" id="email_concluir_nada_consta" name="email_cadastrado" maxlength="200" style="border-radius: 4px; border-color: var(--border-color);">
+                </div>
+              </div>
+
+              <!-- Alerta Desvinculação (Oculto por padrão) -->
+              <div id="alerta-desvinculacao" class="alert alert-warning border-warning shadow-sm mt-3 mb-0" style="display: none; border-radius: 8px;">
+                <h6 class="fw-bold text-dark mb-1"><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Atenção Técnico!</h6>
+                <p class="mb-0 text-dark" style="font-size: 0.9rem;">
+                  A senha deste servidor foi inativada. Você deve acessar o PABX e <strong>retirar o nome do servidor do ramal <span id="ramal-alerta" class="fw-bold text-danger"></span></strong>.
+                </p>
+              </div>
+              
               <div class="row g-compact">
-                <div class="col-md-6">
-                  <label for="ramal_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Ramal Utilizado</label>
-                  <input type="text" class="form-control shadow-none" id="ramal_nada_consta" name="ramal" maxlength="50" style="border-radius: 4px; border-color: var(--border-color);" placeholder="Ex: 1234">
-                </div>
-                <div class="col-md-6">
-                  <label for="email_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">E-mail Cadastrado</label>
-                  <input type="email" class="form-control shadow-none" id="email_nada_consta" name="email_cadastrado" maxlength="200" style="border-radius: 4px; border-color: var(--border-color);" placeholder="email@tse.jus.br">
-                </div>
                 <div class="col-md-12 mt-3">
                   <label for="valor_devido_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Valor Devido (R$) <span class="text-danger">*</span></label>
                   <input type="text" class="form-control shadow-none fw-bold" id="valor_devido_nada_consta" name="valor_devido" required style="border-radius: 4px; border-color: var(--border-color); color: var(--text-main); font-size: 1.1rem;" value="0,00">

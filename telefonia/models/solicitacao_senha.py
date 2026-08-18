@@ -137,6 +137,11 @@ class CriarSenha(models.Model):
         null=True
     )
 
+    ativo = models.BooleanField(
+        default=True,
+        verbose_name="Senha Ativa"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -63,6 +63,25 @@ class NadaConsta(models.Model):
         help_text="Técnico que concluiu a solicitação"
     )
 
+    senha_vinculada = models.ForeignKey(
+        'CriarSenha', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        help_text="Senha vinculada encontrada"
+    )
+    aparelho_vinculado = models.ForeignKey(
+        'AparelhoVoip', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        help_text="Aparelho vinculado ao ramal da senha"
+    )
+    solicitar_desvinculacao = models.BooleanField(
+        default=False,
+        help_text="Inativar senha e solicitar retirada do nome do ramal"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

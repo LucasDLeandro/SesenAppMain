@@ -91,7 +91,14 @@ class ContratoColaboradorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class NadaConstaSerializer(serializers.ModelSerializer):
+    ramal_vinculado_display = serializers.SerializerMethodField()
+
     class Meta:
         model = NadaConsta
         fields = '__all__'
+
+    def get_ramal_vinculado_display(self, obj):
+        if obj.senha_vinculada and obj.senha_vinculada.ramal:
+            return obj.senha_vinculada.ramal
+        return 'Não identificado'
 

@@ -305,8 +305,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     let buttons = `<div class="d-flex justify-content-end gap-2">`;
 
                     if (row.status === 'pendente') {
+                        let ramal = row.ramal_vinculado_display || '';
+                        
                         buttons += `
-                            <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}')" title="Concluir">
+                            <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', ${row.solicitar_desvinculacao ? 'true' : 'false'}, '${ramal}')" title="Concluir">
                                 <i class="bi bi-check-circle"></i> Concluir
                             </button>
                         `;

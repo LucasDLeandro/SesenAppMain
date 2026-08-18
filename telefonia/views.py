@@ -437,6 +437,41 @@ class CriarSenhaViewSet(viewsets.ModelViewSet):
             instance.nome_tecnico = self.request.user.get_full_name() or self.request.user.username
             instance.save(update_fields=['nome_tecnico'])
 
+    @action(detail=False, methods=['get'])
+    def buscar_por_nome(self, request):
+        query = request.query_params.get('q', '').strip()
+        if not query:
+            return Response([])
+        
+        from django.db.models import Q
+        termos = query.split()
+        q_objs = Q()
+        for termo in termos:
+            q_objs &= (Q(primeiro_nome__icontains=termo) | Q(sobrenome__icontains=termo))
+        
+        senhas = CriarSenha.objects.filter(q_objs, ativo=True)
+        resultados = []
+        for s in senhas:
+            aparelho_id = None
+            aparelho_mac = None
+            if s.ramal:
+                ap = AparelhoVoip.objects.filter(ramal=s.ramal).first()
+                if ap:
+                    aparelho_id = ap.id
+                    aparelho_mac = ap.mac_address
+            
+            resultados.append({
+                'id': s.id,
+                'usuario': s.usuario,
+                'email': s.email,
+                'ramal': s.ramal,
+                'senha_status': s.status,
+                'aparelho_id': aparelho_id,
+                'aparelho_mac': aparelho_mac
+            })
+        
+        return Response(resultados)
+
     @action(detail=True, methods=['post'])
     def finalizar(self, request, pk=None):
         senha_obj = self.get_object()
@@ -955,6 +990,13 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         solicitacao = serializer.save()
+        
+        # Desvinculação se solicitado
+        if solicitacao.solicitar_desvinculacao and solicitacao.senha_vinculada:
+            senha = solicitacao.senha_vinculada
+            senha.ativo = False
+            senha.save(update_fields=['ativo'])
+            
         template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta', is_ativo=True).first()
         if template:
             from notificacoes.models.contato_notificacao import Contato
@@ -982,6 +1024,14 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                     disparar_notificacao_contato(contato, text, text, assunto)
                 except Exception as e:
                     print(f"Erro ao formatar/enviar mensagem (Nada Consta): {e}")
+
+    def perform_update(self, serializer):
+        solicitacao = serializer.save()
+        if solicitacao.solicitar_desvinculacao and solicitacao.senha_vinculada:
+            senha = solicitacao.senha_vinculada
+            if senha.ativo:
+                senha.ativo = False
+                senha.save(update_fields=['ativo'])
 
 def gerar_pdf_nada_consta(request, pk):
     try:

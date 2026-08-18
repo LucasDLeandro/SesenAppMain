@@ -1270,13 +1270,96 @@ if (form_nada_consta) {
     form_nada_consta.addEventListener('submit', function(e) {
         submitFormToAPI(e, form_nada_consta, modal_nada_consta, '/telefonia/api/nada_consta/', 'Nada Consta registrado com sucesso!');
     });
+
+    // Autocomplete Servidor Nada Consta
+    const inputServidorNC = document.getElementById('servidor_nada_consta');
+    const dropdownResultadosNC = document.getElementById('autocomplete-resultados');
+    const cardVinculosNC = document.getElementById('card-vinculos-encontrados');
+
+    if (inputServidorNC) {
+        let timeoutIdNC;
+        inputServidorNC.addEventListener('input', function(e) {
+            clearTimeout(timeoutIdNC);
+            const valor = e.target.value;
+            if (valor.length >= 3) {
+                timeoutIdNC = setTimeout(() => buscarViculosSenhaNC(valor), 400);
+            } else {
+                dropdownResultadosNC.style.display = 'none';
+            }
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!inputServidorNC.contains(e.target) && dropdownResultadosNC && !dropdownResultadosNC.contains(e.target)) {
+                dropdownResultadosNC.style.display = 'none';
+            }
+        });
+    }
+
+    async function buscarViculosSenhaNC(query) {
+        try {
+            const resposta = await fetch(`/telefonia/api/senhas/buscar_por_nome/?q=${encodeURIComponent(query)}`);
+            if (resposta.ok) {
+                const dados = await resposta.json();
+                mostrarResultadosAutocompleteNC(dados);
+            }
+        } catch (erro) {
+            console.error('Erro na busca de servidor', erro);
+        }
+    }
+
+    function mostrarResultadosAutocompleteNC(resultados) {
+        dropdownResultadosNC.innerHTML = '';
+        if (resultados.length === 0) {
+            dropdownResultadosNC.style.display = 'none';
+            return;
+        }
+        
+        resultados.forEach(item => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'list-group-item list-group-item-action py-2';
+            btn.innerHTML = `<i class="bi bi-person text-secondary me-2"></i> <strong>${item.usuario}</strong> <small class="text-muted ms-2">(Ramal: ${item.ramal || 'S/N'})</small>`;
+            
+            btn.addEventListener('click', () => selecionarServidorNC(item));
+            dropdownResultadosNC.appendChild(btn);
+        });
+        
+        dropdownResultadosNC.style.display = 'block';
+    }
+
+    function selecionarServidorNC(item) {
+        inputServidorNC.value = item.usuario;
+        dropdownResultadosNC.style.display = 'none';
+        
+        // Preencher FKs ocultas
+        document.getElementById('hidden_senha_vinculada').value = item.id;
+        document.getElementById('hidden_aparelho_vinculado').value = item.aparelho_id || '';
+        
+        // Exibir Card
+        document.getElementById('vinculo-email').innerText = item.email || 'Não cadastrado';
+        document.getElementById('vinculo-ramal').innerText = item.ramal + (item.aparelho_mac ? ` (MAC: ${item.aparelho_mac})` : ' (Sem Aparelho)');
+        
+        cardVinculosNC.style.display = 'block';
+        document.getElementById('solicitar_desvinculacao').checked = false;
+    }
+
+    // Resetar vínculos ao fechar modal
+    modal_nada_consta_el.addEventListener('hidden.bs.modal', function () {
+        if(cardVinculosNC) cardVinculosNC.style.display = 'none';
+        const hiddenSenha = document.getElementById('hidden_senha_vinculada');
+        if(hiddenSenha) hiddenSenha.value = '';
+        const hiddenAparelho = document.getElementById('hidden_aparelho_vinculado');
+        if(hiddenAparelho) hiddenAparelho.value = '';
+        const cbDesvincular = document.getElementById('solicitar_desvinculacao');
+        if(cbDesvincular) cbDesvincular.checked = false;
+    });
 }
 
 const modal_concluir_nada_consta_el = document.getElementById('modal-concluir-nada-consta');
 const modal_concluir_nada_consta = modal_concluir_nada_consta_el ? new bootstrap.Modal(modal_concluir_nada_consta_el) : null;
 const form_concluir_nada_consta = document.getElementById('form-concluir-nada-consta');
 
-function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor) {
+function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor, desvincular=false, ramalVinculado='') {
     document.getElementById('id_nada_consta_conclusao').value = id;
     document.getElementById('txt_protocolo_nada_consta').innerText = protocolo;
     document.getElementById('txt_data_nada_consta').innerText = dataStr;
@@ -1286,6 +1369,14 @@ function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor)
     form_concluir_nada_consta.reset();
     document.getElementById('valor_devido_nada_consta').value = '0,00';
     
+    const alerta = document.getElementById('alerta-desvinculacao');
+    if (desvincular) {
+        document.getElementById('ramal-alerta').innerText = ramalVinculado || 'Não identificado';
+        alerta.style.display = 'block';
+    } else {
+        alerta.style.display = 'none';
+    }
+
     modal_concluir_nada_consta.show();
 }
 
