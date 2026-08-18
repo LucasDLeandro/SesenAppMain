@@ -892,9 +892,6 @@ if (formConcluirSenha) {
 // -----------------------------------------
 window.abrirModalFinalizarSenha = function(id, status = 'aguardando_supervisor') {
     document.getElementById('id_finalizacao_senha').value = id;
-    document.getElementById('cargo_finalizacao').value = 'servidor';
-    window.toggleCargoFinalizacao('servidor');
-    document.getElementById('select_contrato_finalizacao').value = '';
 
     // Esconder o bloco de Ação do Supervisor se for reenvio (já finalizado)
     const blocoAcao = document.getElementById('bloco_acao_supervisor_finalizacao');
