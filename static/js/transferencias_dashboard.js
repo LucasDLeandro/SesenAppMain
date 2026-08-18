@@ -26,9 +26,7 @@ $(document).ready(function() {
                     'width': '100%',
                     'font-size': '12px',
                     'padding': '4px 8px',
-                    'border': '1px solid #ced4da',
-                    'border-radius': '4px',
-                    'background-color': '#f8f9fa'
+                    'border-radius': '4px'
                 });
 
             var debounceTimer;
