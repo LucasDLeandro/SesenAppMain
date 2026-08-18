@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Nada Consta - Fatura</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+            @frame footer_frame {
+                -pdf-frame-content: footer_content;
+                left: 50pt; width: 512pt; top: 772pt; height: 20pt;
+            }
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 11pt;
+            color: #000;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header img {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+        .header h3 {
+            margin: 0;
+            font-size: 12pt;
+            font-weight: bold;
+        }
+        .header h4 {
+            margin: 5px 0 0 0;
+            font-size: 11pt;
+            font-weight: bold;
+        }
+        .title {
+            text-align: center;
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 30px 0;
+            text-decoration: underline;
+        }
+        .content {
+            text-align: justify;
+            line-height: 1.5;
+            margin-bottom: 40px;
+        }
+        .table-valores {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .table-valores th, .table-valores td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .table-valores th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        .table-valores .valor {
+            text-align: right;
+            font-weight: bold;
+        }
+        .assinatura {
+            text-align: center;
+            margin-top: 80px;
+        }
+        .assinatura p {
+            margin: 5px 0;
+        }
+        .linha-assinatura {
+            border-top: 1px solid #000;
+            width: 300px;
+            margin: 0 auto 10px auto;
+        }
+        #footer_content {
+            text-align: right;
+            font-size: 8pt;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <!-- Assume there's a brasao somewhere in static or just use a generic text if not found. For now, text representation -->
+        <h3>TRIBUNAL SUPERIOR ELEITORAL</h3>
+        <h4>SECRETARIA DE TECNOLOGIA DA INFORMAÇÃO</h4>
+        <h4>SEÇÃO DE TELEFONIA</h4>
+    </div>
+
+    <div class="title">INFORMATIVO DE DÉBITO - TELEFONIA</div>
+
+    <div class="content">
+        <p>
+            Em resposta à solicitação de Nada Consta (Protocolo SEI nº <strong>{{ solicitacao.protocolo }}</strong>), 
+            informamos que após verificação no sistema de tarifação desta Seção de Telefonia, 
+            foi constatado débito pendente em nome do(a) servidor(a) <strong>{{ solicitacao.servidor }}</strong>, 
+            da unidade <strong>{{ solicitacao.unidade }} ({{ solicitacao.sigla_unidade }})</strong>.
+        </p>
+        <p>
+            Os dados vinculados ao servidor no sistema são:
+            <br>Ramal: {% if solicitacao.ramal %}{{ solicitacao.ramal }}{% else %}Não informado{% endif %}
+            <br>E-mail Cadastrado: {% if solicitacao.email_cadastrado %}{{ solicitacao.email_cadastrado }}{% else %}Não informado{% endif %}
+        </p>
+    </div>
+
+    <table class="table-valores">
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th style="width: 150px; text-align: right;">Valor (R$)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Débito referente à utilização do sistema de telefonia (faturas pendentes)</td>
+                <td class="valor">{{ solicitacao.valor_devido }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="content">
+        <p>
+            Solicita-se que o referido valor seja recolhido via Guia de Recolhimento da União (GRU) e o 
+            comprovante anexado ao processo SEI para a devida quitação e emissão do Nada Consta definitivo.
+        </p>
+    </div>
+
+    <div class="assinatura">
+        <div class="linha-assinatura"></div>
+        <p><strong>{{ solicitacao.tecnico_responsavel|default:"Técnico Responsável" }}</strong></p>
+        <p>Seção de Telefonia - TSE</p>
+        <p>Brasília, {{ data_geracao|date:"d \d\e F \d\e Y" }}</p>
+    </div>
+
+    <div id="footer_content">
+        Gerado pelo Sistema SesenApp em {{ data_geracao|date:"d/m/Y H:i:s" }}
+    </div>
+
+</body>
+</html>

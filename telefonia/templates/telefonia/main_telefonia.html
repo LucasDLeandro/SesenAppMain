@@ -35,6 +35,8 @@
                             <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-solicitacao-senha"><i class="bi bi-key me-2 text-info"></i>Nova Senha</a></li>
                             <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-aparelho-voip"><i class="bi bi-phone me-2 text-success"></i>Registrar Aparelho</a></li>
                             <li><a class="dropdown-item py-2" href="#" onclick="abrirModalNovaRemessa()"><i class="bi bi-truck me-2 text-warning"></i>Nova Remessa</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item py-2" href="#" data-bs-toggle="modal" data-bs-target="#modal-nada-consta"><i class="bi bi-file-earmark-check me-2 text-secondary"></i>Novo Nada Consta</a></li>
                         </ul>
                     </div>
                 </div>
@@ -330,6 +332,8 @@
     {% include 'telefonia/includes/form_visualizar_solicitacao_modal.html' %}
     {% include 'telefonia/includes/form_editar_solicitacao_modal.html' %}
     {% include 'telefonia/includes/form_finalizar_administrativo_modal.html' %}
+    {% include 'telefonia/includes/form_nada_consta_modal.html' %}
+    {% include 'telefonia/includes/form_concluir_nada_consta_modal.html' %}
     {% include 'ordens/includes/modal_file_viewer.html' %}
 
 {% endblock %}
@@ -347,6 +351,9 @@
     
     <!-- Select2 JS via CDN -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
+    <!-- IMask JS via CDN -->
+    <script src="https://unpkg.com/imask"></script>
     
     <!-- Script Customizado da Telefonia -->
     <script src="{% static 'telefonia/js/telefonia/modal_forms.js' %}?v=1.15"></script>

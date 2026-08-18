@@ -1258,3 +1258,90 @@ if (form_finalizar_administrativo) {
         }
     });
 }
+
+// ===============================
+// Lógica para Nada Consta
+// ===============================
+const modal_nada_consta_el = document.getElementById('modal-nada-consta');
+const modal_nada_consta = modal_nada_consta_el ? new bootstrap.Modal(modal_nada_consta_el) : null;
+const form_nada_consta = document.getElementById('form-nada-consta');
+
+if (form_nada_consta) {
+    form_nada_consta.addEventListener('submit', function(e) {
+        submitFormToAPI(e, form_nada_consta, modal_nada_consta, '/telefonia/api/nada_consta/', 'Nada Consta registrado com sucesso!');
+    });
+}
+
+const modal_concluir_nada_consta_el = document.getElementById('modal-concluir-nada-consta');
+const modal_concluir_nada_consta = modal_concluir_nada_consta_el ? new bootstrap.Modal(modal_concluir_nada_consta_el) : null;
+const form_concluir_nada_consta = document.getElementById('form-concluir-nada-consta');
+
+function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor) {
+    document.getElementById('id_nada_consta_conclusao').value = id;
+    document.getElementById('txt_protocolo_nada_consta').innerText = protocolo;
+    document.getElementById('txt_data_nada_consta').innerText = dataStr;
+    document.getElementById('txt_unidade_nada_consta').innerText = unidade;
+    document.getElementById('txt_servidor_nada_consta').innerText = servidor;
+    
+    form_concluir_nada_consta.reset();
+    document.getElementById('valor_devido_nada_consta').value = '0,00';
+    
+    modal_concluir_nada_consta.show();
+}
+
+if (form_concluir_nada_consta) {
+    form_concluir_nada_consta.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const id_solicitacao = document.getElementById('id_nada_consta_conclusao').value;
+        const formData = new FormData(form_concluir_nada_consta);
+        
+        let valor_devido_str = formData.get('valor_devido');
+        let valor_devido = valor_devido_str.replace(/\./g, '').replace(',', '.');
+        formData.set('valor_devido', valor_devido);
+        formData.set('status', 'concluida');
+        
+        try {
+            const resposta = await fetch(`/telefonia/api/nada_consta/${id_solicitacao}/`, {
+                method: 'PATCH',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            });
+
+            if (resposta.ok) {
+                if (parseFloat(valor_devido) > 0) {
+                    window.open(`/telefonia/nada_consta/${id_solicitacao}/pdf/`, '_blank');
+                }
+                await Swal.fire("Sucesso!", "Solicitação concluída com sucesso!", "success");
+                form_concluir_nada_consta.reset();
+                modal_concluir_nada_consta.hide();
+                window.location.reload();
+            } else {
+                const erros = await resposta.json();
+                console.log(erros);
+                Swal.fire("Erro!", "Não foi possível concluir.", "error");
+            }
+        } catch (erro) {
+            Swal.fire("Erro Crítico!", "Erro ao conectar com o servidor.", "error");
+        }
+    });
+}
+
+// Inicializar IMask para o campo de valor
+document.addEventListener("DOMContentLoaded", function() {
+    const inputValorDevido = document.getElementById('valor_devido_nada_consta');
+    if (inputValorDevido && typeof IMask !== 'undefined') {
+        IMask(inputValorDevido, {
+            mask: Number,
+            scale: 2,
+            signed: false,
+            thousandsSeparator: '.',
+            padFractionalZeros: true,
+            normalizeZeros: true,
+            radix: ',',
+            mapToRadix: ['.']
+        });
+    }
+});

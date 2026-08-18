@@ -17,12 +17,13 @@ from .models import (
     TelefoneSolicitacao, AparelhoVoip, RemessaManutencao, CriarSenha, 
     AparelhoManutencao, ContratoColaborador, PadraoSenhaTelefonia, 
     PadraoTutorialTelefonia, PadraoEmailTelefonia, EmprestimoEvento,
-    TelefoneSolicitacaoAnexo
+    TelefoneSolicitacaoAnexo, NadaConsta
 )
 from .serializers import (
     TelefoneSolicitacaoSerializer,
     RemessaManutencaoSerializer, CriarSenhaSerializer, 
-    ContratoColaboradorSerializer, EmprestimoEventoSerializer
+    ContratoColaboradorSerializer, EmprestimoEventoSerializer,
+    NadaConstaSerializer
 )
 
 from notificacoes.services import auto_message
@@ -801,6 +802,144 @@ class AparelhosReportView(View):
         pie.add_data(data, titles_from_data=True)
         pie.set_categories(labels)
         pie.title = "Desempenho da Gestão de Aparelhos"
+import io
+import base64
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import openpyxl
+from openpyxl.chart import PieChart, Reference
+from openpyxl.styles import Font, Alignment, PatternFill
+from openpyxl.utils import get_column_letter
+
+from django.http import HttpResponse
+from django.template.loader import get_template
+from django.views import View
+from django.utils import timezone
+from xhtml2pdf import pisa
+from rest_framework import viewsets
+from telefonia.models import AparelhoVoip, NadaConsta
+from telefonia.serializers import NadaConstaSerializer
+
+class AparelhosReportView(View):
+    def get(self, request, *args, **kwargs):
+        formato = request.GET.get('formato', 'pdf').lower()
+        
+        # Pega todos os aparelhos
+        aparelhos = AparelhoVoip.objects.all()
+        
+        # Estatísticas para o gráfico
+        counts = {
+            'estoque': aparelhos.filter(status='estoque').count(),
+            'instalado': aparelhos.filter(status='instalado').count(),
+            'manutencao': aparelhos.filter(status='manutencao').count(),
+            'defeituoso': aparelhos.filter(status='defeituoso').count(),
+        }
+        
+        # Filtra a lista principal para exibir apenas os instalados
+        aparelhos_lista = aparelhos.filter(status='instalado').order_by('sala', 'patrimonio')
+        
+        if formato == 'excel':
+            return self.export_excel(counts, aparelhos_lista)
+        else:
+            return self.export_pdf(counts, aparelhos_lista)
+
+    def generate_chart_base64(self, counts):
+        labels = ['Em Estoque', 'Instalados', 'Em Manutenção', 'Defeituosos']
+        sizes = [counts['estoque'], counts['instalado'], counts['manutencao'], counts['defeituoso']]
+        colors = ['#007bff', '#28a745', '#ffc107', '#dc3545']
+        
+        # Remove zeros to prevent empty slices
+        filtered_labels = [l for l, s in zip(labels, sizes) if s > 0]
+        filtered_sizes = [s for s in sizes if s > 0]
+        filtered_colors = [c for c, s in zip(colors, sizes) if s > 0]
+        
+        fig, ax = plt.subplots(figsize=(6, 4))
+        if filtered_sizes:
+            ax.pie(filtered_sizes, labels=filtered_labels, colors=filtered_colors, autopct='%1.1f%%', startangle=140)
+            ax.axis('equal')
+        else:
+            ax.text(0.5, 0.5, 'Nenhum dado disponível', horizontalalignment='center', verticalalignment='center')
+        
+        plt.title('Desempenho da Gestão de Aparelhos')
+        
+        buffer = io.BytesIO()
+        plt.savefig(buffer, format='png', transparent=True, bbox_inches='tight')
+        plt.close(fig)
+        buffer.seek(0)
+        
+        img_str = base64.b64encode(buffer.read()).decode('utf-8')
+        return f"data:image/png;base64,{img_str}"
+
+    def export_pdf(self, counts, aparelhos_lista):
+        template = get_template('telefonia/relatorios/relatorio_aparelhos_pdf.html')
+        chart_uri = self.generate_chart_base64(counts)
+        
+        context = {
+            'counts': counts,
+            'aparelhos': aparelhos_lista,
+            'chart_uri': chart_uri,
+            'data_emissao': timezone.now()
+        }
+        
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="relatorio_aparelhos_{timezone.now().strftime("%Y%m%d_%H%M%S")}.pdf"'
+        
+        pisa_status = pisa.CreatePDF(
+            html, dest=response
+        )
+        if pisa_status.err:
+            return HttpResponse('Tivemos alguns erros <pre>' + html + '</pre>')
+        return response
+
+    def export_excel(self, counts, aparelhos_lista):
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = "Aparelhos Instalados"
+        
+        # Header da tabela
+        headers = ['Patrimônio', 'Modelo', 'MAC Address', 'Ramal', 'Integridade', 'Local/Sala']
+        for col_num, header in enumerate(headers, 1):
+            cell = ws.cell(row=1, column=col_num, value=header)
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill(start_color="4F81BD", end_color="4F81BD", fill_type="solid")
+            cell.alignment = Alignment(horizontal="center")
+            ws.column_dimensions[get_column_letter(col_num)].width = 20
+        
+        # Popula a tabela
+        row_num = 2
+        for aparelho in aparelhos_lista:
+            ws.cell(row=row_num, column=1, value=aparelho.patrimonio or '-')
+            ws.cell(row=row_num, column=2, value=aparelho.modelo or '-')
+            ws.cell(row=row_num, column=3, value=aparelho.mac_address or '-')
+            ws.cell(row=row_num, column=4, value=aparelho.ramal or '-')
+            ws.cell(row=row_num, column=5, value=aparelho.get_integridade_display() if aparelho.integridade else '-')
+            ws.cell(row=row_num, column=6, value=aparelho.sala or '-')
+            row_num += 1
+            
+        # Aba de Gráfico
+        ws_chart = wb.create_sheet(title="Desempenho (Gráfico)")
+        ws_chart.cell(row=1, column=1, value="Status")
+        ws_chart.cell(row=1, column=2, value="Quantidade")
+        
+        status_data = [
+            ("Em Estoque", counts['estoque']),
+            ("Instalados", counts['instalado']),
+            ("Em Manutenção", counts['manutencao']),
+            ("Defeituosos", counts['defeituoso']),
+        ]
+        
+        for idx, (label, count) in enumerate(status_data, 2):
+            ws_chart.cell(row=idx, column=1, value=label)
+            ws_chart.cell(row=idx, column=2, value=count)
+            
+        pie = PieChart()
+        labels = Reference(ws_chart, min_col=1, min_row=2, max_row=5)
+        data = Reference(ws_chart, min_col=2, min_row=1, max_row=5)
+        pie.add_data(data, titles_from_data=True)
+        pie.set_categories(labels)
+        pie.title = "Desempenho da Gestão de Aparelhos"
         
         ws_chart.add_chart(pie, "D2")
 
@@ -809,3 +948,26 @@ class AparelhosReportView(View):
         wb.save(response)
         
         return response
+
+class NadaConstaViewSet(viewsets.ModelViewSet):
+    queryset = NadaConsta.objects.all().order_by('-data')
+    serializer_class = NadaConstaSerializer
+
+def gerar_pdf_nada_consta(request, pk):
+    try:
+        solicitacao = NadaConsta.objects.get(pk=pk)
+        template = get_template('telefonia/pdf_nada_consta.html')
+        context = {
+            'solicitacao': solicitacao,
+            'data_geracao': timezone.now()
+        }
+        html = template.render(context)
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="nada_consta_{solicitacao.protocolo}.pdf"'
+        
+        pisa_status = pisa.CreatePDF(html, dest=response)
+        if pisa_status.err:
+            return HttpResponse('Erro ao gerar o PDF <pre>' + html + '</pre>')
+        return response
+    except NadaConsta.DoesNotExist:
+        return HttpResponse('Solicitação não encontrada.', status=404)

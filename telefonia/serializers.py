@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador, EmprestimoEvento, TelefoneSolicitacaoAnexo
+from .models import TelefoneSolicitacao, RemessaManutencao, CriarSenha, ContratoColaborador, EmprestimoEvento, TelefoneSolicitacaoAnexo, NadaConsta
 
 class EmprestimoEventoSerializer(serializers.ModelSerializer):
     aparelhos_detalhes = serializers.SerializerMethodField()
@@ -88,5 +88,10 @@ class CriarSenhaSerializer(serializers.ModelSerializer):
 class ContratoColaboradorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContratoColaborador
+        fields = '__all__'
+
+class NadaConstaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NadaConsta
         fields = '__all__'
 

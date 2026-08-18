@@ -1,0 +1,76 @@
+<div class="modal fade" id="modal-concluir-nada-consta" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 12px; overflow: hidden; background-color: var(--card-bg);">
+      <div class="modal-header border-0 pb-3 pt-4 px-4 shadow-sm" style="z-index: 10;">
+        <h5 class="modal-title fw-bold text-success">
+          <i class="bi bi-check-circle me-2 text-dark"></i> Concluir Solicitação de Nada Consta
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body px-4 pb-4 pt-4">
+        <form id="form-concluir-nada-consta">
+          {% csrf_token %}
+          <input type="hidden" id="id_nada_consta_conclusao" name="id">
+          
+          <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-primary mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-person-lines-fill me-2 fs-6"></i> Detalhes da Solicitação
+              </h6>
+              
+              <div class="row g-compact">
+                <div class="col-md-6 mb-2">
+                  <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; font-weight: 600;">Protocolo SEI</span>
+                  <div class="fw-bold text-dark" id="txt_protocolo_nada_consta"></div>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; font-weight: 600;">Data</span>
+                  <div class="fw-bold text-dark" id="txt_data_nada_consta"></div>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; font-weight: 600;">Unidade</span>
+                  <div class="fw-bold text-dark" id="txt_unidade_nada_consta"></div>
+                </div>
+                <div class="col-md-6 mb-2">
+                  <span class="text-muted" style="font-size: 0.8rem; text-transform: uppercase; font-weight: 600;">Servidor</span>
+                  <div class="fw-bold text-dark" id="txt_servidor_nada_consta"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card card-compact border-0 shadow-sm mb-3" style="border-radius: 8px;">
+            <div class="card-body p-3">
+              <h6 class="fw-bold text-success mb-3 text-uppercase d-flex align-items-center" style="letter-spacing: 0.5px;">
+                <i class="bi bi-clipboard-check me-2 fs-6"></i> Parecer Técnico
+              </h6>
+              
+              <div class="row g-compact">
+                <div class="col-md-6">
+                  <label for="ramal_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Ramal Utilizado</label>
+                  <input type="text" class="form-control shadow-none" id="ramal_nada_consta" name="ramal" maxlength="50" style="border-radius: 4px; border-color: var(--border-color);" placeholder="Ex: 1234">
+                </div>
+                <div class="col-md-6">
+                  <label for="email_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">E-mail Cadastrado</label>
+                  <input type="email" class="form-control shadow-none" id="email_nada_consta" name="email_cadastrado" maxlength="200" style="border-radius: 4px; border-color: var(--border-color);" placeholder="email@tse.jus.br">
+                </div>
+                <div class="col-md-12 mt-3">
+                  <label for="valor_devido_nada_consta" class="form-label text-muted fw-bold text-uppercase mb-1">Valor Devido (R$) <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control shadow-none fw-bold" id="valor_devido_nada_consta" name="valor_devido" required style="border-radius: 4px; border-color: var(--border-color); color: var(--text-main); font-size: 1.1rem;" value="0,00">
+                  <small class="text-muted">Se o valor for maior que R$ 0,00, uma fatura em PDF será gerada automaticamente.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer border-0 px-4 pb-4 pt-1 d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary px-4 shadow-sm" style="border-radius: 8px;" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-success px-4 shadow-sm fw-bold" style="border-radius: 8px;" form="form-concluir-nada-consta">
+          <i class="bi bi-check-circle me-2"></i> Concluir e Gerar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

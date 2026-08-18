@@ -372,8 +372,9 @@ document.addEventListener("DOMContentLoaded", function() {
             Promise.all([
                 fetch('/telefonia/api/solicitacoes/'),
                 fetch('/telefonia/api/senhas/'),
-                fetch('/telefonia/api/eventos/')
-            ]).then(async ([resSol, resSenhas, resEventos]) => {
+                fetch('/telefonia/api/eventos/'),
+                fetch('/telefonia/api/nada_consta/')
+            ]).then(async ([resSol, resSenhas, resEventos, resNadaConsta]) => {
                 let pendentes = [];
                 if (resSol.ok) {
                     const solicitacoes = await resSol.json();
@@ -406,6 +407,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                     pendentes = pendentes.concat(pendEventos);
                 }
+                if (resNadaConsta.ok) {
+                    const nada_constas = await resNadaConsta.json();
+                    const pendNadaConsta = nada_constas.filter(s => s.status === 'pendente');
+                    pendNadaConsta.forEach(s => {
+                        s.tipo_demanda = 'Nada Consta';
+                        s.data_comparacao = new Date(s.data).getTime();
+                        s.local = s.servidor;
+                    });
+                    pendentes = pendentes.concat(pendNadaConsta);
+                }
                 callback({ data: pendentes });
             });
         },
@@ -430,6 +441,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 render: function(data) {
                     if (data === 'Aparelho') return `<span class="badge bg-secondary"><i class="bi bi-telephone"></i> Aparelho</span>`;
                     if (data === 'Evento') return `<span class="badge bg-primary"><i class="bi bi-calendar-event"></i> Evento</span>`;
+                    if (data === 'Nada Consta') return `<span class="badge bg-info text-dark" style="background-color: #0dcaf0 !important;"><i class="bi bi-file-earmark-check"></i> Nada Consta</span>`;
                     return `<span class="badge bg-dark"><i class="bi bi-key"></i> Senha</span>`;
                 }
             },
@@ -494,6 +506,13 @@ document.addEventListener("DOMContentLoaded", function() {
                         return `<div class="d-flex justify-content-end gap-1">
                                     <button class="btn btn-sm btn-outline-primary text-nowrap" style="white-space: nowrap;" onclick="abrirModalEvento(${row.id})" title="Ver / Recolher Evento">
                                         <i class="bi bi-eye"></i> Detalhes / Recolher
+                                    </button>
+                                </div>`;
+                    } else if (row.tipo_demanda === 'Nada Consta') {
+                        // Passando data formatada para a string sem aspas duplas internas que quebram o HTML
+                        return `<div class="d-flex justify-content-end gap-1">
+                                    <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}')" title="Concluir Nada Consta">
+                                        <i class="bi bi-check2-circle me-1"></i> Concluir
                                     </button>
                                 </div>`;
                     } else {

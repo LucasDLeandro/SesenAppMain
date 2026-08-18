@@ -11,6 +11,7 @@ router.register(r'eventos', views.EmprestimoEventoViewSet, basename='emprestimo-
 router.register(r'remessas', views.RemessaManutencaoViewSet, basename='remessa-manutencao')
 router.register(r'senhas', views.CriarSenhaViewSet, basename='criar-senha')
 router.register(r'contratos', views.ContratoColaboradorViewSet, basename='contrato-colaborador')
+router.register(r'nada_consta', views.NadaConstaViewSet, basename='nada-consta')
 
 urlpatterns = [
     path('', views.main_telefonia, name='inicio_telefonia'),
@@ -19,6 +20,7 @@ urlpatterns = [
     path('remessa/<int:pk>/pdf/', views.gerar_pdf_remessa, name='gerar_pdf_remessa'),
     path('senha/<int:pk>/pdf/', views.gerar_pdf_senha, name='gerar_pdf_senha'),
     path('senha/<int:pk>/email/', views.enviar_email_senha_manual, name='enviar_email_senha_manual'),
+    path('nada_consta/<int:pk>/pdf/', views.gerar_pdf_nada_consta, name='gerar_pdf_nada_consta'),
     path('tutorial/pdf/', views.gerar_pdf_tutorial, name='gerar_pdf_tutorial'),
     path('preview/senha/<int:template_id>/pdf/', views.preview_pdf_senha_template, name='preview_pdf_senha_template'),
     path('preview/tutorial/<int:template_id>/pdf/', views.preview_pdf_tutorial_template, name='preview_pdf_tutorial_template'),
