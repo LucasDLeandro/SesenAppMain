@@ -1428,3 +1428,94 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+// -----------------------------------------
+// EDITAR SENHA
+// -----------------------------------------
+window.abrirModalEditarSenha = async function(id) {
+    try {
+        const res = await fetch(`/telefonia/api/senhas/${id}/`);
+        if (!res.ok) throw new Error("Erro ao carregar dados da senha.");
+        const data = await res.json();
+        
+        document.getElementById('id_editar_senha').value = data.id || '';
+        document.getElementById('editar_protocolo_senha').value = data.protocolo || '';
+        document.getElementById('editar_solicitante_senha').value = data.solicitante || '';
+        document.getElementById('editar_unidade_senha').value = data.unidade || '';
+        document.getElementById('editar_sigla_unidade_senha').value = data.sigla_unidade || '';
+        document.getElementById('editar_edificios_senha').value = data.edificios || 'Ed. Sede/Anexo';
+        
+        document.getElementById('editar_primeiro_nome_senha').value = data.primeiro_nome || '';
+        document.getElementById('editar_sobrenome_senha').value = data.sobrenome || '';
+        document.getElementById('editar_email_senha').value = data.email || '';
+        document.getElementById('editar_ramal_senha').value = data.ramal || '';
+        document.getElementById('editar_categoria_senha').value = data.categoria || 'DDD';
+        document.getElementById('editar_senha_registrada').value = data.senha || '';
+        
+        const cargo = data.cargo || 'servidor';
+        document.getElementById('editar_cargo_senha').value = cargo;
+        toggleCargoEditarSenha(cargo);
+        
+        if (cargo === 'colaborador') {
+            document.getElementById('editar_numero_contrato_senha').value = data.numero_contrato || '';
+            document.getElementById('editar_empresa_vinculada_senha').value = data.empresa_vinculada || '';
+            document.getElementById('editar_fiscal_contrato_senha').value = data.fiscal_contrato || '';
+            document.getElementById('editar_unidade_fiscal_senha').value = data.unidade_fiscal || '';
+        } else {
+            document.getElementById('editar_numero_contrato_senha').value = '';
+            document.getElementById('editar_empresa_vinculada_senha').value = '';
+            document.getElementById('editar_fiscal_contrato_senha').value = '';
+            document.getElementById('editar_unidade_fiscal_senha').value = '';
+        }
+        
+        document.getElementById('editar_desvio_senha').value = (data.desvio === true || data.desvio === 'True' || data.desvio === 'true') ? 'True' : 'False';
+        document.getElementById('editar_tel_desvio_externo').value = data.tel_desvio_externo || '';
+        
+        new bootstrap.Modal(document.getElementById('modal-editar-senha')).show();
+    } catch (error) {
+        Swal.fire('Erro!', error.message, 'error');
+    }
+};
+
+const formEditarSenha = document.getElementById('form-editar-senha');
+if (formEditarSenha) {
+    formEditarSenha.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const id = document.getElementById('id_editar_senha').value;
+        const btnSubmit = formEditarSenha.querySelector('button[type="submit"]');
+        const originalText = btnSubmit.innerHTML;
+        btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
+        btnSubmit.disabled = true;
+
+        const formData = new FormData(formEditarSenha);
+        const data = Object.fromEntries(formData.entries());
+        data.desvio = (data.desvio === 'True' || data.desvio === true);
+        delete data.id; // Nao enviar o ID no payload
+        
+        try {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            const res = await fetch(`/telefonia/api/senhas/${id}/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw new Error(err.detail || JSON.stringify(err));
+            }
+
+            Swal.fire('Sucesso!', 'Solicitação de senha editada com sucesso.', 'success');
+            bootstrap.Modal.getInstance(document.getElementById('modal-editar-senha')).hide();
+            if(typeof $('#tabela-senhas') !== 'undefined') $('#tabela-senhas').DataTable().ajax.reload(null, false);
+        } catch (error) {
+            Swal.fire('Erro!', 'Ocorreu um erro ao editar a solicitação: ' + error.message, 'error');
+        } finally {
+            btnSubmit.innerHTML = originalText;
+            btnSubmit.disabled = false;
+        }
+    });
+}

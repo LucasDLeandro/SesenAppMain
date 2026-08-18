@@ -1,0 +1,158 @@
+<div class="modal fade" id="modal-editar-senha" tabindex="-1" aria-labelledby="modalEditarSenhaTitulo" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="bi bi-pencil-square text-primary me-2"></i> Editar Solicitação de Senha
+        </h5>
+        <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body px-4 pb-3 pt-3" style="background-color: var(--body-bg);">
+        <form id="form-editar-senha">
+          {% csrf_token %}
+          <input type="hidden" id="id_editar_senha" name="id">
+
+          <!-- Informações Básicas -->
+          <div class="section-card p-3 mb-3" style="background-color: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+            <h6 class="section-title fw-bold mb-3" style="color: var(--text-main);">
+              <i class="bi bi-info-square-fill text-primary"></i> Informações Básicas
+            </h6>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="editar_protocolo_senha" class="form-label" style="color: var(--text-main);">Protocolo SEI</label>
+                <input type="text" class="form-control" id="editar_protocolo_senha" name="protocolo" maxlength="20" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-6">
+                <label for="editar_solicitante_senha" class="form-label" style="color: var(--text-main);">Solicitante <span class="text-danger">*</span></label>
+                <input type="text" class="form-control format-text" id="editar_solicitante_senha" name="solicitante" maxlength="100" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-6">
+                <label for="editar_unidade_senha" class="form-label" style="color: var(--text-main);">Unidade <span class="text-danger">*</span></label>
+                <input type="text" class="form-control format-text" id="editar_unidade_senha" name="unidade" maxlength="200" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-6">
+                <label for="editar_sigla_unidade_senha" class="form-label" style="color: var(--text-main);">Sigla da Unidade <span class="text-danger">*</span></label>
+                <input type="text" class="form-control uppercase-text" id="editar_sigla_unidade_senha" name="sigla_unidade" maxlength="20" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-12">
+                <label for="editar_edificios_senha" class="form-label" style="color: var(--text-main);">Edifícios Permitidos</label>
+                <input type="text" class="form-control" id="editar_edificios_senha" name="edificios" maxlength="100" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+            </div>
+          </div>
+
+          <!-- Informações do Usuário -->
+          <div class="section-card p-3 mb-3" style="background-color: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+            <h6 class="section-title fw-bold mb-3" style="color: var(--text-main);">
+              <i class="bi bi-person-fill text-primary"></i> Informações do Usuário e Senha
+            </h6>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="editar_primeiro_nome_senha" class="form-label" style="color: var(--text-main);">Primeiro Nome <span class="text-danger">*</span></label>
+                <input type="text" class="form-control format-text" id="editar_primeiro_nome_senha" name="primeiro_nome" maxlength="50" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-6">
+                <label for="editar_sobrenome_senha" class="form-label" style="color: var(--text-main);">Sobrenome</label>
+                <input type="text" class="form-control format-text" id="editar_sobrenome_senha" name="sobrenome" maxlength="100" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-6">
+                <label for="editar_email_senha" class="form-label" style="color: var(--text-main);">E-mail Institucional</label>
+                <input type="email" class="form-control" id="editar_email_senha" name="email" maxlength="255" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-3">
+                <label for="editar_ramal_senha" class="form-label" style="color: var(--text-main);">Ramal <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="editar_ramal_senha" name="ramal" maxlength="10" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+              <div class="col-md-3">
+                <label for="editar_categoria_senha" class="form-label" style="color: var(--text-main);">Categoria</label>
+                <select class="form-select" id="editar_categoria_senha" name="categoria" required style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                  <option value="DDI">DDI</option>
+                  <option value="DDD" selected>DDD</option>
+                  <option value="Local">Local</option>
+                  <option value="Interno">Interno</option>
+                </select>
+              </div>
+              <div class="col-md-12">
+                <label for="editar_senha_registrada" class="form-label" style="color: var(--text-main);">Senha Registrada</label>
+                <input type="text" class="form-control fw-bold" id="editar_senha_registrada" name="senha" maxlength="50" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+            </div>
+          </div>
+          
+          <!-- Cargo e Contrato -->
+          <div class="section-card p-3 mb-3" style="background-color: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+            <h6 class="section-title fw-bold mb-3" style="color: var(--text-main);">
+              <i class="bi bi-briefcase-fill text-primary"></i> Vínculo
+            </h6>
+            <div class="row g-2">
+              <div class="col-md-12">
+                  <label class="form-label" style="color: var(--text-main);">Cargo</label>
+                  <select class="form-select" id="editar_cargo_senha" name="cargo" onchange="toggleCargoEditarSenha(this.value)" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                    <option value="servidor" selected>Servidor</option>
+                    <option value="colaborador">Colaborador</option>
+                  </select>
+              </div>
+            </div>
+            <div id="editar_dados_contrato_senha" style="display: none;" class="mt-2">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-main);">Número do Contrato</label>
+                        <input type="text" class="form-control" id="editar_numero_contrato_senha" name="numero_contrato" maxlength="50" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-main);">Empresa Vinculada</label>
+                        <input type="text" class="form-control format-text" id="editar_empresa_vinculada_senha" name="empresa_vinculada" maxlength="100" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-main);">Fiscal do Contrato</label>
+                        <input type="text" class="form-control format-text" id="editar_fiscal_contrato_senha" name="fiscal_contrato" maxlength="100" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" style="color: var(--text-main);">Unidade do Fiscal</label>
+                        <input type="text" class="form-control format-text" id="editar_unidade_fiscal_senha" name="unidade_fiscal" maxlength="200" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <!-- Configurações e Desvio -->
+          <div class="section-card p-3 mb-1" style="background-color: var(--card-bg); border-radius: 8px; border: 1px solid var(--border-color);">
+            <h6 class="section-title fw-bold mb-3" style="color: var(--text-main);">
+              <i class="bi bi-gear-fill text-primary"></i> Configurações Avançadas e Desvio
+            </h6>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label for="editar_desvio_senha" class="form-label" style="color: var(--text-main);">Tem Desvio?</label>
+                <select class="form-select" id="editar_desvio_senha" name="desvio" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                  <option value="False" selected>Não</option>
+                  <option value="True">Sim</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label for="editar_tel_desvio_externo" class="form-label" style="color: var(--text-main);">Tel. Desvio Externo</label>
+                <input type="text" class="form-control" id="editar_tel_desvio_externo" name="tel_desvio_externo" maxlength="30" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <div class="modal-footer border-0 px-4 py-3 d-flex justify-content-end gap-2" style="background-color: var(--card-bg); border-radius: 0 0 16px 16px; border-top: 1px solid var(--border-color) !important;">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary" form="form-editar-senha">
+          <i class="bi bi-save me-1"></i> Salvar Alterações
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    function toggleCargoEditarSenha(valor) {
+        if (valor === 'colaborador') {
+            document.getElementById('editar_dados_contrato_senha').style.display = 'block';
+        } else {
+            document.getElementById('editar_dados_contrato_senha').style.display = 'none';
+        }
+    }
+</script>

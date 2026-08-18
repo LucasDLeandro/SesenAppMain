@@ -209,6 +209,13 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-eye"></i>
                             </button>
                     `;
+                    if (window.userCanEdit) {
+                        buttons += `
+                            <button class="btn btn-sm btn-outline-primary shadow-sm" onclick="abrirModalEditarSenha(${data})" title="Editar Solicitação">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                        `;
+                    }
 
                     // Botão para o Técnico
                     if (!row.status || row.status === 'recebida') {
