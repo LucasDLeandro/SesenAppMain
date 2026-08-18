@@ -121,14 +121,21 @@
               <i class="bi bi-gear-fill text-primary"></i> Configurações Avançadas e Desvio
             </h6>
             <div class="row g-2">
-              <div class="col-md-6">
+              <div class="col-md-4">
+                <label for="editar_ativo_senha" class="form-label" style="color: var(--text-main);">Status da Senha</label>
+                <select class="form-select" id="editar_ativo_senha" name="ativo" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                  <option value="True">Ativa</option>
+                  <option value="False">Inativa (Cancelada)</option>
+                </select>
+              </div>
+              <div class="col-md-4">
                 <label for="editar_desvio_senha" class="form-label" style="color: var(--text-main);">Tem Desvio?</label>
                 <select class="form-select" id="editar_desvio_senha" name="desvio" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
                   <option value="False" selected>Não</option>
                   <option value="True">Sim</option>
                 </select>
               </div>
-              <div class="col-md-6">
+              <div class="col-md-4">
                 <label for="editar_tel_desvio_externo" class="form-label" style="color: var(--text-main);">Tel. Desvio Externo</label>
                 <input type="text" class="form-control" id="editar_tel_desvio_externo" name="tel_desvio_externo" maxlength="30" style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
               </div>

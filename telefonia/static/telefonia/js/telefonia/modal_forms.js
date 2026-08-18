@@ -1469,6 +1469,7 @@ window.abrirModalEditarSenha = async function(id) {
         }
         
         document.getElementById('editar_desvio_senha').value = (data.desvio === true || data.desvio === 'True' || data.desvio === 'true') ? 'True' : 'False';
+        document.getElementById('editar_ativo_senha').value = (data.ativo === true || data.ativo === 'True' || data.ativo === 'true') ? 'True' : 'False';
         document.getElementById('editar_tel_desvio_externo').value = data.tel_desvio_externo || '';
         
         new bootstrap.Modal(document.getElementById('modal-editar-senha')).show();
@@ -1490,6 +1491,7 @@ if (formEditarSenha) {
         const formData = new FormData(formEditarSenha);
         const data = Object.fromEntries(formData.entries());
         data.desvio = (data.desvio === 'True' || data.desvio === true);
+        data.ativo = (data.ativo === 'True' || data.ativo === true);
         delete data.id; // Nao enviar o ID no payload
         
         try {
