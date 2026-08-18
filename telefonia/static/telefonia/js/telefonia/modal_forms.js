@@ -1482,7 +1482,7 @@ if (formEditarSenha) {
     formEditarSenha.addEventListener('submit', async function(e) {
         e.preventDefault();
         const id = document.getElementById('id_editar_senha').value;
-        const btnSubmit = formEditarSenha.querySelector('button[type="submit"]');
+        const btnSubmit = document.querySelector('button[form="form-editar-senha"]');
         const originalText = btnSubmit.innerHTML;
         btnSubmit.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Salvando...';
         btnSubmit.disabled = true;
