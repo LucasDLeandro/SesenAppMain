@@ -46,7 +46,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center pe-4 py-3" style="border-bottom: 1px solid #f1f5f9;">
-                            <button class="btn btn-sm btn-outline-primary" onclick="abrirModalContatoUpdate('{{ contato.id }}', '{{ contato.nome|escapejs }}', '{{ contato.telefone|escapejs }}', '{{ contato.pessoa.email|escapejs|default:'' }}', '{{ contato.role|escapejs }}', '{{ contato.notifica_elevadores }}', '{{ contato.notifica_telefonia }}', '{{ contato.receber_whatsapp }}', '{{ contato.receber_email }}', '{{ contato.is_ativo }}')" title="Editar Contato">
+                            <button class="btn btn-sm btn-outline-primary" onclick="abrirModalContatoUpdate('{{ contato.id }}', '{{ contato.nome|default_if_none:''|escapejs }}', '{{ contato.telefone|default_if_none:''|escapejs }}', '{{ contato.pessoa.email|default_if_none:''|escapejs }}', '{{ contato.role|default_if_none:''|escapejs }}', '{{ contato.notifica_elevadores }}', '{{ contato.notifica_telefonia }}', '{{ contato.receber_whatsapp }}', '{{ contato.receber_email }}', '{{ contato.is_ativo }}')" title="Editar Contato">
                                 <i class="bi bi-pencil"></i>
                             </button>
                             <button class="btn btn-sm btn-outline-danger btn-deletar-contato" data-url-del-contato="{% url 'notificacoes:api_deletar_contato' 0 %}" data-del-contato-id="{{ contato.id }}" title="Excluir Contato">
