@@ -416,26 +416,12 @@ if (form_concluir_solicitacao) {
                 // Se o valor estiver na lista de selecionados, mas NÃO for o valor DESTE select atual, desabilita
                 if (opt.value && valoresSelecionados.includes(opt.value) && opt.value !== select.value) {
                     opt.disabled = true;
-                    opt.hidden = true; // No bootstrap e navegadores modernos o hidden esconde a opção do dropdown
+                    opt.hidden = true;
                 } else {
                     opt.disabled = false;
                     opt.hidden = false;
                 }
             });
-            // Notifica o select2 caso a opção tenha sido desabilitada
-            if ($(select).data('select2')) {
-                $(select).select2('destroy');
-                $(select).select2({
-                    theme: 'bootstrap-5',
-                    dropdownParent: $('#modal-concluir-solicitacao'),
-                    width: '100%',
-                    language: {
-                        noResults: function() {
-                            return "Nenhum aparelho encontrado";
-                        }
-                    }
-                });
-            }
         });
     }
 
@@ -553,15 +539,6 @@ window.atualizarOpcoesAparelhoRemessa = function() {
                 opt.hidden = false;
             }
         });
-        if ($(select).data('select2')) {
-            $(select).select2('destroy');
-            $(select).select2({
-                theme: 'bootstrap-5',
-                dropdownParent: $('#modal-remessa-manutencao'),
-                width: '100%',
-                language: { noResults: () => "Nenhum aparelho encontrado" }
-            });
-        }
     });
 };
 
