@@ -424,7 +424,7 @@ if (form_concluir_solicitacao) {
             });
             // Notifica o select2 caso a opção tenha sido desabilitada
             if ($(select).data('select2')) {
-                // Ao recriar opções no select2, basta chamar destroy e recriar ou recarregar
+                $(select).select2('destroy');
                 $(select).select2({
                     theme: 'bootstrap-5',
                     dropdownParent: $('#modal-concluir-solicitacao'),
@@ -554,6 +554,7 @@ window.atualizarOpcoesAparelhoRemessa = function() {
             }
         });
         if ($(select).data('select2')) {
+            $(select).select2('destroy');
             $(select).select2({
                 theme: 'bootstrap-5',
                 dropdownParent: $('#modal-remessa-manutencao'),
