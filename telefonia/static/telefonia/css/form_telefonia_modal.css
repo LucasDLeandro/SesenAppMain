@@ -16,7 +16,7 @@
     padding: 24px 22px;
     background-color: transparent;
     border-radius: 16px;
-    max-height: calc(100vh - 210px);
+    max-height: 65vh;
     overflow-y: auto;
 }
 
@@ -264,7 +264,7 @@
 
     .modal-ordens-body {
         padding: 18px 16px;
-        max-height: calc(100vh - 210px);
+        max-height: 65vh;
     }
 
     .modal-ordens-footer {
