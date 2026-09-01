@@ -1,0 +1,97 @@
+/* Modern styling for the template modal */
+.modal-template-wrapper .modal-content {
+    border-radius: 20px;
+    overflow: visible; 
+    box-shadow: 0px 25px 50px -12px rgba(0,0,0,0.25) !important;
+    border: none;
+}
+.modal-template-header-bg {
+    background: linear-gradient(135deg, #f0f4f8, #e0e7ff);
+    height: 100px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 0;
+}
+.modal-avatar-template {
+    width: 85px;
+    height: 85px;
+    background: linear-gradient(135deg, #0d6efd, #0056b3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(13, 110, 253, 0.35);
+    font-size: 38px;
+    color: #fff;
+    border: 4px solid #fff;
+    position: relative;
+    z-index: 1;
+    margin: 0 auto;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+.custom-switch .form-check-input {
+    width: 3.5rem;
+    height: 1.8rem;
+    cursor: pointer;
+    margin-top: 0.1rem;
+    transition: all 0.3s ease-in-out;
+    background-color: #cbd5e1;
+    border-color: #cbd5e1;
+}
+.custom-switch .form-check-input:checked {
+    background-color: #10b981; /* Verde esmeralda moderno */
+    border-color: #10b981;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+}
+.custom-switch .form-check-label {
+    padding-left: 0.5rem;
+    cursor: pointer;
+}
+.modal-template-wrapper .form-label {
+    font-weight: 600;
+    color: #334155;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+}
+.modal-template-wrapper .form-control, .modal-template-wrapper .form-select {
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #cbd5e1;
+    background-color: #f8fafc;
+    color: #334155;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+.modal-template-wrapper .form-control:focus, .modal-template-wrapper .form-select:focus {
+    background-color: var(--card-bg);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+}
+.modal-template-wrapper .modal-footer {
+    border-top: 1px solid #f1f5f9;
+    padding: 1.25rem 1.75rem;
+    background-color: #f8fafc;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+.btn-modern {
+    border-radius: 10px;
+    padding: 0.7rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+.btn-modern:hover {
+    transform: translateY(-2px);
+}
+.btn-modern:active {
+    transform: translateY(0);
+}
+.shadow-primary {
+    box-shadow: 0 6px 15px rgba(13, 110, 253, 0.3);
+}

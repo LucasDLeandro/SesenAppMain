@@ -1,0 +1,38 @@
+/* Estilos Específicos do App de Clientes */
+
+.clientes-container {
+    padding: 20px;
+    background-color: var(--background-body);
+    border-radius: 8px;
+}
+
+.clientes-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Animação suave de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos de Hover para Cards */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+}

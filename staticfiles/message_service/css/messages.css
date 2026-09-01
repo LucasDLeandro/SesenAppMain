@@ -1,0 +1,351 @@
+/* ========================================
+   Estilos para Notificações - WhatsApp
+   ======================================== */
+
+/* Navegação de Abas */
+.msg-nav-tabs {
+    border-bottom: 2px solid var(--border-color);
+    gap: 0;
+}
+
+.msg-tab-btn {
+    color: #64748b;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 12px 20px;
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.msg-tab-btn i {
+    font-size: 18px;
+}
+
+.msg-tab-btn:hover {
+    color: #106EBE;
+    border-bottom-color: #bfdbfe;
+}
+
+.msg-tab-btn.active {
+    color: #106EBE;
+    border-bottom-color: #106EBE;
+    background-color: transparent;
+}
+
+/* Cards de Templates */
+.msg-card-template {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.msg-card-template:hover {
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15) !important;
+    transform: translateY(-4px);
+    border-color: #106EBE;
+}
+
+.msg-card-header {
+    padding: 16px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.msg-card-header h6 {
+    color: #1e293b;
+    font-weight: 700;
+    margin: 0;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+}
+
+.msg-card-header .badge {
+    font-size: 11px;
+    padding: 4px 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.msg-card-body {
+    padding: 16px;
+    flex-grow: 1;
+}
+
+.msg-card-body p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.msg-preview {
+    background-color: #f1f5f9;
+    border-left: 4px solid #106EBE;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 12px;
+}
+
+.msg-preview small {
+    color: #475569;
+    font-family: 'Courier New', monospace;
+}
+
+.msg-card-footer {
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+}
+
+.msg-card-footer .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 6px 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+.msg-card-footer .btn-outline-primary {
+    color: #106EBE;
+    border-color: #bfdbfe;
+}
+
+.msg-card-footer .btn-outline-primary:hover {
+    background-color: #106EBE;
+    border-color: #106EBE;
+    color: white;
+}
+
+.msg-card-footer .btn-outline-danger {
+    color: #dc2626;
+    border-color: #fecaca;
+}
+
+.msg-card-footer .btn-outline-danger:hover {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: white;
+}
+
+/* Cards de Contatos */
+.msg-card-contact {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    overflow: visible;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-align: center;
+    position: relative;
+}
+
+.msg-card-contact:hover {
+    box-shadow: 0 12px 32px rgba(59, 130, 246, 0.15) !important;
+    transform: translateY(-4px);
+    border-color: #106EBE;
+}
+
+/* Badge de Status no Canto Superior Direito */
+.badge-status-card {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 10;
+}
+
+.badge-status-card .badge {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.msg-contact-avatar {
+    padding: 24px 16px 12px 16px;
+    background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+}
+
+.avatar-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: white;
+    font-size: 32px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.msg-card-body {
+    flex-grow: 1;
+}
+
+.msg-card-body h6 {
+    font-size: 16px;
+    letter-spacing: 0.3px;
+}
+
+.msg-card-body p {
+    color: #64748b;
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.msg-card-body .badge {
+    font-size: 11px;
+    padding: 4px 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+    border-radius: 6px;
+}
+
+
+.msg-card-footer {
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+}
+
+.msg-card-footer .btn {
+    flex: 1;
+    font-size: 12px;
+    padding: 6px 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+/* Botões Primários */
+.btn-primary {
+    background: linear-gradient(135deg, #106EBE 0%, #1e40af 100%);
+    border: none;
+    font-weight: 600;
+    padding: 10px 20px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Badges */
+.badge.bg-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.badge.bg-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    color: white;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.badge.bg-warning.text-dark {
+    color: #1f2937 !important;
+}
+
+.badge.bg-info {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    color: white;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+    padding: 6px 14px !important;
+    font-size: 12px !important;
+    border-radius: 20px !important;
+}
+
+/* Tab Content */
+.tab-content {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .msg-tab-btn {
+        font-size: 12px;
+        padding: 10px 12px;
+    }
+
+    .msg-tab-btn i {
+        font-size: 16px;
+    }
+
+    .msg-card-header {
+        padding: 12px;
+    }
+
+    .msg-card-header h6 {
+        font-size: 14px;
+    }
+
+    .msg-card-body {
+        padding: 12px;
+    }
+
+    .msg-card-footer {
+        flex-direction: column;
+    }
+
+    .msg-card-footer .btn {
+        width: 100%;
+    }
+
+    .avatar-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 24px;
+    }
+}

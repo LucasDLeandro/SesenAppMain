@@ -1,0 +1,20 @@
+.template-card {
+    border-left: 5px solid #106EBE;
+    transition: all 0.3s ease;
+}
+.template-card:hover {
+    box-shadow: 0 4px 12px rgba(16, 110, 190, 0.15);
+    transform: translateY(-2px);
+}
+.template-card.active-template {
+    background-color: #f0f7ff;
+    border-left-color: #28a745;
+}
+.badge-ativo {
+    background-color: #28a745;
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}

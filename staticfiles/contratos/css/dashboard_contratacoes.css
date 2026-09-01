@@ -1,0 +1,236 @@
+    :root {
+        --primary-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        --warning-gradient: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+        --danger-gradient: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+        --info-gradient: linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%);
+        --purple-gradient: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+    }
+
+    .dashboard-header {
+        background: var(--purple-gradient);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+    }
+    .dashboard-header::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 50%;
+    }
+
+    .metric-card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        background: var(--card-bg);
+        overflow: hidden;
+        position: relative;
+    }
+    .metric-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+    .metric-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+    .icon-primary { background: var(--primary-gradient); }
+    .icon-success { background: var(--success-gradient); }
+    .icon-warning { background: var(--warning-gradient); }
+    .icon-danger { background: var(--danger-gradient); }
+    .icon-info { background: var(--info-gradient); }
+
+    .metric-value {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+        letter-spacing: -0.5px;
+    }
+    .metric-label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .chart-card {
+        border-radius: 16px;
+        border: none;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        background: var(--card-bg);
+    }
+    .chart-card .card-header {
+        background: transparent;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 1.5rem;
+    }
+    .chart-card .card-title {
+        font-weight: 700;
+        color: #2c3e50;
+        margin: 0;
+    }
+
+    /* Premium Process Card Styles */
+    .process-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+    .process-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+    .process-card-header {
+        padding: 1.5rem 1.5rem 1rem;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .process-number {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #1e3c72;
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+    .process-unit {
+        font-size: 0.85rem;
+        color: #6c757d;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .process-card-body {
+        padding: 1.5rem;
+        flex: 1;
+    }
+    .process-object {
+        font-size: 1rem;
+        color: #2c3e50;
+        font-weight: 500;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+    .process-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .process-card-footer {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-top: 1px solid rgba(0,0,0,0.03);
+    }
+    
+    /* Timeline Styles adapted for Cards */
+    .stepper {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+    }
+    .stepper::before {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 5%;
+        right: 5%;
+        height: 2px;
+        background: #e9ecef;
+        z-index: 1;
+    }
+    .stepper-item {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+    }
+    .stepper-circle {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--card-bg);
+        border: 2px solid #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: bold;
+        color: #adb5bd;
+        transition: all 0.3s ease;
+        margin-bottom: 4px;
+    }
+    .stepper-item.completed .stepper-circle {
+        border-color: #20c997;
+        background: #20c997;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(32, 201, 151, 0.2);
+    }
+    .stepper-item.delayed .stepper-circle {
+        border-color: #ff4757;
+        background: #ff4757;
+        color: #fff;
+        box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+    }
+    .stepper-label {
+        font-size: 0.65rem;
+        font-weight: 700;
+        color: var(--text-main);
+        text-align: center;
+        line-height: 1;
+        margin-bottom: 2px;
+    }
+    .stepper-date {
+        font-size: 0.55rem;
+        color: #868e96;
+        text-align: center;
+        margin-top: 0;
+        white-space: nowrap;
+    }
+    
+    .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+    }
+    
+    .status-badge {
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 0.4em 0.8em;
+        border-radius: 6px;
+    }
+</style>
