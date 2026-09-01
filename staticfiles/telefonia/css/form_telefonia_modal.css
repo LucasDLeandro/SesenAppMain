@@ -4,11 +4,17 @@
    ======================================== */
 
 /* ========== MODAL GERAL ========== */
+.modal-ordens-wrapper .modal-dialog-centered {
+    align-items: flex-start !important;
+}
+
 .modal-ordens-wrapper .modal-content {
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible; /* Changed from hidden to prevent select2 clipping */
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
     border: none;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 /* ========== BODY DO MODAL ========== */
