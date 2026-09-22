@@ -1,0 +1,279 @@
+/* 1. Variáveis de Tema */
+:root {
+    --primary-blue: #106EBE; 
+    --mint-accent: #0FFCBE; 
+    --background-body: #f8fafc;
+    --text-main: #1e293b;
+    --nav-bg: #1e293b;    
+    --nav-text: #ffffff;  
+    --card-bg: #ffffff;
+    --border-color: var(--border-color);
+    --sidebar-bg: #f8f9fa; /* Cinza claro nativo (light) */
+}
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden; /* Prevent body scrolling */
+}
+
+:root {
+    --primary-blue: #106EBE; 
+    --mint-accent: #0FFCBE; 
+    --background-body: #f8fafc;
+    --text-main: #1e293b;
+    --nav-bg: #1e293b;    
+    --nav-text: #ffffff;  
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --sidebar-bg: #f8f9fa;
+    --danger-bg-subtle: #fff5f5;
+    --danger-border-subtle: #ffcaca;
+    --success-bg-subtle: #f0fdf4;
+    --success-border-subtle: #bbf7d0;
+    --warning-bg-subtle: #fffbeb;
+    --warning-border-subtle: #fde68a;
+    --info-bg-subtle: #f0f9ff;
+    --info-border-subtle: #bae6fd;
+}
+
+[data-bs-theme="dark"] {
+    --background-body: #0f172a;
+    --text-main: #e2e8f0;
+    --nav-bg: #0f172a !important;   
+    --nav-text: #f8fafc !important; 
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --sidebar-bg: #1e293b; 
+    --danger-bg-subtle: rgba(220, 53, 69, 0.15);
+    --danger-border-subtle: rgba(220, 53, 69, 0.3);
+    --success-bg-subtle: rgba(25, 135, 84, 0.15);
+    --success-border-subtle: rgba(25, 135, 84, 0.3);
+    --warning-bg-subtle: rgba(255, 193, 7, 0.15);
+    --warning-border-subtle: rgba(255, 193, 7, 0.3);
+    --info-bg-subtle: rgba(13, 202, 240, 0.15);
+    --info-border-subtle: rgba(13, 202, 240, 0.3);
+}
+
+[data-bs-theme="light"] {
+    --nav-bg: #ffffff !important;   
+    --nav-text: #1e293b !important; 
+    --border-color: #cbd5e1;
+    --sidebar-bg: #f8f9fa !important;
+}
+
+/* 2. Estilos de Base */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-body);
+    color: var(--text-main);
+    margin: 0;
+    padding: 0;
+}
+
+.container-fluid {
+    padding: 0 !important;
+}
+
+/* 3. Navegação e Header */
+.custom-navbar {
+    background-color: var(--nav-bg) !important;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.6rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+}
+
+.navbar-title { color: var(--nav-text) !important; font-weight: 600; }
+.custom-navbar .nav-link { color: var(--nav-text) !important; font-weight: 500; }
+.theme-toggle-btn { color: var(--nav-text) !important; cursor: pointer; }
+
+
+.custom-main-content {
+    height: calc(100vh - 62px); /* Altura da viewport menos a altura do navbar */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Sidebar Responsiva a Temas */
+.sidebar-lateral {
+    background-color: var(--sidebar-bg) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    left: 0;
+    border-right: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) {
+    .sidebar-lateral {
+        position: sticky;
+        top: 62px; /* Altura aproximada do navbar */
+        height: calc(100vh - 62px);
+        overflow-y: auto;
+        z-index: 1040;
+    }
+}
+
+.sidebar-heading {
+    color: var(--text-main) !important;
+    opacity: 0.7;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1.5rem 1.5rem 0.5rem;
+}
+
+.nav-sidebar-link {
+    color: var(--text-main) !important;
+    opacity: 0.85;
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s;
+}
+
+.nav-sidebar-link i { margin-right: 12px; width: 20px; text-align: center; }
+
+.nav-sidebar-link:hover {
+    background-color: var(--border-color);
+    opacity: 1;
+}
+
+.nav-sidebar-link.active {
+    background-color: rgba(16, 110, 190, 0.15);
+    color: var(--primary-blue) !important;
+    border-left: 4px solid var(--primary-blue);
+    opacity: 1;
+}
+
+/* Estilos para dropdown na sidebar */
+.sidebar-lateral .dropdown-menu {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 0.375rem;
+}
+
+.sidebar-lateral .dropdown-item {
+    color: var(--text-main) !important;
+}
+
+.sidebar-lateral .dropdown-item:hover {
+    background-color: var(--background-body) !important;
+}
+
+/* 5. Componentes */
+.custom-card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 25px;
+    margin-bottom: 2rem;
+}
+
+/* Ajuste da Logo */
+.navbar-brand img { height: 40px; }
+/* Adicionar ao final do global.css */
+[data-bs-theme="dark"] .js-plotly-plot .g-xtitle text,
+[data-bs-theme="dark"] .js-plotly-plot .g-ytitle text,
+[data-bs-theme="dark"] .js-plotly-plot .g-polartitle text,
+[data-bs-theme="dark"] .js-plotly-plot .xtick text,
+[data-bs-theme="dark"] .js-plotly-plot .ytick text,
+[data-bs-theme="dark"] .js-plotly-plot .legendtext {
+    fill: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .js-plotly-plot .xgrid,
+[data-bs-theme="dark"] .js-plotly-plot .ygrid {
+    stroke: var(--border-color) !important;
+}
+
+[data-bs-theme="dark"] .apexcharts-text tspan {
+    fill: var(--text-main) !important;
+}
+[data-bs-theme="dark"] .apexcharts-gridline {
+    stroke: var(--border-color) !important;
+}
+[data-bs-theme="dark"] .apexcharts-legend-text {
+    color: var(--text-main) !important;
+}
+[data-bs-theme="dark"] .apexcharts-tooltip {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3) !important;
+}
+[data-bs-theme="dark"] .apexcharts-tooltip-title {
+    background: var(--sidebar-bg) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+}
+[data-bs-theme="dark"] .apexcharts-menu {
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-main) !important;
+}
+
+
+/* --- Global Utility Overrides for Dark Mode --- */
+[data-bs-theme="dark"] .text-dark {
+    color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .text-secondary {
+    color: #94a3b8 !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+    color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--card-bg) !important;
+}
+
+[data-bs-theme="dark"] .card {
+    border-color: var(--border-color) !important;
+    background-color: var(--card-bg) !important;
+}
+
+/* Padronização de Abas Customizadas */
+.nav-tabs.custom-tabs {
+    border-bottom: 2px solid var(--border-color, #dee2e6) !important;
+    gap: 0.2rem;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.nav-tabs.custom-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+.nav-tabs.custom-tabs::-webkit-scrollbar-thumb {
+    background-color: var(--border-color, #ccc);
+    border-radius: 4px;
+}
+.nav-tabs.custom-tabs .nav-item .nav-link {
+    color: var(--text-main, #495057) !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0;
+    padding: 0.75rem 1rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+.nav-tabs.custom-tabs .nav-item .nav-link:hover {
+    color: var(--light-blue, #0d6efd) !important;
+    background-color: var(--card-bg, #e9ecef) !important;
+}
+.nav-tabs.custom-tabs .nav-item .nav-link.active {
+    color: var(--primary-blue, #106EBE) !important;
+    background-color: transparent !important;
+    border-bottom-color: var(--primary-blue, #106EBE) !important;
+}

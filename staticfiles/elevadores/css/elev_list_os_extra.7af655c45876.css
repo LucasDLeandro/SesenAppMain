@@ -1,0 +1,84 @@
+        .dashboard-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 12px;
+            padding: 25px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .elev-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .elev-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+        .elev-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .hover-effect-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .hover-effect-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+        }
+
+        .elev-card.ativo {
+            border-top: 4px solid #28a745;
+        }
+        .elev-card.parado {
+            border-top: 4px solid #dc3545;
+        }
+        .elev-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .elev-card.ativo .elev-icon { color: #28a745; }
+        .elev-card.parado .elev-icon { color: var(--text-main); }
+        
+        .elev-timer {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-top: 10px;
+            background: var(--danger-bg-subtle);
+            padding: 5px;
+            border-radius: 5px;
+        }
+    </style>
+                @keyframes pulse-danger {
+                    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.5); }
+                    50% { transform: scale(1.01); box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+                    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+                }
+                @keyframes shake-icon {
+                    0%, 100% { transform: rotate(0deg); }
+                    20% { transform: rotate(-10deg); }
+                    40% { transform: rotate(10deg); }
+                    60% { transform: rotate(-10deg); }
+                    80% { transform: rotate(10deg); }
+                }
+                .pulse-badge { animation: pulse-danger 2s infinite; }
+                .pulse-button { animation: pulse-danger 2s infinite; }
+                .pulse-icon { animation: shake-icon 2s infinite; display: inline-block; }
+                .widget-recebidas-alerta {
+                    border: 2px solid #dc3545 !important;
+                    background-color: var(--card-bg) !important;
+                }
+                .widget-recebidas-alerta:hover {
+                    background-color: var(--danger-bg-subtle) !important;
+                }
+                </style>
