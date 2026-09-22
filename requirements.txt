@@ -27,7 +27,6 @@ isodate==0.7.2
 kiwisolver==1.5.0
 lxml==6.1.1
 matplotlib==3.11.1
-mysqlclient==2.2.7
 numpy==2.4.4
 openpyxl==3.1.5
 oscrypto==1.3.0
@@ -66,3 +65,10 @@ webencodings==0.5.1
 xhtml2pdf==0.2.17
 zeep==4.3.3
 zopfli==0.4.3
+
+# ============================================================
+# INSTALAR POR ULTIMO - Requer compilacao C no Windows.
+# Se falhar, instale manualmente com wheel pre-compilado:
+#   pip install mysqlclient-2.2.7-cp313-cp313-win_amd64.whl
+# ============================================================
+mysqlclient==2.2.7
