@@ -191,7 +191,7 @@ STATICFILES_FINDERS = [
 # WhiteNoise: serve arquivos estáticos comprimidos em produção
 STORAGES = {
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage",
     },
 }
 
