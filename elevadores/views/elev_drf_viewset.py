@@ -214,21 +214,19 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             except ElevadorStatus.DoesNotExist:
                 pass
 
-        # Corrige o status no banco se o usuário esqueceu de mudar o dropdown para 'AGUARDANDO PEÇAS'
-        if houve_peca == 'Sim_Posterior' and os_salva.status == 'CONCLUIDA':
-            os_salva.status = 'AGUARDANDO PEÇAS'
-            os_salva.save(update_fields=['status'])
-
-        if os_salva.status == 'CONCLUIDA':
-            if houve_peca == 'Sim_Imediata':
+        if os_salva.status == 'CONCLUIDA' or os_salva.status == 'AGUARDANDO PEÇAS':
+            if houve_peca == 'Sim_Posterior' or os_salva.status == 'AGUARDANDO PEÇAS':
+                # OS Concluída com pendência de peça, ou OS que ficou aguardando peça
+                if os_salva.elevador_parado == 'PARADO':
+                    self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_parado', peca=peca_desc)
+                else:
+                    self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_ativo', peca=peca_desc)
+            elif houve_peca == 'Sim_Imediata':
+                # OS Concluída e a peça já foi trocada
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao_peca', peca=peca_desc)
             else:
+                # OS Concluída normalmente, sem peças
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao')
-        elif os_salva.status == 'AGUARDANDO PEÇAS':
-            if os_salva.elevador_parado == 'PARADO':
-                self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_parado', peca=peca_desc)
-            else:
-                self._disparar_notificacao(os_salva, 'os_elev_aguardando_peca_ativo', peca=peca_desc)
 
         return Response({
             'sucesso': True,
