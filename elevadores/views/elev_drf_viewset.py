@@ -214,8 +214,13 @@ class ElevadorViewSet(viewsets.ModelViewSet):
             except ElevadorStatus.DoesNotExist:
                 pass
 
+        # Corrige o status no banco se o usuário esqueceu de mudar o dropdown para 'AGUARDANDO PEÇAS'
+        if houve_peca == 'Sim_Posterior' and os_salva.status == 'CONCLUIDA':
+            os_salva.status = 'AGUARDANDO PEÇAS'
+            os_salva.save(update_fields=['status'])
+
         if os_salva.status == 'CONCLUIDA':
-            if houve_peca in ['Sim_Imediata', 'Sim_Posterior']:
+            if houve_peca == 'Sim_Imediata':
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao_peca', peca=peca_desc)
             else:
                 self._disparar_notificacao(os_salva, 'os_elev_conclusao')
