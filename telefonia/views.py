@@ -1019,6 +1019,8 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                         unidade=solicitacao.unidade or 'N/A',
                         sigla_unidade=solicitacao.sigla_unidade or 'N/A',
                         servidor=solicitacao.servidor or 'N/A',
+                        ramal=solicitacao.ramal or 'N/A',
+                        email=solicitacao.email or 'N/A',
                     )
                     assunto = f"Nova Solicitação de Nada Consta - {solicitacao.protocolo or 'N/A'}"
                     disparar_notificacao_contato(contato, text, text, assunto)
