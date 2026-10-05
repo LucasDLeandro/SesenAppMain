@@ -36,18 +36,20 @@
             <!-- Identificação & Mensagem -->
             <div class="row g-compact mb-4">
                 <div class="col-12">
-                    <label for="{{ criarTemplate.id_template.id_for_label }}" class="form-label">
+                    <label for="id_id_template" class="form-label">
                         <i class="bi bi-card-text text-secondary me-1"></i> Identificação do Template
                     </label>
-                    {{ criarTemplate.id_template|add_class:"form-control"|attr:"placeholder:Ex: Conclusão de Ordem de Serviço - OTIS" }}
+                    <input type="text" name="id_template" class="form-control" id="id_id_template" maxlength="100" placeholder="Ex: Conclusão de Ordem de Serviço - OTIS" required>
+                    {% if criarTemplate.id_template.errors %}<div class="text-danger small">{{ criarTemplate.id_template.errors }}</div>{% endif %}
                     <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Máximo 100 caracteres</small>
                 </div>
 
                 <div class="col-12">
-                    <label for="{{ criarTemplate.base_text.id_for_label }}" class="form-label">
+                    <label for="id_base_text" class="form-label">
                         <i class="bi bi-chat-left-text text-primary opacity-75 me-1"></i> Mensagem
                     </label>
-                    {{ criarTemplate.base_text|add_class:"form-control"|attr:"rows:6"|attr:"placeholder:Prezado(a), {nome}..." }}
+                    <textarea name="base_text" class="form-control" id="id_base_text" rows="6" placeholder="Prezado(a), {nome}..." required></textarea>
+                    {% if criarTemplate.base_text.errors %}<div class="text-danger small">{{ criarTemplate.base_text.errors }}</div>{% endif %}
                     <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Texto da mensagem que será enviada. Use chaves para variáveis dinâmicas.</small>
                     <!-- Variáveis: Elevadores -->
                     <div id="vars-elevadores" class="mt-2 p-2 rounded border" style="display:none; background-color: #eef6ff; border-color: #b6d4fe !important;">
@@ -122,19 +124,20 @@
                 
                 <!-- Tipo de Notificação (Select) -->
                 <div class="col-md-6 border-end-md border-light pe-md-3 border-secondary-subtle">
-                    <label class="form-label text-dark fw-bold mb-2" for="{{ criarTemplate.tipo_evento.id_for_label }}">
+                    <label class="form-label text-dark fw-bold mb-2" for="id_tipo_evento">
                         <i class="bi bi-funnel-fill text-info me-1"></i> Tipo de Notificação
                     </label>
-                    {{ criarTemplate.tipo_evento|add_class:"form-select shadow-sm" }}
+                    {{ criarTemplate.tipo_evento }}
+                    {% if criarTemplate.tipo_evento.errors %}<div class="text-danger small">{{ criarTemplate.tipo_evento.errors }}</div>{% endif %}
                     <small class="text-muted d-block mt-2" style="font-size: 0.8rem;">Evento que vai engatilhar o disparo.</small>
                 </div>
 
                 <!-- Status Ativo (Toggle) -->
                 <div class="col-md-6 ps-md-4 mt-4 mt-md-0 d-flex flex-column justify-content-center">
                     <div class="form-check form-switch custom-switch d-flex align-items-center mb-0 ps-0">
-                        {{ criarTemplate.is_ativo|add_class:"form-check-input flex-shrink-0 ms-0 shadow-sm" }}
+                        {{ criarTemplate.is_ativo }}
                         <div class="ms-3 w-100">
-                            <label class="form-check-label fw-bold d-block text-dark m-0 pb-0" for="{{ criarTemplate.is_ativo.id_for_label }}" style="cursor: pointer;">
+                            <label class="form-check-label fw-bold d-block text-dark m-0 pb-0" for="id_template_is_ativo" style="cursor: pointer;">
                                 <i class="bi bi-lightning-fill text-warning me-1"></i> Template Ativo?
                             </label>
                             <small class="text-muted" style="font-size: 0.8rem; display: block; line-height: 1.2; margin-top: 4px;">
