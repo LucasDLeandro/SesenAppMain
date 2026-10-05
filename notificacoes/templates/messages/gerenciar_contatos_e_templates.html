@@ -67,9 +67,19 @@
                 <div class="tab-pane fade" id="elev-contatos-content" role="tabpanel" aria-labelledby="elev-contatos-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Contatos - Elevadores</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="elevadores">
-                            <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
-                        </button>
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="bulk-actions-elevadores" style="display: none;">
+                                <button type="button" class="btn btn-outline-success btn-sm shadow-sm fw-bold btn-bulk-status" data-modulo="elevadores" data-action="ativar">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Ativar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm shadow-sm fw-bold btn-bulk-status" data-modulo="elevadores" data-action="desativar">
+                                    <i class="bi bi-dash-circle-fill me-1"></i> Desativar
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="elevadores">
+                                <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
+                            </button>
+                        </div>
                     </div>
                     {% include 'messages/includes/table_contatos.html' with list_contato=list_contato_elev modulo='elevadores' %}
                 </div>
@@ -105,9 +115,19 @@
                 <div class="tab-pane fade" id="tel-contatos-content" role="tabpanel" aria-labelledby="tel-contatos-tab">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h4 class="fw-bold m-0 text-body">Contatos - Telefonia</h4>
-                        <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="telefonia">
-                            <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
-                        </button>
+                        <div class="d-flex gap-2 align-items-center">
+                            <div class="bulk-actions-telefonia" style="display: none;">
+                                <button type="button" class="btn btn-outline-success btn-sm shadow-sm fw-bold btn-bulk-status" data-modulo="telefonia" data-action="ativar">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Ativar
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm shadow-sm fw-bold btn-bulk-status" data-modulo="telefonia" data-action="desativar">
+                                    <i class="bi bi-dash-circle-fill me-1"></i> Desativar
+                                </button>
+                            </div>
+                            <button type="button" class="btn btn-primary shadow-sm fw-bold btn-add-contato" data-modulo="telefonia">
+                                <i class="bi bi-person-plus-fill me-2"></i> Adicionar Contato
+                            </button>
+                        </div>
                     </div>
                     {% include 'messages/includes/table_contatos.html' with list_contato=list_contato_tel modulo='telefonia' %}
                 </div>

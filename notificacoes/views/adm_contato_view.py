@@ -55,6 +55,29 @@ def api_deletar_contato(request, id_contato):
         'mensagem': f"O contato foi excluido com sucesso!"
     })
 
+@require_POST
+def api_bulk_status_contato(request):
+    import json
+    try:
+        data = json.loads(request.body)
+        ids = data.get('ids', [])
+        acao = data.get('acao') # 'ativar' or 'desativar'
+        
+        if not ids or acao not in ['ativar', 'desativar']:
+            return JsonResponse({'sucesso': False, 'mensagem': 'Dados inválidos.'}, status=400)
+            
+        status_value = (acao == 'ativar')
+        
+        # O Django's update() method runs a single SQL UPDATE query for bulk updates
+        Contato.objects.filter(id__in=ids).update(is_ativo=status_value)
+        
+        return JsonResponse({
+            'sucesso': True,
+            'mensagem': f"{len(ids)} contato(s) {'ativado' if status_value else 'desativado'}(s) com sucesso!"
+        })
+    except Exception as e:
+        return JsonResponse({'sucesso': False, 'mensagem': str(e)}, status=500)
+
 def api_buscar_pessoas(request):
     """Retorna JSON com as pessoas correspondentes à busca para autocomplete."""
     from usuarios.models import Pessoa

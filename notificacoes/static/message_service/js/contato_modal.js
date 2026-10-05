@@ -238,4 +238,87 @@ document.addEventListener('DOMContentLoaded', function () {
     if (telInput && typeof IMask !== 'undefined') {
         telInput.maskRef = IMask(telInput, { mask: '(00) 0 0000-0000' });
     }
+
+    // ── Ações em Lote (Ativar/Desativar Contatos) ──
+    function atualizarBotoesLote(modulo) {
+        var checkboxes = document.querySelectorAll('.check-contato[data-modulo="' + modulo + '"]');
+        var algumMarcado = Array.from(checkboxes).some(cb => cb.checked);
+        var containerBotoes = document.querySelector('.bulk-actions-' + modulo);
+        if (containerBotoes) {
+            containerBotoes.style.display = algumMarcado ? 'flex' : 'none';
+        }
+        
+        // Atualiza o check-all
+        var checkAll = document.querySelector('.check-all-contatos[data-modulo="' + modulo + '"]');
+        if (checkAll) {
+            var todosMarcados = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
+            checkAll.checked = todosMarcados;
+        }
+    }
+
+    document.querySelectorAll('.check-all-contatos').forEach(function(checkAll) {
+        checkAll.addEventListener('change', function() {
+            var modulo = this.getAttribute('data-modulo');
+            var checkboxes = document.querySelectorAll('.check-contato[data-modulo="' + modulo + '"]');
+            checkboxes.forEach(cb => cb.checked = this.checked);
+            atualizarBotoesLote(modulo);
+        });
+    });
+
+    document.querySelectorAll('.check-contato').forEach(function(cb) {
+        cb.addEventListener('change', function() {
+            var modulo = this.getAttribute('data-modulo');
+            atualizarBotoesLote(modulo);
+        });
+    });
+
+    document.querySelectorAll('.btn-bulk-status').forEach(function(btn) {
+        btn.addEventListener('click', async function() {
+            var modulo = this.getAttribute('data-modulo');
+            var acao = this.getAttribute('data-action'); // 'ativar' ou 'desativar'
+            
+            var checkboxes = document.querySelectorAll('.check-contato[data-modulo="' + modulo + '"]:checked');
+            var ids = Array.from(checkboxes).map(cb => parseInt(cb.value));
+            
+            if (ids.length === 0) return;
+            
+            var txtAcao = acao === 'ativar' ? 'ativar' : 'desativar';
+            
+            var result = await Swal.fire({
+                title: 'Você tem certeza?',
+                text: `Deseja ${txtAcao} ${ids.length} contato(s) selecionado(s)?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sim, continuar!',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    var resposta = await fetch('/notificacoes/api/contatos/bulkStatus/', {
+                        method: 'POST',
+                        headers: { 
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ ids: ids, acao: acao })
+                    });
+                    var dados = await resposta.json();
+
+                    if (resposta.ok && dados.sucesso) {
+                        await Swal.fire({ title: 'Sucesso!', text: dados.mensagem, icon: 'success' });
+                        window.location.reload();
+                    } else {
+                        Swal.fire('Erro!', dados.mensagem || 'Não foi possível atualizar os contatos.', 'error');
+                    }
+                } catch (erro) {
+                    console.error('Erro na conexão:', erro);
+                    Swal.fire('Falha!', 'Erro ao conectar com o servidor.', 'error');
+                }
+            }
+        });
+    });
 });
+

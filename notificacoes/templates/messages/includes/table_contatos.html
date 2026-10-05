@@ -5,7 +5,10 @@
             <table class="table table-hover align-middle mb-0 table-dense" style="font-size: 0.9rem;">
                 <thead class="table-light">
                     <tr>
-                        <th class="ps-4 text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Nome do Contato</th>
+                        <th class="ps-4 text-center" style="width: 40px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">
+                            <input class="form-check-input check-all-contatos" type="checkbox" data-modulo="{{ modulo }}" style="cursor: pointer;">
+                        </th>
+                        <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Nome do Contato</th>
                         <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Contatos (Zap / E-mail)</th>
                         <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Canais</th>
                         <th class="text-uppercase text-muted" style="font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid #f1f5f9; padding-top: 1rem; padding-bottom: 1rem;">Cargo / Função</th>
@@ -16,7 +19,10 @@
                 <tbody>
                     {% for contato in list_contato %}
                     <tr>
-                        <td class="ps-4 fw-medium text-dark py-3" style="border-bottom: 1px solid #f1f5f9;">
+                        <td class="ps-4 text-center py-3" style="border-bottom: 1px solid #f1f5f9;">
+                            <input class="form-check-input check-contato" type="checkbox" value="{{ contato.id }}" data-modulo="{{ modulo }}" style="cursor: pointer;">
+                        </td>
+                        <td class="fw-medium text-dark py-3" style="border-bottom: 1px solid #f1f5f9;">
                             <i class="bi bi-person-circle text-muted me-2"></i> {{ contato.nome }}
                         </td>
                         <td class="text-muted py-3" style="border-bottom: 1px solid #f1f5f9;">
@@ -56,7 +62,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-muted">
+                        <td colspan="7" class="text-center py-5 text-muted">
                             <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 64px; height: 64px;">
                                 <i class="bi bi-inbox fs-3 text-secondary"></i>
                             </div>
