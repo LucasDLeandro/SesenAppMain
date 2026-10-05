@@ -49,15 +49,70 @@
                     </label>
                     {{ criarTemplate.base_text|add_class:"form-control"|attr:"rows:6"|attr:"placeholder:Prezado(a), {nome}..." }}
                     <small class="text-muted d-block mt-1" style="font-size: 0.8rem;">Texto da mensagem que será enviada. Use chaves para variáveis dinâmicas.</small>
-                    <div class="mt-2 p-2 bg-light rounded border border-light">
-                        <strong style="font-size: 0.8rem;" class="text-secondary"><i class="bi bi-info-circle me-1"></i>Variáveis Disponíveis:</strong>
+                    <!-- Variáveis: Elevadores -->
+                    <div id="vars-elevadores" class="mt-2 p-2 rounded border" style="display:none; background-color: #eef6ff; border-color: #b6d4fe !important;">
+                        <strong style="font-size: 0.8rem;" class="text-primary"><i class="bi bi-building-up me-1"></i>Variáveis Disponíveis — Elevadores:</strong>
                         <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
                             <li><code>{nome}</code>: Nome do Contato (sempre disponível)</li>
                             <li><code>{protocolo}</code>: Número da OS</li>
                             <li><code>{elevador}</code>: Nome do Equipamento</li>
-                            <li><code>{data_hora}</code> / <code>{data_hora_saida}</code>: Datas e Horários</li>
-                            <li><code>{ocorrencia}</code>, <code>{solicitante}</code>, <code>{atendente}</code>, <code>{tecnico}</code>, <code>{acompanhante}</code>, <code>{registrador_chegada}</code>, <code>{servico}</code>, <code>{funcionando}</code></li>
+                            <li><code>{data_hora}</code> / <code>{data_hora_chegada}</code> / <code>{data_hora_saida}</code>: Datas e Horários</li>
+                            <li><code>{ocorrencia}</code>: Tipo de Ocorrência</li>
+                            <li><code>{solicitante}</code>: Quem solicitou a OS</li>
+                            <li><code>{atendente}</code>: Atendente responsável</li>
+                            <li><code>{tecnico}</code>: Técnico designado</li>
+                            <li><code>{acompanhante}</code>: Acompanhante no local</li>
+                            <li><code>{registrador_chegada}</code>: Quem registrou a chegada</li>
+                            <li><code>{servico}</code>: Serviço executado</li>
+                            <li><code>{funcionando}</code>: Status do elevador</li>
+                            <li><code>{peca}</code>: Descrição da peça (quando aplicável)</li>
                         </ul>
+                    </div>
+
+                    <!-- Variáveis: Telefonia -->
+                    <div id="vars-telefonia" class="mt-2 p-2 rounded border" style="display:none; background-color: #f0fdf4; border-color: #a7f3d0 !important;">
+                        <strong style="font-size: 0.8rem;" class="text-success"><i class="bi bi-telephone me-1"></i>Variáveis Disponíveis — Telefonia:</strong>
+                        <div id="vars-tel-aparelho" style="display:none;">
+                            <small class="text-muted d-block mt-1 mb-1 fw-semibold" style="font-size: 0.72rem;">📱 Solicitação de Aparelho:</small>
+                            <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
+                                <li><code>{tecnico}</code>: Nome do Contato</li>
+                                <li><code>{protocolo}</code>: Número do SEI/Pedido</li>
+                                <li><code>{solicitante}</code>: Quem solicitou</li>
+                                <li><code>{unidade}</code> / <code>{sigla_unidade}</code>: Unidade e Sigla</li>
+                                <li><code>{qnt_solicitada}</code>: Quantidade solicitada</li>
+                                <li><code>{local}</code>: Local/Sala de instalação</li>
+                                <li><code>{ramal}</code>: Ramal de contato</li>
+                            </ul>
+                        </div>
+                        <div id="vars-tel-senha" style="display:none;">
+                            <small class="text-muted d-block mt-1 mb-1 fw-semibold" style="font-size: 0.72rem;">🔑 Solicitação de Senha:</small>
+                            <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
+                                <li><code>{tecnico}</code>: Nome do Contato</li>
+                                <li><code>{protocolo}</code>: Número do SEI/Pedido</li>
+                                <li><code>{solicitante}</code>: Quem solicitou</li>
+                                <li><code>{unidade}</code> / <code>{sigla_unidade}</code>: Unidade e Sigla</li>
+                                <li><code>{ramal}</code>: Ramal de contato</li>
+                                <li><code>{usuario}</code>: Usuário da senha</li>
+                            </ul>
+                        </div>
+                        <div id="vars-tel-recolhimento" style="display:none;">
+                            <small class="text-muted d-block mt-1 mb-1 fw-semibold" style="font-size: 0.72rem;">📦 Recolhimento de Aparelho em Evento:</small>
+                            <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
+                                <li><code>{evento_nome}</code>: Nome do evento</li>
+                                <li><code>{data_fim}</code>: Data de término do evento</li>
+                                <li><code>{local}</code>: Local do evento</li>
+                                <li><code>{solicitante}</code>: Quem solicitou</li>
+                            </ul>
+                        </div>
+                        <div id="vars-tel-nada-consta" style="display:none;">
+                            <small class="text-muted d-block mt-1 mb-1 fw-semibold" style="font-size: 0.72rem;">📄 Solicitação de Nada Consta:</small>
+                            <ul class="mb-0 ps-3 text-muted" style="font-size: 0.75rem;">
+                                <li><code>{nome}</code>: Nome do Contato</li>
+                                <li><code>{protocolo}</code>: Número do SEI/Pedido</li>
+                                <li><code>{unidade}</code> / <code>{sigla_unidade}</code>: Unidade e Sigla</li>
+                                <li><code>{servidor}</code>: Nome do servidor</li>
+                            </ul>
+                        </div>
                     </div>
             </div>
 

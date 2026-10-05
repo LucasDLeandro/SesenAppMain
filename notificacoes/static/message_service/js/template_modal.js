@@ -26,6 +26,54 @@ document.addEventListener('DOMContentLoaded', function () {
     const urlEditarBase    = formEl.getAttribute('data-url-editar-template');
     const hiddenId         = document.getElementById('id_oculto_template');
 
+    // ── Controle de visibilidade das variáveis por módulo ──
+    function atualizarVariaveisVisiveis(tipoEvento) {
+        var varsElev = document.getElementById('vars-elevadores');
+        var varsTel  = document.getElementById('vars-telefonia');
+        var varsTelAparelho     = document.getElementById('vars-tel-aparelho');
+        var varsTelSenha        = document.getElementById('vars-tel-senha');
+        var varsTelRecolhimento = document.getElementById('vars-tel-recolhimento');
+        var varsTelNadaConsta   = document.getElementById('vars-tel-nada-consta');
+
+        // Esconder tudo primeiro
+        if (varsElev) varsElev.style.display = 'none';
+        if (varsTel)  varsTel.style.display  = 'none';
+        if (varsTelAparelho)     varsTelAparelho.style.display     = 'none';
+        if (varsTelSenha)        varsTelSenha.style.display        = 'none';
+        if (varsTelRecolhimento) varsTelRecolhimento.style.display = 'none';
+        if (varsTelNadaConsta)   varsTelNadaConsta.style.display   = 'none';
+
+        if (!tipoEvento || tipoEvento === 'false') return;
+
+        // Elevadores: qualquer valor que comece com "os_elev_" ou "VAGO_"
+        if (tipoEvento.startsWith('os_elev_') || tipoEvento.startsWith('VAGO_')) {
+            if (varsElev) varsElev.style.display = 'block';
+        }
+        // Telefonia: qualquer valor que comece com "tel_"
+        else if (tipoEvento.startsWith('tel_')) {
+            if (varsTel) varsTel.style.display = 'block';
+
+            // Exibir sub-bloco específico do tipo de telefonia
+            if (tipoEvento === 'tel_solicitacao_aparelho') {
+                if (varsTelAparelho) varsTelAparelho.style.display = 'block';
+            } else if (tipoEvento === 'tel_solicitacao_senha') {
+                if (varsTelSenha) varsTelSenha.style.display = 'block';
+            } else if (tipoEvento === 'tel_recolhimento_evento') {
+                if (varsTelRecolhimento) varsTelRecolhimento.style.display = 'block';
+            } else if (tipoEvento === 'tel_nada_consta') {
+                if (varsTelNadaConsta) varsTelNadaConsta.style.display = 'block';
+            }
+        }
+    }
+
+    // Listener de mudança no select de tipo_evento
+    var tipoSelect = document.getElementById('id_tipo_evento');
+    if (tipoSelect) {
+        tipoSelect.addEventListener('change', function () {
+            atualizarVariaveisVisiveis(this.value);
+        });
+    }
+
     // ── Botões "Novo Template" ──
     document.querySelectorAll('.btn-add-template').forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -36,15 +84,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Pré-selecionar tipo de evento do módulo
             var defaultType = btn.getAttribute('data-default-type');
-            var tipoSelect  = document.getElementById('id_tipo_evento');
-            if (tipoSelect && defaultType) {
-                for (var i = 0; i < tipoSelect.options.length; i++) {
-                    if (tipoSelect.options[i].value === defaultType) {
-                        tipoSelect.selectedIndex = i;
+            var selectEl    = document.getElementById('id_tipo_evento');
+            if (selectEl && defaultType) {
+                for (var i = 0; i < selectEl.options.length; i++) {
+                    if (selectEl.options[i].value === defaultType) {
+                        selectEl.selectedIndex = i;
                         break;
                     }
                 }
             }
+
+            // Atualizar variáveis visíveis com base no tipo pré-selecionado
+            atualizarVariaveisVisiveis(defaultType || (selectEl ? selectEl.value : ''));
 
             modal.show();
         });
@@ -63,6 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (elBaseText)   elBaseText.value   = texto;
         if (elTipoEvento) elTipoEvento.value = tipo_evento;
         if (elIsAtivo)    elIsAtivo.checked  = (status === 'True');
+
+        // Atualizar variáveis visíveis com base no tipo do template sendo editado
+        atualizarVariaveisVisiveis(tipo_evento);
 
         formEl.action = urlEditarBase.replace('/0/', '/' + id + '/');
         modal.show();
