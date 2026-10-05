@@ -92,13 +92,33 @@ class ContratoColaboradorSerializer(serializers.ModelSerializer):
 
 class NadaConstaSerializer(serializers.ModelSerializer):
     ramal_vinculado_display = serializers.SerializerMethodField()
+    email_vinculado_display = serializers.SerializerMethodField()
 
     class Meta:
         model = NadaConsta
         fields = '__all__'
 
     def get_ramal_vinculado_display(self, obj):
-        if obj.senha_vinculada and obj.senha_vinculada.ramal:
-            return obj.senha_vinculada.ramal
-        return 'Não identificado'
+        # Tenta buscar ramal do CriarSenha via CPF do servidor, caso exista
+        ramal = None
+        if obj.senha_vinculada and obj.senha_vinculada.numero:
+            ramal = obj.senha_vinculada.numero
+            
+        if not ramal and obj.senha_vinculada and hasattr(obj.senha_vinculada, 'cpf'):
+            from telefonia.models import CriarSenha
+            cs = CriarSenha.objects.filter(cpf=obj.senha_vinculada.cpf).first()
+            if cs and cs.ramal:
+                ramal = cs.ramal
+                
+        return ramal or 'Não identificado'
+
+    def get_email_vinculado_display(self, obj):
+        # Tenta buscar email do CriarSenha via CPF do servidor, caso exista
+        if obj.senha_vinculada and hasattr(obj.senha_vinculada, 'cpf'):
+            from telefonia.models import CriarSenha
+            cs = CriarSenha.objects.filter(cpf=obj.senha_vinculada.cpf).first()
+            if cs and cs.email:
+                return cs.email
+        return ''
+
 
