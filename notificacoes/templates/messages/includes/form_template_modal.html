@@ -127,7 +127,21 @@
                     <label class="form-label text-dark fw-bold mb-2" for="id_tipo_evento">
                         <i class="bi bi-funnel-fill text-info me-1"></i> Tipo de Notificação
                     </label>
-                    {{ criarTemplate.tipo_evento }}
+                    <select name="tipo_evento" class="form-select shadow-sm" id="id_tipo_evento" required>
+                        <option value="false">---</option>
+                        <option value="os_elev_registro">Elevadores - Registro de Nova OS</option>
+                        <option value="os_elev_conclusao">Elevadores - Conclusão de OS Aberta</option>
+                        <option value="tel_solicitacao_aparelho">Telefonia - Solicitação de Aparelho</option>
+                        <option value="tel_solicitacao_senha">Telefonia - Solicitação de Senha</option>
+                        <option value="tel_recolhimento_evento">Telefonia - Recolhimento de Aparelho em Evento</option>
+                        <option value="tel_nada_consta">Telefonia - Solicitação de Nada Consta</option>
+                        <option value="os_elev_andamento">Elevadores - OS em Andamento</option>
+                        <option value="os_elev_conclusao_peca">Elevadores - Conclusão de OS c/ Troca de Peça</option>
+                        <option value="os_elev_aguardando_peca_parado">Elevadores - OS Aguardando Peça (Elev. Parado)</option>
+                        <option value="os_elev_aguardando_peca_ativo">Elevadores - OS Aguardando Peça (Elev. Funcionando)</option>
+                        <option value="VAGO_5">Elevadores - TEMPLATE VAGO - 5</option>
+                        <option value="VAGO_6">Elevadores - TEMPLATE VAGO - 6</option>
+                    </select>
                     {% if criarTemplate.tipo_evento.errors %}<div class="text-danger small">{{ criarTemplate.tipo_evento.errors }}</div>{% endif %}
                     <small class="text-muted d-block mt-2" style="font-size: 0.8rem;">Evento que vai engatilhar o disparo.</small>
                 </div>
@@ -135,7 +149,7 @@
                 <!-- Status Ativo (Toggle) -->
                 <div class="col-md-6 ps-md-4 mt-4 mt-md-0 d-flex flex-column justify-content-center">
                     <div class="form-check form-switch custom-switch d-flex align-items-center mb-0 ps-0">
-                        {{ criarTemplate.is_ativo }}
+                        <input type="checkbox" name="is_ativo" class="form-check-input flex-shrink-0 ms-0 shadow-sm" id="id_template_is_ativo" checked>
                         <div class="ms-3 w-100">
                             <label class="form-check-label fw-bold d-block text-dark m-0 pb-0" for="id_template_is_ativo" style="cursor: pointer;">
                                 <i class="bi bi-lightning-fill text-warning me-1"></i> Template Ativo?
