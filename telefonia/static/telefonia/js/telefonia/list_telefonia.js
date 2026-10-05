@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         let ramal = row.ramal_vinculado_display || '';
                         
                         buttons += `
-                            <button class="btn btn-sm btn-success shadow-sm" onclick=\"abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString(\'pt-BR\')}', '${row.unidade}', '${row.servidor}', ${row.solicitar_desvinculacao ? 'true' : 'false'}, '${ramal}', '${row.ramal || \'\'}', '${row.email || \'\'}')\" title="Concluir">
+                            <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', ${row.solicitar_desvinculacao ? 'true' : 'false'}, '${ramal}', '${row.ramal || ''}', '${row.email || ''}')" title="Concluir">
                                 <i class="bi bi-check-circle"></i> Concluir
                             </button>
                         `;
@@ -597,7 +597,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else if (row.tipo_demanda === 'Nada Consta') {
                         // Passando data formatada para a string sem aspas duplas internas que quebram o HTML
                         return `<div class="d-flex justify-content-end gap-1">
-                                    <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick=\"abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString(\'pt-BR\')}', '${row.unidade}', '${row.servidor}', false, '', '${row.ramal || \'\'}', '${row.email || \'\'}')\" title="Concluir Nada Consta">
+                                    <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick=\"abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', false, '', '${row.ramal || ''}', '${row.email || ''}')\" title="Concluir Nada Consta">
                                         <i class="bi bi-check2-circle me-1"></i> Concluir
                                     </button>
                                 </div>`;
