@@ -1329,12 +1329,14 @@ const modal_concluir_nada_consta_el = document.getElementById('modal-concluir-na
 const modal_concluir_nada_consta = modal_concluir_nada_consta_el ? new bootstrap.Modal(modal_concluir_nada_consta_el) : null;
 const form_concluir_nada_consta = document.getElementById('form-concluir-nada-consta');
 
-function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor, desvincular=false, ramalVinculado='') {
+function abrirModalConcluirNadaConsta(id, protocolo, dataStr, unidade, servidor, desvincular=false, ramalVinculado='', ramal='', email='') {
     document.getElementById('id_nada_consta_conclusao').value = id;
     document.getElementById('txt_protocolo_nada_consta').innerText = protocolo;
     document.getElementById('txt_data_nada_consta').innerText = dataStr;
     document.getElementById('txt_unidade_nada_consta').innerText = unidade;
     document.getElementById('txt_servidor_nada_consta').innerText = servidor;
+    if (document.getElementById('ramal_concluir_nada_consta')) document.getElementById('ramal_concluir_nada_consta').value = ramal;
+    if (document.getElementById('email_concluir_nada_consta')) document.getElementById('email_concluir_nada_consta').value = email;
     
     form_concluir_nada_consta.reset();
     document.getElementById('valor_devido_nada_consta').value = '0,00';
