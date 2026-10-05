@@ -101,24 +101,34 @@ class NadaConstaSerializer(serializers.ModelSerializer):
     def get_ramal_vinculado_display(self, obj):
         # Tenta buscar ramal do CriarSenha via CPF do servidor, caso exista
         ramal = None
-        if obj.senha_vinculada and obj.senha_vinculada.numero:
+        if obj.senha_vinculada and hasattr(obj.senha_vinculada, 'numero'):
             ramal = obj.senha_vinculada.numero
             
         if not ramal and obj.senha_vinculada and hasattr(obj.senha_vinculada, 'cpf'):
             from telefonia.models import CriarSenha
             cs = CriarSenha.objects.filter(cpf=obj.senha_vinculada.cpf).first()
-            if cs and cs.ramal:
+            if cs and hasattr(cs, 'ramal') and cs.ramal:
                 ramal = cs.ramal
+                
+        # Fallback caso seja um objeto CriarSenha que tenha ramal diretamente
+        if not ramal and obj.senha_vinculada and hasattr(obj.senha_vinculada, 'ramal') and obj.senha_vinculada.ramal:
+            ramal = obj.senha_vinculada.ramal
                 
         return ramal or 'Não identificado'
 
     def get_email_vinculado_display(self, obj):
         # Tenta buscar email do CriarSenha via CPF do servidor, caso exista
+        email = ''
         if obj.senha_vinculada and hasattr(obj.senha_vinculada, 'cpf'):
             from telefonia.models import CriarSenha
             cs = CriarSenha.objects.filter(cpf=obj.senha_vinculada.cpf).first()
-            if cs and cs.email:
-                return cs.email
-        return ''
+            if cs and hasattr(cs, 'email') and cs.email:
+                email = cs.email
+                
+        # Fallback caso seja um objeto CriarSenha que tenha email diretamente
+        if not email and obj.senha_vinculada and hasattr(obj.senha_vinculada, 'email') and obj.senha_vinculada.email:
+            email = obj.senha_vinculada.email
+            
+        return email
 
 
