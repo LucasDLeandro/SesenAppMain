@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', function () {
         var varsTelSenha        = document.getElementById('vars-tel-senha');
         var varsTelRecolhimento = document.getElementById('vars-tel-recolhimento');
         var varsTelNadaConsta   = document.getElementById('vars-tel-nada-consta');
+        var varsTelNadaConstaConclusao = document.getElementById('vars-tel-nada-consta-conclusao');
 
         // Esconder tudo primeiro
         if (varsElev) varsElev.style.display = 'none';
@@ -42,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (varsTelSenha)        varsTelSenha.style.display        = 'none';
         if (varsTelRecolhimento) varsTelRecolhimento.style.display = 'none';
         if (varsTelNadaConsta)   varsTelNadaConsta.style.display   = 'none';
+        if (varsTelNadaConstaConclusao) varsTelNadaConstaConclusao.style.display = 'none';
 
         if (!tipoEvento || tipoEvento === 'false') return;
 
