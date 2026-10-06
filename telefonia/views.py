@@ -1043,7 +1043,7 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
             # Disparar notificação de conclusão para o servidor
             template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta_conclusao', is_ativo=True).first()
             if template and solicitacao.email_cadastrado:
-                import notificacoes.services
+                from notificacoes.services import disparar_notificacao_avulso
                 texto = template.base_text
                 try:
                     valor_str = str(solicitacao.valor_devido) if solicitacao.valor_devido else '0.00'
@@ -1059,7 +1059,7 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                         data=solicitacao.data.strftime('%d/%m/%Y') if solicitacao.data else 'N/A'
                     )
                     assunto = f"Conclusão de Nada Consta - {solicitacao.protocolo or 'N/A'}"
-                    notificacoes.services.disparar_notificacao_avulso(solicitacao.email_cadastrado, text, text, assunto)
+                    disparar_notificacao_avulso(solicitacao.email_cadastrado, text, text, assunto)
                 except Exception as e:
                     print(f"Erro ao formatar/enviar mensagem de conclusão (Nada Consta): {e}")
 

@@ -91,4 +91,24 @@ def disparar_notificacao_contato(contato, texto_zap, texto_email, assunto_email)
             try:
                 auto_email(email, assunto_email, texto_email)
             except Exception as e:
-                print(f"Erro disparando E-mail para {contato.nome}: {e}")
+                print(f"Erro disparando E-mail para {contato.nome}: {e}")
+
+def disparar_notificacao_avulso(destinatario, msg_wpp, msg_email, assunto_email="Notificacao Sistema"):
+    from django.core.mail import send_mail
+    from django.conf import settings
+    import threading
+
+    def _send():
+        try:
+            send_mail(
+                subject=assunto_email,
+                message=msg_email,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[destinatario],
+                fail_silently=False,
+            )
+            print(f"Sucesso ao enviar E-mail para: {destinatario}")
+        except Exception as e:
+            print(f"ERRO AO ENVIAR E-MAIL (Async): {e}")
+
+    threading.Thread(target=_send).start()
