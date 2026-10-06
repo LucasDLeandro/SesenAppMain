@@ -1043,10 +1043,10 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
             # Disparar notificação de conclusão para o servidor
             template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta_conclusao', is_ativo=True).first()
             if template and solicitacao.email_cadastrado:
-                from notificacoes.services import disparar_notificacao_avulso
+                import notificacoes.services
                 texto = template.base_text
                 try:
-                    valor = str(solicitacao.valor_devido) if solicitacao.valor_devido else '0.00'
+                    valor_str = str(solicitacao.valor_devido) if solicitacao.valor_devido else '0.00'
                     text = texto.format(
                         protocolo=solicitacao.protocolo or 'N/A',
                         unidade=solicitacao.unidade or 'N/A',
@@ -1054,12 +1054,12 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                         servidor=solicitacao.servidor or 'N/A',
                         ramal=solicitacao.ramal or 'N/A',
                         email_cadastrado=solicitacao.email_cadastrado or 'N/A',
-                        valor_devido=valor.replace('.', ','),
+                        valor_devido=str(valor_str).replace('.', ','),
                         tecnico=solicitacao.tecnico_responsavel or 'N/A',
                         data=solicitacao.data.strftime('%d/%m/%Y') if solicitacao.data else 'N/A'
                     )
                     assunto = f"Conclusão de Nada Consta - {solicitacao.protocolo or 'N/A'}"
-                    disparar_notificacao_avulso(solicitacao.email_cadastrado, text, text, assunto)
+                    notificacoes.services.disparar_notificacao_avulso(solicitacao.email_cadastrado, text, text, assunto)
                 except Exception as e:
                     print(f"Erro ao formatar/enviar mensagem de conclusão (Nada Consta): {e}")
 
