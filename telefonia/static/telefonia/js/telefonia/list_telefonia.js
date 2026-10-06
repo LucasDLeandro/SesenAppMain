@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         let ramalFallback = row.ramal_vinculado_display || '';
                         let ramalFinal = row.ramal || ramalFallback;
                         let emailFallback = row.email_vinculado_display || '';
-                        let emailFinal = row.email || emailFallback;
+                        let emailFinal = row.email_cadastrado || emailFallback;
                         
                         buttons += `
                             <button class="btn btn-sm btn-success shadow-sm" onclick="abrirModalConcluirNadaConsta(${data}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', ${row.solicitar_desvinculacao ? 'true' : 'false'}, '${ramalFallback}', '${ramalFinal}', '${emailFinal}')" title="Concluir">
@@ -602,7 +602,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         let ramalFallback = row.ramal_vinculado_display || '';
                         let ramalFinal = row.ramal || ramalFallback;
                         let emailFallback = row.email_vinculado_display || '';
-                        let emailFinal = row.email || emailFallback;
+                        let emailFinal = row.email_cadastrado || emailFallback;
                         return `<div class="d-flex justify-content-end gap-1">
                                     <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick=\"abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', false, '', '${ramalFinal}', '${emailFinal}')\" title="Concluir Nada Consta">
                                         <i class="bi bi-check2-circle me-1"></i> Concluir
