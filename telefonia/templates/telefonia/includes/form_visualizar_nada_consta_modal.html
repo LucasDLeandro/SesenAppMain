@@ -1,0 +1,69 @@
+<div class="modal fade" id="modal-visualizar-nada-consta" tabindex="-1" aria-labelledby="modalVisualizarNadaConstaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="modalVisualizarNadaConstaLabel"><i class="bi bi-eye"></i> Visualizar Solicitação de Nada Consta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Protocolo SEI</label>
+                        <p class="fw-bold fs-5" id="vis-nada-consta-protocolo"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Data da Solicitação</label>
+                        <p class="fw-bold fs-5" id="vis-nada-consta-data"></p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Servidor</label>
+                        <p class="fw-bold" id="vis-nada-consta-servidor"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Unidade</label>
+                        <p class="fw-bold" id="vis-nada-consta-unidade"></p>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">E-mail Cadastrado</label>
+                        <p class="fw-bold" id="vis-nada-consta-email"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Ramal</label>
+                        <p class="fw-bold" id="vis-nada-consta-ramal"></p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Valor Devido</label>
+                        <p class="fw-bold text-danger" id="vis-nada-consta-valor"></p>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-muted mb-0">Técnico Responsável</label>
+                        <p class="fw-bold text-primary" id="vis-nada-consta-tecnico"></p>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="vis-nada-consta-desvinculacao" disabled>
+                            <label class="form-check-label fw-bold" for="vis-nada-consta-desvinculacao">
+                                Solicitar desvinculação do ramal
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>

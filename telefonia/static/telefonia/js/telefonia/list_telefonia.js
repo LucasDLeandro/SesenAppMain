@@ -604,6 +604,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         let emailFallback = row.email_vinculado_display || '';
                         let emailFinal = row.email_cadastrado || emailFallback;
                         return `<div class="d-flex justify-content-end gap-1">
+                                    <button class="btn btn-sm btn-outline-info text-nowrap me-1" onclick="abrirModalVisualizarNadaConsta(${row.id})" title="Visualizar Nada Consta"><i class="bi bi-eye-fill"></i></button>
                                     <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick=\"abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', false, '', '${ramalFinal}', '${emailFinal}')\" title="Concluir Nada Consta">
                                         <i class="bi bi-check2-circle me-1"></i> Concluir
                                     </button>
@@ -1655,18 +1656,45 @@ window.excluirAnexo = function(solicitacaoId, anexoId) {
 
 async function abrirModalDespachoSeiNadaConsta(id) {
     try {
-        const response = await fetch(/telefonia/api/nada_consta//despacho_sei/);
-        if (!response.ok) throw new Error('Erro ao buscar texto');
+        const response = await fetch(`/telefonia/api/nada_consta/${id}/despacho_sei/`);
+        if (!response.ok) throw new Error("Erro ao buscar texto");
         const data = await response.json();
-        document.getElementById('texto_despacho_sei').value = data.texto || '';
-        var modal = new bootstrap.Modal(document.getElementById('modal-despacho-sei-nada-consta'));
+        document.getElementById("texto_despacho_sei").value = data.texto || "";
+        var modal = new bootstrap.Modal(document.getElementById("modal-despacho-sei-nada-consta"));
         modal.show();
     } catch(err) {
         console.error(err);
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({icon: 'error', title: 'Erro', text: 'Falha ao carregar o despacho SEI.'});
+        if (typeof Swal !== "undefined") {
+            Swal.fire({icon: "error", title: "Erro", text: "Falha ao carregar o despacho SEI."});
         } else {
-            alert('Falha ao carregar o despacho SEI.');
+            alert("Falha ao carregar o despacho SEI.");
         }
     }
+}
+
+function abrirModalVisualizarNadaConsta(id) {
+    fetch(`/telefonia/api/nada_consta/${id}/`)
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('vis-nada-consta-protocolo').innerText = data.protocolo || '-';
+        document.getElementById('vis-nada-consta-data').innerText = data.data ? new Date(data.data).toLocaleDateString('pt-BR') : '-';
+        document.getElementById('vis-nada-consta-servidor').innerText = data.servidor || '-';
+        document.getElementById('vis-nada-consta-unidade').innerText = data.unidade || '-';
+        document.getElementById('vis-nada-consta-email').innerText = data.email_cadastrado || '-';
+        document.getElementById('vis-nada-consta-ramal').innerText = data.ramal || '-';
+        document.getElementById('vis-nada-consta-valor').innerText = data.valor_devido ? 'R$ ' + data.valor_devido.replace('.', ',') : 'R$ 0,00';
+        document.getElementById('vis-nada-consta-tecnico').innerText = data.tecnico_responsavel || '-';
+        document.getElementById('vis-nada-consta-desvinculacao').checked = data.solicitar_desvinculacao || false;
+        
+        var modal = new bootstrap.Modal(document.getElementById('modal-visualizar-nada-consta'));
+        modal.show();
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({icon: 'error', title: 'Erro', text: 'Não foi possível carregar os dados.'});
+        } else {
+            alert('Não foi possível carregar os dados.');
+        }
+    });
 }
