@@ -1651,3 +1651,22 @@ window.excluirAnexo = function(solicitacaoId, anexoId) {
         }
     });
 }
+
+
+async function abrirModalDespachoSeiNadaConsta(id) {
+    try {
+        const response = await fetch(/telefonia/api/nada_consta//despacho_sei/);
+        if (!response.ok) throw new Error('Erro ao buscar texto');
+        const data = await response.json();
+        document.getElementById('texto_despacho_sei').value = data.texto || '';
+        var modal = new bootstrap.Modal(document.getElementById('modal-despacho-sei-nada-consta'));
+        modal.show();
+    } catch(err) {
+        console.error(err);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({icon: 'error', title: 'Erro', text: 'Falha ao carregar o despacho SEI.'});
+        } else {
+            alert('Falha ao carregar o despacho SEI.');
+        }
+    }
+}

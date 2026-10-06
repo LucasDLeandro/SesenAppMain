@@ -9,6 +9,7 @@ class TemplateMessage(models.Model):
         ('tel_solicitacao_senha', 'Telefonia - Solicitação de Senha'),
         ('tel_recolhimento_evento', 'Telefonia - Recolhimento de Aparelho em Evento'),
         ('tel_nada_consta', 'Telefonia - Solicitação de Nada Consta'),
+        ('tel_nada_consta_conclusao', 'Telefonia - Conclusão de Nada Consta (Despacho SEI)'),
         ('os_elev_andamento', 'Elevadores - OS em Andamento' ),
         ('os_elev_conclusao_peca', 'Elevadores - Conclusão de OS c/ Troca de Peça'),
         ('os_elev_aguardando_peca_parado', 'Elevadores - OS Aguardando Peça (Elev. Parado)'),

@@ -1020,7 +1020,7 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                         sigla_unidade=solicitacao.sigla_unidade or 'N/A',
                         servidor=solicitacao.servidor or 'N/A',
                         ramal=solicitacao.ramal or 'N/A',
-                        email=solicitacao.email or 'N/A',
+                        email=solicitacao.email_cadastrado or 'N/A',
                     )
                     assunto = f"Nova Solicitação de Nada Consta - {solicitacao.protocolo or 'N/A'}"
                     disparar_notificacao_contato(contato, text, text, assunto)
@@ -1035,9 +1035,59 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                 senha.ativo = False
                 senha.save(update_fields=['ativo'])
                 
-        if solicitacao.status == 'concluida' and not solicitacao.tecnico_responsavel:
-            solicitacao.tecnico_responsavel = self.request.user.get_full_name() or self.request.user.username
-            solicitacao.save(update_fields=['tecnico_responsavel'])
+        if solicitacao.status == 'concluida':
+            if not solicitacao.tecnico_responsavel:
+                solicitacao.tecnico_responsavel = self.request.user.get_full_name() or self.request.user.username
+                solicitacao.save(update_fields=['tecnico_responsavel'])
+            
+            # Disparar notificação de conclusão para o servidor
+            template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta_conclusao', is_ativo=True).first()
+            if template and solicitacao.email_cadastrado:
+                from notificacoes.services import disparar_notificacao_avulso
+                texto = template.base_text
+                try:
+                    valor = str(solicitacao.valor_devido) if solicitacao.valor_devido else '0.00'
+                    text = texto.format(
+                        protocolo=solicitacao.protocolo or 'N/A',
+                        unidade=solicitacao.unidade or 'N/A',
+                        sigla_unidade=solicitacao.sigla_unidade or 'N/A',
+                        servidor=solicitacao.servidor or 'N/A',
+                        ramal=solicitacao.ramal or 'N/A',
+                        email_cadastrado=solicitacao.email_cadastrado or 'N/A',
+                        valor_devido=valor.replace('.', ','),
+                        tecnico=solicitacao.tecnico_responsavel or 'N/A',
+                        data=solicitacao.data.strftime('%d/%m/%Y') if solicitacao.data else 'N/A'
+                    )
+                    assunto = f"Conclusão de Nada Consta - {solicitacao.protocolo or 'N/A'}"
+                    disparar_notificacao_avulso(solicitacao.email_cadastrado, text, text, assunto)
+                except Exception as e:
+                    print(f"Erro ao formatar/enviar mensagem de conclusão (Nada Consta): {e}")
+
+    @action(detail=True, methods=['get'])
+    def despacho_sei(self, request, pk=None):
+        solicitacao = self.get_object()
+        from base.models import TemplateMessage
+        template = TemplateMessage.objects.filter(tipo_evento='tel_nada_consta_conclusao', is_ativo=True).first()
+        if not template:
+            return Response({'error': 'Template tel_nada_consta_conclusao não encontrado ou inativo.'}, status=404)
+        
+        texto = template.base_text
+        try:
+            valor = str(solicitacao.valor_devido) if solicitacao.valor_devido else '0.00'
+            text = texto.format(
+                protocolo=solicitacao.protocolo or 'N/A',
+                unidade=solicitacao.unidade or 'N/A',
+                sigla_unidade=solicitacao.sigla_unidade or 'N/A',
+                servidor=solicitacao.servidor or 'N/A',
+                ramal=solicitacao.ramal or 'N/A',
+                email_cadastrado=solicitacao.email_cadastrado or 'N/A',
+                valor_devido=valor.replace('.', ','),
+                tecnico=solicitacao.tecnico_responsavel or 'N/A',
+                data=solicitacao.data.strftime('%d/%m/%Y') if solicitacao.data else 'N/A'
+            )
+            return Response({'texto': text})
+        except Exception as e:
+            return Response({'error': f'Erro ao formatar template: {str(e)}'}, status=500)
 
 def gerar_pdf_nada_consta(request, pk):
     try:
