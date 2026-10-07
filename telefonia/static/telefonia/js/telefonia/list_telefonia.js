@@ -1698,3 +1698,51 @@ function abrirModalVisualizarNadaConsta(id) {
         }
     });
 }
+
+
+// Lógica de Cancelamento Global
+function abrirModalCancelar(id, tipo) {
+    $('#cancelar-id').val(id);
+    $('#cancelar-tipo').val(tipo);
+    $('#form-cancelar')[0].reset();
+    $('#modal-cancelar').modal('show');
+}
+
+$('#form-cancelar').on('submit', function(e) {
+    e.preventDefault();
+    let id = $('#cancelar-id').val();
+    let tipo = $('#cancelar-tipo').val();
+    let justificativa = $('#justificativa_cancelamento').val().trim();
+    
+    if(!justificativa) {
+        Swal.fire('Atenção', 'Justificativa é obrigatória.', 'warning');
+        return;
+    }
+    
+    let endpoint = '';
+    if(tipo === 'aparelhos') {
+        endpoint = `/telefonia/api/aparelhos/${id}/cancelar/`;
+    } else if (tipo === 'senhas') {
+        endpoint = `/telefonia/api/senhas/${id}/cancelar/`;
+    } else if (tipo === 'nada_consta') {
+        endpoint = `/telefonia/api/nada_consta/${id}/cancelar/`;
+    }
+    
+    $.ajax({
+        url: endpoint,
+        method: 'POST',
+        data: JSON.stringify({ justificativa: justificativa }),
+        contentType: 'application/json',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        success: function() {
+            $('#modal-cancelar').modal('hide');
+            Swal.fire('Sucesso', 'Solicitação cancelada com sucesso.', 'success');
+            recarregarTabelas();
+        },
+        error: function(err) {
+            Swal.fire('Erro', 'Ocorreu um erro ao cancelar.', 'error');
+        }
+    });
+});

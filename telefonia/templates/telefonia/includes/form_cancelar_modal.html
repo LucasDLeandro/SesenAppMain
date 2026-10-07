@@ -1,0 +1,31 @@
+<!-- Modal Cancelar -->
+<div class="modal fade custom-modal" id="modal-cancelar" tabindex="-1" aria-labelledby="modalCancelarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header custom-modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="modalCancelarLabel"><i class="bi bi-x-circle me-2"></i>Cancelar Solicitação</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 bg-light">
+                <form id="form-cancelar">
+                    <input type="hidden" id="cancelar-id">
+                    <input type="hidden" id="cancelar-tipo">
+                    
+                    <div class="mb-3">
+                        <label for="justificativa_cancelamento" class="form-label fw-bold text-dark">Justificativa de Cancelamento <span class="text-danger">*</span></label>
+                        <textarea class="form-control border-danger shadow-sm" id="justificativa_cancelamento" name="justificativa" rows="4" placeholder="Informe o motivo do cancelamento..." required></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary px-4 fw-bold shadow-sm" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Fechar
+                        </button>
+                        <button type="submit" class="btn btn-danger px-4 fw-bold shadow-sm">
+                            <i class="bi bi-check-circle me-1"></i>Confirmar Cancelamento
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1146,3 +1146,20 @@ def gerar_pdf_nada_consta(request, pk):
         return response
     except NadaConsta.DoesNotExist:
         return HttpResponse('Solicitação não encontrada.', status=404)
+
+    @action(detail=True, methods=['post'])
+    def cancelar(self, request, pk=None):
+        solicitacao = self.get_object()
+        from django.utils import timezone
+        justificativa = request.data.get('justificativa', '').strip()
+        if not justificativa:
+            return Response({'error': 'Justificativa é obrigatória para cancelar.'}, status=400)
+        
+        solicitacao.status = 'cancelada'
+        solicitacao.justificativa_cancelamento = justificativa
+        solicitacao.cancelado_por = request.user.get_full_name() or request.user.username
+        solicitacao.data_cancelamento = timezone.now()
+        solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento'])
+        
+        serializer = self.get_serializer(solicitacao)
+        return Response(serializer.data)
