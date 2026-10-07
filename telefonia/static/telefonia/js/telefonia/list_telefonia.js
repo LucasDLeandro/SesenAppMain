@@ -586,7 +586,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirConclusao(${row.id})" title="Concluir Instalação">
                                             <i class="bi bi-check2-circle me-1"></i> Concluir
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'aparelhos')" title="Cancelar"><i class="fas fa-times"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'aparelhos')" title="Cancelar"><i class="bi bi-x-lg"></i></button>
                                         <button class="btn btn-sm btn-outline-info text-nowrap" style="white-space: nowrap;" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
                                             <i class="bi bi-eye-fill"></i>
                                         </button>
@@ -609,7 +609,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                     <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick=\"abrirModalConcluirNadaConsta(${row.id}, '${row.protocolo}', '${new Date(row.data).toLocaleDateString('pt-BR')}', '${row.unidade}', '${row.servidor}', false, '', '${ramalFinal}', '${emailFinal}')\" title="Concluir Nada Consta">
                                         <i class="bi bi-check2-circle me-1"></i> Concluir
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'nada_consta')" title="Cancelar"><i class="fas fa-times"></i></button>
+                                    <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'nada_consta')" title="Cancelar"><i class="bi bi-x-lg"></i></button>
                                 </div>`;
                     } else {
                         if (row.status === 'aguardando_supervisor') {
@@ -623,7 +623,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <button class="btn btn-sm btn-outline-success text-nowrap" style="white-space: nowrap;" onclick="abrirModalConcluirSenha(${row.id})" title="Concluir Geração de Senha">
                                             <i class="bi bi-gear me-1"></i> Gerar Senha
                                         </button>
-                                        <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'senhas')" title="Cancelar"><i class="fas fa-times"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger text-nowrap" style="white-space: nowrap;" onclick="abrirModalCancelar(${row.id}, 'senhas')" title="Cancelar"><i class="bi bi-x-lg"></i></button>
                                     </div>`;
                         }
                     }
