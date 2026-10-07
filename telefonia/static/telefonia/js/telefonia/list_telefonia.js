@@ -1724,9 +1724,9 @@ $('#form-cancelar').on('submit', function(e) {
     
     let endpoint = '';
     if(tipo === 'aparelhos') {
-        endpoint = `/telefonia/api/aparelhos/${id}/cancelar/`;
+        endpoint = `/telefonia/api/solicitacoes/${id}/cancelar/`;
     } else if (tipo === 'senhas') {
-        endpoint = `/telefonia/api/senhas/${id}/cancelar/`;
+        endpoint = `/telefonia/api/solicitacoes-senhas/${id}/cancelar/`;
     } else if (tipo === 'nada_consta') {
         endpoint = `/telefonia/api/nada_consta/${id}/cancelar/`;
     }
