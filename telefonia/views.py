@@ -1121,6 +1121,24 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': f'Erro ao formatar template: {str(e)}'}, status=500)
 
+    @action(detail=True, methods=['post'])
+    def cancelar(self, request, pk=None):
+        solicitacao = self.get_object()
+        justificativa = (request.data.get('justificativa') or '').strip()
+        if not justificativa:
+            return Response({'error': 'Justificativa é obrigatória para cancelar.'}, status=400)
+        if solicitacao.status == 'cancelada':
+            return Response({'error': 'Esta solicitação já está cancelada.'}, status=400)
+
+        solicitacao.status = 'cancelada'
+        solicitacao.justificativa_cancelamento = justificativa
+        solicitacao.cancelado_por = request.user.get_full_name() or request.user.username
+        solicitacao.data_cancelamento = timezone.now()
+        solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento', 'updated_at'])
+
+        serializer = self.get_serializer(solicitacao)
+        return Response(serializer.data)
+
 def gerar_pdf_nada_consta(request, pk):
     try:
         solicitacao = NadaConsta.objects.get(pk=pk)
@@ -1167,24 +1185,3 @@ def gerar_pdf_nada_consta(request, pk):
         return response
     except NadaConsta.DoesNotExist:
         return HttpResponse('Solicitação não encontrada.', status=404)
-
-    @action(detail=True, methods=['post'])
-    def cancelar(self, request, pk=None):
-        try:
-            solicitacao = self.get_object()
-            from django.utils import timezone
-            justificativa = request.data.get('justificativa', '').strip()
-            if not justificativa:
-                return Response({'error': 'Justificativa é obrigatória para cancelar.'}, status=400)
-            
-            solicitacao.status = 'cancelada'
-            solicitacao.justificativa_cancelamento = justificativa
-            solicitacao.cancelado_por = request.user.get_full_name() or request.user.username
-            solicitacao.data_cancelamento = timezone.now()
-            solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento'])
-            
-            serializer = self.get_serializer(solicitacao)
-            return Response(serializer.data)
-        except Exception as e:
-            import traceback
-            return Response({'error': str(e), 'traceback': traceback.format_exc()}, status=500)
