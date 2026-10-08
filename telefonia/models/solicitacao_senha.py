@@ -142,6 +142,10 @@ class CriarSenha(models.Model):
         verbose_name="Senha Ativa"
     )
 
+    justificativa_cancelamento = models.TextField(null=True, blank=True)
+    cancelado_por = models.CharField(max_length=150, null=True, blank=True)
+    data_cancelamento = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

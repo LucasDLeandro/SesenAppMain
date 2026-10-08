@@ -1742,7 +1742,15 @@ $('#form-cancelar').on('submit', function(e) {
         success: function() {
             $('#modal-cancelar').modal('hide');
             Swal.fire('Sucesso', 'Solicitação cancelada com sucesso.', 'success');
-            recarregarTabelas();
+            if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
+                $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
+            }
+            if ($.fn.DataTable.isDataTable('#tabela-senhas')) {
+                $('#tabela-senhas').DataTable().ajax.reload(null, false);
+            }
+            if ($.fn.DataTable.isDataTable('#tabela-nada-consta')) {
+                $('#tabela-nada-consta').DataTable().ajax.reload(null, false);
+            }
         },
         error: function(err) {
             Swal.fire('Erro', 'Ocorreu um erro ao cancelar.', 'error');
