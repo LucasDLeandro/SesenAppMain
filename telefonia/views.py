@@ -271,6 +271,26 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         except TelefoneSolicitacaoAnexo.DoesNotExist:
             return Response({'error': 'Anexo não encontrado.'}, status=status.HTTP_404_NOT_FOUND)
 
+    @action(detail=True, methods=['post'])
+    def cancelar(self, request, pk=None):
+        solicitacao = self.get_object()
+        justificativa = (request.data.get('justificativa') or '').strip()
+        if not justificativa:
+            return Response({'error': 'Justificativa é obrigatória para cancelar.'}, status=status.HTTP_400_BAD_REQUEST)
+        if solicitacao.status == 'cancelada':
+            return Response({'error': 'Esta solicitação já está cancelada.'}, status=status.HTTP_400_BAD_REQUEST)
+        if solicitacao.status == 'concluida':
+            return Response({'error': 'Não é possível cancelar uma solicitação já concluída.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        solicitacao.status = 'cancelada'
+        solicitacao.justificativa_cancelamento = justificativa
+        solicitacao.cancelado_por = request.user.get_full_name() or request.user.username
+        solicitacao.data_cancelamento = timezone.now()
+        solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento', 'updated_at'])
+
+        serializer = self.get_serializer(solicitacao)
+        return Response(serializer.data)
+
 
 class EmprestimoEventoViewSet(viewsets.ModelViewSet):
     queryset = EmprestimoEvento.objects.all().order_by('-created_at')

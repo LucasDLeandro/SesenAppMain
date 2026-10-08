@@ -123,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     if(data === 'pendente') return `<span class="badge bg-danger" style="${fs}">Pendente</span>`;
                     if(data === 'concluida') return `<span class="badge bg-success" style="${fs}">Concluída</span>`;
                     if(data === 'aguardando_supervisor_aparelho') return `<span class="badge bg-info text-dark" style="${fs}">Apenas Finalizar</span>`;
+                    if(data === 'cancelada') return `<span class="badge bg-danger" style="${fs}">Cancelada</span>`;
                     return data;
                 }
             },
@@ -134,9 +135,11 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-eye-fill"></i>
                             </button>`;
                     if (window.userCanEdit) {
-                        buttons += `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
+                        if (row.status !== 'cancelada') {
+                            buttons += `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
                                 <i class="bi bi-pencil-square"></i>
                             </button>`;
+                        }
                         buttons += `<button class="btn btn-sm btn-outline-danger" onclick="deletarSolicitacao(${row.id})" title="Deletar Solicitação">
                                 <i class="bi bi-trash"></i>
                             </button>`;
@@ -899,6 +902,12 @@ window.visualizarSolicitacao = async function(id) {
             const sts = dados.status || '-';
             if (sts === 'aguardando_supervisor_aparelho') {
                 document.getElementById('vis-status').innerHTML = `<span class="badge bg-info text-dark">APENAS FINALIZAR</span>`;
+            } else if (sts === 'cancelada') {
+                const esc = (s) => String(s || '-').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+                const dtCanc = dados.data_cancelamento ? new Date(dados.data_cancelamento).toLocaleString('pt-BR') : '-';
+                document.getElementById('vis-status').innerHTML = `<span class="badge bg-danger">CANCELADA</span>
+                    <div class="small text-muted mt-1">Por ${esc(dados.cancelado_por)} em ${dtCanc}</div>
+                    <div class="small mt-1"><strong>Justificativa:</strong> ${esc(dados.justificativa_cancelamento)}</div>`;
             } else {
                 document.getElementById('vis-status').innerHTML = `<span class="badge bg-secondary">${sts.toUpperCase()}</span>`;
             }
@@ -1750,18 +1759,15 @@ $('#form-cancelar').on('submit', function(e) {
         success: function() {
             $('#modal-cancelar').modal('hide');
             Swal.fire('Sucesso', 'Solicitação cancelada com sucesso.', 'success');
-            if ($.fn.DataTable.isDataTable('#tabela-recebidas-modal')) {
-                $('#tabela-recebidas-modal').DataTable().ajax.reload(null, false);
-            }
-            if ($.fn.DataTable.isDataTable('#tabela-senhas')) {
-                $('#tabela-senhas').DataTable().ajax.reload(null, false);
-            }
-            if ($.fn.DataTable.isDataTable('#tabela-nada-consta')) {
-                $('#tabela-nada-consta').DataTable().ajax.reload(null, false);
-            }
+            ['#tabela-recebidas-modal', '#tabela-solicitacoes', '#tabela-senhas', '#tabela-nada-consta-aba'].forEach(function(sel) {
+                if ($.fn.DataTable.isDataTable(sel)) {
+                    $(sel).DataTable().ajax.reload(null, false);
+                }
+            });
         },
-        error: function(err) {
-            Swal.fire('Erro', 'Ocorreu um erro ao cancelar.', 'error');
+        error: function(xhr) {
+            const msg = (xhr.responseJSON && (xhr.responseJSON.error || xhr.responseJSON.detail)) || 'Ocorreu um erro ao cancelar.';
+            Swal.fire('Erro', msg, 'error');
         }
     });
 });

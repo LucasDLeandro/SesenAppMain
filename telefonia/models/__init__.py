@@ -7,6 +7,7 @@ class StatusSolicitacao(models.TextChoices):
     PENDENTE = 'pendente', 'Pendente'
     AGUARDANDO_SUPERVISOR_APARELHO = 'aguardando_supervisor_aparelho', 'Aguardando Supervisor'
     CONCLUIDA = 'concluida', 'Concluída'
+    CANCELADA = 'cancelada', 'Cancelada'
 
 class IntegridadeAparelho(models.TextChoices):
     FUNCIONA = 'funciona', 'Funciona'
