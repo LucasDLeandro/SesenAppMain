@@ -191,6 +191,7 @@ document.addEventListener("DOMContentLoaded", function() {
             { 
                 data: 'status',
                 render: function(data, type, row) {
+                    if (data === 'cancelada') return '<span class="badge bg-danger">Cancelada</span>';
                     if (row.ativo === false) return '<span class="badge bg-danger">Inativa (Cancelada)</span>';
                     if(data === 'recebida') return '<span class="badge bg-primary">Recebida</span>';
                     if(data === 'aguardando_supervisor') return '<span class="badge bg-warning text-dark">Aguardando Sup.</span>';
@@ -209,6 +210,10 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-eye"></i>
                             </button>
                     `;
+                    // Solicitação cancelada: apenas visualização
+                    if (row.status === 'cancelada') {
+                        return buttons + `</div>`;
+                    }
                     if (window.userCanEdit) {
                         buttons += `
                             <button class="btn btn-sm btn-outline-primary shadow-sm" onclick="abrirModalEditarSenha(${data})" title="Editar Solicitação">
@@ -302,6 +307,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 render: function(data) {
                     if(data === 'pendente') return '<span class="badge bg-danger">Pendente</span>';
                     if(data === 'concluida') return '<span class="badge bg-success">Concluída</span>';
+                    if(data === 'cancelada') return '<span class="badge bg-danger">Cancelada</span>';
                     return `<span class="badge bg-secondary">${data}</span>`;
                 }
             },
@@ -1137,7 +1143,9 @@ window.visualizarSenha = async function(id) {
             document.getElementById('vis-senha-unidade').textContent = dados.unidade || '-';
             document.getElementById('vis-senha-sigla').textContent = dados.sigla_unidade ? dados.sigla_unidade.toUpperCase() : '-';
             document.getElementById('vis-senha-registrada').textContent = dados.senha || 'Não informada';
-            document.getElementById('vis-senha-status-ativo').innerHTML = dados.ativo === false ? '<span class="badge bg-danger">Inativa / Cancelada</span>' : '<span class="badge bg-success">Ativa</span>';
+            document.getElementById('vis-senha-status-ativo').innerHTML = dados.status === 'cancelada'
+                ? '<span class="badge bg-danger">CANCELADA</span>'
+                : (dados.ativo === false ? '<span class="badge bg-danger">Inativa / Cancelada</span>' : '<span class="badge bg-success">Ativa</span>');
             document.getElementById('vis-senha-edificios').textContent = dados.edificios || '-';
             document.getElementById('vis-senha-usuario').textContent = dados.usuario || '-';
             document.getElementById('vis-senha-ramal').textContent = dados.ramal || '-';

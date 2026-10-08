@@ -4,6 +4,7 @@ class StatusSenha(models.TextChoices):
     RECEBIDA = 'recebida', 'Recebida'
     AGUARDANDO_SUPERVISOR = 'aguardando_supervisor', 'Aguardando Supervisor'
     FINALIZADA = 'finalizada', 'Finalizada'
+    CANCELADA = 'cancelada', 'Cancelada'
 
 class CriarSenha(models.Model):
     protocolo = models.CharField(
