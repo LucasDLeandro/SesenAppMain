@@ -277,6 +277,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         ],
+        columnDefs: [
+            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data Cadastro
+            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
+            { targets: 4, width: '90px' }, // Ramal
+            { targets: 5, width: '90px', className: 'text-center' }, // Tem Desvio?
+            { targets: 7, width: '120px', className: 'text-end' } // Ações
+        ],
         language: dtLanguage,
         responsive: true,
         orderCellsTop: true,
@@ -359,6 +366,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         ],
+        columnDefs: [
+            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data
+            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
+            { targets: 3, width: '90px', className: 'text-center' }, // Sigla
+            { targets: 6, width: '120px', className: 'text-end' } // Ações
+        ],
         language: dtLanguage,
         responsive: true,
         orderCellsTop: true,
@@ -401,10 +414,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: 'id',
                 orderable: false,
                 render: function(data) {
-                    let buttons = `<button class="btn btn-sm btn-outline-info me-1" onclick="visualizarAparelho(${data})" title="Visualizar Detalhes">
+                    let buttons = `<div class="d-flex justify-content-end gap-1">
+                            <button class="btn btn-sm btn-outline-info" onclick="visualizarAparelho(${data})" title="Visualizar Detalhes">
                                 <i class="bi bi-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-outline-primary me-1" onclick="editarAparelho(${data})" title="Editar Aparelho">
+                            <button class="btn btn-sm btn-outline-primary" onclick="editarAparelho(${data})" title="Editar Aparelho">
                                 <i class="bi bi-pencil-square"></i>
                             </button>`;
                     if (window.userCanEdit) {
@@ -412,9 +426,17 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-trash"></i>
                             </button>`;
                     }
+                    buttons += `</div>`;
                     return buttons;
                 }
             }
+        ],
+        columnDefs: [
+            { targets: 0, width: '110px', className: 'text-nowrap' }, // Cadastrado em
+            { targets: 1, width: '110px', className: 'text-nowrap' }, // Patrimônio
+            { targets: 3, width: '130px', className: 'text-nowrap' }, // MAC Address
+            { targets: 4, width: '90px' }, // Ramal
+            { targets: 6, width: '120px', className: 'text-end' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
@@ -460,11 +482,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: 'id',
                 orderable: false,
                 render: function(data) {
-                    return `<button class="btn btn-sm btn-outline-danger me-1" onclick="window.open('/telefonia/remessa/${data}/pdf/', '_blank')" title="Baixar PDF">
-                                <i class="bi bi-file-earmark-pdf-fill"></i> PDF
-                            </button>`;
+                    return `<div class="d-flex justify-content-end gap-1">
+                                <button class="btn btn-sm btn-outline-danger" onclick="window.open('/telefonia/remessa/${data}/pdf/', '_blank')" title="Baixar PDF">
+                                    <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                                </button>
+                            </div>`;
                 }
             }
+        ],
+        columnDefs: [
+            { targets: 0, width: '110px', className: 'text-nowrap' }, // Data Remessa
+            { targets: 3, width: '130px', className: 'text-center' }, // Total Aparelhos
+            { targets: 4, width: '90px', className: 'text-end' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
