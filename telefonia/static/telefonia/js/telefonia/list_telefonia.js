@@ -154,6 +154,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         ],
+        columnDefs: [
+            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data
+            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
+            { targets: 5, width: '70px', className: 'text-center' },  // Qtd
+            { targets: 7, width: '120px', className: 'text-end' }     // Ações
+        ],
         language: dtLanguage,
         responsive: true,
         orderCellsTop: true,
