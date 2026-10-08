@@ -113,7 +113,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 data: 'local',
                 defaultContent: '-'
             },
-            { data: 'qnt_solicitada' },
+            { 
+                data: 'qnt_solicitada',
+                className: 'text-center'
+            },
             { 
                 data: 'status',
                 render: function(data) {
@@ -130,13 +133,15 @@ document.addEventListener("DOMContentLoaded", function() {
             {
                 data: null,
                 orderable: false,
+                className: 'text-end',
                 render: function(data, type, row) {
-                    let buttons = `<button class="btn btn-sm btn-outline-info me-1" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
-                                <i class="bi bi-eye-fill"></i>
-                            </button>`;
+                    let buttons = `<div class="d-flex justify-content-end gap-1">
+                                       <button class="btn btn-sm btn-outline-info" onclick="visualizarSolicitacao(${row.id})" title="Visualizar Solicitação">
+                                           <i class="bi bi-eye-fill"></i>
+                                       </button>`;
                     if (window.userCanEdit) {
                         if (row.status !== 'cancelada') {
-                            buttons += `<button class="btn btn-sm btn-outline-primary me-1" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
+                            buttons += `<button class="btn btn-sm btn-outline-primary" onclick="abrirEdicaoSolicitacao(${row.id})" title="Editar Solicitação">
                                 <i class="bi bi-pencil-square"></i>
                             </button>`;
                         }
@@ -144,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 <i class="bi bi-trash"></i>
                             </button>`;
                     }
+                    buttons += `</div>`;
                     return buttons;
                 }
             }
