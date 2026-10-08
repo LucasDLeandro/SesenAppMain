@@ -286,7 +286,17 @@ class TelefoneSolicitacaoViewSet(viewsets.ModelViewSet):
         solicitacao.justificativa_cancelamento = justificativa
         solicitacao.cancelado_por = request.user.get_full_name() or request.user.username
         solicitacao.data_cancelamento = timezone.now()
-        solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento', 'updated_at'])
+
+        with transaction.atomic():
+            solicitacao.save(update_fields=['status', 'justificativa_cancelamento', 'cancelado_por', 'data_cancelamento', 'updated_at'])
+
+            # Devolver ao estoque os aparelhos que chegaram a ser alocados nesta solicitação.
+            # O vínculo M2M é mantido como histórico; aparelhos em manutenção/defeituosos não são alterados.
+            for ap in solicitacao.aparelhos.filter(status='instalado'):
+                ap.status = 'estoque'
+                ap.ramal = None
+                ap.sala = None
+                ap.save(update_fields=['status', 'ramal', 'sala', 'updated_at'])
 
         serializer = self.get_serializer(solicitacao)
         return Response(serializer.data)
