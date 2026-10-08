@@ -155,10 +155,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         ],
         columnDefs: [
-            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data
-            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
-            { targets: 5, width: '70px', className: 'text-center' },  // Qtd
-            { targets: 7, width: '120px', className: 'text-end' }     // Ações
+            { targets: 0, width: '1%', className: 'text-nowrap' }, // Data
+            { targets: 1, width: '1%', className: 'text-nowrap' }, // Protocolo
+            { targets: 5, width: '1%', className: 'text-center' },  // Qtd
+            { targets: 7, width: '1%', className: 'text-end text-nowrap' }     // Ações
         ],
         language: dtLanguage,
         responsive: true,
@@ -278,11 +278,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         ],
         columnDefs: [
-            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data Cadastro
-            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
-            { targets: 4, width: '90px' }, // Ramal
-            { targets: 5, width: '90px', className: 'text-center' }, // Tem Desvio?
-            { targets: 7, width: '120px', className: 'text-end' } // Ações
+            { targets: 0, width: '1%', className: 'text-nowrap' }, // Data Cadastro
+            { targets: 1, width: '1%', className: 'text-nowrap' }, // Protocolo
+            { targets: 4, width: '1%' }, // Ramal
+            { targets: 5, width: '1%', className: 'text-center' }, // Tem Desvio?
+            { targets: 7, width: '1%', className: 'text-end text-nowrap' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
@@ -367,10 +367,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         ],
         columnDefs: [
-            { targets: 0, width: '140px', className: 'text-nowrap' }, // Data
-            { targets: 1, width: '110px', className: 'text-nowrap' }, // Protocolo
-            { targets: 3, width: '90px', className: 'text-center' }, // Sigla
-            { targets: 6, width: '120px', className: 'text-end' } // Ações
+            { targets: 0, width: '1%', className: 'text-nowrap' }, // Data
+            { targets: 1, width: '1%', className: 'text-nowrap' }, // Protocolo
+            { targets: 3, width: '1%', className: 'text-center' }, // Sigla
+            { targets: 6, width: '1%', className: 'text-end text-nowrap' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
@@ -432,11 +432,11 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         ],
         columnDefs: [
-            { targets: 0, width: '110px', className: 'text-nowrap' }, // Cadastrado em
-            { targets: 1, width: '110px', className: 'text-nowrap' }, // Patrimônio
-            { targets: 3, width: '130px', className: 'text-nowrap' }, // MAC Address
-            { targets: 4, width: '90px' }, // Ramal
-            { targets: 6, width: '120px', className: 'text-end' } // Ações
+            { targets: 0, width: '1%', className: 'text-nowrap' }, // Cadastrado em
+            { targets: 1, width: '1%', className: 'text-nowrap' }, // Patrimônio
+            { targets: 3, width: '1%', className: 'text-nowrap' }, // MAC Address
+            { targets: 4, width: '1%' }, // Ramal
+            { targets: 6, width: '1%', className: 'text-end text-nowrap' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
@@ -491,9 +491,9 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         ],
         columnDefs: [
-            { targets: 0, width: '110px', className: 'text-nowrap' }, // Data Remessa
-            { targets: 3, width: '130px', className: 'text-center' }, // Total Aparelhos
-            { targets: 4, width: '90px', className: 'text-end' } // Ações
+            { targets: 0, width: '1%', className: 'text-nowrap' }, // Data Remessa
+            { targets: 3, width: '1%', className: 'text-center' }, // Total Aparelhos
+            { targets: 4, width: '1%', className: 'text-end text-nowrap' } // Ações
         ],
         language: dtLanguage,
         responsive: true,
