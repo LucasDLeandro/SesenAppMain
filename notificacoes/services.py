@@ -85,7 +85,7 @@ def disparar_notificacao_contato(contato, texto_zap, texto_email, assunto_email)
                 print(f"Erro disparando WhatsApp para {contato.nome}: {e}")
                 
     # 2. Disparo de E-mail
-    if contato.receber_email:
+    if contato.receber_email and texto_email and assunto_email:
         email = getattr(contato.pessoa, 'email', None) if contato.pessoa else None
         if email:
             try:

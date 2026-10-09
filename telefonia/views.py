@@ -1071,8 +1071,7 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                         ramal=solicitacao.ramal or 'N/A',
                         email=solicitacao.email_cadastrado or 'N/A',
                     )
-                    assunto = f"Nova Solicitação de Nada Consta - {solicitacao.protocolo or 'N/A'}"
-                    disparar_notificacao_contato(contato, text, text, assunto)
+                    disparar_notificacao_contato(contato, texto_zap=text, texto_email=None, assunto_email=None)
                 except Exception as e:
                     print(f"Erro ao formatar/enviar mensagem (Nada Consta): {e}")
 
@@ -1118,8 +1117,7 @@ class NadaConstaViewSet(viewsets.ModelViewSet):
                             tecnico=solicitacao.tecnico_responsavel or 'N/A',
                             data=solicitacao.data.strftime('%d/%m/%Y') if solicitacao.data else 'N/A'
                         )
-                        assunto = f"Conclusão de Nada Consta - {solicitacao.protocolo or 'N/A'}"
-                        disparar_notificacao_contato(contato, text, text, assunto)
+                        disparar_notificacao_contato(contato, texto_zap=text, texto_email=None, assunto_email=None)
                     except Exception as e:
                         print(f"Erro ao formatar/enviar mensagem de conclusão (Nada Consta) para equipe: {e}")
 
